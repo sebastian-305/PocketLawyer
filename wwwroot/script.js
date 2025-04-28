@@ -1,1 +1,1 @@
-﻿fetch("/weatherforecast").then(e => e.text()).then(e => document.body.innerHTML += e);
+﻿//fetch("/weatherforecast").then(e => e.text()).then(e => document.body.innerHTML += e);
