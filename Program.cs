@@ -1,6 +1,12 @@
+using Chatbot_in.Domain.Service;
+using PocketLawyer.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddScoped<IAiService, GeminiService>();
+var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
 var app = builder.Build();
 
@@ -8,27 +14,20 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
 
-app.MapGet("/weatherforecast", () =>
+
+
+
+app.MapGet("/ai", async () =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    IAiService ai = new GeminiService(secrets, new Logger<GeminiService>(new LoggerFactory()));
+
+    var answer = await ai.SendPrompt("Give me a prime number");
+
+    return answer;
+
 });
+
 app.UseStaticFiles();
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
