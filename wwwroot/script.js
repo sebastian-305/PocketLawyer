@@ -1,8 +1,13 @@
 ﻿fetch("/ai").then(e => {
-    e.text();
     console.log(e);
+    return e.text();
 })
-    .then(e => { document.body.innerHTML += e; console.log(e); });
+    .then(
+        e => {
+            document.body.innerHTML += e;
+            console.log(text)
+            console.log(e);
+        });
 
 
 function upoad_file(event) {
@@ -13,7 +18,6 @@ function upoad_file(event) {
         headers: {
             'Content-Type': 'application/x-binary',
             'filename': event.target.myfile.files[0].name,
-            'Authorization': getCookie('session')
         },
         body: event.target.myfile.files[0]
     });
