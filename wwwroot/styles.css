@@ -51,6 +51,8 @@ section {
 /* Text */
 .intro-text, .features-text, .cta-text {
     max-width: 600px;
+    align-items: center;
+    margin: 0 auto;
 }
 
     .intro-text h2 {
@@ -63,7 +65,7 @@ section {
     }
 
     .cta-text h3 {
-        font-size: 60px;
+        font-size: 40px;
         font-weight: 800;
         margin-bottom: 20px;
         text-align: center;
