@@ -56,7 +56,7 @@ function generateAnalysis(message) {
     container.appendChild(generateSummary(message.summary));
 
     const badWrap = document.createElement("div");
-    badWrap.classList.add(["section", "bad"]);
+    badWrap.classList.add("section", "bad");
     const badHd = document.createElement("h3");
     badHd.innerHTML = "❗ Unzulässige Klauseln";
     badWrap.appendChild(badHd);
@@ -64,7 +64,7 @@ function generateAnalysis(message) {
     container.appendChild(badWrap);
 
     const nadWrap = document.createElement("div");
-    nadWrap.classList.add(["section", "warning"]);
+    nadWrap.classList.add("section", "warning");
     const nadHd = document.createElement("h3");
     nadHd.innerHTML = "⚠️ Nachteilige Klauseln";
     nadWrap.appendChild(nadHd);
@@ -72,7 +72,7 @@ function generateAnalysis(message) {
     container.appendChild(nadWrap);
 
     const cadWrap = document.createElement("div");
-    cadWrap.classList.add(["section", "conflict"]);
+    cadWrap.classList.add("section", "conflict");
     const cadHd = document.createElement("h3");
     cadHd.innerHTML = "🟠 Widersprüchliche Klauseln";
     cadWrap.appendChild(cadHd);
@@ -80,7 +80,7 @@ function generateAnalysis(message) {
     container.appendChild(cadWrap);
 
     const gadWrap = document.createElement("div");
-    gadWrap.classList.add(["section", "good"]);
+    gadWrap.classList.add("section", "good");
     const gadHd = document.createElement("h3");
     gadHd.innerHTML = "✅ Vorteilhafte Klauseln";
     gadWrap.appendChild(gadHd);
@@ -89,7 +89,7 @@ function generateAnalysis(message) {
 
 
     const fadWrap = document.createElement("div");
-    fadWrap.classList.add(["section", "summary-box"]);
+    fadWrap.classList.add("section", "summary-box");
     const fadHd = document.createElement("h3");
     fadHd.innerHTML = "📝 Fazit";
     fadWrap.appendChild(fadHd);

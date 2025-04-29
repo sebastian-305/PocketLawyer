@@ -158,6 +158,7 @@ section {
 
     .cta-button:hover {
         background-color: #e6b800;
+        cursor: pointer;
     }
 
 .privacy-hint {

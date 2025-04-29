@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Lawyer</title>
     <link rel="stylesheet" href="styles.css">
-      <script src="script2.js"></script>
+    <link href="contract-analysis.css" rel="stylesheet" />
+    <script src="script2.js"></script>
 </head>
 <body>
 
     <header class="header">
-        <h1><a href="contract-analysis.html">POCKET LAWYER</a></h1>
+        <h1>POCKET LAWYER</h1>
     </header>
 
     <main>
@@ -52,7 +53,10 @@
                     <h3>💬 MIT KI-EXPERTEN ÜBER DEINEN VERTRAG CHATTEN</h3>
                     <p>Stell deinem persönlichen KI-Chatbot Fragen – einfach, intuitiv und auf Augenhöhe.</p>
                 </div>
-                <a href="#" class="cta-button">VERTRAG HOCHLADEN UND ANALYSIEREN</a>
+                <form onsubmit="upload_file(event)">
+                    <input type="file" name="myfile">
+                    <input type="submit" class="cta-button" value="VERTRAG HOCHLADEN UND ANALYSIEREN">
+                </form>
                 <p class="privacy-hint">🔒 100 % datenschutzkonform – deine Daten bleiben bei dir.</p>
             </div>
             <div class="cta-image">
@@ -62,7 +66,5 @@
 
     </main>
 
-<body>
-    <h1>Pocket Lawyer</h1>
 </body>
 </html>
