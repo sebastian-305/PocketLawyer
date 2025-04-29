@@ -1,0 +1,214 @@
+﻿
+:root {
+    --blue-bg: #2d3669;
+    --paper-bg: #cfc2a9;
+    --highlight: #e9ba30;
+    --neutral-bg: #e9e6e0;
+    --font-primary: 'Agrandir', 'Helvetica Neue', Arial, sans-serif;
+    --font-secondary: 'Crimson Text', serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--blue-bg);
+    color: #fff;
+}
+
+/* Header */
+.header {
+    background-color: var(--blue-bg);
+    text-align: center;
+    padding: 40px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+    .header h1 {
+        font-size: 48px;
+        font-weight: 800;
+    }
+
+.features-section {
+    min-height: 100vh; /* Full height of the viewport */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* General Sections */
+section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    gap: 40px;
+}
+
+/* Intro Section */
+.intro-text, .intro-image {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+    .intro-text h2 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        max-width: 90%;
+    }
+
+    .intro-text p {
+        font-size: 18px;
+        line-height: 1.6;
+        color: #d1d1e9;
+    }
+
+    .intro-image img {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        border-radius: 8px;
+    }
+
+/* Mission Section (full-page) */
+.mission-section {
+    background-color: var(--blue-bg);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.mission-text {
+    max-width: 90%;
+}
+
+    .mission-text h2 {
+        font-size: 70px;
+        line-height: 1.4;
+        color: #e9e6e0;
+    }
+
+/* CTA Section */
+.cta-text, .cta-image {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+    .intro-image img,
+    .cta-image img {
+        width: auto;
+        max-width: 90%;
+        height: 90vh; /* adapt to 70% of the viewport height */
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+.cta-section {
+    border-bottom: 1px solid #ccc;
+}
+
+.cta-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.feature {
+    margin-bottom: 30px;
+}
+
+    .feature h3 {
+        font-size: 20px;
+        font-family: var(--font-primary);
+        margin-bottom: 10px;
+    }
+
+    .feature p {
+        font-size: 18px;
+        color: #d1d1e9;
+    }
+
+/* CTA Button */
+.cta-button {
+    display: inline-block;
+    margin: 30px 0 10px 0;
+    padding: 15px 30px;
+    background-color: var(--highlight);
+    color: var(--blue-bg);
+    font-weight: 800;
+    font-size: 18px;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: background-color 0.3s;
+}
+
+    .cta-button:hover {
+        background-color: #e6b800;
+    }
+
+.privacy-hint {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #d1d1e9;
+}
+
+/* CTA Image */
+.cta-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Footer */
+.footer {
+    padding: 20px;
+    background-color: var(--blue-bg);
+}
+
+    .footer nav {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        font-size: 14px;
+    }
+
+    .footer a {
+        text-decoration: none;
+        color: #d1d1e9;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    section {
+        flex-direction: column;
+    }
+
+    .intro-text, .mission-text, .cta-text {
+        text-align: center;
+    }
+
+    .footer nav {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
