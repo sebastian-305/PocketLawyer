@@ -15,6 +15,17 @@ body {
     color: #000;
 }
 
+.contract-page h1,
+.contract-page h2,
+.contract-page h3 {
+    color: #000000;
+}
+
+.contract-page .header {
+    background-color: var(--paper-bg);
+    color: #000;
+}
+
 .analysis-container {
     max-width: 600px;
     background-color: var(--neutral-bg);

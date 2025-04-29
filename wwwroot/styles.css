@@ -20,6 +20,12 @@ body {
     color: #fff;
 }
 
+.main-page h1,
+.main-page h2,
+.main-page h3 {
+    color: #ffffff;
+}
+
 /* Header */
 .header {
     background-color: var(--blue-bg);
