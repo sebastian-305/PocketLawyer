@@ -22,7 +22,7 @@ public class GeminiService : IAiService
         _apiKey = configuration["Gemini:Key"] ?? "";
         _model = "gemini-1.5-flash-001";
         _logger = logger;
-        _writeInFile = configuration.GetValue<bool>("WriteInFile");
+        _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
 
 
