@@ -46,7 +46,7 @@ function generateAnalysis(message) {
     container.classList.add("analysis-container");
 
     const hdr = document.createElement("div");
-    hdr.classList.add("header");
+    hdr.classList.add("header-a");
 
     const heading = document.createElement("h2");
     heading.innerHTML = "Deine Vertragsanalyse";
@@ -108,7 +108,7 @@ function generateSummary(summaryObj) {
 
     const container = document.createElement("div");
 
-    container.classList.add(["section", "summary"]);
+    container.classList.add("section", "summary");
     const heading = document.createElement("h3");
 
     heading.innerHTML = "Zusammenfassung";
@@ -118,7 +118,7 @@ function generateSummary(summaryObj) {
     const list = document.createElement("ul");
 
     container.appendChild(list);
-
+    const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
     const keys = ["Arbeitgeber", "Tätigkeit", "Beginn", "Dauer", "Gehalt (Brutto)", "Zuschläge", "Arbeitsstunden", "Überstunden", "Probezeit"];
     const values = [summaryObj.arbeitgeber, summaryObj.taeltigkeit, summaryObj.beginn, summaryObj.dauer, summaryObj.gehalt_brutto, summaryObj.zuschlaege, summaryObj.arbeitsstunden, summaryObj.ueberstunden, summaryObj.probezeit];
 
@@ -129,7 +129,7 @@ function generateSummary(summaryObj) {
 
         elemWrapper.appendChild(elemKey);
         elemWrapper.appendChild(elemValue);
-        elemKey.innerHTML = keys[i];
+        elemKey.innerHTML = keys[i] + ":";
         elemValue.innerHTML = values[i];
         list.appendChild(elemWrapper);        
     }

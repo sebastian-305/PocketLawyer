@@ -3,7 +3,6 @@
     --paper-bg: #cfc2a9;
     --highlight: #e9ba30;
     --neutral-bg: #e9e6e0;
-
     --font-primary: 'Agrandir', sans-serif;
 }
 
@@ -21,18 +20,28 @@ body {
     color: #000000;
 }
 
-.contract-page .header {
+.contract-page .header-a {
     background-color: var(--paper-bg);
     color: #000;
 }
 
 .analysis-container {
-    max-width: 600px;
+    max-width: 750px;
     background-color: var(--neutral-bg);
     border-radius: 20px;
     margin: auto;
     padding: 30px;
     position: relative;
+}
+
+    .analysis-container li {
+        display: flex;
+        gap: 1rem;
+        padding: 0.2rem;
+    }
+
+.summary.section {
+    background: none;
 }
 
 .close-btn {
@@ -46,40 +55,41 @@ body {
     cursor: pointer;
 }
 
-.header {
+.header-a {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 30px;
 }
 
-.header h2 {
-    font-family: var(--font-primary);
-    font-size: 20px;
-    font-weight: bold;
-    color: #000;
-}
+    .header-a h2 {
+        font-family: var(--font-primary);
+        font-size: 20px;
+        font-weight: bold;
+        color: #000;
+        text-transform: uppercase;
+    }
 
 .score {
     text-align: right;
     font-family: var(--font-primary);
 }
 
-.score .label {
-    font-size: 14px;
-    font-weight: bold;
-    color: #000;
-}
+    .score .label {
+        font-size: 14px;
+        font-weight: bold;
+        color: #000;
+    }
 
-.score .value {
-    font-size: 20px;
-    font-weight: bold;
-    color: #000;
-}
+    .score .value {
+        font-size: 20px;
+        font-weight: bold;
+        color: #000;
+    }
 
-.score .value strong {
-    color: #e86c1f;
-}
+        .score .value strong {
+            color: #e86c1f;
+        }
 
 .section {
     background-color: var(--paper-bg);
@@ -88,32 +98,33 @@ body {
     margin-bottom: 20px;
 }
 
-.section h3 {
-    font-family: var(--font-primary);
-    margin-bottom: 15px;
-    font-size: 16px;
-    color: #000;
-}
+    .section h3 {
+        font-family: var(--font-primary);
+        margin-bottom: 15px;
+        font-size: 16px;
+        color: #000;
+        text-transform: uppercase;
+    }
 
-.section ul {
-    list-style: none;
-    padding-left: 0;
-    font-size: 15px;
-}
+    .section ul {
+        list-style: none;
+        padding-left: 0;
+        font-size: 15px;
+    }
 
-.section li {
-    margin-bottom: 6px;
-}
+    .section li {
+        margin-bottom: 6px;
+    }
 
-.section .item {
-    margin-bottom: 20px;
-}
+    .section .item {
+        margin-bottom: 20px;
+    }
 
-.section .item p {
-    margin: 4px 0;
-    font-size: 15px;
-    color: #000;
-}
+        .section .item p {
+            margin: 4px 0;
+            font-size: 15px;
+            color: #000;
+        }
 
 .summary-box {
     background-color: var(--neutral-bg);
