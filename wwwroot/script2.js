@@ -15,14 +15,28 @@ function upload_file(event) {
 
     console.log("File Upload started.")
 
-    var request = new Request("/upload", {
-        method: 'POST',
-        headers: {
-            //'Content-Type': 'application/x-binary',
-            'filename': event.target.myfile.files[0].name,
-        },
-        body: event.target.myfile.files[0]
-    });
+
+    let request;
+
+    if (event.target.myfile.files.length > 0) {
+        console.log("REAL REQUEST!");
+        request = new Request("/upload", {
+            method: "POST",
+            headers: {
+                //'Content-Type': 'application/x-binary',
+                'filename': event.target.myfile.files[0].name,
+            },
+            body: event.target.myfile.files[0]
+        });
+    }
+    else {
+        console.warn("MOCK REQUEST!");
+        request = new Request("/mockdata", {
+            method: "GET",
+            
+        });
+    }
+    
 
 
 
