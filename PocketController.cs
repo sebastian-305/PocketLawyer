@@ -19,13 +19,25 @@ public class PocketController : ControllerBase
     [HttpGet("/test")]
     public string Test()
     {
-        return GeminiService.ReadFiles();  
+        return  GeminiService.ReadFiles();  
     }
 
     [HttpGet("/createcontext")]
     public async Task<string> CreateContext()
     {
         return await _geminiService.SendContext();
+    }
+
+    [HttpGet("/mockdata")]
+    public async Task<ActionResult<string>> GetMockData()
+    {
+        _logger.Log(LogLevel.Debug, "Entered MainController.GetMockData");
+
+        string path = Directory.GetCurrentDirectory() + @"\Responses";
+
+        string filename = await System.IO.File.ReadAllTextAsync(path + @"\"+  Random.Shared.Next(Directory.GetFiles(path).Length) + ".txt");
+
+        return  filename;
     }
 
     [HttpPost("/upload")]
