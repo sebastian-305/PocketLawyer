@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using Chatbot_in.Infrastructure.Gemini;
+using Microsoft.Extensions.Primitives;
 using PocketLawyer.Service;
 
 namespace Chatbot_in.Domain.Service;
@@ -13,6 +14,7 @@ public class GeminiService : IAiService
     private readonly string _apiKey;
     private readonly string _model;
     private readonly ILogger<GeminiService> _logger;
+    private readonly bool _writeInFile;
 
     public GeminiService(IConfiguration configuration, ILogger<GeminiService> logger)
     {
@@ -20,6 +22,7 @@ public class GeminiService : IAiService
         _apiKey = configuration["Gemini:Key"] ?? "";
         _model = "gemini-1.5-flash-001";
         _logger = logger;
+        _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
 
 
@@ -289,7 +292,12 @@ public class GeminiService : IAiService
 
             response.EnsureSuccessStatusCode();
 
-            return result?.candidates[0]?.content?.parts[0]?.text ?? String.Empty;
+            string resultText = result?.candidates[0]?.content?.parts[0]?.text ?? String.Empty;
+
+            if (_writeInFile)
+                WriteResponseInFile(resultText);
+
+            return resultText;
         }
         catch (Exception ex)
         {
@@ -323,8 +331,22 @@ public class GeminiService : IAiService
         return context;
     }
 
-    public class MyTxt
+    public void WriteResponseInFile(string response)
     {
-        public string text { get; set; }
+     
+        _logger.LogDebug("Writing Response to file");
+
+        string folder = Directory.GetCurrentDirectory();
+
+        folder += @"\Responses\";
+
+        folder += Directory.GetFiles(folder).Length + ".txt";
+
+        _logger.LogDebug("Filename: {name} Content Length: {length}", folder.Split(@"\").Last(), response.Length);
+
+        using (StreamWriter sr = new StreamWriter(folder))
+        {
+            sr.Write(response);
+        }
     }
 }
