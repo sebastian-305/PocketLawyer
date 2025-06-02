@@ -20,25 +20,75 @@ body {
     color: #fff;
 }
 
-.main-page h1,
-.main-page h2,
-.main-page h3 {
-    color: #ffffff;
+h1,
+h2,
+h3,
+p {
+    color: var(--neutral-bg);
 }
 
 /* Header */
 .header {
     background-color: var(--blue-bg);
     text-align: center;
-    padding: 40px 20px;
+    padding: 40px 100px;
     border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
 }
 
     .header h1 {
-        font-size: 48px;
+        font-size: 70px;
         font-weight: 800;
-        color: white;
     }
+
+.log-in, .register {
+    display: inline-block;
+    margin: 30px 0 10px 0;
+    padding: 10px 20px;
+    background-color: var(--highlight);
+    color: var(--blue-bg);
+    font-weight: 800;
+    font-size: 18px;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+/* Intro Section */
+.intro-section {
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+}
+
+.intro-text h2 {
+    font-size: 35px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+    max-width: 90%;
+}
+
+.intro-text h3 {
+    font-size: 20px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 50px;
+    max-width: 90%;
+}
+
+.intro-text p {
+    font-size: 18px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.intro-image img {
+    height: 100vh; /* adapt to 70% of the viewport height */
+    object-fit: cover;
+}
 
 .features-section {
     min-height: 100vh; /* Full height of the viewport */
@@ -48,48 +98,16 @@ body {
     align-items: center;
 }
 
-form{
-    color: white;
-}
 
 /* General Sections */
 section {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    padding: 60px 20px;
     gap: 40px;
 }
 
-/* Intro Section */
-.intro-text, .intro-image {
-    max-width: 600px;
-    width: 100%;
-    text-align: center;
-    margin: 0 auto;
-}
 
-    .intro-text h2 {
-        font-size: 24px;
-        font-weight: 800;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        max-width: 90%;
-    }
-
-    .intro-text p {
-        font-size: 18px;
-        line-height: 1.6;
-        color: #d1d1e9;
-    }
-
-    .intro-image img {
-        width: 100%;
-        max-width: 600px;
-        height: auto;
-        border-radius: 8px;
-    }
 
 /* Mission Section (full-page) */
 .mission-section {
@@ -108,25 +126,19 @@ section {
     .mission-text h2 {
         font-size: 70px;
         line-height: 1.4;
-        color: #e9e6e0;
     }
 
 /* CTA Section */
-.cta-text, .cta-image {
+.cta-text {
     max-width: 600px;
     width: 100%;
     text-align: center;
     margin: 0 auto;
 }
 
-    .intro-image img,
-    .cta-image img {
-        width: auto;
-        max-width: 90%;
-        height: 90vh; /* adapt to 70% of the viewport height */
-        object-fit: cover;
-        border-radius: 8px;
-    }
+.cta-image img {
+    height: 100vh;
+}
 
 .cta-section {
     border-bottom: 1px solid #ccc;
@@ -150,8 +162,11 @@ section {
 
     .feature p {
         font-size: 18px;
-        color: #d1d1e9;
     }
+
+.file-upload {
+
+}
 
 /* CTA Button */
 .cta-button {
@@ -163,7 +178,7 @@ section {
     font-weight: 800;
     font-size: 18px;
     text-decoration: none;
-    border-radius: 30px;
+    border-radius: 20px;
     transition: background-color 0.3s;
 }
 
@@ -175,19 +190,14 @@ section {
 .privacy-hint {
     margin-top: 10px;
     font-size: 14px;
-    color: #d1d1e9;
 }
 
-/* CTA Image */
-.cta-image img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
 
 /* Footer */
 .footer {
-    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding: 30px;
     background-color: var(--blue-bg);
 }
 
@@ -200,7 +210,6 @@ section {
 
     .footer a {
         text-decoration: none;
-        color: #d1d1e9;
         font-weight: 600;
         text-transform: uppercase;
     }

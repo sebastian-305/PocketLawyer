@@ -8,7 +8,6 @@
 
 body {
     margin: 0;
-    padding: 20px;
     font-family: var(--font-primary);
     background-color: var(--blue-bg);
     color: #000;
