@@ -3,87 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket Lawyer</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="contract-analysis.css" rel="stylesheet" />
+    <title>KLAUSEL KLARA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="styles.css"> <!-- Custom styles -->
     <script src="script2.js"></script>
 </head>
 <body>
 
-    <header class="header">
-        <h1>KLAUSEL KLARA</h1>
-        <div class="register-buttons">
-            <button class="log-in" type="button">Anmelden</button>
-            <button class="register" type="button">Registrieren</button>
+    <header class="header text-white d-flex justify-content-between align-items-center p-4">
+        <h1 class="display-4">KLAUSEL KLARA</h1>
+        <div>
+            <button class="btn btn-warning me-2">Anmelden</button>
+            <button class="btn btn-light">Registrieren</button>
         </div>
     </header>
 
     <main class="main-page">
 
-        <section class="intro-section">
-            <div class="intro-image">
-                <img src="Media/Frau_mit_Verträgen.jpg" alt="Frau mit Verträgen" />
+        <section class="intro-section d-flex justify-content-center align-items-center text-center vh-100">
+            <div class="intro-image col-md-6 p-0">
+                <img src="Media/Frau_mit_Verträgen.jpg" class="img-fluid h-100 w-100 object-fit-cover" alt="Frau mit Verträgen">
             </div>
-            <div class="intro-text">
+            <div class="intro-text col-md-6 text-center p-4">
                 <h2>KOMM KLAR MIT KLAUSEL KLARA</h2>
                 <h3>Analysiere deinen Arbeitsvertrag mit KI</h3>
-                <p>
-                    Versteckte Klauseln? Undurchsichtige Formulierungen? 
-                    Unsere KI wurde speziell auf österreichisches Arbeitsrecht trainiert.
-                    Sie erkennt nicht nur juristische Feinheiten, sondern erklärt sie dir in einfachen Worten – damit du weißt, worauf du dich einlässt,
-                    bevor du unterschreibst.
-                </p>
+                <p>Versteckte Klauseln? Undurchsichtige Formulierungen? Unsere KI wurde speziell auf österreichisches Arbeitsrecht trainiert. Sie erkennt nicht nur juristische Feinheiten, sondern erklärt sie dir in einfachen Worten – damit du weißt, worauf du dich einlässt, bevor du unterschreibst.</p>
             </div>
         </section>
 
-        <section class="mission-section">
-            <div class="mission-text">
-                <h2>
-                    Klara macht Recht für alle zugänglich.
-                    <br />
-                    Sie räumt juristische Hürden aus dem Weg und verwandelt komplexe Klauseln in klares, verständliches Wissen.
-                </h2>
+        <section class="mission-section d-flex justify-content-center align-items-center text-center vh-100">
+            <div class="mission-text px-4">
+                <h2>KLARA macht Recht für alle zugänglich.<br>Sie räumt juristische Hürden aus dem Weg und verwandelt komplexe Klauseln in klares, verständliches Wissen.</h2>
             </div>
         </section>
 
-        <section class="cta-section">
-            <div class="cta-text">
-                <div class="feature">
+        <section class="cta-section d-flex flex-column flex-md-row align-items-center justify-content-between vh-100">
+            <div class="cta-text col-md-6 text-center p-4">
+                <div class="feature mb-4">
                     <h3>⚡ DEIN ARBEITSVERTRAG SEKUNDENSCHNELL ANALYSIEREN</h3>
                     <p>Lade deinen Vertrag hoch und erhalte in wenigen Sekunden eine verständliche Auswertung.</p>
                 </div>
-                <div class="feature">
+                <div class="feature mb-4">
                     <h3>✅ PROBLEMSTELLEN UND RED FLAGS AUF EINEN BLICK ERKENNEN</h3>
                     <p>Unsere KI hebt kritische Formulierungen und potenziell nachteilige Klauseln für dich hervor.</p>
                 </div>
-                <div class="feature">
+                <div class="feature mb-4">
                     <h3>💬 MIT KLARA ÜBER DEINEN VERTRAG CHATTEN</h3>
                     <p>Stell deinem persönlichen KI-Chatbot Fragen – einfach, intuitiv und auf Augenhöhe.</p>
                 </div>
-                <form onsubmit="upload_file(event)">
-                    <input type="file" class="file-upload" name="myfile">
-                    <input type="submit" class="cta-button" value="VERTRAG HOCHLADEN UND ANALYSIEREN">
+
+                <form onsubmit="upload_file(event)" class="mb-3 w-60">
+                    <div class="form-group d-flex flex-column gap-3 w-60">
+                        <input type="file" class="file-upload w-60" name="myfile">
+                        <input type="submit" class="cta-button w-60" value="VERTRAG ANALYSIEREN">
+                    </div>
+                    <p class="privacy-hint">🔒 100 % datenschutzkonform – deine Daten bleiben bei dir.</p>
                 </form>
-                <p class="privacy-hint">🔒 100 % datenschutzkonform – deine Daten bleiben bei dir.</p>
             </div>
-            <div class="cta-image">
-                <img src="Media/Frau_am_Laptop.jpg" alt="Frau mit Laptop" />
+            <div class="cta-image col-md-6 p-0">
+                <img src="Media/Frau_am_Laptop.jpg" class="img-fluid h-100 w-100 object-fit-cover" alt="Frau mit Laptop">
             </div>
         </section>
 
     </main>
-    <footer class="footer">
-        <p>&copy; 2024 KLAUSEL KLARA. Alle Rechte vorbehalten.</p>
+
+    <footer class="footer p-4 d-flex justify-content-between align-items-center">
+        <p>&copy; 2024 KLAUSEL KLARA.</p>
         <nav>
-            <ul>
+            <ul class="list-unstyled d-flex gap-3 mb-0">
                 <li>Impressum</li>
                 <li>Datenschutz</li>
                 <li>AGB</li>
-                
             </ul>
         </nav>
-
     </footer>
 
 </body>
 </html>
+
