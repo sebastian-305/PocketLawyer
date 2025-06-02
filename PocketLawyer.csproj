@@ -7,4 +7,8 @@
     <UserSecretsId>a1872231-d57d-4063-ad93-7e35e67b3ece</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PdfPig" Version="0.1.10" />
+  </ItemGroup>
+
 </Project>

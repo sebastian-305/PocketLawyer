@@ -16,11 +16,119 @@ public class GeminiService : IAiService
     private readonly ILogger<GeminiService> _logger;
     private readonly bool _writeInFile;
 
+    public static object AnalyzerSchema => new
+    {
+        type = "object",
+        properties = new
+        {
+            summary = new
+            {
+                type = "object",
+                properties = new
+                {
+                    arbeitgeber = new { type = "string" },
+                    taetigkeit = new { type = "string" },
+                    beginn = new { type = "string", format = "date-time" },
+                    dauer = new { type = "string" },
+                    gehalt_brutto = new { type = "string" },
+                    zuschlaege = new { type = "string" },
+                    arbeitsstunden = new { type = "string" },
+                    ueberstunden = new { type = "string" },
+                    probezeit = new { type = "string" }
+                },
+                required = new[] {
+                        "arbeitgeber", "taetigkeit", "beginn", "dauer",
+                        "gehalt_brutto", "zuschlaege", "arbeitsstunden",
+                        "ueberstunden", "probezeit"
+                    }
+            },
+            unzulaessige_klauseln = new
+            {
+                type = "array",
+                items = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        titel = new { type = "string" },
+                        zitat = new { type = "string" },
+                        problem = new { type = "string" },
+                        rechtsgrundlage = new { type = "string" }
+                    },
+                    required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
+                }
+            },
+            nachteile_klauseln = new
+            {
+                type = "array",
+                items = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        titel = new { type = "string" },
+                        zitat = new { type = "string" },
+                        problem = new { type = "string" },
+                        rechtsgrundlage = new { type = "string" }
+                    },
+                    required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
+                }
+            },
+            widerspruechliche_klauseln = new
+            {
+                type = "array",
+                items = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        titel = new { type = "string" },
+                        zitat_klausel_a = new { type = "string" },
+                        zitat_klausel_b = new { type = "string" },
+                        problem = new { type = "string" },
+                        rechtsgrundlage = new { type = "string" }
+                    },
+                    required = new[] { "titel", "zitat_klausel_a", "zitat_klausel_b", "problem", "rechtsgrundlage" }
+                }
+            },
+            vorteilhafte_klauseln = new
+            {
+                type = "array",
+                items = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        titel = new { type = "string" },
+                        zitat = new { type = "string" },
+                        vorteil = new { type = "string" }
+                    },
+                    required = new[] { "titel", "zitat", "vorteil" }
+                }
+            },
+            fazit = new { type = "string" }
+        },
+        required = new[] {
+                "summary",
+                "unzulaessige_klauseln",
+                "nachteile_klauseln",
+                "widerspruechliche_klauseln",
+                "vorteilhafte_klauseln",
+                "fazit"
+            }
+
+
+    };
+
+    public static object PreAnalyzerSchema => null;
+
+
     public GeminiService(IConfiguration configuration, ILogger<GeminiService> logger)
     {
         _httpClient = new HttpClient();
         _apiKey = configuration["Gemini:Key"] ?? "";
-        _model = "gemini-1.5-flash-001";
+        //_model = "gemini-1.5-flash-001";
+        _model = "gemini-2.0-flash-lite";
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
@@ -28,11 +136,12 @@ public class GeminiService : IAiService
 
     //Die Mindestanzahl der Eingabetokens für das Kontext-Caching beträgt 32.768 -- Für unsren Use-Case overkill
     //Deshalb nicht fertig implementiert, aber so wie sie ist schon funktionsfähig
+    [Obsolete("SendContext() is deprecated. Send all in prompt")]
     public async Task<string> SendContext()
     {
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
 
-        var contentAsString = ReadFiles();
+        var contentAsString = ReadLawContent();
 
         _logger.LogDebug("The length of the normal Context is {0}", contentAsString.Length);
 
@@ -102,7 +211,8 @@ public class GeminiService : IAiService
     }
 
 
-    public async Task<string> SendPrompt(string prompt, List<KeyValuePair<string, string>> files)
+
+    public async Task<string> SendPrompt(string prompt, string filename, string filecontent, object? outputSchema)
     {
         StringBuilder promptBuilder = new StringBuilder();
 
@@ -110,65 +220,58 @@ public class GeminiService : IAiService
         promptBuilder.Append(prompt);
         promptBuilder.Append("Bitte verwende keine Markdownformatierung, * or #");
         promptBuilder.Append("Formatiere deine Antwort in HTML");
-        promptBuilder.Append("\n\nBitte begründe auch deine Antworten");
+        //promptBuilder.Append("\n\nBitte begründe auch deine Antworten");
 
-        if (files.Count > 0)
-        {
-            //promptBuilder.Append("Answer it considering" + (files.Count > 1 ? "these files" : "this file"));
-            //promptBuilder.Append(" that might be in another language");
-            promptBuilder.Append("---------------------------------");
 
-            foreach (var file in files)
-            {
-                promptBuilder.Append("\n\nFilename: ");
-                promptBuilder.Append(file.Key);
-                promptBuilder.Append("\n\nVertragsinhalt: \n");
-                promptBuilder.Append(file.Value);
-                promptBuilder.Append("---------------------------------");
-            }
-            //promptBuilder.Append("\n\nI gave you now the question and all the files in textform for the answer.");
-        }
+        //promptBuilder.Append("Answer it considering" + (files.Count > 1 ? "these files" : "this file"));
+        //promptBuilder.Append(" that might be in another language");
+        promptBuilder.Append("---------------------------------");
+
+
+
+        promptBuilder.Append("\n\nDateiname des Vertrags: ");
+        promptBuilder.Append(filename);
+        promptBuilder.Append("\n\nVertragsinhalt: \n");
+        promptBuilder.Append(filecontent);
+        promptBuilder.Append("---------------------------------");
+
+        //promptBuilder.Append("\n\nI gave you now the question and all the files in textform for the answer.");
 
         //promptBuilder.Append("Please answer the question in the language the question is written.");
 
 
-        _logger.LogInformation(promptBuilder.ToString());
-        return await SendPrompt(promptBuilder.ToString());
+        _logger.LogInformation("Built prompt with the length of {length} symbols", promptBuilder.Length);
+        return await SendPrompt(promptBuilder.ToString(), outputSchema);
     }
 
-    public async Task<string> SendPrompt(string userMessage)
+
+
+    public async Task<string> SendPrompt(string prompt, object? outputSchema)
     {
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
-
-
-
 
         var requestBody = new
         {
             contents = new[]
         {
-            new
-            {
-                parts = new[]
+                new
                 {
-                    new
-                    {
-                        text = userMessage
-                    }
+                    parts = new[]
+                {
+                        new
+                        {
+                            text = prompt
+                        }
+                    },
+                    //        role = "user"
                 },
-        //        role = "user"
-            },
 
-        },
+            },
             generationConfig = new
             {
-                response_mime_type = "application/json",
-                response_schema = new
+                responseMimeType = "application/json",
+                responseSchema = new
                 {
-
-
-
-
                     type = "object",
                     properties = new
                     {
@@ -187,11 +290,11 @@ public class GeminiService : IAiService
                                 ueberstunden = new { type = "string" },
                                 probezeit = new { type = "string" }
                             },
-                            required = new[]{
-        "arbeitgeber", "taetigkeit", "beginn", "dauer",
-        "gehalt_brutto", "zuschlaege", "arbeitsstunden",
-        "ueberstunden", "probezeit"
-      }
+                            required = new[] {
+                        "arbeitgeber", "taetigkeit", "beginn", "dauer",
+                        "gehalt_brutto", "zuschlaege", "arbeitsstunden",
+                        "ueberstunden", "probezeit"
+                    }
                         },
                         unzulaessige_klauseln = new
                         {
@@ -260,17 +363,15 @@ public class GeminiService : IAiService
                         fazit = new { type = "string" }
                     },
                     required = new[] {
-    "summary",
-    "unzulaessige_klauseln",
-    "nachteile_klauseln",
-    "widerspruechliche_klauseln",
-    "vorteilhafte_klauseln",
-    "fazit"
-  }
-                }
-
+                "summary",
+                "unzulaessige_klauseln",
+                "nachteile_klauseln",
+                "widerspruechliche_klauseln",
+                "vorteilhafte_klauseln",
+                "fazit"
             }
-
+                }
+            }
             //      cachedContent = "cachedContents/fsowom1ynsmg",
         };
 
@@ -308,8 +409,7 @@ public class GeminiService : IAiService
 
     }
 
-
-    public static string ReadFiles()
+    public static string ReadLawContent()
     {
         var dir = Directory.GetCurrentDirectory() + @"\Infrastructure\Context";
 
@@ -333,7 +433,7 @@ public class GeminiService : IAiService
 
     public void WriteResponseInFile(string response)
     {
-     
+
         _logger.LogDebug("Writing Response to file");
 
         string folder = Directory.GetCurrentDirectory();
@@ -349,4 +449,6 @@ public class GeminiService : IAiService
             sr.Write(response);
         }
     }
+
+
 }

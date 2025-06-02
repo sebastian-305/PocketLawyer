@@ -20,7 +20,7 @@ function upload_file(event) {
 
     if (event.target.myfile.files.length > 0) {
         console.log("REAL REQUEST!");
-        request = new Request("/upload", {
+        request = new Request("/contract", {
             method: "POST",
             headers: {
                 //'Content-Type': 'application/x-binary',
@@ -108,6 +108,8 @@ function generateAnalysis(message) {
     fadHd.innerHTML = "📝 Fazit";
     fadWrap.appendChild(fadHd);
     const fadVal = document.createElement("p");
+    console.log("Fazit:");
+    console.log(message.fazit);
     fadVal.innerHTML = message.fazit;
     fadWrap.appendChild(fadVal);
     container.appendChild(fadWrap);
@@ -134,7 +136,7 @@ function generateSummary(summaryObj) {
     container.appendChild(list);
     const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
     const keys = ["Arbeitgeber", "Tätigkeit", "Beginn", "Dauer", "Gehalt (Brutto)", "Zuschläge", "Arbeitsstunden", "Überstunden", "Probezeit"];
-    const values = [summaryObj.arbeitgeber, summaryObj.taeltigkeit, summaryObj.beginn, summaryObj.dauer, summaryObj.gehalt_brutto, summaryObj.zuschlaege, summaryObj.arbeitsstunden, summaryObj.ueberstunden, summaryObj.probezeit];
+    const values = [summaryObj.arbeitgeber, summaryObj.taetigkeit, summaryObj.beginn, summaryObj.dauer, summaryObj.gehalt_brutto, summaryObj.zuschlaege, summaryObj.arbeitsstunden, summaryObj.ueberstunden, summaryObj.probezeit];
 
     for (let i = 0; i < keys.length; ++i) {
         let elemWrapper = document.createElement("li");
