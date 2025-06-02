@@ -20,25 +20,25 @@ function upload_file(event) {
 
     if (event.target.myfile.files.length > 0) {
         console.log("REAL REQUEST!");
-        request = new Request("/contract", {
+        const init = {
             method: "POST",
             headers: {
                 //'Content-Type': 'application/x-binary',
                 'filename': event.target.myfile.files[0].name,
             },
             body: event.target.myfile.files[0]
-        });
+        };
+
+        validationRequest = new Request("/validate");
+        analyzeRequest = new Request("/contract",);
+        
     }
     else {
         console.warn("MOCK REQUEST!");
         request = new Request("/mockdata", {
-            method: "GET",
-            
+            method: "GET",            
         });
-    }
-    
-
-
+    }    
 
     fetch(request).then(response => {
         let status = response.status

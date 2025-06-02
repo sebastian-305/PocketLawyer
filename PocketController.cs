@@ -1,5 +1,6 @@
 ﻿using Chatbot_in.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PocketLawyer.Service;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -42,24 +43,52 @@ public class PocketController : ControllerBase
         return filename;
     }
 
-    [HttpPost("/contract")]
-    public async Task<ActionResult<string>> PostBinaryContract()
+    [HttpPost("/validate")]
+    public async Task<ActionResult<string>> ValidateBinaryContract()
     {
-        _logger.LogDebug("Entered MainController.PostBinaryContract");
+        _logger.LogDebug("Entered MainController.ValidateBinaryContract");
+        string[] requestContent;
+        try
+        {
+            requestContent = await PreValidate(Request);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
+        string filename = requestContent[0];
+        string filecontent = requestContent[1];
+
+        string prompt = "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolan Variable \"isReadable\". " +
+            "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. " +
+            "Schreibe das Ergebnis in die bool Variable \"isContract\". " +
+            "Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine ausführliche Zusammenfassung vom Vertrag in die Variable \"result\". " +
+            "Verwende keine Markdown-Formatierungen. Formatiere die Antwort in HTML.\n\n Dateiname: \n" +
+            filename +
+            "\nDateiinhalt: " +
+            filecontent;
+
+        string answer = await _geminiService.SendPrompt(prompt, GeminiService.PreAnalyzerSchema);
+
+        return answer;
+    }
+
+    private async Task<string[]> PreValidate(HttpRequest request)
+    {
         string? filename = Request.Headers["filename"];
         string filecontent;
 
         if (filename == null)
         {
             _logger.LogDebug("Filename missing");
-            return BadRequest("Filename missing.");
+            throw new BadHttpRequestException("Filename missing.");
         }
 
         if (!_fileDecoderService.AllowedExtensions.Contains(filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last()))
         {
             _logger.LogDebug("Fileextension not allowed: {ex}", filename);
-            return BadRequest($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
+            throw new BadHttpRequestException($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
         }
 
         byte[] data; //Hier werden die Daten der Datei gespeichert
@@ -76,10 +105,31 @@ public class PocketController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError("Error in decoding file: {err}", ex.Message);
+            throw new BadHttpRequestException(ex.Message);
+        }
+
+        return [request.Headers["filename"].ToString(), filecontent];
+    }
+
+    [HttpPost("/contract")]
+    public async Task<ActionResult<string>> PostBinaryContract()
+    {
+        _logger.LogDebug("Entered MainController.PostBinaryContract");
+        string[] requestContent;
+        try
+        {
+            requestContent = await PreValidate(Request);
+        }
+        catch (Exception ex)
+        {
             return BadRequest(ex.Message);
         }
 
-        _logger.LogDebug($"Extracted contend: {filename} {filecontent}");
+        string filename = requestContent[0];
+        string filecontent = requestContent[1];
+
+
+        _logger.LogDebug("Extracted contend: {fn} {fc}", filename, filecontent);
 
         string prompt = "Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. " +
      " Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln." + " " +
@@ -87,7 +137,8 @@ public class PocketController : ControllerBase
 
         prompt += GeminiService.ReadLawContent();
 
-        var answer = await _geminiService.SendPrompt(prompt, filename, filecontent, GeminiService.AnalyzerSchema);
+        string fullprompt = _geminiService.PromptBuilder(prompt, filename, filecontent);
+        string answer = await _geminiService.SendPrompt(fullprompt, GeminiService.AnalyzerSchema);
 
         return Ok(answer);
     }
@@ -127,7 +178,6 @@ public class PocketController : ControllerBase
         using (StreamReader s = new StreamReader(Request.Body))
         {
             text = await s.ReadToEndAsync();
-            Console.WriteLine(text);
         }
 
         string prompt = "Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. Falls es sich nicht um einen Arbeitsvertrag handelt, schreibe dass es sich  nicht um einen Arbeitsvertrag handelt." +

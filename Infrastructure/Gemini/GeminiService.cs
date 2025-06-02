@@ -12,6 +12,7 @@ public class GeminiService : IAiService
 {
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
+    private readonly string _apiAltKey;
     private readonly string _model;
     private readonly ILogger<GeminiService> _logger;
     private readonly bool _writeInFile;
@@ -120,13 +121,27 @@ public class GeminiService : IAiService
 
     };
 
-    public static object PreAnalyzerSchema => null;
+    public static object PreAnalyzerSchema => new
+    {
+        type = "object",
+        properties = new
+        {
+            isReadable = "boolean",
+            isContract = "boolean",
+            result = "string",
+        },
+        required = new[] {
+                "isReadable",
+                "result",
+            }
+    };
 
 
     public GeminiService(IConfiguration configuration, ILogger<GeminiService> logger)
     {
         _httpClient = new HttpClient();
         _apiKey = configuration["Gemini:Key"] ?? "";
+        _apiAltKey = configuration["Gemini:Key:Alternative"] ?? "";
         //_model = "gemini-1.5-flash-001";
         _model = "gemini-2.0-flash-lite";
         _logger = logger;
@@ -212,7 +227,7 @@ public class GeminiService : IAiService
 
 
 
-    public async Task<string> SendPrompt(string prompt, string filename, string filecontent, object? outputSchema)
+    public string PromptBuilder(string prompt, string filename, string filecontent)
     {
         StringBuilder promptBuilder = new StringBuilder();
 
@@ -222,13 +237,9 @@ public class GeminiService : IAiService
         promptBuilder.Append("Formatiere deine Antwort in HTML");
         //promptBuilder.Append("\n\nBitte begründe auch deine Antworten");
 
-
         //promptBuilder.Append("Answer it considering" + (files.Count > 1 ? "these files" : "this file"));
         //promptBuilder.Append(" that might be in another language");
         promptBuilder.Append("---------------------------------");
-
-
-
         promptBuilder.Append("\n\nDateiname des Vertrags: ");
         promptBuilder.Append(filename);
         promptBuilder.Append("\n\nVertragsinhalt: \n");
@@ -236,19 +247,19 @@ public class GeminiService : IAiService
         promptBuilder.Append("---------------------------------");
 
         //promptBuilder.Append("\n\nI gave you now the question and all the files in textform for the answer.");
-
         //promptBuilder.Append("Please answer the question in the language the question is written.");
 
-
         _logger.LogInformation("Built prompt with the length of {length} symbols", promptBuilder.Length);
-        return await SendPrompt(promptBuilder.ToString(), outputSchema);
+        return promptBuilder.ToString();
     }
 
 
 
-    public async Task<string> SendPrompt(string prompt, object? outputSchema)
+    public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
     {
-        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
+        string apiKey = useAltKey ? _apiAltKey : _apiKey;
+
+        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={apiKey}";
 
         var requestBody = new
         {
@@ -270,109 +281,110 @@ public class GeminiService : IAiService
             generationConfig = new
             {
                 responseMimeType = "application/json",
-                responseSchema = new
-                {
-                    type = "object",
-                    properties = new
-                    {
-                        summary = new
-                        {
-                            type = "object",
-                            properties = new
-                            {
-                                arbeitgeber = new { type = "string" },
-                                taetigkeit = new { type = "string" },
-                                beginn = new { type = "string", format = "date-time" },
-                                dauer = new { type = "string" },
-                                gehalt_brutto = new { type = "string" },
-                                zuschlaege = new { type = "string" },
-                                arbeitsstunden = new { type = "string" },
-                                ueberstunden = new { type = "string" },
-                                probezeit = new { type = "string" }
-                            },
-                            required = new[] {
-                        "arbeitgeber", "taetigkeit", "beginn", "dauer",
-                        "gehalt_brutto", "zuschlaege", "arbeitsstunden",
-                        "ueberstunden", "probezeit"
-                    }
-                        },
-                        unzulaessige_klauseln = new
-                        {
-                            type = "array",
-                            items = new
-                            {
-                                type = "object",
-                                properties = new
-                                {
-                                    titel = new { type = "string" },
-                                    zitat = new { type = "string" },
-                                    problem = new { type = "string" },
-                                    rechtsgrundlage = new { type = "string" }
-                                },
-                                required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
-                            }
-                        },
-                        nachteile_klauseln = new
-                        {
-                            type = "array",
-                            items = new
-                            {
-                                type = "object",
-                                properties = new
-                                {
-                                    titel = new { type = "string" },
-                                    zitat = new { type = "string" },
-                                    problem = new { type = "string" },
-                                    rechtsgrundlage = new { type = "string" }
-                                },
-                                required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
-                            }
-                        },
-                        widerspruechliche_klauseln = new
-                        {
-                            type = "array",
-                            items = new
-                            {
-                                type = "object",
-                                properties = new
-                                {
-                                    titel = new { type = "string" },
-                                    zitat_klausel_a = new { type = "string" },
-                                    zitat_klausel_b = new { type = "string" },
-                                    problem = new { type = "string" },
-                                    rechtsgrundlage = new { type = "string" }
-                                },
-                                required = new[] { "titel", "zitat_klausel_a", "zitat_klausel_b", "problem", "rechtsgrundlage" }
-                            }
-                        },
-                        vorteilhafte_klauseln = new
-                        {
-                            type = "array",
-                            items = new
-                            {
-                                type = "object",
-                                properties = new
-                                {
-                                    titel = new { type = "string" },
-                                    zitat = new { type = "string" },
-                                    vorteil = new { type = "string" }
-                                },
-                                required = new[] { "titel", "zitat", "vorteil" }
-                            }
-                        },
-                        fazit = new { type = "string" }
-                    },
-                    required = new[] {
-                "summary",
-                "unzulaessige_klauseln",
-                "nachteile_klauseln",
-                "widerspruechliche_klauseln",
-                "vorteilhafte_klauseln",
-                "fazit"
-            }
-                }
-            }
-            //      cachedContent = "cachedContents/fsowom1ynsmg",
+                responseSchema = outputSchema,
+                //    responseSchema = new
+                //    {
+                //        type = "object",
+                //        properties = new
+                //        {
+                //            summary = new
+                //            {
+                //                type = "object",
+                //                properties = new
+                //                {
+                //                    arbeitgeber = new { type = "string" },
+                //                    taetigkeit = new { type = "string" },
+                //                    beginn = new { type = "string", format = "date-time" },
+                //                    dauer = new { type = "string" },
+                //                    gehalt_brutto = new { type = "string" },
+                //                    zuschlaege = new { type = "string" },
+                //                    arbeitsstunden = new { type = "string" },
+                //                    ueberstunden = new { type = "string" },
+                //                    probezeit = new { type = "string" }
+                //                },
+                //                required = new[] {
+                //            "arbeitgeber", "taetigkeit", "beginn", "dauer",
+                //            "gehalt_brutto", "zuschlaege", "arbeitsstunden",
+                //            "ueberstunden", "probezeit"
+                //        }
+                //            },
+                //            unzulaessige_klauseln = new
+                //            {
+                //                type = "array",
+                //                items = new
+                //                {
+                //                    type = "object",
+                //                    properties = new
+                //                    {
+                //                        titel = new { type = "string" },
+                //                        zitat = new { type = "string" },
+                //                        problem = new { type = "string" },
+                //                        rechtsgrundlage = new { type = "string" }
+                //                    },
+                //                    required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
+                //                }
+                //            },
+                //            nachteile_klauseln = new
+                //            {
+                //                type = "array",
+                //                items = new
+                //                {
+                //                    type = "object",
+                //                    properties = new
+                //                    {
+                //                        titel = new { type = "string" },
+                //                        zitat = new { type = "string" },
+                //                        problem = new { type = "string" },
+                //                        rechtsgrundlage = new { type = "string" }
+                //                    },
+                //                    required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
+                //                }
+                //            },
+                //            widerspruechliche_klauseln = new
+                //            {
+                //                type = "array",
+                //                items = new
+                //                {
+                //                    type = "object",
+                //                    properties = new
+                //                    {
+                //                        titel = new { type = "string" },
+                //                        zitat_klausel_a = new { type = "string" },
+                //                        zitat_klausel_b = new { type = "string" },
+                //                        problem = new { type = "string" },
+                //                        rechtsgrundlage = new { type = "string" }
+                //                    },
+                //                    required = new[] { "titel", "zitat_klausel_a", "zitat_klausel_b", "problem", "rechtsgrundlage" }
+                //                }
+                //            },
+                //            vorteilhafte_klauseln = new
+                //            {
+                //                type = "array",
+                //                items = new
+                //                {
+                //                    type = "object",
+                //                    properties = new
+                //                    {
+                //                        titel = new { type = "string" },
+                //                        zitat = new { type = "string" },
+                //                        vorteil = new { type = "string" }
+                //                    },
+                //                    required = new[] { "titel", "zitat", "vorteil" }
+                //                }
+                //            },
+                //            fazit = new { type = "string" }
+                //        },
+                //        required = new[] {
+                //    "summary",
+                //    "unzulaessige_klauseln",
+                //    "nachteile_klauseln",
+                //    "widerspruechliche_klauseln",
+                //    "vorteilhafte_klauseln",
+                //    "fazit"
+                //}
+                //    }
+            },
+            //cachedContent = "cachedContents/fsowom1ynsmg",
         };
 
 
