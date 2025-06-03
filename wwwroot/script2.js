@@ -1,22 +1,8 @@
-﻿//fetch("/ai").then(e => {
-//    console.log(e);
-//    return e.text();
-//})
-//    .then(
-//        e => {
-//            document.body.innerHTML += e;
-
-//            console.log(e);
-//        });
-
-
+﻿
 function upload_file(event) {
     event.preventDefault();
 
     console.log("File Upload started.")
-
-
-    let request;
 
     if (event.target.myfile.files.length > 0) {
         console.log("REAL REQUEST!");
@@ -29,30 +15,80 @@ function upload_file(event) {
             body: event.target.myfile.files[0]
         };
 
-        validationRequest = new Request("/validate");
-        analyzeRequest = new Request("/contract",);
-        
+        validationRequest = new Request("/validate", init);
+        analyzeRequest = new Request("/contract", init);
+
     }
     else {
         console.warn("MOCK REQUEST!");
         request = new Request("/mockdata", {
-            method: "GET",            
+            method: "GET",
         });
-    }    
+    }
 
-    fetch(request).then(response => {
-        let status = response.status
-        console.log("Response:");
-        console.log(status);
+    fetch(validationRequest)
+        .then(response => {
+            let status = response.status
+            console.log("Response:");
+            console.log(status);
+            console.log(response);
+            return response.json();
+        })
+        .then(message => {
+            console.log(message);
+            document.body.appendChild(generatePreAnalysis(message));
 
-        event.target.myfile.value = null;
+            if (message.isReadable && message.isContract)
+                return fetch(analyzeRequest);
+            else
+                throw new Error(`isReadable: ${message.isReadable}, isContract: ${message.isContract}`);
+        }).then(response => {
+            let status = response.status
+            console.log("Response:");
+            console.log(status);
 
-        return response.json();
-    }).then(message => {
-        console.log(message);
-        document.body.appendChild(generateAnalysis(message));
-    });
+            event.target.myfile.value = null;
 
+            return response.json();
+        }).then(message => {
+            console.log(message);
+            document.body.appendChild(generateAnalysis(message));
+        }).catch(ex => {
+            console.warn(ex);
+        })
+        ;
+
+}
+
+function generatePreAnalysis(message) {
+    const container = document.createElement("div");
+    container.classList.add("preanalysis-container");
+    if (!message.isReadable) {
+
+        const heading = document.createElement("h2");
+        heading.innerHTML = "Vertragsdatei ist nicht lesbar. Falls das Problem weiterhin besteht, kopieren sie den Inhalt in eine .txt Datei und analysieren Sie diese!";
+        
+        container.appendChild(heading);
+    } else if (!message.isContract) {
+
+        const heading = document.createElement("h2");
+        heading.innerHTML = "Vertragsdatei ist kein Arbeitsvertrag. Versichern Sie sich, dass es sich um einen Arbeitsvertrag handelt und versuchen Sie es erneut.";
+        
+        container.appendChild(heading);
+    }
+
+    const fadWrap = document.createElement("div");
+    fadWrap.classList.add("section", "summary-box");
+    const fadHd = document.createElement("h3");
+    fadHd.innerHTML = "Voranalyse";
+    fadWrap.appendChild(fadHd);
+    const fadVal = document.createElement("p");
+    console.log("Voranalyse:");
+    console.log(message.result);
+    fadVal.innerHTML = message.result;
+    fadWrap.appendChild(fadVal);
+    container.appendChild(fadWrap);
+    return container;
 }
 
 function generateAnalysis(message) {
@@ -114,12 +150,8 @@ function generateAnalysis(message) {
     fadWrap.appendChild(fadVal);
     container.appendChild(fadWrap);
 
-
-
     return container;
 }
-
-
 function generateSummary(summaryObj) {
 
     const container = document.createElement("div");
@@ -147,13 +179,11 @@ function generateSummary(summaryObj) {
         elemWrapper.appendChild(elemValue);
         elemKey.innerHTML = keys[i] + ":";
         elemValue.innerHTML = values[i];
-        list.appendChild(elemWrapper);        
+        list.appendChild(elemWrapper);
     }
 
     return container;
 }
-
-
 function generateClauses(clause) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -191,7 +221,6 @@ function generateClauses(clause) {
     container.appendChild(robWrap);
     return container;
 }
-
 function generateGoodClauses(clause) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -222,9 +251,6 @@ function generateGoodClauses(clause) {
 
     return container;
 }
-
-
-
 function generateConflictClauses(clause) {
     const container = document.createElement("div");
     container.classList.add("item");

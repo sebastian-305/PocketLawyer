@@ -20,9 +20,9 @@ public class PocketController : ControllerBase
     }
 
     [HttpGet("/test")]
-    public string Test()
+    public async Task<string?> Test()
     {
-        return GeminiService.ReadLawContent();
+        return await ((GeminiService)_geminiService).GetContextKey() ?? "nope";
     }
 
     [HttpGet("/createcontext")]
@@ -54,14 +54,15 @@ public class PocketController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            _logger.LogError(ex.Message, ex);
+            return BadRequest($"{{\"isReadable\":false, \"isContract\":false, \"result\":\"{ex.Message}\"}}");
         }
 
         string filename = requestContent[0];
         string filecontent = requestContent[1];
 
         string prompt = "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolan Variable \"isReadable\". " +
-            "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. " +
+            "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!" +
             "Schreibe das Ergebnis in die bool Variable \"isContract\". " +
             "Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine ausführliche Zusammenfassung vom Vertrag in die Variable \"result\". " +
             "Verwende keine Markdown-Formatierungen. Formatiere die Antwort in HTML.\n\n Dateiname: \n" +
@@ -69,7 +70,7 @@ public class PocketController : ControllerBase
             "\nDateiinhalt: " +
             filecontent;
 
-        string answer = await _geminiService.SendPrompt(prompt, GeminiService.PreAnalyzerSchema);
+        string answer = await _geminiService.SendPrompt(prompt, GeminiService.PreAnalyzerSchema, true);
 
         return answer;
     }
@@ -133,15 +134,16 @@ public class PocketController : ControllerBase
 
         string prompt = "Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. " +
      " Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln." + " " +
-     "Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. Gibt zu einer fachlichen Begrüdung auch immer eine Erklärung in einfacher Sprache. Bitte beachte folgende Gesetze: \n";
+     "Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. Gibt zu einer fachlichen Begrüdung auch immer eine Erklärung in einfacher Sprache. Bitte die Gesetze im Cached Kontext \n";
 
-        prompt += GeminiService.ReadLawContent();
+        //prompt += GeminiService.ReadLawContent();
 
         string fullprompt = _geminiService.PromptBuilder(prompt, filename, filecontent);
-        string answer = await _geminiService.SendPrompt(fullprompt, GeminiService.AnalyzerSchema);
+        string answer = await _geminiService.SendPrompt(fullprompt, GeminiService.AnalyzerSchema, false);
 
         return Ok(answer);
     }
+
 
     [HttpPost("/upload")]
     public async Task<ActionResult<string>> PostFile()
@@ -188,8 +190,8 @@ public class PocketController : ControllerBase
 
         var file = new KeyValuePair<string, string>(filename, text);
 
-        var answer = await _geminiService.SendPrompt(prompt, new List<KeyValuePair<string, string>>() { file });
+        //var answer = await _geminiService.SendPrompt(prompt, new List<KeyValuePair<string, string>>() { file });
 
-        return answer;
+        return "Not Implemented";
     }
 }

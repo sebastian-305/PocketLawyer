@@ -1,10 +1,11 @@
 ﻿
+using Chatbot_in.Infrastructure.Gemini;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.Primitives;
+using PocketLawyer.Service;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using Chatbot_in.Infrastructure.Gemini;
-using Microsoft.Extensions.Primitives;
-using PocketLawyer.Service;
 
 namespace Chatbot_in.Domain.Service;
 
@@ -126,9 +127,9 @@ public class GeminiService : IAiService
         type = "object",
         properties = new
         {
-            isReadable = "boolean",
-            isContract = "boolean",
-            result = "string",
+            isReadable = new{type = "boolean" },
+            isContract = new { type = "boolean" },
+            result = new { type = "string" },
         },
         required = new[] {
                 "isReadable",
@@ -142,16 +143,13 @@ public class GeminiService : IAiService
         _httpClient = new HttpClient();
         _apiKey = configuration["Gemini:Key"] ?? "";
         _apiAltKey = configuration["Gemini:Key:Alternative"] ?? "";
-        //_model = "gemini-1.5-flash-001";
-        _model = "gemini-2.0-flash-lite";
+        _model = "gemini-1.5-flash-001";
+        //_model = "gemini-2.0-flash-lite";
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
-
-
     //Die Mindestanzahl der Eingabetokens für das Kontext-Caching beträgt 32.768 -- Für unsren Use-Case overkill
-    //Deshalb nicht fertig implementiert, aber so wie sie ist schon funktionsfähig
-    [Obsolete("SendContext() is deprecated. Send all in prompt")]
+    //Deshalb nicht fertig implementiert, aber so wie sie ist schon funktionsfähig    
     public async Task<string> SendContext()
     {
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
@@ -166,8 +164,6 @@ public class GeminiService : IAiService
 
         try
         {
-
-
             var context = new
             {
                 model = "models/gemini-1.5-flash-001",
@@ -183,23 +179,26 @@ public class GeminiService : IAiService
                         {
                             mime_type = "text/plain",
                             data = contentAs64
-        }
+                        }
                     }
-},
+                },
                 role = "user"
             }
         },
                 systemInstruction = new
                 {
                     parts = new object[]
-                    {
-                new
                 {
-                    text = "Du bist ein juristischer Experte, der Arbeitsverträge auf Basis des österreichischen Arbeitsrechts analysieren kann. Im Kontext befinden sich die relevanten Gesetzestexte auf die du dich beziehst."
-                }
+                    new
+                    {
+                        text = "Du bist ein juristischer Experte, der Arbeitsverträge auf Basis des österreichischen Arbeitsrechts analysieren kann. " +
+                        "Im Kontext befinden sich die relevanten Gesetzestexte auf die du dich beziehst. " +
+                        "\n\"Bitte verwende keine Markdownformatierung, * or #\" " +
+                        "\n\"Formatiere deine Antwort in HTML\""
                     }
+                }
                 },
-                ttl = "300s"
+                ttl = "600s"
                 // Fügen Sie hier ggf. weitere optionale Felder mit Standardwerten hinzu, z.B. safetySettings
             };
 
@@ -224,9 +223,6 @@ public class GeminiService : IAiService
             return "Something went wrong";
         }
     }
-
-
-
     public string PromptBuilder(string prompt, string filename, string filecontent)
     {
         StringBuilder promptBuilder = new StringBuilder();
@@ -252,9 +248,6 @@ public class GeminiService : IAiService
         _logger.LogInformation("Built prompt with the length of {length} symbols", promptBuilder.Length);
         return promptBuilder.ToString();
     }
-
-
-
     public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
     {
         string apiKey = useAltKey ? _apiAltKey : _apiKey;
@@ -275,141 +268,33 @@ public class GeminiService : IAiService
                         }
                     },
                     //        role = "user"
+                role= "user",
                 },
-
             },
             generationConfig = new
             {
                 responseMimeType = "application/json",
                 responseSchema = outputSchema,
-                //    responseSchema = new
-                //    {
-                //        type = "object",
-                //        properties = new
-                //        {
-                //            summary = new
-                //            {
-                //                type = "object",
-                //                properties = new
-                //                {
-                //                    arbeitgeber = new { type = "string" },
-                //                    taetigkeit = new { type = "string" },
-                //                    beginn = new { type = "string", format = "date-time" },
-                //                    dauer = new { type = "string" },
-                //                    gehalt_brutto = new { type = "string" },
-                //                    zuschlaege = new { type = "string" },
-                //                    arbeitsstunden = new { type = "string" },
-                //                    ueberstunden = new { type = "string" },
-                //                    probezeit = new { type = "string" }
-                //                },
-                //                required = new[] {
-                //            "arbeitgeber", "taetigkeit", "beginn", "dauer",
-                //            "gehalt_brutto", "zuschlaege", "arbeitsstunden",
-                //            "ueberstunden", "probezeit"
-                //        }
-                //            },
-                //            unzulaessige_klauseln = new
-                //            {
-                //                type = "array",
-                //                items = new
-                //                {
-                //                    type = "object",
-                //                    properties = new
-                //                    {
-                //                        titel = new { type = "string" },
-                //                        zitat = new { type = "string" },
-                //                        problem = new { type = "string" },
-                //                        rechtsgrundlage = new { type = "string" }
-                //                    },
-                //                    required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
-                //                }
-                //            },
-                //            nachteile_klauseln = new
-                //            {
-                //                type = "array",
-                //                items = new
-                //                {
-                //                    type = "object",
-                //                    properties = new
-                //                    {
-                //                        titel = new { type = "string" },
-                //                        zitat = new { type = "string" },
-                //                        problem = new { type = "string" },
-                //                        rechtsgrundlage = new { type = "string" }
-                //                    },
-                //                    required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
-                //                }
-                //            },
-                //            widerspruechliche_klauseln = new
-                //            {
-                //                type = "array",
-                //                items = new
-                //                {
-                //                    type = "object",
-                //                    properties = new
-                //                    {
-                //                        titel = new { type = "string" },
-                //                        zitat_klausel_a = new { type = "string" },
-                //                        zitat_klausel_b = new { type = "string" },
-                //                        problem = new { type = "string" },
-                //                        rechtsgrundlage = new { type = "string" }
-                //                    },
-                //                    required = new[] { "titel", "zitat_klausel_a", "zitat_klausel_b", "problem", "rechtsgrundlage" }
-                //                }
-                //            },
-                //            vorteilhafte_klauseln = new
-                //            {
-                //                type = "array",
-                //                items = new
-                //                {
-                //                    type = "object",
-                //                    properties = new
-                //                    {
-                //                        titel = new { type = "string" },
-                //                        zitat = new { type = "string" },
-                //                        vorteil = new { type = "string" }
-                //                    },
-                //                    required = new[] { "titel", "zitat", "vorteil" }
-                //                }
-                //            },
-                //            fazit = new { type = "string" }
-                //        },
-                //        required = new[] {
-                //    "summary",
-                //    "unzulaessige_klauseln",
-                //    "nachteile_klauseln",
-                //    "widerspruechliche_klauseln",
-                //    "vorteilhafte_klauseln",
-                //    "fazit"
-                //}
-                //    }
             },
-            //cachedContent = "cachedContents/fsowom1ynsmg",
+            cachedContent = useAltKey? null : await GetContextKey(),
         };
-
-
 
         var jsonContent = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-
         try
         {
             var response = await _httpClient.PostAsync(requestUri, content);
-
             var responseString = await response.Content.ReadAsStringAsync();
-
             var result = JsonSerializer.Deserialize<GeminiReponse>(responseString);
 
             _logger.LogDebug(responseString);
-
             response.EnsureSuccessStatusCode();
 
             string resultText = result?.candidates[0]?.content?.parts[0]?.text ?? String.Empty;
 
             if (_writeInFile)
                 WriteResponseInFile(resultText);
-
             return resultText;
         }
         catch (Exception ex)
@@ -417,10 +302,7 @@ public class GeminiService : IAiService
             _logger.LogError(ex.Message);
             return "Error";
         }
-
-
     }
-
     public static string ReadLawContent()
     {
         var dir = Directory.GetCurrentDirectory() + @"\Infrastructure\Context";
@@ -442,7 +324,6 @@ public class GeminiService : IAiService
 
         return context;
     }
-
     public void WriteResponseInFile(string response)
     {
 
@@ -461,6 +342,26 @@ public class GeminiService : IAiService
             sr.Write(response);
         }
     }
+    public async Task<string?> GetContextKey()
+    {
+        _logger.LogDebug("GeminiService.GetContextKey()");
+        var contextUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
+        var response = await _httpClient.GetAsync(contextUri);
+        var responseString = await response.Content.ReadAsStringAsync();
 
+        string? result = ExtractContextKey(responseString);
 
+        if (result == null)
+        {
+            _logger.LogDebug("Couldn't find a Context Key, Creating a new Context....");
+            result = ExtractContextKey(await SendContext());
+        }
+
+        //_logger.LogDebug($"{contextUri}");
+        return result;
+    }
+    public string? ExtractContextKey(string responseString)
+    {
+        return JsonSerializer.Deserialize<GeminiContext>(responseString)?.cachedContents?.First().name;
+    }
 }
