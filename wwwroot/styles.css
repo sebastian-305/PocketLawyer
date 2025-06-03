@@ -1,6 +1,6 @@
 ﻿:root {
     --blue-bg: #2d3669;
-    --paper-bg: #cfc2a9;
+    --paper-bg: #dbd2c1;
     --highlight: #e9ba30;
     --neutral-bg: #e9e6e0;
     --font-primary: 'Agrandir', sans-serif;
@@ -8,13 +8,14 @@
 }
 
 body {
+    margin: 0;
     font-family: var(--font-primary);
     background-color: var(--blue-bg);
     color: var(--neutral-bg);
     scroll-behavior: smooth;
 }
 
-h1, h2, h3, p {
+body h1, h2, h3, p {
     color: var(--neutral-bg);
 }
 
@@ -27,32 +28,31 @@ h1, h2, h3, p {
         font-weight: 800;
     }
 
-.btn-warning {
-    color: var(--blue-bg);
+.btn-warning, .btn-light {
     font-weight: 800;
     font-size: 16px;
     border-radius: 10px;
     border: none;
+}
+
+.btn-warning {
+    color: var(--blue-bg);
 }
 
 .btn-light {
     color: var(--blue-bg);
     background-color: var(--neutral-bg);
-    font-weight: 800;
-    font-size: 16px;
-    border-radius: 10px;
-    border: none;
 }
 
-    .main-page {
+.main-page {
     height: 100vh;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
 }
 
-        .main-page section {
-            scroll-snap-align: start;
-        }
+    .main-page section {
+        scroll-snap-align: start;
+    }
 
 .intro-section, .mission-section, .cta-section {
     flex-direction: row;
@@ -83,13 +83,14 @@ h1, h2, h3, p {
         margin-bottom: 20px;
     }
 
-    .intro-text h3 {
+    .intro-text h3, .cta-text h3 {
         font-size: 20px;
-        font-weight: 800;
+        font-weight: 750;
         margin-bottom: 20px;
+        padding-top: 40px;
     }
 
-    .intro-text p {
+    .intro-text p, .cta-text p {
         font-size: 18px;
         line-height: 1.6;
     }
@@ -113,27 +114,21 @@ h1, h2, h3, p {
     gap: 10px;
     padding: 150px 0 20px 0;
 }
-.cta-text h3 {
-    font-size: 20px;
-    font-weight: 750;
-    padding: 40px 0 0 0;
-}
-
-.cta-text p {
-    font-size: 18px;
-}
 
 .file-upload {
     font-size: 16px;
     font-weight: 800;
     border-radius: 10px;
     padding: 10px 20px;
+    line-height: 10px;
     background-color: var(--neutral-bg);
     color: var(--blue-bg);
     border: none;
     cursor: pointer;
     text-align: center;
-    max-width: 450px; /* Optional: set a max width for better responsiveness */
+    height: 50px;
+    width: 60%;
+    max-width: 450px;
 }
 
     .file-upload::file-selector-button {
@@ -144,6 +139,7 @@ h1, h2, h3, p {
         font-weight: 800;
         border-radius: 10px;
         cursor: pointer;
+        height: 100%;
     }
 
         .file-upload::file-selector-button:hover {
@@ -158,8 +154,9 @@ h1, h2, h3, p {
     border-radius: 10px;
     border: none;
     padding: 10px;
-    width: 60%; /* 50% of parent width */
-    max-width: 450px; /* Optional: limit max width for consistency */
+    height: 50px;
+    width: 60%;
+    max-width: 450px;
 }
 
     .cta-button:hover {
@@ -190,7 +187,145 @@ h1, h2, h3, p {
             cursor: pointer;
         }
 
-/* Responsive Design */
+/* Contract Page Specific Styles */
+.modal-content {
+    border: none;
+    background-color: var(--neutral-bg);
+}
+
+.modal-dialog h2,
+.modal-dialog h3,
+.modal-dialog li,
+.modal-dialogul,
+.modal-dialog strong,
+.modal-dialog p {
+    color: black;
+}
+
+.modal-dialog h2 {
+    font-weight: 800;
+}
+.contract-page .header-a {
+    background-color: var(--paper-bg);
+    color: black;
+}
+
+.modal-dialog {
+    max-width: 60%;
+    background-color: var(--neutral-bg);
+    border-radius: 20px;
+    margin: auto;
+    padding: 30px;
+    position: relative;
+}
+
+    .analysis-container li {
+        display: flex;
+        gap: 1rem;
+        padding: 0.2rem;
+    }
+
+.summary.section {
+    background: none;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--highlight);
+    cursor: pointer;
+}
+
+.header-a {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+    .header-a h2 {
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+.score {
+    text-align: right;
+}
+
+    .score .label, .score .value {
+        font-size: 14px;
+        font-weight: 800;
+        color: black;
+    }
+
+    .score .value {
+        font-size: 20px;
+    }
+
+        .score .value strong {
+            color: #e86c1f;
+        }
+
+.section {
+    background-color: var(--paper-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+    .section h3 {
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .section ul {
+        list-style: none;
+        padding-left: 0;
+        font-size: 15px;
+    }
+
+    .section li {
+        margin-bottom: 6px;
+    }
+
+    .section .item {
+        margin-bottom: 20px;
+    }
+
+        .section .item p {
+            margin: 4px 0;
+            font-size: 15px;
+        }
+
+.summary-box {
+    background-color: var(--neutral-bg);
+    font-size: 15px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.modal-footer .btn-upload {
+    background-color: var(--blue-bg);
+    color: var(--neutral-bg);
+    font-weight:bold;
+    text-transform: uppercase;
+}
+
+.modal-footer .btn-upload:hover {
+    background-color: #1a1f4d;
+}
+
+.modal-footer .btn-close-secondary {
+    background-color: var(--highlight);
+    color: var(--neutral-bg);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+/* Responsive */
 @media (max-width: 768px) {
     .intro-section, .mission-section, .cta-section {
         flex-direction: column;
@@ -208,4 +343,3 @@ h1, h2, h3, p {
         height: 50vh;
     }
 }
-
