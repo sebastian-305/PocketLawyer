@@ -1,6 +1,6 @@
 ﻿function printer() {
     var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
-    WinPrint.document.write(document.getElementById("result").innerHTML);
+    WinPrint.document.write(document.getElementById("evaluation").innerHTML);
     WinPrint.document.close();
     WinPrint.focus();
     WinPrint.print();
@@ -43,8 +43,8 @@ function upload_file(event) {
         })
         .then(message => {
             console.log(message);
-            document.getElementById("result")
-                .appendChild(generatePreAnalysis(message));
+            document.getElementById("evaluation-body").replaceChildren(
+                generatePreAnalysis(message));
 
             if (message.isReadable && message.isContract)
                 return fetch(analyzeRequest);
@@ -60,7 +60,7 @@ function upload_file(event) {
             return response.json();
         }).then(message => {
             console.log(message);
-            document.getElementById("result")
+            document.getElementById("evaluation-body")
                 .appendChild(generateAnalysis(message));
         }).catch(ex => {
             console.warn(ex);

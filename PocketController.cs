@@ -64,8 +64,8 @@ public class PocketController : ControllerBase
         string prompt = "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolan Variable \"isReadable\". " +
             "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!" +
             "Schreibe das Ergebnis in die bool Variable \"isContract\". " +
-            "Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine ausführliche Zusammenfassung vom Vertrag in die Variable \"result\". " +
-            "Verwende keine Markdown-Formatierungen. Formatiere die Antwort in HTML.\n\n Dateiname: \n" +
+            "Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine überblicksmäßige Zusammenfassung vom Vertrag in die Variable \"result\". " +
+            "Verwende keine Markdown-Formatierungen! Formatiere die Antwort in HTML! Hier die Datei:\n\n Dateiname: \n" +
             filename +
             "\nDateiinhalt: " +
             filecontent;
