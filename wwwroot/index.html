@@ -1,93 +1,366 @@
 ﻿<!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket Lawyer</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="contract-analysis.css" rel="stylesheet" />
-    <script src="script2.js"></script>
-</head>
-<body>
-
-    <header class="header">
-        <h1>KLAUSEL KLARA</h1>
-        <div class="register-buttons">
-            <button class="log-in" type="button">Anmelden</button>
-            <button class="register" type="button">Registrieren</button>
-        </div>
-    </header>
-
-    <main class="main-page">
-
-        <section class="intro-section">
-            <div class="intro-image">
-                <img src="Media/klara.png" alt="Frau mit Verträgen" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>KLAUSEL KLARA</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="styles.css" />
+        <!-- Custom styles -->
+        <script src="script2.js"></script>
+    </head>
+    <body>
+        <header
+            class="header text-white d-flex justify-content-between align-items-center p-4">
+            <h1 class="display-4">KLAUSEL KLARA</h1>
+            <div>
+                <button class="btn btn-warning me-2">Anmelden</button>
+                <button class="btn btn-light">Registrieren</button>
             </div>
-            <div class="intro-text">
-                <h2>KOMM KLAR MIT KLAUSEL KLARA</h2>
-                <h3>Analysiere deinen Arbeitsvertrag mit KI</h3>
-                <p>
-                    Versteckte Klauseln? Undurchsichtige Formulierungen? 
-                    Unsere KI wurde speziell auf österreichisches Arbeitsrecht trainiert.
-                    Sie erkennt nicht nur juristische Feinheiten, sondern erklärt sie dir in einfachen Worten – damit du weißt, worauf du dich einlässt,
-                    bevor du unterschreibst.
-                </p>
-            </div>
-        </section>
+        </header>
 
-        <section class="mission-section">
-            <div class="mission-text">
-                <h2>
-                    Klara macht Recht für alle zugänglich.
-                    <br />
-                    Sie räumt juristische Hürden aus dem Weg und verwandelt komplexe Klauseln in klares, verständliches Wissen.
-                </h2>
-            </div>
-        </section>
-
-        <section class="cta-section">
-            <div class="cta-text">
-                <div class="feature">
-                    <h3>⚡ DEIN ARBEITSVERTRAG SEKUNDENSCHNELL ANALYSIEREN</h3>
-                    <p>Lade deinen Vertrag hoch und erhalte in wenigen Sekunden eine verständliche Auswertung.</p>
+        <main class="main-page">
+            <section
+                class="intro-section d-flex justify-content-center align-items-center text-center vh-100">
+                <div class="intro-image col-md-6 p-0">
+                    <img
+                        src="Media/Frau_mit_Verträgen.jpg"
+                        class="img-fluid h-100 w-100 object-fit-cover"
+                        alt="Frau mit Verträgen" />
                 </div>
-                <div class="feature">
-                    <h3>✅ PROBLEMSTELLEN UND RED FLAGS AUF EINEN BLICK ERKENNEN</h3>
-                    <p>Unsere KI hebt kritische Formulierungen und potenziell nachteilige Klauseln für dich hervor.</p>
+                <div class="intro-text col-md-6 text-center p-4">
+                    <h2>KOMM KLAR MIT KLAUSEL KLARA</h2>
+                    <h3>Analysiere deinen Arbeitsvertrag mit KI</h3>
+                    <p>
+                        Versteckte Klauseln? Undurchsichtige Formulierungen?
+                        Unsere KI wurde speziell auf österreichisches
+                        Arbeitsrecht trainiert. Sie erkennt nicht nur
+                        juristische Feinheiten, sondern erklärt sie dir in
+                        einfachen Worten – damit du weißt, worauf du dich
+                        einlässt, bevor du unterschreibst.
+                    </p>
                 </div>
-                <div class="feature">
-                    <h3>💬 MIT KLARA ÜBER DEINEN VERTRAG CHATTEN</h3>
-                    <p>Stell deinem persönlichen KI-Chatbot Fragen – einfach, intuitiv und auf Augenhöhe.</p>
+            </section>
+
+            <section
+                class="mission-section d-flex justify-content-center align-items-center text-center vh-100">
+                <div class="mission-text px-4">
+                    <h2>
+                        KLARA macht Recht für alle zugänglich.
+                        <br />
+                        Sie räumt juristische Hürden aus dem Weg und verwandelt
+                        komplexe Klauseln in klares, verständliches Wissen.
+                    </h2>
                 </div>
-                <form onsubmit="upload_file(event)">
-                    <input type="file" class="file-upload" name="myfile">
-                    <input type="submit" class="cta-button" value="VERTRAG HOCHLADEN UND ANALYSIEREN">
-                </form>
-                <p class="privacy-hint">🔒 100 % datenschutzkonform – deine Daten bleiben bei dir.</p>
+            </section>
+
+            <section
+                class="cta-section d-flex flex-column flex-md-row align-items-center justify-content-between vh-100">
+                <div class="cta-text col-md-6 text-center p-4">
+                    <div class="feature mb-4">
+                        <h3>
+                            ⚡ DEIN ARBEITSVERTRAG SEKUNDENSCHNELL ANALYSIEREN
+                        </h3>
+                        <p>
+                            Lade deinen Vertrag hoch und erhalte in wenigen
+                            Sekunden eine verständliche Auswertung.
+                        </p>
+                    </div>
+                    <div class="feature mb-4">
+                        <h3>
+                            ✅ PROBLEMSTELLEN UND RED FLAGS AUF EINEN BLICK
+                            ERKENNEN
+                        </h3>
+                        <p>
+                            Unsere KI hebt kritische Formulierungen und
+                            potenziell nachteilige Klauseln für dich hervor.
+                        </p>
+                    </div>
+                    <div class="feature mb-4">
+                        <h3>💬 MIT KLARA ÜBER DEINEN VERTRAG CHATTEN</h3>
+                        <p>
+                            Stell deinem persönlichen KI-Chatbot Fragen –
+                            einfach, intuitiv und auf Augenhöhe.
+                        </p>
+                    </div>
+
+                    <form onsubmit="upload_file(event)" class="mb-3 w-60">
+                        <div class="form-group d-flex flex-column gap-3 w-60">
+                            <input
+                                type="file"
+                                class="file-upload w-60"
+                                name="myfile" />
+                            <input
+                                type="submit"
+                                class="cta-button w-60"
+                                value="VERTRAG ANALYSIEREN"
+                                data-bs-toggle="modal"
+                                data-bs-target="#evaluation" />
+                        </div>
+                        <p class="privacy-hint">
+                            🔒 100 % datenschutzkonform – deine Daten bleiben
+                            bei dir.
+                        </p>
+                    </form>
+                </div>
+                <div class="cta-image col-md-6 p-0">
+                    <img
+                        src="Media/Frau_am_Laptop.jpg"
+                        class="img-fluid h-100 w-100 object-fit-cover"
+                        alt="Frau mit Laptop" />
+                </div>
+            </section>
+            <div
+                class="modal fade"
+                id="evaluation"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="evaluationLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>DEINE VERTRAGSANALYSE</h2>
+                            <div class="score">
+                                <span class="label">SCORE:</span>
+                                <span class="value">
+                                    <strong>6.5</strong>
+                                    <span>/10</span>
+                                </span>
+                            </div>
+                            <button
+                                type="button"
+                                class="close-btn"
+                                data-dismiss="modal"
+                                aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="section summary">
+                                <h3>ZUSAMMENFASSUNG</h3>
+                                <ul>
+                                    <li>
+                                        <strong>Arbeitgeber:</strong>
+                                        xyz AG
+                                    </li>
+                                    <li>
+                                        <strong>Tätigkeit:</strong>
+                                        Softwareentwickler
+                                    </li>
+                                    <li>
+                                        <strong>Beginn:</strong>
+                                        01.05.2025
+                                    </li>
+                                    <li>
+                                        <strong>Dauer:</strong>
+                                        Unbefristet
+                                    </li>
+                                    <li>
+                                        <strong>Gehalt:</strong>
+                                        5200 Euro Brutto pro Monat
+                                    </li>
+                                    <li>
+                                        <strong>Zuschläge:</strong>
+                                        keine
+                                    </li>
+                                    <li>
+                                        <strong>Arbeitsstunden:</strong>
+                                        40 Stunden pro Woche
+                                    </li>
+                                    <li>
+                                        <strong>Überstunden:</strong>
+                                        All-in
+                                    </li>
+                                    <li>
+                                        <strong>Probezeit:</strong>
+                                        5 Monate
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="section bad">
+                                <h3>❗ UNZULÄSSIGE KLAUSELN</h3>
+                                <div class="item">
+                                    <strong>
+                                        Unpräzise Überstundenklausel
+                                    </strong>
+                                    <p>
+                                        <em>Zitat:</em>
+                                        „Alle Überstunden sind mit dem Gehalt
+                                        abgegolten.“ (Seite 4, §4.1)
+                                    </p>
+                                    <p>
+                                        <strong>Problem:</strong>
+                                        Fehlende Angabe der Höchstgrenze macht
+                                        die Klausel unwirksam.
+                                    </p>
+                                    <p>
+                                        <strong>Rechtsgrundlage:</strong>
+                                        § 879 ABGB – unklare
+                                        Leistungsbeschreibung.
+                                    </p>
+                                </div>
+                                <div class="item">
+                                    <strong>
+                                        Unverhältnismäßige Vertragsstrafe
+                                    </strong>
+                                    <p>
+                                        <em>Zitat:</em>
+                                        „Bei vorzeitiger Kündigung zahlt der
+                                        Arbeitnehmer 3 Bruttomonatsgehälter als
+                                        Strafe.“
+                                    </p>
+                                    <p>
+                                        <strong>Problem:</strong>
+                                        Überschreitet angemessenen Rahmen – 1
+                                        Monatsgehalt wäre zulässig.
+                                    </p>
+                                    <p>
+                                        <strong>Rechtsgrundlage:</strong>
+                                        § 879 Abs 1 ABGB zur Angemessenheit.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="section warning">
+                                <h3>⚠️ NACHTEILIGE KLAUSELN</h3>
+                                <div class="item">
+                                    <strong>
+                                        Unpräzise Überstundenklausel
+                                    </strong>
+                                    <p>
+                                        <em>Zitat:</em>
+                                        „… jeder Zeit andere zumutbare
+                                        Tätigkeiten …“
+                                    </p>
+                                    <p>
+                                        <strong>Problem:</strong>
+                                        Einseitige Aufgabenerweiterung ohne
+                                        Gehaltsanpassung.
+                                    </p>
+                                    <p>
+                                        <strong>Rechtsgrundlage:</strong>
+                                        BAG 13.04.2010 – auslegungsabhängig.
+                                    </p>
+                                </div>
+                                <div class="item">
+                                    <strong>Kurze Kündigungsfristen</strong>
+                                    <p>
+                                        <em>Zitat:</em>
+                                        „6 Wochen zum Quartalsende“
+                                    </p>
+                                    <p>
+                                        <strong>Problem:</strong>
+                                        Unflexibel für Jobwechsel.
+                                    </p>
+                                    <p>
+                                        <strong>Rechtsgrundlage:</strong>
+                                        § 20 AngG
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="section conflict">
+                                <h3>🟠 WIDERSPRUCHLICHE KLAUSELN</h3>
+                                <div class="item">
+                                    <strong>
+                                        Bonusanspruch vs. Freiwilligkeitsklausel
+                                    </strong>
+                                    <p>
+                                        <em>Zitat A:</em>
+                                        „Bonus bei Zielerreichung“
+                                    </p>
+                                    <p>
+                                        <em>Zitat B:</em>
+                                        „Sonderzahlungen sind freiwillig“
+                                    </p>
+                                    <p>
+                                        <strong>Problem:</strong>
+                                        Widerspruch macht Anspruch unklar.
+                                    </p>
+                                    <p>
+                                        <strong>Rechtsgrundlage:</strong>
+                                        BAG 24.10.2007 – intransparent und
+                                        unwirksam.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="section good">
+                                <h3>✅ VORTEILHAFTE KLAUSELN</h3>
+                                <div class="item">
+                                    <strong>Überzahlungsklausel</strong>
+                                    <p>
+                                        <em>Zitat:</em>
+                                        „… Bruttogehalt übersteigt KV – gilt als
+                                        Abgeltung …“
+                                    </p>
+                                    <p>
+                                        <strong>Vorteil:</strong>
+                                        Klare Abgrenzung & Rechtssicherheit.
+                                    </p>
+                                </div>
+                                <div class="item">
+                                    <strong>
+                                        Gehaltsanpassung nach Probezeit
+                                    </strong>
+                                    <p>
+                                        <em>Zitat:</em>
+                                        „… erhöht sich um 8 % …“
+                                    </p>
+                                    <p>
+                                        <strong>Vorteil:</strong>
+                                        Automatische Erhöhung ohne Verhandlung.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="section summary-box">
+                                <h3>📝 FAZIT</h3>
+                                <p>
+                                    Dein Vertrag enthält sowohl Stärken als auch
+                                    einige Schwächen. Besonders kritisch sind
+                                    Überstundenregelung und Vertragsstrafen.
+                                    Sprich mit dem Arbeitgeber, bevor du
+                                    unterschreibst. Die Überzahlung und
+                                    automatische Gehaltserhöhung sind hingegen
+                                    Pluspunkte. Mit dieser Analyse bist du
+                                    optimal vorbereitet.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-upload">
+                                Herunterladen
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-close-secondary"
+                                data-dismiss="modal">
+                                Schließen
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="cta-image">
-                <img src="Media/Frau_am_Laptop.jpg" alt="Frau mit Laptop" />
-            </div>
-        </section>
 
-        <section id="result">
+            <section id="result"></section>
+        </main>
 
-        </section>
-
-    </main>
-    <footer class="footer">
-        <p>&copy; 2024 KLAUSEL KLARA. Alle Rechte vorbehalten.</p>
-        <nav>
-            <ul>
-                <li>Impressum</li>
-                <li>Datenschutz</li>
-                <li>AGB</li>
-                
-            </ul>
-        </nav>
-
-    </footer>
-
-</body>
+        <footer
+            class="footer p-4 d-flex justify-content-between align-items-center">
+            <span>&copy; 2024 KLAUSEL KLARA.</span>
+            <nav>
+                <ul class="list-unstyled d-flex gap-3 mb-0">
+                    <li>Impressum</li>
+                    <li>Datenschutz</li>
+                    <li>AGB</li>
+                </ul>
+            </nav>
+        </footer>
+    </body>
 </html>
