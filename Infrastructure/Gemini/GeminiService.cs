@@ -1,9 +1,6 @@
 ﻿
 using Chatbot_in.Infrastructure.Gemini;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.Extensions.Primitives;
 using PocketLawyer.Service;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
@@ -30,7 +27,7 @@ public class GeminiService : IAiService
                 {
                     arbeitgeber = new { type = "string" },
                     taetigkeit = new { type = "string" },
-                    beginn = new { type = "string", format = "date-time" },
+                    beginn = new { type = "string" },
                     dauer = new { type = "string" },
                     gehalt_brutto = new { type = "string" },
                     zuschlaege = new { type = "string" },

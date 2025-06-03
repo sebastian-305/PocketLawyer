@@ -1,6 +1,13 @@
 ﻿function printer() {
-    var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
-    WinPrint.document.write(document.getElementById("evaluation").innerHTML);
+    var WinPrint = window.open('', 'Vertragsanalyse', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+
+    const printelem = document.getElementById("evaluation-body").cloneNode(true);
+    //printelem.classList.add("printerclass");
+    //printelem.removeChild(document.getElementById("closex"));
+    //printelem.removeChild(document.getElementById("closebtn"));
+    //printelem.removeChild(document.getElementById("printbtn"));
+
+    WinPrint.document.write(printelem.innerHTML);
     WinPrint.document.close();
     WinPrint.focus();
     WinPrint.print();
@@ -10,6 +17,16 @@ function upload_file(event) {
     event.preventDefault();
 
     console.log("File Upload started.")
+
+    const loading = document.createElement("img");
+    loading.setAttribute('alt', 'loading');
+    loading.setAttribute('src', 'media/loading.gif');
+    loading.style.width = "30%";
+    loading.style.margin = "auto";
+    loading.style.display = "block";
+
+    document.getElementById("evaluation-body").replaceChildren(
+        loading);
 
     if (event.target.myfile.files.length > 0) {
         console.log("REAL REQUEST!");
@@ -24,7 +41,6 @@ function upload_file(event) {
 
         validationRequest = new Request("/validate", init);
         analyzeRequest = new Request("/contract", init);
-
     }
     else {
         console.warn("MOCK REQUEST!");
@@ -35,6 +51,7 @@ function upload_file(event) {
 
     fetch(validationRequest)
         .then(response => {
+            document.getElementById("printbtn").style.visibility = "hidden";
             let status = response.status
             console.log("Response:");
             console.log(status);
@@ -46,8 +63,10 @@ function upload_file(event) {
             document.getElementById("evaluation-body").replaceChildren(
                 generatePreAnalysis(message));
 
-            if (message.isReadable && message.isContract)
+            if (message.isReadable && message.isContract) {
+                document.getElementById("evaluation-body").appendChild(loading);
                 return fetch(analyzeRequest);
+            }
             else
                 throw new Error(`isReadable: ${message.isReadable}, isContract: ${message.isContract}`);
         }).then(response => {
@@ -60,8 +79,10 @@ function upload_file(event) {
             return response.json();
         }).then(message => {
             console.log(message);
+            document.getElementById("evaluation-body").removeChild(loading);
             document.getElementById("evaluation-body")
                 .appendChild(generateAnalysis(message));
+            document.getElementById("printbtn").style.visibility = "visible";
         }).catch(ex => {
             console.warn(ex);
         });
@@ -119,7 +140,8 @@ function generateAnalysis(message) {
     badHd.innerHTML = "❗ Unzulässige Klauseln";
     badWrap.appendChild(badHd);
     message.unzulaessige_klauseln.forEach((e) => badWrap.appendChild(generateClauses(e)));
-    container.appendChild(badWrap);
+    if (message["unzulaessige_klauseln"] !== undefined && message.unzulaessige_klauseln != null && message.unzulaessige_klauseln.length > 0)
+        container.appendChild(badWrap);
 
     const nadWrap = document.createElement("div");
     nadWrap.classList.add("section", "warning");
@@ -127,7 +149,8 @@ function generateAnalysis(message) {
     nadHd.innerHTML = "⚠️ Nachteilige Klauseln";
     nadWrap.appendChild(nadHd);
     message.nachteile_klauseln.forEach((e) => nadWrap.appendChild(generateClauses(e)));
-    container.appendChild(nadWrap);
+    if (message["nachteile_klauseln"] !== undefined && message.nachteile_klauseln != null && message.nachteile_klauseln.length > 0)
+        container.appendChild(nadWrap);
 
     const cadWrap = document.createElement("div");
     cadWrap.classList.add("section", "conflict");
@@ -135,7 +158,8 @@ function generateAnalysis(message) {
     cadHd.innerHTML = "🟠 Widersprüchliche Klauseln";
     cadWrap.appendChild(cadHd);
     message.widerspruechliche_klauseln.forEach((e) => cadWrap.appendChild(generateConflictClauses(e)));
-    container.appendChild(cadWrap);
+    if (message["widerspruechliche_klauseln"] !== undefined && message.widerspruechliche_klauseln != null && message.widerspruechliche_klauseln.length > 0)
+        container.appendChild(cadWrap);
 
     const gadWrap = document.createElement("div");
     gadWrap.classList.add("section", "good");
@@ -143,7 +167,8 @@ function generateAnalysis(message) {
     gadHd.innerHTML = "✅ Vorteilhafte Klauseln";
     gadWrap.appendChild(gadHd);
     message.vorteilhafte_klauseln.forEach((e) => gadWrap.appendChild(generateGoodClauses(e)));
-    container.appendChild(gadWrap);
+    if (message["vorteilhafte_klauseln"] !== undefined && message.vorteilhafte_klauseln != null && message.vorteilhafte_klauseln.length > 0)
+        container.appendChild(gadWrap);
 
 
     const fadWrap = document.createElement("div");
