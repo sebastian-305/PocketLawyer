@@ -140,12 +140,13 @@ public class GeminiService : IAiService
         _httpClient = new HttpClient();
         _apiKey = configuration["Gemini:Key"] ?? "";
         _apiAltKey = configuration["Gemini:Key:Alternative"] ?? "";
-        _model = "gemini-1.5-flash-001";
+        _model = "gemini-1.5-flash-002";
+        //_model = "gemini-2.0-flash";
         //_model = "gemini-2.0-flash-lite";
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
-    //Die Mindestanzahl der Eingabetokens für das Kontext-Caching beträgt 32.768 -- Für unsren Use-Case overkill
+
     //Deshalb nicht fertig implementiert, aber so wie sie ist schon funktionsfähig    
     public async Task<string> SendContext()
     {
@@ -163,7 +164,7 @@ public class GeminiService : IAiService
         {
             var context = new
             {
-                model = "models/gemini-1.5-flash-001",
+                model = "models/gemini-1.5-flash-002",
                 contents = new[]
                 {
             new
@@ -227,7 +228,8 @@ public class GeminiService : IAiService
         //promptBuilder.Append("You are an expert in analyzing Texts and answering Questions. I have the following question that might be in another language:\n\n");
         promptBuilder.Append(prompt);
         promptBuilder.Append("Bitte verwende keine Markdownformatierung, * or #");
-        promptBuilder.Append("Formatiere deine Antwort in HTML");
+        promptBuilder.Append("Formatiere deine Antwort in HTML.");
+        promptBuilder.AppendLine("Gib neben dem Paragraphen der Rechtsgrundlage auch den Gesetztestext an.");
         //promptBuilder.Append("\n\nBitte begründe auch deine Antworten");
 
         //promptBuilder.Append("Answer it considering" + (files.Count > 1 ? "these files" : "this file"));
@@ -247,6 +249,7 @@ public class GeminiService : IAiService
     }
     public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
     {
+        _logger.LogDebug("Endered SendPrompt");
         string apiKey = useAltKey ? _apiAltKey : _apiKey;
 
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={apiKey}";
@@ -279,10 +282,12 @@ public class GeminiService : IAiService
         var jsonContent = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
+        _logger.LogInformation("Sending Prompt...");
         try
         {
             var response = await _httpClient.PostAsync(requestUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
+            _logger.LogDebug(responseString);
             var result = JsonSerializer.Deserialize<GeminiReponse>(responseString);
 
             _logger.LogDebug(responseString);
