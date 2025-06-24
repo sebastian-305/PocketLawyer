@@ -1,5 +1,4 @@
 using Chatbot_in.Domain.Service;
-using Microsoft.AspNetCore.Mvc;
 using PocketLawyer.Infrastructure.FileDecoding;
 using PocketLawyer.Service;
 
@@ -18,18 +17,6 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 
-
-
-//app.MapPost("/ai", async ([FromBody] string body) =>
-//{
-//    IAiService ai = new GeminiService(secrets, new Logger<GeminiService>(new LoggerFactory()));
-//    Console.WriteLine("Got Request");
-//    Console.WriteLine(body);
-//    var answer = await ai.SendPrompt("Give me a prime number");
-//    Console.WriteLine();
-//    return answer;
-
-//});
 app.MapControllers();
 app.UseStaticFiles();
 app.Run();
