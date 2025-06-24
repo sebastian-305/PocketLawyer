@@ -21,14 +21,16 @@
     <header class="header text-white d-flex justify-content-between align-items-center p-4">
         <h1 class="display-4">KLAUSEL KLARA</h1>
         <!--<div>
-            <button class="btn btn-warning me-2">Anmelden</button>
-            <button class="btn btn-light">Registrieren</button>
-        </div>-->
+        <button class="btn btn-warning me-2">Anmelden</button>
+        <button class="btn btn-light">Registrieren</button>
+    </div>-->
+      
     </header>
 
     <main class="main-page">
 
-        <section class="intro-section d-flex justify-content-center align-items-center text-center vh-100">
+        <section class="intro-section d-flex justify-content-center align-items-center text-center ">
+
             <div class="intro-image col-md-6 p-0">
                 <img src="Media/Frau_mit_Verträgen.jpg"
                      class="img-fluid h-100 w-100 object-fit-cover"
@@ -45,6 +47,19 @@
                     einfachen Worten – damit du weißt, worauf du dich
                     einlässt, bevor du unterschreibst.
                 </p>
+                <form onsubmit="upload_file(event)" class="">
+                    <div class="form-group">
+                        <input type="file"
+                               class="file-upload "
+                               name="myfile" />
+                        <input type="submit"
+                               class="cta-button "
+                               value="VERTRAG ANALYSIEREN"
+                               data-toggle="modal"
+                               data-target="#evaluation" />
+                    </div>
+
+                </form>
             </div>
         </section>
 
@@ -59,7 +74,7 @@
             </div>
         </section>
 
-        <section class="cta-section d-flex flex-column flex-md-row align-items-center justify-content-between vh-100">
+        <section class="cta-section d-flex flex-column flex-md-row align-items-center justify-content-between">
             <div class="cta-text col-md-6 text-center p-4">
                 <div class="feature mb-4">
                     <h3>
@@ -136,199 +151,8 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div id="evaluation-body" class="modal-body">
-                        <div class="section summary">
-                            <h3>ZUSAMMENFASSUNG</h3>
-                            <ul>
-                                <li>
-                                    <strong>Arbeitgeber:</strong>
-                                    xyz AG
-                                </li>
-                                <li>
-                                    <strong>Tätigkeit:</strong>
-                                    Softwareentwickler
-                                </li>
-                                <li>
-                                    <strong>Beginn:</strong>
-                                    01.05.2025
-                                </li>
-                                <li>
-                                    <strong>Dauer:</strong>
-                                    Unbefristet
-                                </li>
-                                <li>
-                                    <strong>Gehalt:</strong>
-                                    5200 Euro Brutto pro Monat
-                                </li>
-                                <li>
-                                    <strong>Zuschläge:</strong>
-                                    keine
-                                </li>
-                                <li>
-                                    <strong>Arbeitsstunden:</strong>
-                                    40 Stunden pro Woche
-                                </li>
-                                <li>
-                                    <strong>Überstunden:</strong>
-                                    All-in
-                                </li>
-                                <li>
-                                    <strong>Probezeit:</strong>
-                                    5 Monate
-                                </li>
-                            </ul>
-                        </div>
+                    <div id="evaluation-body" class="modal-body accordion">
 
-                        <div class="section bad">
-                            <h3>❗ UNZULÄSSIGE KLAUSELN</h3>
-                            <div class="item">
-                                <strong>
-                                    Unpräzise Überstundenklausel
-                                </strong>
-                                <p>
-                                    <em>Zitat:</em>
-                                    „Alle Überstunden sind mit dem Gehalt
-                                    abgegolten.“ (Seite 4, §4.1)
-                                </p>
-                                <p>
-                                    <strong>Problem:</strong>
-                                    Fehlende Angabe der Höchstgrenze macht
-                                    die Klausel unwirksam.
-                                </p>
-                                <p>
-                                    <strong>Rechtsgrundlage:</strong>
-                                    § 879 ABGB – unklare
-                                    Leistungsbeschreibung.
-                                </p>
-                            </div>
-                            <div class="item">
-                                <strong>
-                                    Unverhältnismäßige Vertragsstrafe
-                                </strong>
-                                <p>
-                                    <em>Zitat:</em>
-                                    „Bei vorzeitiger Kündigung zahlt der
-                                    Arbeitnehmer 3 Bruttomonatsgehälter als
-                                    Strafe.“
-                                </p>
-                                <p>
-                                    <strong>Problem:</strong>
-                                    Überschreitet angemessenen Rahmen – 1
-                                    Monatsgehalt wäre zulässig.
-                                </p>
-                                <p>
-                                    <strong>Rechtsgrundlage:</strong>
-                                    § 879 Abs 1 ABGB zur Angemessenheit.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="section warning">
-                            <h3>⚠️ NACHTEILIGE KLAUSELN</h3>
-                            <div class="item">
-                                <strong>
-                                    Unpräzise Überstundenklausel
-                                </strong>
-                                <p>
-                                    <em>Zitat:</em>
-                                    „… jeder Zeit andere zumutbare
-                                    Tätigkeiten …“
-                                </p>
-                                <p>
-                                    <strong>Problem:</strong>
-                                    Einseitige Aufgabenerweiterung ohne
-                                    Gehaltsanpassung.
-                                </p>
-                                <p>
-                                    <strong>Rechtsgrundlage:</strong>
-                                    BAG 13.04.2010 – auslegungsabhängig.
-                                </p>
-                            </div>
-                            <div class="item">
-                                <strong>Kurze Kündigungsfristen</strong>
-                                <p>
-                                    <em>Zitat:</em>
-                                    „6 Wochen zum Quartalsende“
-                                </p>
-                                <p>
-                                    <strong>Problem:</strong>
-                                    Unflexibel für Jobwechsel.
-                                </p>
-                                <p>
-                                    <strong>Rechtsgrundlage:</strong>
-                                    § 20 AngG
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="section conflict">
-                            <h3>🟠 WIDERSPRUCHLICHE KLAUSELN</h3>
-                            <div class="item">
-                                <strong>
-                                    Bonusanspruch vs. Freiwilligkeitsklausel
-                                </strong>
-                                <p>
-                                    <em>Zitat A:</em>
-                                    „Bonus bei Zielerreichung“
-                                </p>
-                                <p>
-                                    <em>Zitat B:</em>
-                                    „Sonderzahlungen sind freiwillig“
-                                </p>
-                                <p>
-                                    <strong>Problem:</strong>
-                                    Widerspruch macht Anspruch unklar.
-                                </p>
-                                <p>
-                                    <strong>Rechtsgrundlage:</strong>
-                                    BAG 24.10.2007 – intransparent und
-                                    unwirksam.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="section good">
-                            <h3>✅ VORTEILHAFTE KLAUSELN</h3>
-                            <div class="item">
-                                <strong>Überzahlungsklausel</strong>
-                                <p>
-                                    <em>Zitat:</em>
-                                    „… Bruttogehalt übersteigt KV – gilt als
-                                    Abgeltung …“
-                                </p>
-                                <p>
-                                    <strong>Vorteil:</strong>
-                                    Klare Abgrenzung & Rechtssicherheit.
-                                </p>
-                            </div>
-                            <div class="item">
-                                <strong>
-                                    Gehaltsanpassung nach Probezeit
-                                </strong>
-                                <p>
-                                    <em>Zitat:</em>
-                                    „… erhöht sich um 8 % …“
-                                </p>
-                                <p>
-                                    <strong>Vorteil:</strong>
-                                    Automatische Erhöhung ohne Verhandlung.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="section summary-box">
-                            <h3>📝 FAZIT</h3>
-                            <p>
-                                Dein Vertrag enthält sowohl Stärken als auch
-                                einige Schwächen. Besonders kritisch sind
-                                Überstundenregelung und Vertragsstrafen.
-                                Sprich mit dem Arbeitgeber, bevor du
-                                unterschreibst. Die Überzahlung und
-                                automatische Gehaltserhöhung sind hingegen
-                                Pluspunkte. Mit dieser Analyse bist du
-                                optimal vorbereitet.
-                            </p>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="printbtn" class="btn btn-upload nprint" onclick="printer()">
@@ -346,18 +170,18 @@
         </div>
 
         <section id="result"></section>
-        <footer class="footer p-4 d-flex justify-content-between align-items-center">
-            <span>&copy; 2024 KLAUSEL KLARA.</span>
-            <nav>
-                <ul class="list-unstyled d-flex gap-3 mb-0">
-                    <li>Impressum</li>
-                    <li>Datenschutz</li>
-                    <li>AGB</li>
-                </ul>
-            </nav>
-        </footer>
+
     </main>
 
-
+    <footer class="footer p-4 d-flex justify-content-between align-items-center">
+        <span>&copy; 2025 KLAUSEL KLARA</span>
+        <nav>
+            <ul class="list-unstyled d-flex gap-3 mb-0">
+                <!--<li>Impressum</li>
+                <li>Datenschutz</li>
+                <li>AGB</li>-->
+            </ul>
+        </nav>
+    </footer>
 </body>
 </html>

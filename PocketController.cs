@@ -74,44 +74,7 @@ public class PocketController : ControllerBase
 
         return answer;
     }
-
-    private async Task<string[]> PreValidate(HttpRequest request)
-    {
-        string? filename = Request.Headers["filename"];
-        string filecontent;
-
-        if (filename == null)
-        {
-            _logger.LogDebug("Filename missing");
-            throw new BadHttpRequestException("Filename missing.");
-        }
-
-        if (!_fileDecoderService.AllowedExtensions.Contains(filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last()))
-        {
-            _logger.LogDebug("Fileextension not allowed: {ex}", filename);
-            throw new BadHttpRequestException($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
-        }
-
-        byte[] data; //Hier werden die Daten der Datei gespeichert
-        using (var ms = new MemoryStream(2048))
-        {
-            await Request.Body.CopyToAsync(ms);
-            data = ms.ToArray();//Daten der Datei werden im Byte-Array gespeichert
-        }
-
-        try
-        {
-            filecontent = await _fileDecoderService.GetFileContentAsync(filename, data);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error in decoding file: {err}", ex.Message);
-            throw new BadHttpRequestException(ex.Message);
-        }
-
-        return [request.Headers["filename"].ToString(), filecontent];
-    }
-
+   
     [HttpPost("/contract")]
     public async Task<ActionResult<string>> PostBinaryContract()
     {
@@ -129,7 +92,6 @@ public class PocketController : ControllerBase
         string filename = requestContent[0];
         string filecontent = requestContent[1];
 
-
         _logger.LogDebug("Extracted contend: {fn} {fc}", filename, filecontent);
 
         string prompt = "Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. " +
@@ -143,7 +105,6 @@ public class PocketController : ControllerBase
 
         return Ok(answer);
     }
-
 
     [HttpPost("/upload")]
     public async Task<ActionResult<string>> PostFile()
@@ -194,4 +155,42 @@ public class PocketController : ControllerBase
 
         return "Not Implemented";
     }
+
+    private async Task<string[]> PreValidate(HttpRequest request)
+    {
+        string? filename = Request.Headers["filename"];
+        string filecontent;
+
+        if (filename == null)
+        {
+            _logger.LogDebug("Filename missing");
+            throw new BadHttpRequestException("Filename missing.");
+        }
+
+        if (!_fileDecoderService.AllowedExtensions.Contains(filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last()))
+        {
+            _logger.LogDebug("Fileextension not allowed: {ex}", filename);
+            throw new BadHttpRequestException($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
+        }
+
+        byte[] data; //Hier werden die Daten der Datei gespeichert
+        using (var ms = new MemoryStream(2048))
+        {
+            await Request.Body.CopyToAsync(ms);
+            data = ms.ToArray();//Daten der Datei werden im Byte-Array gespeichert
+        }
+
+        try
+        {
+            filecontent = await _fileDecoderService.GetFileContentAsync(filename, data);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in decoding file: {err}", ex.Message);
+            throw new BadHttpRequestException(ex.Message);
+        }
+
+        return [request.Headers["filename"].ToString(), filecontent];
+    }
+
 }

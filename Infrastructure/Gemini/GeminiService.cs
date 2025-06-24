@@ -140,8 +140,9 @@ public class GeminiService : IAiService
         _httpClient = new HttpClient();
         _apiKey = configuration["Gemini:Key"] ?? "";
         _apiAltKey = configuration["Gemini:Key:Alternative"] ?? "";
-        _model = "gemini-1.5-flash-001";
-        //_model = "gemini-2.0-flash-lite";
+
+        _model = "gemini-1.5-flash-002";
+        //_model = "gemini-2.0-flash";
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
@@ -163,7 +164,7 @@ public class GeminiService : IAiService
         {
             var context = new
             {
-                model = "models/gemini-1.5-flash-001",
+                model = "models/gemini-1.5-flash-002",
                 contents = new[]
                 {
             new
