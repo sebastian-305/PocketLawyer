@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
-using PocketLawyer.Infrastructure.Claude;
 using PocketLawyer.Service;
 
 namespace PocketLawyer;
