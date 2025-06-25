@@ -91,7 +91,7 @@ async function upload_file(event) {
 
     let validationRequest;
     let analyzeRequest;
-
+    let mock = false;
     event.preventDefault();
 
     console.info("File upload started.")
@@ -121,11 +121,13 @@ async function upload_file(event) {
     }
     else {
         console.warn("MOCK REQUEST!");
-        validationRequest = new Request("/mockdata", { method: "GET" });
-        analyzeRequest = validationRequest;
+        mock = true;
+        
+        analyzeRequest = new Request("/mockdata", { method: "GET" });
     }
 
     try {
+        if(!mock){
         const response = await fetch(validationRequest);
         document.getElementById("printbtn").style.visibility = "hidden";
         let status = response.status;
@@ -133,6 +135,8 @@ async function upload_file(event) {
         console.info(status);
         console.debug(response);
         let messageText = await response.text();
+        }
+        messageText = "Mock Request. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
         let message;
         try {
             message = JSON.parse(messageText);
