@@ -67,40 +67,34 @@ public class PocketController : ControllerBase
         return filename;
     }
 
+
     [HttpPost("/validate")]
     public async Task<ActionResult<string>> ValidateBinaryContract()
     {
         _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
-        FileContentDto requestContent;
-        try
-        {
-            requestContent = await PreValidate(Request);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Pre-validation failed");
-            return BadRequest($"{{\"isReadable\":false, \"isContract\":false, \"result\":\"{ex.Message}\"}}");
-        }
-
-        string filename = requestContent.FileName;
-        string filecontent = requestContent.FileContent;
-
-        string prompt = "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolan Variable \"isReadable\". " +
-            "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!" +
-            "Schreibe das Ergebnis in die bool Variable \"isContract\". " +
-            "Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine überblicksmäßige Zusammenfassung vom Vertrag in die Variable \"result\". " +
-            "Verwende keine Markdown-Formatierungen! Formatiere die Antwort in HTML! Hier die Datei:\n\n Dateiname: \n" +
-            filename +
-            "\nDateiinhalt: " +
-            filecontent;
-
-        return await _geminiService.SendPrompt(prompt, GeminiService.PreAnalyzerSchema, true);
+        return await ProcessContractRequest(BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
     }
-
     [HttpPost("/contract")]
     public async Task<ActionResult<string>> PostBinaryContract()
     {
         _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
+        return await ProcessContractRequest(_geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
+    }
+
+    private static string BuildValidationPrompt(string filename, string filecontent)
+    {
+        return "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolan Variable \"isReadable\"." +
+               "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!" +
+               "Schreibe das Ergebnis in die bool Variable \"isContract\". " +
+               "Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine überblicksmäßige Zusammenfassung vom Vertrag in die Variable \"result\". " +
+               "Verwende keine Markdown-Formatierungen! Formatiere die Antwort in HTML! Hier die Datei:\n\n Dateiname: \n" +
+               filename +
+               "\nDateiinhalt: " +
+               filecontent;
+    }
+
+    private async Task<ActionResult<string>> ProcessContractRequest(Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
+    {
         FileContentDto requestContent;
         try
         {
@@ -108,20 +102,16 @@ public class PocketController : ControllerBase
         }
         catch (Exception ex)
         {
+            if (validationErrorFormat)
+            {
+                _logger.LogError(ex, "Pre-validation failed");
+                return BadRequest($"{{\"isReadable\":false, \"isContract\":false, \"result\":\"{ex.Message}\"}}");
+            }
             return BadRequest(ex.Message);
         }
 
-        string filename = requestContent.FileName;
-        string filecontent = requestContent.FileContent;
-
-        _logger.LogDebug("Extracted content from {FileName} with length {Length}",
-            filename, filecontent.Length);
-
-
-        //prompt += GeminiService.ReadLawContent();
-
-        string fullprompt = _geminiService.PromptBuilder(filename, filecontent);
-        string answer = await _geminiService.SendPrompt(fullprompt, GeminiService.AnalyzerSchema, false);
+        string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
+        string answer = await _geminiService.SendPrompt(prompt, schema, sendAltKey);
 
         return Ok(answer);
     }
