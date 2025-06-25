@@ -3,12 +3,25 @@ using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.FileDecoding;
 using PocketLawyer.Service;
 using Microsoft.AspNetCore.Diagnostics;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddHttpClient<GeminiService>();
+builder.Services.AddTransient<RedactingLoggingHandler>();
+builder.Services
+    .AddHttpClient<GeminiService>()
+    .ConfigureHttpMessageHandlerBuilder(b =>
+    {
+        var defaultLogging = b.AdditionalHandlers
+            .FirstOrDefault(h => h.GetType().Name == "LoggingHttpMessageHandler");
+        if (defaultLogging != null)
+        {
+            b.AdditionalHandlers.Remove(defaultLogging);
+        }
+    })
+    .AddHttpMessageHandler<RedactingLoggingHandler>();
 builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
 builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
