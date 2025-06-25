@@ -79,6 +79,12 @@ body {
     visibility: hidden;
 }
 
+@media print {
+    .nprint {
+        display: none;
+    }
+}
+
 
 .intro-text, .cta-text {
     flex: 1;

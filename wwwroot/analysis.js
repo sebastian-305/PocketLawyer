@@ -1,17 +1,26 @@
-﻿function printer() {
-    var WinPrint = window.open('', 'Vertragsanalyse', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+function printer() {
+    const printWindow = window.open('about:blank', 'Vertragsanalyse', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
 
-    const printelem = document.getElementById("evaluation-body").cloneNode(true);
-    //printelem.classList.add("printerclass");
-    //printelem.removeChild(document.getElementById("closex"));
-    //printelem.removeChild(document.getElementById("closebtn"));
-    //printelem.removeChild(document.getElementById("printbtn"));
+    const doc = printWindow.document;
+    doc.title = 'Vertragsanalyse';
 
-    WinPrint.document.write(printelem.innerHTML);
-    WinPrint.document.close();
-    WinPrint.focus();
-    WinPrint.print();
-    WinPrint.close();
+    const link = doc.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'styles.css';
+    doc.head.appendChild(link);
+
+    const style = doc.createElement('style');
+    style.textContent = '.nprint { display: none; } body { margin: 20px; font-family: sans-serif; }';
+    doc.head.appendChild(style);
+
+    const content = document.getElementById('evaluation-body').cloneNode(true);
+    doc.body.appendChild(content);
+
+    printWindow.addEventListener('load', () => {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    });
 }
 
 
@@ -103,7 +112,6 @@ async function upload_file(event) {
         const init = {
             method: "POST",
             headers: {
-                //'Content-Type': 'application/x-binary',
                 'filename': event.target.myfile.files[0].name,
             },
             body: event.target.myfile.files[0]
