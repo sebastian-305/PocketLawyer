@@ -1,4 +1,4 @@
-namespace Chatbot_in.Infrastructure.Gemini;
+namespace PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 
 //File from LectureEvaluationAPI2 repository
 
