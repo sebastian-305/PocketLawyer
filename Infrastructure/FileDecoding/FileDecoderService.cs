@@ -1,7 +1,5 @@
-using PocketLawyer.Service;
-using Microsoft.Extensions.Logging;
-using System.IO;
 using System.Text;
+using PocketLawyer.Service;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 
