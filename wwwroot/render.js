@@ -1,4 +1,4 @@
-function printer() {
+export function printer() {
     const printWindow = window.open(
         "about:blank",
         "Vertragsanalyse",
@@ -20,6 +20,7 @@ function printer() {
     printWindow.print();
     printWindow.close();
 }
+
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -50,6 +51,7 @@ function renderClause({ title, textLabel, textValue, extraFields = [] }) {
 
     return container;
 }
+
 function generateClauses(clause) {
     return renderClause({
         title: clause.titel,
@@ -61,6 +63,7 @@ function generateClauses(clause) {
         ],
     });
 }
+
 function generateGoodClauses(clause) {
     return renderClause({
         title: clause.titel,
@@ -69,6 +72,7 @@ function generateGoodClauses(clause) {
         extraFields: [{ label: "Vorteil:", value: clause.vorteil }],
     });
 }
+
 function generateConflictClauses(clause) {
     return renderClause({
         title: clause.titel,
@@ -82,7 +86,7 @@ function generateConflictClauses(clause) {
     });
 }
 
-function createLoadingElement() {
+export function createLoadingElement() {
     const loading = document.createElement("img");
     loading.setAttribute("alt", "loading");
     loading.setAttribute("src", "Media/loading.gif");
@@ -92,67 +96,15 @@ function createLoadingElement() {
     return loading;
 }
 
-function prepareRequests(fileInput) {
-    let validationRequest;
-    let analyzeRequest;
-    let mock = false;
-
-    if (fileInput.files.length > 0) {
-        console.info("REAL REQUEST!");
-        const formData = new FormData();
-        formData.append("myfile", fileInput.files[0]);
-        validationRequest = new Request("/validate", { method: "POST", body: formData });
-        analyzeRequest = new Request("/contract", { method: "POST", body: formData });
-    } else {
-        console.warn("MOCK REQUEST!");
-        mock = true;
-        analyzeRequest = new Request("/mockdata", { method: "GET" });
-    }
-
-    return { validationRequest, analyzeRequest, mock };
-}
-
-async function requestPreValidation(validationRequest, mock) {
-    if (mock) {
-        return { isReadable: true, isContract: true, result: "Mock Request. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." };
-    }
-
-    const response = await fetch(validationRequest);
-    document.getElementById("printbtn").style.visibility = "hidden";
-    let messageText = await response.text();
-    let message;
-    try {
-        message = JSON.parse(messageText);
-    } catch (err) {
-        throw new Error(messageText || "Ungültige Serverantwort");
-    }
-    if (message.error) {
-        throw new Error(message.error);
-    }
-    return message;
-}
-
-async function requestContractAnalysis(analyzeRequest) {
-    const response = await fetch(analyzeRequest);
-    let messageText = await response.text();
-    let message;
-    try {
-        message = JSON.parse(messageText);
-    } catch (err) {
-        throw new Error(messageText || "Ungültige Serverantwort");
-    }
-    return message;
-}
-
-function renderPreValidation(message, body) {
+export function renderPreValidation(message, body) {
     body.replaceChildren(generatePreAnalysis(message));
 }
 
-function renderContractResult(message, body) {
+export function renderContractResult(message, body) {
     body.appendChild(generateAnalysis(message));
 }
 
-function displayUploadError(ex, body, loading, preAnalysisShown) {
+export function displayUploadError(ex, body, loading, preAnalysisShown) {
     console.error(ex);
     if (body.contains(loading)) {
         body.removeChild(loading);
@@ -166,39 +118,6 @@ function displayUploadError(ex, body, loading, preAnalysisShown) {
     body.appendChild(err);
 }
 
-async function upload_file(event) {
-    event.preventDefault();
-
-    console.info("File upload started.");
-
-    const body = document.getElementById("evaluation-body");
-    const loading = createLoadingElement();
-    body.replaceChildren(loading);
-
-    const { validationRequest, analyzeRequest, mock } = prepareRequests(event.target.myfile);
-
-    let preAnalysisShown = false;
-
-    try {
-        const validationMessage = await requestPreValidation(validationRequest, mock);
-        renderPreValidation(validationMessage, body);
-        preAnalysisShown = true;
-
-        if (!validationMessage.isReadable || !validationMessage.isContract) {
-            throw new Error(`isReadable: ${validationMessage.isReadable}, isContract: ${validationMessage.isContract}`);
-        }
-
-        body.appendChild(loading);
-        const analysisMessage = await requestContractAnalysis(analyzeRequest);
-        body.removeChild(loading);
-        renderContractResult(analysisMessage, body);
-        document.getElementById("printbtn").style.visibility = "visible";
-    } catch (ex) {
-        displayUploadError(ex, body, loading, preAnalysisShown);
-    } finally {
-        event.target.myfile.value = null;
-    }
-}
 function generatePreAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("preanalysis-container");
@@ -229,6 +148,7 @@ function generatePreAnalysis(message) {
     container.appendChild(fadWrap);
     return container;
 }
+
 function generateAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("analysis-container");
@@ -367,9 +287,3 @@ function generateAnalysis(message) {
         return container;
     }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    document
-        .querySelectorAll(".upload-form")
-        .forEach((form) => form.addEventListener("submit", upload_file));
-});
