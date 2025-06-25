@@ -1,10 +1,9 @@
-﻿
-using Chatbot_in.Infrastructure.Gemini;
+﻿using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Service;
 using System.Text;
 using System.Text.Json;
 
-namespace Chatbot_in.Domain.Service;
+namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
 public class GeminiService : IAiService
 {
@@ -122,7 +121,7 @@ public class GeminiService : IAiService
         type = "object",
         properties = new
         {
-            isReadable = new{type = "boolean" },
+            isReadable = new { type = "boolean" },
             isContract = new { type = "boolean" },
             result = new { type = "string" },
         },
@@ -142,7 +141,7 @@ public class GeminiService : IAiService
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
-   
+
     #region public_methods
     public async Task<string> SendContext()
     {
@@ -152,7 +151,7 @@ public class GeminiService : IAiService
 
         _logger.LogDebug("The length of the normal Context is {0}", contentAsString.Length);
 
-        var contentAs64 = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(contentAsString));
+        var contentAs64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(contentAsString));
 
         _logger.LogDebug("The length of the 64 Context is {0}", contentAs64.Length);
 
@@ -160,7 +159,7 @@ public class GeminiService : IAiService
         {
             var context = new
             {
-                model = "models/gemini-1.5-flash-002",
+                model = $"models/{_model}",
                 contents = new[]
                 {
             new
@@ -192,12 +191,11 @@ public class GeminiService : IAiService
                     }
                 }
                 },
-                ttl = "600s"
-                // Fügen Sie hier ggf. weitere optionale Felder mit Standardwerten hinzu, z.B. safetySettings
+                ttl = "600s"           
             };
 
             var jsonContent = JsonSerializer.Serialize(context);
-            //_logger.LogDebug(jsonContent);
+            
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(requestUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
@@ -217,28 +215,25 @@ public class GeminiService : IAiService
             return "Something went wrong";
         }
     }
-    public string PromptBuilder(string prompt, string filename, string filecontent)
+    public string PromptBuilder(string filename, string filecontent)
     {
         StringBuilder promptBuilder = new StringBuilder();
 
-        //promptBuilder.Append("You are an expert in analyzing Texts and answering Questions. I have the following question that might be in another language:\n\n");
-        promptBuilder.Append(prompt);
-        promptBuilder.Append("Bitte verwende keine Markdownformatierung, * or #");
+        promptBuilder.Append("Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. ");
+        promptBuilder.Append("Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. ");
+        promptBuilder.Append("Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln.");
+        promptBuilder.Append("Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. ");
+        promptBuilder.Append("Gibt zu einer fachlichen Begrüdung auch immer eine Erklärung in einfacher Sprache.");
+        promptBuilder.Append("Bitte gründe deine Aussagen auf die Gesetze im Cached Kontext. \n");
+        promptBuilder.Append("Bitte verwende keine Markdownformatierung, * oder #");
         promptBuilder.Append("Formatiere deine Antwort in HTML.");
-        promptBuilder.AppendLine("Gib neben dem Paragraphen der Rechtsgrundlage auch den Gesetztestext an.");
-        //promptBuilder.Append("\n\nBitte begründe auch deine Antworten");
-
-        //promptBuilder.Append("Answer it considering" + (files.Count > 1 ? "these files" : "this file"));
-        //promptBuilder.Append(" that might be in another language");
+        promptBuilder.Append("Gib neben dem Paragraphen der Rechtsgrundlage auch den Gesetztestext an.\n");
         promptBuilder.Append("---------------------------------");
         promptBuilder.Append("\n\nDateiname des Vertrags: ");
         promptBuilder.Append(filename);
         promptBuilder.Append("\n\nVertragsinhalt: \n");
         promptBuilder.Append(filecontent);
         promptBuilder.Append("---------------------------------");
-
-        //promptBuilder.Append("\n\nI gave you now the question and all the files in textform for the answer.");
-        //promptBuilder.Append("Please answer the question in the language the question is written.");
 
         _logger.LogInformation("Built prompt with the length of {length} symbols", promptBuilder.Length);
         return promptBuilder.ToString();
@@ -271,9 +266,9 @@ public class GeminiService : IAiService
             {
                 responseMimeType = "application/json",
                 responseSchema = outputSchema,
-                temperature= 0.2,
+                temperature = 0.2,
             },
-            cachedContent = useAltKey? null : await GetContextKey(),
+            cachedContent = useAltKey ? null : await GetContextKey(),
         };
 
         var jsonContent = JsonSerializer.Serialize(requestBody);
@@ -287,10 +282,10 @@ public class GeminiService : IAiService
             _logger.LogDebug(responseString);
             var result = JsonSerializer.Deserialize<GeminiReponse>(responseString);
 
-            
+
             response.EnsureSuccessStatusCode();
 
-            string resultText = result?.candidates[0]?.content?.parts[0]?.text ?? String.Empty;
+            string resultText = result?.candidates[0]?.content?.parts[0]?.text ?? string.Empty;
 
             if (_writeInFile)
                 WriteResponseInFile(resultText);
@@ -303,7 +298,7 @@ public class GeminiService : IAiService
         }
     }
     #endregion
-    
+
     #region private_methods
     private static string ReadLawContent()
     {
@@ -358,8 +353,7 @@ public class GeminiService : IAiService
             _logger.LogDebug("Couldn't find a Context Key, Creating a new Context....");
             result = ExtractContextKey(await SendContext());
         }
-
-        //_logger.LogDebug($"{contextUri}");
+        
         return result;
     }
     private string? ExtractContextKey(string responseString)

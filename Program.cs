@@ -1,4 +1,5 @@
-using Chatbot_in.Domain.Service;
+using PocketLawyer.Infrastructure.AiServices.Claude;
+using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.FileDecoding;
 using PocketLawyer.Service;
 

@@ -1,6 +1,6 @@
-﻿using Chatbot_in.Domain.Service;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.Claude;
 using PocketLawyer.Service;
 
@@ -80,9 +80,7 @@ public class PocketController : ControllerBase
             "\nDateiinhalt: " +
             filecontent;
 
-        string answer = await _geminiService.SendPrompt(prompt, GeminiService.PreAnalyzerSchema, true);
-
-        return answer;
+        return await _geminiService.SendPrompt(prompt, GeminiService.PreAnalyzerSchema, true);
     }
 
     [HttpPost("/contract")]
@@ -105,13 +103,10 @@ public class PocketController : ControllerBase
 
         _logger.LogDebug("Extracted contend: {fn} {fc}", filename, filecontent);
 
-        string prompt = "Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. " +
-     " Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln." + " " +
-     "Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. Gibt zu einer fachlichen Begrüdung auch immer eine Erklärung in einfacher Sprache. Bitte die Gesetze im Cached Kontext \n";
-
+       
         //prompt += GeminiService.ReadLawContent();
 
-        string fullprompt = _geminiService.PromptBuilder(prompt, filename, filecontent);
+        string fullprompt = _geminiService.PromptBuilder(filename, filecontent);
         string answer = await _geminiService.SendPrompt(fullprompt, GeminiService.AnalyzerSchema, false);
 
         return Ok(answer);

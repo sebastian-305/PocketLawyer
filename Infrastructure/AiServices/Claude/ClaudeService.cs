@@ -4,7 +4,7 @@ using Anthropic.SDK.Constants;
 using Anthropic.SDK.Messaging;
 using PocketLawyer.Service;
 
-namespace PocketLawyer.Infrastructure.Claude
+namespace PocketLawyer.Infrastructure.AiServices.Claude
 {
     public class ClaudeService : IAiService
     {
@@ -15,7 +15,7 @@ namespace PocketLawyer.Infrastructure.Claude
             _client = new AnthropicClient(new APIAuthentication(configuration["Claude:Key"] ?? ""));
         }
 
-        public string PromptBuilder(string prompt, string filename, string filecontent)
+        public string PromptBuilder(string filename, string filecontent)
         {
             throw new NotImplementedException();
         }
