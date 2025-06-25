@@ -69,7 +69,8 @@ function upload_file(event) {
             }
             else
                 throw new Error(`isReadable: ${message.isReadable}, isContract: ${message.isContract}`);
-        }).then(response => {
+        })
+        .then(response => {
             let status = response.status
             console.log("Response:");
             console.log(status);
@@ -77,18 +78,19 @@ function upload_file(event) {
             event.target.myfile.value = null;
 
             return response.json();
-        }).then(message => {
+        })
+        .then(message => {
             console.log(message);
             document.getElementById("evaluation-body").removeChild(loading);
             document.getElementById("evaluation-body")
                 .appendChild(generateAnalysis(message));
             document.getElementById("printbtn").style.visibility = "visible";
-        }).catch(ex => {
+        })
+        .catch(ex => {
             console.warn(ex);
         });
 
 }
-
 function generatePreAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("preanalysis-container");
@@ -119,7 +121,6 @@ function generatePreAnalysis(message) {
     container.appendChild(fadWrap);
     return container;
 }
-
 function generateAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("analysis-container");
@@ -170,7 +171,6 @@ function generateAnalysis(message) {
     if (message["vorteilhafte_klauseln"] !== undefined && message.vorteilhafte_klauseln != null && message.vorteilhafte_klauseln.length > 0)
         container.appendChild(gadWrap);
 
-
     const fadWrap = document.createElement("div");
     fadWrap.classList.add("section", "summary-box");
     const fadHd = document.createElement("h3");
@@ -184,151 +184,149 @@ function generateAnalysis(message) {
     container.appendChild(fadWrap);
 
     return container;
-}
-function generateSummary(summaryObj) {
+    function generateSummary(summaryObj) {
 
-    const container = document.createElement("div");
+        const container = document.createElement("div");
 
-    container.classList.add("section", "summary");
-    const heading = document.createElement("h3");
+        container.classList.add("section", "summary");
+        const heading = document.createElement("h3");
 
-    heading.innerHTML = "Zusammenfassung";
+        heading.innerHTML = "Zusammenfassung";
 
-    container.appendChild(heading);
+        container.appendChild(heading);
 
-    const list = document.createElement("ul");
+        const list = document.createElement("ul");
 
-    container.appendChild(list);
-    const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
-    const keys = ["Arbeitgeber", "Tätigkeit", "Beginn", "Dauer", "Gehalt (Brutto)", "Zuschläge", "Arbeitsstunden", "Überstunden", "Probezeit"];
-    const values = [summaryObj.arbeitgeber, summaryObj.taetigkeit, summaryObj.beginn, summaryObj.dauer, summaryObj.gehalt_brutto, summaryObj.zuschlaege, summaryObj.arbeitsstunden, summaryObj.ueberstunden, summaryObj.probezeit];
+        container.appendChild(list);
+        const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
+        const keys = ["Arbeitgeber", "Tätigkeit", "Beginn", "Dauer", "Gehalt (Brutto)", "Zuschläge", "Arbeitsstunden", "Überstunden", "Probezeit"];
+        const values = [summaryObj.arbeitgeber, summaryObj.taetigkeit, summaryObj.beginn, summaryObj.dauer, summaryObj.gehalt_brutto, summaryObj.zuschlaege, summaryObj.arbeitsstunden, summaryObj.ueberstunden, summaryObj.probezeit];
 
-    for (let i = 0; i < keys.length; ++i) {
-        let elemWrapper = document.createElement("li");
-        let elemKey = document.createElement("strong");
-        let elemValue = document.createElement("div");
+        for (let i = 0; i < keys.length; ++i) {
+            let elemWrapper = document.createElement("li");
+            let elemKey = document.createElement("strong");
+            let elemValue = document.createElement("div");
 
-        elemWrapper.appendChild(elemKey);
-        elemWrapper.appendChild(elemValue);
-        elemKey.innerHTML = keys[i] + ":";
-        elemValue.innerHTML = values[i];
-        list.appendChild(elemWrapper);
+            elemWrapper.appendChild(elemKey);
+            elemWrapper.appendChild(elemValue);
+            elemKey.innerHTML = keys[i] + ":";
+            elemValue.innerHTML = values[i];
+            list.appendChild(elemWrapper);
+        }
+
+        return container;
     }
+    function generateClauses(clause) {
+        const container = document.createElement("div");
+        container.classList.add("item");
 
-    return container;
+        const heading = document.createElement("strong");
+        heading.innerHTML = clause.titel
+        container.appendChild(heading);
+
+        const zitWrap = document.createElement("p");
+        const zitTit = document.createElement("em");
+        zitTit.innerHTML = "Zitat:";
+        const zitVal = document.createElement("div");
+        zitVal.innerHTML = clause.zitat;
+        zitWrap.appendChild(zitTit);
+        zitWrap.appendChild(zitVal);
+        container.appendChild(zitWrap);
+
+        const probWrap = document.createElement("p");
+        const probTit = document.createElement("strong");
+        probTit.innerHTML = "Problem:";
+        const probVal = document.createElement("div");
+        probVal.innerHTML = clause.problem;
+        probWrap.appendChild(probTit);
+        probWrap.appendChild(probVal);
+        container.appendChild(probWrap);
+
+
+        const robWrap = document.createElement("p");
+        const robTit = document.createElement("strong");
+        robTit.innerHTML = "Rechtsgrundlage:";
+        const robVal = document.createElement("div");
+        robVal.innerHTML = clause.rechtsgrundlage;
+        robWrap.appendChild(robTit);
+        robWrap.appendChild(robVal);
+        container.appendChild(robWrap);
+        return container;
+    }
+    function generateGoodClauses(clause) {
+        const container = document.createElement("div");
+        container.classList.add("item");
+
+        const heading = document.createElement("strong");
+        heading.innerHTML = clause.titel
+        container.appendChild(heading);
+
+        const zitWrap = document.createElement("p");
+        const zitTit = document.createElement("em");
+        zitTit.innerHTML = "Zitat:";
+        const zitVal = document.createElement("div");
+        zitVal.innerHTML = clause.zitat;
+        zitWrap.appendChild(zitTit);
+        zitWrap.appendChild(zitVal);
+        container.appendChild(zitWrap);
+
+        const probWrap = document.createElement("p");
+        const probTit = document.createElement("strong");
+        probTit.innerHTML = "Vorteil:";
+        const probVal = document.createElement("div");
+        probVal.innerHTML = clause.vorteil;
+        probWrap.appendChild(probTit);
+        probWrap.appendChild(probVal);
+        container.appendChild(probWrap);
+
+
+
+        return container;
+    }
+    function generateConflictClauses(clause) {
+        const container = document.createElement("div");
+        container.classList.add("item");
+
+        const heading = document.createElement("strong");
+        heading.innerHTML = clause.titel
+        container.appendChild(heading);
+
+        const zitWrap = document.createElement("p");
+        const zitTit = document.createElement("em");
+        zitTit.innerHTML = "Zitat A:";
+        const zitVal = document.createElement("div");
+        zitVal.innerHTML = clause.zitat_klausel_a;
+        zitWrap.appendChild(zitTit);
+        zitWrap.appendChild(zitVal);
+        container.appendChild(zitWrap);
+
+        const zitbWrap = document.createElement("p");
+        const zitbTit = document.createElement("em");
+        zitbTit.innerHTML = "Zitat B:";
+        const zitbVal = document.createElement("div");
+        zitbVal.innerHTML = clause.zitat_klausel_b;
+        zitbWrap.appendChild(zitbTit);
+        zitbWrap.appendChild(zitbVal);
+        container.appendChild(zitbWrap);
+
+        const probWrap = document.createElement("p");
+        const probTit = document.createElement("strong");
+        probTit.innerHTML = "Problem:";
+        const probVal = document.createElement("div");
+        probVal.innerHTML = clause.problem;
+        probWrap.appendChild(probTit);
+        probWrap.appendChild(probVal);
+        container.appendChild(probWrap);
+
+
+        const robWrap = document.createElement("p");
+        const robTit = document.createElement("strong");
+        robTit.innerHTML = "Rechtsgrundlage:";
+        const robVal = document.createElement("div");
+        robVal.innerHTML = clause.rechtsgrundlage;
+        robWrap.appendChild(robTit);
+        robWrap.appendChild(robVal);
+        container.appendChild(robWrap);
+        return container;
+    }
 }
-function generateClauses(clause) {
-    const container = document.createElement("div");
-    container.classList.add("item");
-
-    const heading = document.createElement("strong");
-    heading.innerHTML = clause.titel
-    container.appendChild(heading);
-
-    const zitWrap = document.createElement("p");
-    const zitTit = document.createElement("em");
-    zitTit.innerHTML = "Zitat:";
-    const zitVal = document.createElement("div");
-    zitVal.innerHTML = clause.zitat;
-    zitWrap.appendChild(zitTit);
-    zitWrap.appendChild(zitVal);
-    container.appendChild(zitWrap);
-
-    const probWrap = document.createElement("p");
-    const probTit = document.createElement("strong");
-    probTit.innerHTML = "Problem:";
-    const probVal = document.createElement("div");
-    probVal.innerHTML = clause.problem;
-    probWrap.appendChild(probTit);
-    probWrap.appendChild(probVal);
-    container.appendChild(probWrap);
-
-
-    const robWrap = document.createElement("p");
-    const robTit = document.createElement("strong");
-    robTit.innerHTML = "Rechtsgrundlage:";
-    const robVal = document.createElement("div");
-    robVal.innerHTML = clause.rechtsgrundlage;
-    robWrap.appendChild(robTit);
-    robWrap.appendChild(robVal);
-    container.appendChild(robWrap);
-    return container;
-}
-function generateGoodClauses(clause) {
-    const container = document.createElement("div");
-    container.classList.add("item");
-
-    const heading = document.createElement("strong");
-    heading.innerHTML = clause.titel
-    container.appendChild(heading);
-
-    const zitWrap = document.createElement("p");
-    const zitTit = document.createElement("em");
-    zitTit.innerHTML = "Zitat:";
-    const zitVal = document.createElement("div");
-    zitVal.innerHTML = clause.zitat;
-    zitWrap.appendChild(zitTit);
-    zitWrap.appendChild(zitVal);
-    container.appendChild(zitWrap);
-
-    const probWrap = document.createElement("p");
-    const probTit = document.createElement("strong");
-    probTit.innerHTML = "Vorteil:";
-    const probVal = document.createElement("div");
-    probVal.innerHTML = clause.vorteil;
-    probWrap.appendChild(probTit);
-    probWrap.appendChild(probVal);
-    container.appendChild(probWrap);
-
-
-
-    return container;
-}
-function generateConflictClauses(clause) {
-    const container = document.createElement("div");
-    container.classList.add("item");
-
-    const heading = document.createElement("strong");
-    heading.innerHTML = clause.titel
-    container.appendChild(heading);
-
-    const zitWrap = document.createElement("p");
-    const zitTit = document.createElement("em");
-    zitTit.innerHTML = "Zitat A:";
-    const zitVal = document.createElement("div");
-    zitVal.innerHTML = clause.zitat_klausel_a;
-    zitWrap.appendChild(zitTit);
-    zitWrap.appendChild(zitVal);
-    container.appendChild(zitWrap);
-
-    const zitbWrap = document.createElement("p");
-    const zitbTit = document.createElement("em");
-    zitbTit.innerHTML = "Zitat B:";
-    const zitbVal = document.createElement("div");
-    zitbVal.innerHTML = clause.zitat_klausel_b;
-    zitbWrap.appendChild(zitbTit);
-    zitbWrap.appendChild(zitbVal);
-    container.appendChild(zitbWrap);
-
-    const probWrap = document.createElement("p");
-    const probTit = document.createElement("strong");
-    probTit.innerHTML = "Problem:";
-    const probVal = document.createElement("div");
-    probVal.innerHTML = clause.problem;
-    probWrap.appendChild(probTit);
-    probWrap.appendChild(probVal);
-    container.appendChild(probWrap);
-
-
-    const robWrap = document.createElement("p");
-    const robTit = document.createElement("strong");
-    robTit.innerHTML = "Rechtsgrundlage:";
-    const robVal = document.createElement("div");
-    robVal.innerHTML = clause.rechtsgrundlage;
-    robWrap.appendChild(robTit);
-    robWrap.appendChild(robVal);
-    container.appendChild(robWrap);
-    return container;
-}
-
-

@@ -1,4 +1,4 @@
-﻿namespace Chatbot_in.Domain.Service;
+﻿namespace PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 
 
 public class GeminiContext
