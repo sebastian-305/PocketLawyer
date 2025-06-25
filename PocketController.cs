@@ -165,20 +165,11 @@ public class PocketController : ControllerBase
             throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
         }
 
-        byte[] data;
-        using (var ms = new MemoryStream())
-        {
-            await file.CopyToAsync(ms);
-            if (ms.Length > maxBytes)
-            {
-                throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
-            }
-            data = ms.ToArray();
-        }
+        await using var stream = file.OpenReadStream();
 
         try
         {
-            filecontent = await _fileDecoderService.GetFileContentAsync(filename, data);
+            filecontent = await _fileDecoderService.GetFileContentAsync(filename, stream);
         }
         catch (Exception ex)
         {

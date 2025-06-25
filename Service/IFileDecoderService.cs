@@ -4,6 +4,6 @@ namespace PocketLawyer.Service
     {
         public string[] AllowedExtensions { get;  }
         public string AllowedExtensionsString { get; }
-        public Task<string> GetFileContentAsync(string filename, byte[] content);
+        public Task<string> GetFileContentAsync(string filename, Stream content);
     }
 }
