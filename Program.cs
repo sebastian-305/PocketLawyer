@@ -1,8 +1,10 @@
 using PocketLawyer.Infrastructure.AiServices.Claude;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.FileDecoding;
+using PocketLawyer.Infrastructure;
 using PocketLawyer.Service;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Http;
 using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,17 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddTransient<RedactingLoggingHandler>();
+builder.Services.AddSingleton<IHttpMessageHandlerBuilderFilter, NoLoggingHttpClientBuilderFilter>();
 builder.Services
     .AddHttpClient<GeminiService>()
-    .ConfigureHttpMessageHandlerBuilder(b =>
-    {
-        var defaultLogging = b.AdditionalHandlers
-            .FirstOrDefault(h => h.GetType().Name == "LoggingHttpMessageHandler");
-        if (defaultLogging != null)
-        {
-            b.AdditionalHandlers.Remove(defaultLogging);
-        }
-    })
     .AddHttpMessageHandler<RedactingLoggingHandler>();
 builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
 builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
