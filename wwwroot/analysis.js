@@ -122,6 +122,7 @@ async function upload_file(event) {
             method: "GET",
         });
     }
+    let preAnalysisShown = false;
 
     try {
         const response = await fetch(validationRequest);
@@ -137,10 +138,14 @@ async function upload_file(event) {
         } catch (err) {
             throw new Error(messageText || "Ungültige Serverantwort");
         }
+        if (message.error) {
+            throw new Error(message.error);
+        }
 
         console.debug(message);
         document.getElementById("evaluation-body").replaceChildren(
             generatePreAnalysis(message));
+        preAnalysisShown = true;
 
         if (message.isReadable && message.isContract) {
             document.getElementById("evaluation-body").appendChild(loading);
@@ -158,6 +163,9 @@ async function upload_file(event) {
             } catch (err) {
                 throw new Error(messageText2 || "Ungültige Serverantwort");
             }
+            if (message2.error) {
+                throw new Error(message2.error);
+            }
             console.debug(message2);
             document.getElementById("evaluation-body").removeChild(loading);
             document.getElementById("evaluation-body")
@@ -169,7 +177,12 @@ async function upload_file(event) {
     } catch (ex) {
         console.error(ex);
         const body = document.getElementById("evaluation-body");
-        body.replaceChildren();
+        if (body.contains(loading)) {
+            body.removeChild(loading);
+        }
+        if (!preAnalysisShown) {
+            body.replaceChildren();
+        }
         const err = document.createElement("div");
         err.classList.add("error-message");
         err.textContent = `Fehler: ${ex.message}`;
