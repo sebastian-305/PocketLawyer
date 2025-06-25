@@ -1,4 +1,4 @@
-﻿namespace PocketLawyer.Service;
+namespace PocketLawyer.Service;
 
 public interface IAiService
 {
