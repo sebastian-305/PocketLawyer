@@ -15,7 +15,10 @@ body {
     scroll-behavior: smooth;
 }
 
-    body h1, h2, h3, p {
+    body h1,
+    body h2,
+    body h3,
+    body p {
         color: var(--neutral-bg);
     }
 
@@ -227,7 +230,7 @@ body {
 .modal-dialog h2,
 .modal-dialog h3,
 .modal-dialog li,
-.modal-dialogul,
+.modal-dialog ul,
 .modal-dialog strong,
 .modal-dialog p {
     color: black;
