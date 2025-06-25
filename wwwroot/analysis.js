@@ -20,7 +20,7 @@ function printer() {
     printWindow.print();
     printWindow.close();
 }
-function renderClause({title, textLabel, textValue, extraFields = []}) {
+function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     const container = document.createElement("div");
     container.classList.add("item");
 
@@ -56,8 +56,8 @@ function generateClauses(clause) {
         textLabel: "Zitat:",
         textValue: clause.zitat,
         extraFields: [
-            {label: "Problem:", value: clause.problem},
-            {label: "Rechtsgrundlage:", value: clause.rechtsgrundlage},
+            { label: "Problem:", value: clause.problem },
+            { label: "Rechtsgrundlage:", value: clause.rechtsgrundlage },
         ],
     });
 }
@@ -66,7 +66,7 @@ function generateGoodClauses(clause) {
         title: clause.titel,
         textLabel: "Zitat:",
         textValue: clause.zitat,
-        extraFields: [{label: "Vorteil:", value: clause.vorteil}],
+        extraFields: [{ label: "Vorteil:", value: clause.vorteil }],
     });
 }
 function generateConflictClauses(clause) {
@@ -75,9 +75,9 @@ function generateConflictClauses(clause) {
         textLabel: "Zitat A:",
         textValue: clause.zitat_klausel_a,
         extraFields: [
-            {label: "Zitat B:", value: clause.zitat_klausel_b, emphasize: true},
-            {label: "Problem:", value: clause.problem},
-            {label: "Rechtsgrundlage:", value: clause.rechtsgrundlage},
+            { label: "Zitat B:", value: clause.zitat_klausel_b, emphasize: true },
+            { label: "Problem:", value: clause.problem },
+            { label: "Rechtsgrundlage:", value: clause.rechtsgrundlage },
         ],
     });
 }
@@ -115,12 +115,14 @@ async function upload_file(event) {
         console.warn("MOCK REQUEST!");
         mock = true;
 
-        analyzeRequest = new Request("/mockdata", {method: "GET"});
+        analyzeRequest = new Request("/mockdata", { method: "GET" });
     }
     let preAnalysisShown = false;
 
     try {
-        let messageText;
+
+        let message;
+
         if (!mock) {
             const response = await fetch(validationRequest);
             document.getElementById("printbtn").style.visibility = "hidden";
@@ -128,22 +130,21 @@ async function upload_file(event) {
             console.info("Response:");
             console.info(status);
             console.debug(response);
-            messageText = await response.text();
-        } else {
-            messageText =
-                "Mock Request. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
-        }
+            let messageText = await response.text();
 
-        let message;
-        try {
-            message = JSON.parse(messageText);
-        } catch (err) {
-            throw new Error(messageText || "Ungültige Serverantwort");
-        }
-        if (message.error) {
-            throw new Error(message.error);
-        }
 
+            try {
+                message = JSON.parse(messageText);
+            } catch (err) {
+                throw new Error(messageText || "Ungültige Serverantwort");
+            }
+            if (message.error) {
+                throw new Error(message.error);
+            }
+        }
+        else {
+            message = { isReadable: true, isContract: true, result: "Mock Request. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." };
+        }
         console.debug(message);
         document
             .getElementById("evaluation-body")

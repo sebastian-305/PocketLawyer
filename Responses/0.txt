@@ -1,1 +1,79 @@
-{"fazit": "Der Arbeitsvertrag enthält einige Klauseln, die aus Sicht des Arbeitnehmers problematisch sind. Insbesondere die Regelung zu Überstunden, die Vertragsstrafe und die Regelung zur Nebentätigkeit sind bedenklich. Der Vertrag bietet aber auch einige für den Arbeitnehmer vorteilhafte Klauseln, wie z.B. die Höhe des Gehalts, die Dauer des Urlaubs sowie die Unterstützung für Fortbildungsmaßnahmen.", "nachteile_klauseln": [{"problem": "Die Überstunden sind nicht gesondert vergütet und es erfolgt auch kein Zeitausgleich. Das ist unzulässig. Überstunden müssen nach dem Arbeitszeitgesetz mit einem Zuschlag von 50% oder durch Zeitausgleich vergütet werden.", "rechtsgrundlage": "AZG - § 10", "titel": "Überstundenvergütung", "zitat": "Überstunden sind mit dem Gehalt abgegolten. Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart."}, {"problem": "Die Vertragsstrafe ist mit drei Bruttomonatsgehältern deutlich zu hoch angesetzt. Sie ist unzulässig, da sie weit über den möglichen Schaden des Arbeitgebers hinausgeht. Eine Vertragsstrafe kann nur im Rahmen des möglichen Schadens vereinbart werden. Eine unzulässige Vertragsstrafe ist nichtig.", "rechtsgrundlage": "ABGB - § 934 ff.", "titel": "Vertragsstrafe", "zitat": "Bei einer unberechtigten vorzeitigen Beendigung des Arbeitsverhältnisses durch den Arbeitnehmer verpflichtet sich dieser zur Zahlung einer Vertragsstrafe in Höhe von drei Bruttomonatsgehältern."}, {"problem": "Die Regelung zur Nebentätigkeit ist unzulässig. Der Arbeitnehmer darf nur dann eine Nebentätigkeit ausüben, wenn diese dem Arbeitgeber nicht zumutbar ist und die Zustimmung des Arbeitgebers nicht erforderlich ist. Der Arbeitgeber kann nur dann eine Nebentätigkeit untersagen, wenn diese mit seinen berechtigten betrieblichen Interessen kollidiert.", "rechtsgrundlage": "AngG - § 7; AVRAG - § 2i", "titel": "Nebentätigkeiten", "zitat": "Nebentätigkeiten, insbesondere eine selbstständige Tätigkeit im gleichen Fachgebiet, sind dem Arbeitgeber im Vorfeld schriftlich anzuzeigen und bedürfen dessen Zustimmung."}], "summary": {"arbeitgeber": "xyz AG", "arbeitsstunden": "40 Stunden pro Woche, Montag bis Freitag", "beginn": "0105-05-01T00:00:00.000Z", "dauer": "unbefristet", "gehalt_brutto": "5.800,- EUR", "probezeit": "5 Monate", "taetigkeit": "Softwareentwickler mit Schwerpunkt Backend-Entwicklung", "ueberstunden": "Überstunden sind mit dem Gehalt abgegolten. Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart.", "zuschlaege": "Keine gesonderten Zuschläge, da diese im Gehalt enthalten sind."}, "unzulaessige_klauseln": [{"problem": "Die Klausel, dass keine gesonderte Vergütung für Überstunden erfolgt, ist unzulässig. Überstunden müssen nach dem Arbeitszeitgesetz mit einem Zuschlag von 50% oder durch Zeitausgleich vergütet werden.", "rechtsgrundlage": "AZG - § 10", "titel": "Überstundenvergütung", "zitat": "Überstunden sind mit dem Gehalt abgegolten. Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart."}, {"problem": "Die Vertragsstrafe ist mit drei Bruttomonatsgehältern deutlich zu hoch angesetzt. Sie ist unzulässig, da sie weit über den möglichen Schaden des Arbeitgebers hinausgeht. Eine Vertragsstrafe kann nur im Rahmen des möglichen Schadens vereinbart werden. Eine unzulässige Vertragsstrafe ist nichtig.", "rechtsgrundlage": "ABGB - § 934 ff.", "titel": "Vertragsstrafe", "zitat": "Bei einer unberechtigten vorzeitigen Beendigung des Arbeitsverhältnisses durch den Arbeitnehmer verpflichtet sich dieser zur Zahlung einer Vertragsstrafe in Höhe von drei Bruttomonatsgehältern."}, {"problem": "Die Regelung zur Nebentätigkeit ist unzulässig. Der Arbeitnehmer darf nur dann eine Nebentätigkeit ausüben, wenn diese dem Arbeitgeber nicht zumutbar ist und die Zustimmung des Arbeitgebers nicht erforderlich ist. Der Arbeitgeber kann nur dann eine Nebentätigkeit untersagen, wenn diese mit seinen berechtigten betrieblichen Interessen kollidiert.", "rechtsgrundlage": "AngG - § 7; AVRAG - § 2i", "titel": "Nebentätigkeiten", "zitat": "Nebentätigkeiten, insbesondere eine selbstständige Tätigkeit im gleichen Fachgebiet, sind dem Arbeitgeber im Vorfeld schriftlich anzuzeigen und bedürfen dessen Zustimmung."}], "vorteilhafte_klauseln": [{"titel": "Gehalt", "vorteil": "Das Gehalt liegt deutlich über dem kollektivvertraglichen Mindestentgelt. Das ist für den Arbeitnehmer ein Vorteil.", "zitat": "Der Arbeitnehmer erhält ein monatliches Bruttogehalt in Höhe von EUR 5.800,-. Dieses Gehalt übersteigt das kollektivvertragliche Mindestentgelt für diese Tätigkeit deutlich."}, {"titel": "Urlaub", "vorteil": "Der Arbeitnehmer erhält 25 Werktage Urlaub pro Kalenderjahr. Das ist über dem gesetzlichen Mindesturlaub von 20 Werktagen und ein Vorteil für den Arbeitnehmer.", "zitat": "Dem Arbeitnehmer stehen pro Kalenderjahr 25 Werktage bezahlter Urlaub zu."}, {"titel": "Fortbildung", "vorteil": "Der Arbeitgeber unterstützt den Arbeitnehmer bei seiner beruflichen Weiterentwicklung. Das ist ein großer Vorteil für den Arbeitnehmer.", "zitat": "Der Arbeitgeber unterstützt den Arbeitnehmer in seiner beruflichen Weiterentwicklung."}], "widerspruechliche_klauseln": [{"problem": "Die Klausel, dass Überstunden mit dem Gehalt abgegolten sind, widerspricht der Klausel, dass Überstunden nur dann gesondert vergütet werden, wenn dies ausdrücklich vereinbart wird.", "rechtsgrundlage": "AZG - § 10; AngG - § 3", "titel": "Überstundenvergütung", "zitat_klausel_a": "Überstunden sind mit dem Gehalt abgegolten.", "zitat_klausel_b": "Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart."}]}
+{
+	"fazit": "Der Arbeitsvertrag enthält einige Klauseln, die aus Sicht des Arbeitnehmers problematisch sind. Insbesondere die Regelung zu Überstunden, die Vertragsstrafe und die Regelung zur Nebentätigkeit sind bedenklich. Der Vertrag bietet aber auch einige für den Arbeitnehmer vorteilhafte Klauseln, wie z.B. die Höhe des Gehalts, die Dauer des Urlaubs sowie die Unterstützung für Fortbildungsmaßnahmen.",
+	"nachteile_klauseln": [
+		{
+			"problem": "Die Überstunden sind nicht gesondert vergütet und es erfolgt auch kein Zeitausgleich. Das ist unzulässig. Überstunden müssen nach dem Arbeitszeitgesetz mit einem Zuschlag von 50% oder durch Zeitausgleich vergütet werden.",
+			"rechtsgrundlage": "AZG - § 10",
+			"titel": "Überstundenvergütung",
+			"zitat": "Überstunden sind mit dem Gehalt abgegolten. Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart."
+		},
+		{
+			"problem": "Die Vertragsstrafe ist mit drei Bruttomonatsgehältern deutlich zu hoch angesetzt. Sie ist unzulässig, da sie weit über den möglichen Schaden des Arbeitgebers hinausgeht. Eine Vertragsstrafe kann nur im Rahmen des möglichen Schadens vereinbart werden. Eine unzulässige Vertragsstrafe ist nichtig.",
+			"rechtsgrundlage": "ABGB - § 934 ff.",
+			"titel": "Vertragsstrafe",
+			"zitat": "Bei einer unberechtigten vorzeitigen Beendigung des Arbeitsverhältnisses durch den Arbeitnehmer verpflichtet sich dieser zur Zahlung einer Vertragsstrafe in Höhe von drei Bruttomonatsgehältern."
+		},
+		{
+			"problem": "Die Regelung zur Nebentätigkeit ist unzulässig. Der Arbeitnehmer darf nur dann eine Nebentätigkeit ausüben, wenn diese dem Arbeitgeber nicht zumutbar ist und die Zustimmung des Arbeitgebers nicht erforderlich ist. Der Arbeitgeber kann nur dann eine Nebentätigkeit untersagen, wenn diese mit seinen berechtigten betrieblichen Interessen kollidiert.",
+			"rechtsgrundlage": "AngG - § 7; AVRAG - § 2i",
+			"titel": "Nebentätigkeiten",
+			"zitat": "Nebentätigkeiten, insbesondere eine selbstständige Tätigkeit im gleichen Fachgebiet, sind dem Arbeitgeber im Vorfeld schriftlich anzuzeigen und bedürfen dessen Zustimmung."
+		}
+	],
+	"summary": {
+		"arbeitgeber": "xyz AG",
+		"arbeitsstunden": "40 Stunden pro Woche, Montag bis Freitag",
+		"beginn": "0105-05-01T00:00:00.000Z",
+		"dauer": "unbefristet",
+		"gehalt_brutto": "5.800,- EUR",
+		"probezeit": "5 Monate",
+		"taetigkeit": "Softwareentwickler mit Schwerpunkt Backend-Entwicklung",
+		"ueberstunden": "Überstunden sind mit dem Gehalt abgegolten. Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart.",
+		"zuschlaege": "Keine gesonderten Zuschläge, da diese im Gehalt enthalten sind."
+	},
+	"unzulaessige_klauseln": [
+		{
+			"problem": "Die Klausel, dass keine gesonderte Vergütung für Überstunden erfolgt, ist unzulässig. Überstunden müssen nach dem Arbeitszeitgesetz mit einem Zuschlag von 50% oder durch Zeitausgleich vergütet werden.",
+			"rechtsgrundlage": "AZG - § 10",
+			"titel": "Überstundenvergütung",
+			"zitat": "Überstunden sind mit dem Gehalt abgegolten. Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart."
+		},
+		{
+			"problem": "Die Vertragsstrafe ist mit drei Bruttomonatsgehältern deutlich zu hoch angesetzt. Sie ist unzulässig, da sie weit über den möglichen Schaden des Arbeitgebers hinausgeht. Eine Vertragsstrafe kann nur im Rahmen des möglichen Schadens vereinbart werden. Eine unzulässige Vertragsstrafe ist nichtig.",
+			"rechtsgrundlage": "ABGB - § 934 ff.",
+			"titel": "Vertragsstrafe",
+			"zitat": "Bei einer unberechtigten vorzeitigen Beendigung des Arbeitsverhältnisses durch den Arbeitnehmer verpflichtet sich dieser zur Zahlung einer Vertragsstrafe in Höhe von drei Bruttomonatsgehältern."
+		},
+		{
+			"problem": "Die Regelung zur Nebentätigkeit ist unzulässig. Der Arbeitnehmer darf nur dann eine Nebentätigkeit ausüben, wenn diese dem Arbeitgeber nicht zumutbar ist und die Zustimmung des Arbeitgebers nicht erforderlich ist. Der Arbeitgeber kann nur dann eine Nebentätigkeit untersagen, wenn diese mit seinen berechtigten betrieblichen Interessen kollidiert.",
+			"rechtsgrundlage": "AngG - § 7; AVRAG - § 2i",
+			"titel": "Nebentätigkeiten",
+			"zitat": "Nebentätigkeiten, insbesondere eine selbstständige Tätigkeit im gleichen Fachgebiet, sind dem Arbeitgeber im Vorfeld schriftlich anzuzeigen und bedürfen dessen Zustimmung."
+		}
+	],
+	"vorteilhafte_klauseln": [
+		{
+			"titel": "Gehalt",
+			"vorteil": "Das Gehalt liegt deutlich über dem kollektivvertraglichen Mindestentgelt. Das ist für den Arbeitnehmer ein Vorteil.",
+			"zitat": "Der Arbeitnehmer erhält ein monatliches Bruttogehalt in Höhe von EUR 5.800,-. Dieses Gehalt übersteigt das kollektivvertragliche Mindestentgelt für diese Tätigkeit deutlich."
+		},
+		{
+			"titel": "Urlaub",
+			"vorteil": "Der Arbeitnehmer erhält 25 Werktage Urlaub pro Kalenderjahr. Das ist über dem gesetzlichen Mindesturlaub von 20 Werktagen und ein Vorteil für den Arbeitnehmer.",
+			"zitat": "Dem Arbeitnehmer stehen pro Kalenderjahr 25 Werktage bezahlter Urlaub zu."
+		},
+		{
+			"titel": "Fortbildung",
+			"vorteil": "Der Arbeitgeber unterstützt den Arbeitnehmer bei seiner beruflichen Weiterentwicklung. Das ist ein großer Vorteil für den Arbeitnehmer.",
+			"zitat": "Der Arbeitgeber unterstützt den Arbeitnehmer in seiner beruflichen Weiterentwicklung."
+		}
+	],
+	"widerspruechliche_klauseln": [
+		{
+			"problem": "Die Klausel, dass Überstunden mit dem Gehalt abgegolten sind, widerspricht der Klausel, dass Überstunden nur dann gesondert vergütet werden, wenn dies ausdrücklich vereinbart wird.",
+			"rechtsgrundlage": "AZG - § 10; AngG - § 3",
+			"titel": "Überstundenvergütung",
+			"zitat_klausel_a": "Überstunden sind mit dem Gehalt abgegolten.",
+			"zitat_klausel_b": "Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart."
+		}
+	]}

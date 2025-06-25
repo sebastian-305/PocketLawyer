@@ -57,11 +57,11 @@ public class PocketController : ControllerBase
             _environment.ContentRootPath,
             _configuration["ResponsesPath"] ?? "Responses");
 
-        string filename = await System.IO.File.ReadAllTextAsync(
+        string mockContent = await System.IO.File.ReadAllTextAsync(
             Path.Combine(responsesPath,
                 $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.txt"));
 
-        return Content(filename, "application/json");
+        return Content(mockContent, "application/json");
     }
 
 
