@@ -134,7 +134,13 @@ async function upload_file(event) {
         console.info("Response:");
         console.info(status);
         console.debug(response);
-        const message = await response.json();
+        let messageText = await response.text();
+        let message;
+        try {
+            message = JSON.parse(messageText);
+        } catch (err) {
+            throw new Error(messageText || "Ungültige Serverantwort");
+        }
 
         console.debug(message);
         document.getElementById("evaluation-body").replaceChildren(
@@ -149,7 +155,13 @@ async function upload_file(event) {
 
             event.target.myfile.value = null;
 
-            const message2 = await response2.json();
+            let messageText2 = await response2.text();
+            let message2;
+            try {
+                message2 = JSON.parse(messageText2);
+            } catch (err) {
+                throw new Error(messageText2 || "Ungültige Serverantwort");
+            }
             console.debug(message2);
             document.getElementById("evaluation-body").removeChild(loading);
             document.getElementById("evaluation-body")
@@ -160,6 +172,12 @@ async function upload_file(event) {
         }
     } catch (ex) {
         console.error(ex);
+        const body = document.getElementById("evaluation-body");
+        body.replaceChildren();
+        const err = document.createElement("div");
+        err.classList.add("error-message");
+        err.textContent = `Fehler: ${ex.message}`;
+        body.appendChild(err);
     }
 
 }
