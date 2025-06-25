@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
+using System.Text.Json;
 
 namespace PocketLawyer;
 
@@ -30,7 +32,7 @@ public class PocketController : ControllerBase
     }
 
     [HttpGet("/test")]
-    public async Task<string?> Test()
+    public async Task<ResponseFormat?> Test()
     {
 
         // Beispiel 2: Mit spezifischer JSON-Struktur
@@ -45,11 +47,12 @@ public class PocketController : ControllerBase
             'Sehenswuerdigkeiten': ['string'],
         }";
 
-        return await _claudeService.SendPrompt(analysisPrompt, null, false);
+        string answer = await _claudeService.SendPrompt(analysisPrompt, null, false);
+        return JsonSerializer.Deserialize<ResponseFormat>(answer);
     }
 
     [HttpGet("/mockdata")]
-    public async Task<ActionResult<string>> GetMockData()
+    public async Task<ActionResult<ContractAnalysisDto>> GetMockData()
     {
         _logger.LogDebug("Entering {Method}", nameof(GetMockData));
 
@@ -59,23 +62,28 @@ public class PocketController : ControllerBase
 
         string mockContent = await System.IO.File.ReadAllTextAsync(
             Path.Combine(responsesPath,
-                $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.txt"));
+                $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.json"));
 
-        return Content(mockContent, "application/json");
+        ContractAnalysisDto? dto = JsonSerializer.Deserialize<ContractAnalysisDto>(mockContent);
+        if (dto == null)
+            return BadRequest("Invalid mock data");
+
+        return Ok(dto);
     }
 
 
     [HttpPost("/validate")]
-    public async Task<ActionResult<string>> ValidateBinaryContract()
+    public async Task<ActionResult<ContractValidationDto>> ValidateBinaryContract([FromForm] IFormFile myfile)
     {
         _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
-        return await ProcessContractRequest(BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
+        return await ProcessContractRequest<ContractValidationDto>(myfile, BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
     }
+
     [HttpPost("/contract")]
-    public async Task<ActionResult<string>> PostBinaryContract()
+    public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract([FromForm] IFormFile myfile)
     {
         _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
-        return await ProcessContractRequest(_geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
+        return await ProcessContractRequest<ContractAnalysisDto>(myfile, _geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
     }
 
     private static string BuildValidationPrompt(string filename, string filecontent)
@@ -90,12 +98,12 @@ public class PocketController : ControllerBase
                filecontent;
     }
 
-    private async Task<ActionResult<string>> ProcessContractRequest(Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
+    private async Task<ActionResult<T>> ProcessContractRequest<T>(IFormFile file, Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
     {
         FileContentDto requestContent;
         try
         {
-            requestContent = await PreValidate(Request);
+            requestContent = await PreValidate(file);
         }
         catch (Exception ex)
         {
@@ -110,21 +118,19 @@ public class PocketController : ControllerBase
         string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
         string answer = await _geminiService.SendPrompt(prompt, schema, sendAltKey);
 
-        return Ok(answer);
+        T? dto = JsonSerializer.Deserialize<T>(answer);
+        if (dto == null)
+            return BadRequest("Invalid AI response");
+
+        return Ok(dto);
     }
 
-    private async Task<FileContentDto> PreValidate(HttpRequest request)
+    private async Task<FileContentDto> PreValidate(IFormFile file)
     {
         _logger.LogDebug("Entering {Method}", nameof(PreValidate));
 
-        string? filename = request.Headers["filename"];
+        string filename = file.FileName;
         string filecontent;
-
-        if (filename == null)
-        {
-            _logger.LogWarning("Filename missing");
-            throw new BadHttpRequestException("Filename missing.");
-        }
 
         var extension = Path.GetExtension(filename).TrimStart('.');
         if (!_fileDecoderService.AllowedExtensions.Contains(extension))
@@ -134,20 +140,20 @@ public class PocketController : ControllerBase
         }
 
         long maxBytes = _configuration.GetValue<long>("MaxUploadSizeMB") * 1024 * 1024;
-        if (request.ContentLength != null && request.ContentLength > maxBytes)
+        if (file.Length > maxBytes)
         {
             throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
         }
 
-        byte[] data; //Hier werden die Daten der Datei gespeichert
+        byte[] data;
         using (var ms = new MemoryStream())
         {
-            await request.Body.CopyToAsync(ms);
+            await file.CopyToAsync(ms);
             if (ms.Length > maxBytes)
             {
                 throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
             }
-            data = ms.ToArray();//Daten der Datei werden im Byte-Array gespeichert
+            data = ms.ToArray();
         }
 
         try

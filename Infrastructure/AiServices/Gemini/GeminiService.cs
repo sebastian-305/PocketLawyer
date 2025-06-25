@@ -16,123 +16,8 @@ public class GeminiService : IAiService
     private readonly string _model;
     private readonly ILogger<GeminiService> _logger;
     private readonly bool _writeInFile;
-    public static object AnalyzerSchema => new
-    {
-        type = "object",
-        properties = new
-        {
-            summary = new
-            {
-                type = "object",
-                properties = new
-                {
-                    arbeitgeber = new { type = "string" },
-                    taetigkeit = new { type = "string" },
-                    beginn = new { type = "string" },
-                    dauer = new { type = "string" },
-                    gehalt_brutto = new { type = "string" },
-                    zuschlaege = new { type = "string" },
-                    arbeitsstunden = new { type = "string" },
-                    ueberstunden = new { type = "string" },
-                    probezeit = new { type = "string" }
-                },
-                required = new[] {
-                        "arbeitgeber", "taetigkeit", "beginn", "dauer",
-                        "gehalt_brutto", "zuschlaege", "arbeitsstunden",
-                        "ueberstunden", "probezeit"
-                    }
-            },
-            unzulaessige_klauseln = new
-            {
-                type = "array",
-                items = new
-                {
-                    type = "object",
-                    properties = new
-                    {
-                        titel = new { type = "string" },
-                        zitat = new { type = "string" },
-                        problem = new { type = "string" },
-                        rechtsgrundlage = new { type = "string" }
-                    },
-                    required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
-                }
-            },
-            nachteile_klauseln = new
-            {
-                type = "array",
-                items = new
-                {
-                    type = "object",
-                    properties = new
-                    {
-                        titel = new { type = "string" },
-                        zitat = new { type = "string" },
-                        problem = new { type = "string" },
-                        rechtsgrundlage = new { type = "string" }
-                    },
-                    required = new[] { "titel", "zitat", "problem", "rechtsgrundlage" }
-                }
-            },
-            widerspruechliche_klauseln = new
-            {
-                type = "array",
-                items = new
-                {
-                    type = "object",
-                    properties = new
-                    {
-                        titel = new { type = "string" },
-                        zitat_klausel_a = new { type = "string" },
-                        zitat_klausel_b = new { type = "string" },
-                        problem = new { type = "string" },
-                        rechtsgrundlage = new { type = "string" }
-                    },
-                    required = new[] { "titel", "zitat_klausel_a", "zitat_klausel_b", "problem", "rechtsgrundlage" }
-                }
-            },
-            vorteilhafte_klauseln = new
-            {
-                type = "array",
-                items = new
-                {
-                    type = "object",
-                    properties = new
-                    {
-                        titel = new { type = "string" },
-                        zitat = new { type = "string" },
-                        vorteil = new { type = "string" }
-                    },
-                    required = new[] { "titel", "zitat", "vorteil" }
-                }
-            },
-            fazit = new { type = "string" }
-        },
-        required = new[] {
-                "summary",
-                "unzulaessige_klauseln",
-                "nachteile_klauseln",
-                "widerspruechliche_klauseln",
-                "vorteilhafte_klauseln",
-                "fazit"
-            }
-
-
-    };
-    public static object PreAnalyzerSchema => new
-    {
-        type = "object",
-        properties = new
-        {
-            isReadable = new { type = "boolean" },
-            isContract = new { type = "boolean" },
-            result = new { type = "string" },
-        },
-        required = new[] {
-                "isReadable",
-                "result",
-            }
-    };
+    public static AnalyzerSchema AnalyzerSchema => new AnalyzerSchema();
+    public static PreAnalyzerSchema PreAnalyzerSchema => new PreAnalyzerSchema();
     public GeminiService(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiService> logger)
     {
         _httpClient = httpClient;
@@ -283,7 +168,7 @@ public class GeminiService : IAiService
             var response = await _httpClient.PostAsync(requestUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("Prompt response: {Response}", responseString);
-            var result = JsonSerializer.Deserialize<GeminiReponse>(responseString);
+            var result = JsonSerializer.Deserialize<GeminiResponse>(responseString);
 
 
             response.EnsureSuccessStatusCode();
@@ -328,7 +213,7 @@ public class GeminiService : IAiService
         _logger.LogDebug("Writing response to file");
 
         string folder = Path.Combine(Directory.GetCurrentDirectory(), "Responses");
-        string filePath = Path.Combine(folder, Directory.GetFiles(folder).Length + ".txt");
+        string filePath = Path.Combine(folder, Directory.GetFiles(folder).Length + ".json");
 
         _logger.LogDebug("Filename: {Name} Content Length: {Length}", Path.GetFileName(filePath), response.Length);
         using (StreamWriter sr = new StreamWriter(filePath))
