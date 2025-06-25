@@ -1,4 +1,4 @@
-﻿using PocketLawyer.Service;
+using PocketLawyer.Service;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Text;
