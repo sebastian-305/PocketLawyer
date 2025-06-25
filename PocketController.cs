@@ -142,7 +142,7 @@ public class PocketController : ControllerBase
         byte[] data; //Hier werden die Daten der Datei gespeichert
         using (var ms = new MemoryStream())
         {
-            await Request.Body.CopyToAsync(ms);
+            await request.Body.CopyToAsync(ms);
             if (ms.Length > maxBytes)
             {
                 throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
