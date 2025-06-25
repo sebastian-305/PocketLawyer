@@ -47,4 +47,3 @@ public class CandidatesTokensDetails
     public string modality { get; set; }
     public int tokenCount { get; set; }
 }
-
