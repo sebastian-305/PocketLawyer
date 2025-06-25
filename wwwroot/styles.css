@@ -15,6 +15,10 @@ body {
     scroll-behavior: smooth;
 }
 
+.w-60 {
+    width: 60%;
+}
+
     body h1,
     body h2,
     body h3,
@@ -28,13 +32,13 @@ body {
 }
 
     .header h1 {
-        font-size: 60px;
+        font-size: 3.75rem;
         font-weight: 800;
     }
 
 .btn-warning, .btn-light {
     font-weight: 800;
-    font-size: 16px;
+    font-size: 1rem;
     border-radius: 10px;
     border: none;
 }
@@ -93,20 +97,20 @@ body {
 }
 
     .intro-text h2 {
-        font-size: 40px;
+        font-size: 2.5rem;
         font-weight: 800;
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
     }
 
     .intro-text h3, .cta-text h3 {
-        font-size: 20px;
+        font-size: 1.25rem;
         font-weight: 750;
-        margin-bottom: 20px;
-        padding-top: 40px;
+        margin-bottom: 1.25rem;
+        padding-top: 2.5rem;
     }
 
     .intro-text p, .cta-text p {
-        font-size: 18px;
+        font-size: 1.125rem;
         line-height: 1.6;
     }
 
@@ -117,7 +121,7 @@ body {
 
 .mission-text h2 {
     color: var(--blue-bg);
-    font-size: 65px;
+    font-size: 4rem;
     font-weight: 800;
     line-height: 1.4;
 }
@@ -137,19 +141,19 @@ body {
 }
 
 .file-upload {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 800;
     border-radius: 10px;
-    padding: 10px 20px;
-    line-height: 10px;
+    padding: 0.625rem 1.25rem;
+    line-height: 0.625rem;
     background-color: var(--neutral-bg);
     color: var(--blue-bg);
     border: none;
     cursor: pointer;
     text-align: center;
-    height: 50px;
-    width: 60%;
-    max-width: 450px;
+    height: 3.125rem;
+    width: 100%;
+    max-width: 28.125rem;
 }
 
 .top .file-upload {
@@ -179,15 +183,15 @@ body {
 
 .cta-button {
     font-weight: 800;
-    font-size: 18px;
+    font-size: 1.125rem;
     background-color: var(--highlight);
     color: var(--blue-bg);
     border-radius: 10px;
     border: none;
-    padding: 10px;
-    height: 50px;
-    width: 60%;
-    max-width: 450px;
+    padding: 0.625rem;
+    height: 3.125rem;
+    width: 100%;
+    max-width: 28.125rem;
 }
 
 .top .cta-button {
@@ -204,8 +208,8 @@ body {
     }
 
 .privacy-hint {
-    font-size: 14px;
-    margin-top: 10px;
+    font-size: 0.875rem;
+    margin-top: 0.625rem;
 }
 
 .footer {
@@ -375,20 +379,54 @@ body {
     margin-bottom: 20px;
 }
 /* Responsive */
+@media (max-width: 1200px) {
+    .header h1 {
+        font-size: 3.5rem;
+    }
+    .mission-text h2 {
+        font-size: 3.5rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .header h1 {
+        font-size: 3rem;
+    }
+    .mission-text h2 {
+        font-size: 3rem;
+    }
+}
+
 @media (max-width: 768px) {
     .intro-section, .mission-section, .cta-section {
         flex-direction: column;
     }
 
     .header h1 {
-        font-size: 40px;
+        font-size: 2.5rem;
     }
 
     .mission-text h2 {
-        font-size: 40px;
+        font-size: 2.5rem;
     }
 
     .intro-image img, .cta-image img {
         height: 50vh;
+    }
+}
+
+@media (max-width: 576px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .mission-text h2 {
+        font-size: 2.25rem;
+    }
+
+    .file-upload,
+    .cta-button,
+    .w-60 {
+        width: 100%;
     }
 }
