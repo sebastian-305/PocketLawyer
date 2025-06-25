@@ -98,7 +98,7 @@ public class PocketController : ControllerBase
 
     private static string BuildValidationPrompt(string filename, string filecontent)
     {
-        return "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolan Variable \"isReadable\"." +
+        return "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolean Variable \"isReadable\"." +
                "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!" +
                "Schreibe das Ergebnis in die bool Variable \"isContract\". " +
                "Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine überblicksmäßige Zusammenfassung vom Vertrag in die Variable \"result\". " +
@@ -156,7 +156,7 @@ public class PocketController : ControllerBase
         if (!_fileDecoderService.AllowedExtensions.Contains(extension))
         {
             _logger.LogWarning("Fileextension not allowed: {FileName}", filename);
-            throw new BadHttpRequestException($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
+            throw new BadHttpRequestException($"Fileextension not recognised! Recognised extensions are {_fileDecoderService.AllowedExtensionsString}.");
         }
 
         long maxBytes = _configuration.GetValue<long>("MaxUploadSizeMB") * 1024 * 1024;
