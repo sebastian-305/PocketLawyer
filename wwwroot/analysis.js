@@ -13,7 +13,7 @@
     WinPrint.print();
     WinPrint.close();
 }
-function upload_file(event) {
+async function upload_file(event) {
     event.preventDefault();
 
     console.info("File upload started.")
@@ -49,46 +49,40 @@ function upload_file(event) {
         });
     }
 
-    fetch(validationRequest)
-        .then(response => {
-            document.getElementById("printbtn").style.visibility = "hidden";
-            let status = response.status
-            console.info("Response:");
-            console.info(status);
-            console.debug(response);
-            return response.json();
-        })
-        .then(message => {
-            console.debug(message);
-            document.getElementById("evaluation-body").replaceChildren(
-                generatePreAnalysis(message));
+    try {
+        const response = await fetch(validationRequest);
+        document.getElementById("printbtn").style.visibility = "hidden";
+        let status = response.status;
+        console.info("Response:");
+        console.info(status);
+        console.debug(response);
+        const message = await response.json();
 
-            if (message.isReadable && message.isContract) {
-                document.getElementById("evaluation-body").appendChild(loading);
-                return fetch(analyzeRequest);
-            }
-            else
-                throw new Error(`isReadable: ${message.isReadable}, isContract: ${message.isContract}`);
-        })
-        .then(response => {
-            let status = response.status
+        console.debug(message);
+        document.getElementById("evaluation-body").replaceChildren(
+            generatePreAnalysis(message));
+
+        if (message.isReadable && message.isContract) {
+            document.getElementById("evaluation-body").appendChild(loading);
+            const response2 = await fetch(analyzeRequest);
+            let status2 = response2.status;
             console.info("Response:");
-            console.info(status);
+            console.info(status2);
 
             event.target.myfile.value = null;
 
-            return response.json();
-        })
-        .then(message => {
-            console.debug(message);
+            const message2 = await response2.json();
+            console.debug(message2);
             document.getElementById("evaluation-body").removeChild(loading);
             document.getElementById("evaluation-body")
-                .appendChild(generateAnalysis(message));
+                .appendChild(generateAnalysis(message2));
             document.getElementById("printbtn").style.visibility = "visible";
-        })
-        .catch(ex => {
-            console.error(ex);
-        });
+        } else {
+            throw new Error(`isReadable: ${message.isReadable}, isContract: ${message.isContract}`);
+        }
+    } catch (ex) {
+        console.error(ex);
+    }
 
 }
 function generatePreAnalysis(message) {
