@@ -1,4 +1,4 @@
-﻿using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
+using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Service;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

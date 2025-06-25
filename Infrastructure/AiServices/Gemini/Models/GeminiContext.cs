@@ -1,4 +1,4 @@
-﻿namespace PocketLawyer.Infrastructure.AiServices.Gemini.Models;
+namespace PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 
 
 public class GeminiContext
