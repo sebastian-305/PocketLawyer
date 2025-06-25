@@ -1,5 +1,8 @@
 ﻿using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Service;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 
@@ -130,14 +133,12 @@ public class GeminiService : IAiService
                 "result",
             }
     };
-    public GeminiService(IConfiguration configuration, ILogger<GeminiService> logger)
+    public GeminiService(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiService> logger)
     {
-        _httpClient = new HttpClient();
-        _apiKey = configuration["Gemini:Key"] ?? "";
-        _apiAltKey = configuration["Gemini:Key:Alternative"] ?? "";
+        _httpClient = httpClient;
+        _apiKey = configuration["Gemini:Key"] ?? string.Empty;
+        _apiAltKey = configuration["Gemini:Key:Alternative"] ?? string.Empty;
         _model = "gemini-1.5-flash-002";
-        //_model = "gemini-2.0-flash";
-        //_model = "gemini-2.0-flash-lite";
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
@@ -147,7 +148,7 @@ public class GeminiService : IAiService
     {
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
 
-        var contentAsString = ReadLawContent();
+        var contentAsString = await ReadLawContentAsync();
 
         _logger.LogDebug("The length of the normal Context is {0}", contentAsString.Length);
 
@@ -300,41 +301,36 @@ public class GeminiService : IAiService
     #endregion
 
     #region private_methods
-    private static string ReadLawContent()
+    private static async Task<string> ReadLawContentAsync()
     {
-        var dir = Directory.GetCurrentDirectory() + @"\Infrastructure\Context";
+        var dir = Path.Combine(Directory.GetCurrentDirectory(), "Infrastructure", "Context");
 
         var files = Directory.GetFiles(dir);
 
-        List<string> contents = new();
-
-        string context = "";
-
+        StringBuilder contextBuilder = new StringBuilder();
 
         foreach (var file in files)
         {
-            context += "Erster Gesetzestext mit dem Dateinamen " + file + "\n";
-            context += File.ReadAllText(file);
-            context += "\n\n";
+            contextBuilder.Append("Erster Gesetzestext mit dem Dateinamen ");
+            contextBuilder.Append(file);
+            contextBuilder.AppendLine();
+            contextBuilder.Append(await File.ReadAllTextAsync(file));
+            contextBuilder.AppendLine();
+            contextBuilder.AppendLine();
         }
 
-
-        return context;
+        return contextBuilder.ToString();
     }
     private void WriteResponseInFile(string response)
     {
 
         _logger.LogDebug("Writing Response to file");
 
-        string folder = Directory.GetCurrentDirectory();
+        string folder = Path.Combine(Directory.GetCurrentDirectory(), "Responses");
+        string filePath = Path.Combine(folder, Directory.GetFiles(folder).Length + ".txt");
 
-        folder += @"\Responses\";
-
-        folder += Directory.GetFiles(folder).Length + ".txt";
-
-        _logger.LogDebug("Filename: {name} Content Length: {length}", folder.Split(@"\").Last(), response.Length);
-
-        using (StreamWriter sr = new StreamWriter(folder))
+        _logger.LogDebug("Filename: {name} Content Length: {length}", Path.GetFileName(filePath), response.Length);
+        using (StreamWriter sr = new StreamWriter(filePath))
         {
             sr.Write(response);
         }
