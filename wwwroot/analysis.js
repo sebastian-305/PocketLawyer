@@ -12,14 +12,11 @@ function printer() {
     const content = document.getElementById('evaluation-body').cloneNode(true);
     doc.body.appendChild(content);
 
-    printWindow.addEventListener('load', () => {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-    });
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+
 }
-
-
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -50,7 +47,6 @@ function renderClause({ title, textLabel, textValue, extraFields = [] }) {
 
     return container;
 }
-
 function generateClauses(clause) {
     return renderClause({
         title: clause.titel,
@@ -62,7 +58,6 @@ function generateClauses(clause) {
         ]
     });
 }
-
 function generateGoodClauses(clause) {
     return renderClause({
         title: clause.titel,
@@ -73,7 +68,6 @@ function generateGoodClauses(clause) {
         ]
     });
 }
-
 function generateConflictClauses(clause) {
     return renderClause({
         title: clause.titel,
@@ -142,30 +136,31 @@ async function upload_file(event) {
         document.getElementById("evaluation-body").replaceChildren(
             generatePreAnalysis(message));
 
-        if (message.isReadable && message.isContract) {
-            document.getElementById("evaluation-body").appendChild(loading);
-            const response2 = await fetch(analyzeRequest);
-            let status2 = response2.status;
-            console.info("Response:");
-            console.info(status2);
-
-            event.target.myfile.value = null;
-
-            let messageText2 = await response2.text();
-            let message2;
-            try {
-                message2 = JSON.parse(messageText2);
-            } catch (err) {
-                throw new Error(messageText2 || "Ungültige Serverantwort");
-            }
-            console.debug(message2);
-            document.getElementById("evaluation-body").removeChild(loading);
-            document.getElementById("evaluation-body")
-                .appendChild(generateAnalysis(message2));
-            document.getElementById("printbtn").style.visibility = "visible";
-        } else {
+        if (!message.isReadable || !message.isContract) {
             throw new Error(`isReadable: ${message.isReadable}, isContract: ${message.isContract}`);
         }
+
+        document.getElementById("evaluation-body").appendChild(loading);
+        const response2 = await fetch(analyzeRequest);
+        let status2 = response2.status;
+        console.info("Response:");
+        console.info(status2);
+
+        event.target.myfile.value = null;
+
+        let messageText2 = await response2.text();
+        let message2;
+        try {
+            message2 = JSON.parse(messageText2);
+        } catch (err) {
+            throw new Error(messageText2 || "Ungültige Serverantwort");
+        }
+        console.debug(message2);
+        document.getElementById("evaluation-body").removeChild(loading);
+        document.getElementById("evaluation-body")
+            .appendChild(generateAnalysis(message2));
+        document.getElementById("printbtn").style.visibility = "visible";
+
     } catch (ex) {
         console.error(ex);
         const body = document.getElementById("evaluation-body");

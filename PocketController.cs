@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
 
 namespace PocketLawyer;
 
