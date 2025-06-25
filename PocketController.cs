@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace PocketLawyer;
 
@@ -11,13 +14,22 @@ public class PocketController : ControllerBase
     private readonly IAiService _geminiService;
     private readonly IAiService _claudeService;
     private readonly IFileDecoderService _fileDecoderService;
+    private readonly IConfiguration _configuration;
+    private readonly IWebHostEnvironment _environment;
 
-    public PocketController(ILogger<PocketController> logger, [FromKeyedServices("gemini")] IAiService geminiService, IFileDecoderService fileDecoderService, [FromKeyedServices("claude")] IAiService claudeService)
+    public PocketController(ILogger<PocketController> logger,
+        [FromKeyedServices("gemini")] IAiService geminiService,
+        IFileDecoderService fileDecoderService,
+        [FromKeyedServices("claude")] IAiService claudeService,
+        IConfiguration configuration,
+        IWebHostEnvironment environment)
     {
         _logger = logger;
         _geminiService = geminiService;
         _fileDecoderService = fileDecoderService;
         _claudeService = claudeService;
+        _configuration = configuration;
+        _environment = environment;
     }
 
     [HttpGet("/test")]
@@ -44,9 +56,13 @@ public class PocketController : ControllerBase
     {
         _logger.Log(LogLevel.Debug, "Entered PocketController.GetMockData");
 
-        string path = Directory.GetCurrentDirectory() + @"\Responses";
+        string responsesPath = Path.Combine(
+            _environment.ContentRootPath,
+            _configuration["ResponsesPath"] ?? "Responses");
 
-        string filename = await System.IO.File.ReadAllTextAsync(path + @"\" + Random.Shared.Next(Directory.GetFiles(path).Length) + ".txt");
+        string filename = await System.IO.File.ReadAllTextAsync(
+            Path.Combine(responsesPath,
+                $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.txt"));
 
         return filename;
     }
@@ -55,7 +71,7 @@ public class PocketController : ControllerBase
     public async Task<ActionResult<string>> ValidateBinaryContract()
     {
         _logger.LogDebug("Entered PocketController.ValidateBinaryContract");
-        string[] requestContent;
+        FileContentDto requestContent;
         try
         {
             requestContent = await PreValidate(Request);
@@ -66,8 +82,8 @@ public class PocketController : ControllerBase
             return BadRequest($"{{\"isReadable\":false, \"isContract\":false, \"result\":\"{ex.Message}\"}}");
         }
 
-        string filename = requestContent[0];
-        string filecontent = requestContent[1];
+        string filename = requestContent.FileName;
+        string filecontent = requestContent.FileContent;
 
         string prompt = "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolan Variable \"isReadable\". " +
             "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!" +
@@ -85,7 +101,7 @@ public class PocketController : ControllerBase
     public async Task<ActionResult<string>> PostBinaryContract()
     {
         _logger.LogDebug("Entered PocketController.PostBinaryContract");
-        string[] requestContent;
+        FileContentDto requestContent;
         try
         {
             requestContent = await PreValidate(Request);
@@ -95,8 +111,8 @@ public class PocketController : ControllerBase
             return BadRequest(ex.Message);
         }
 
-        string filename = requestContent[0];
-        string filecontent = requestContent[1];
+        string filename = requestContent.FileName;
+        string filecontent = requestContent.FileContent;
 
 
         _logger.LogDebug("Extracted contend: {fn} {fc}", filename, filecontent);
@@ -110,7 +126,7 @@ public class PocketController : ControllerBase
         return Ok(answer);
     }
 
-    private async Task<string[]> PreValidate(HttpRequest request)
+    private async Task<FileContentDto> PreValidate(HttpRequest request)
     {
         string? filename = request.Headers["filename"];
         string filecontent;
@@ -121,16 +137,27 @@ public class PocketController : ControllerBase
             throw new BadHttpRequestException("Filename missing.");
         }
 
-        if (!_fileDecoderService.AllowedExtensions.Contains(filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last()))
+        var extension = Path.GetExtension(filename).TrimStart('.');
+        if (!_fileDecoderService.AllowedExtensions.Contains(extension))
         {
             _logger.LogDebug("Fileextension not allowed: {ex}", filename);
             throw new BadHttpRequestException($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
         }
 
+        long maxBytes = _configuration.GetValue<long>("MaxUploadSizeMB") * 1024 * 1024;
+        if (request.ContentLength != null && request.ContentLength > maxBytes)
+        {
+            throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
+        }
+
         byte[] data; //Hier werden die Daten der Datei gespeichert
-        using (var ms = new MemoryStream(2048))
+        using (var ms = new MemoryStream())
         {
             await Request.Body.CopyToAsync(ms);
+            if (ms.Length > maxBytes)
+            {
+                throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
+            }
             data = ms.ToArray();//Daten der Datei werden im Byte-Array gespeichert
         }
 
@@ -144,7 +171,7 @@ public class PocketController : ControllerBase
             throw new BadHttpRequestException(ex.Message);
         }
 
-        return [filename, filecontent];
+        return new FileContentDto(filename, filecontent);
     }
 
 }
