@@ -146,15 +146,17 @@ public class GeminiService : IAiService
     #region public_methods
     public async Task<string> SendContext()
     {
+        _logger.LogDebug("Entering {Method}", nameof(SendContext));
+
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
 
         var contentAsString = await ReadLawContentAsync();
 
-        _logger.LogDebug("The length of the normal Context is {0}", contentAsString.Length);
+        _logger.LogDebug("The length of the normal Context is {Length}", contentAsString.Length);
 
         var contentAs64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(contentAsString));
 
-        _logger.LogDebug("The length of the 64 Context is {0}", contentAs64.Length);
+        _logger.LogDebug("The length of the 64 Context is {Length}", contentAs64.Length);
 
         try
         {
@@ -200,19 +202,19 @@ public class GeminiService : IAiService
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(requestUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
-            _logger.LogDebug(responseString);
+            _logger.LogDebug("Context API response: {Response}", responseString);
             response.EnsureSuccessStatusCode();
             return responseString ?? "";
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError($"HTTP Request Error: {ex.Message}, Status Code: {ex.StatusCode}");
+            _logger.LogError(ex, "HTTP Request Error, Status Code: {StatusCode}", ex.StatusCode);
 
             return "Something went wrong with the API request.";
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An error occurred: {ex.Message}");
+            _logger.LogError(ex, "An error occurred while sending context");
             return "Something went wrong";
         }
     }
@@ -241,7 +243,7 @@ public class GeminiService : IAiService
     }
     public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
     {
-        _logger.LogDebug("Endered SendPrompt");
+        _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
         string apiKey = useAltKey ? _apiAltKey : _apiKey;
 
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={apiKey}";
@@ -275,12 +277,12 @@ public class GeminiService : IAiService
         var jsonContent = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        _logger.LogInformation("Sending Prompt...");
+        _logger.LogInformation("Sending prompt to Gemini API");
         try
         {
             var response = await _httpClient.PostAsync(requestUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
-            _logger.LogDebug(responseString);
+            _logger.LogDebug("Prompt response: {Response}", responseString);
             var result = JsonSerializer.Deserialize<GeminiReponse>(responseString);
 
 
@@ -294,7 +296,7 @@ public class GeminiService : IAiService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, "Error while sending prompt");
             return "Error";
         }
     }
@@ -323,13 +325,12 @@ public class GeminiService : IAiService
     }
     private void WriteResponseInFile(string response)
     {
-
-        _logger.LogDebug("Writing Response to file");
+        _logger.LogDebug("Writing response to file");
 
         string folder = Path.Combine(Directory.GetCurrentDirectory(), "Responses");
         string filePath = Path.Combine(folder, Directory.GetFiles(folder).Length + ".txt");
 
-        _logger.LogDebug("Filename: {name} Content Length: {length}", Path.GetFileName(filePath), response.Length);
+        _logger.LogDebug("Filename: {Name} Content Length: {Length}", Path.GetFileName(filePath), response.Length);
         using (StreamWriter sr = new StreamWriter(filePath))
         {
             sr.Write(response);
@@ -337,7 +338,7 @@ public class GeminiService : IAiService
     }
     private async Task<string?> GetContextKey()
     {
-        _logger.LogDebug("GeminiService.GetContextKey()");
+        _logger.LogDebug("Entering {Method}", nameof(GetContextKey));
         var contextUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
         var response = await _httpClient.GetAsync(contextUri);
         var responseString = await response.Content.ReadAsStringAsync();
@@ -346,7 +347,7 @@ public class GeminiService : IAiService
 
         if (result == null)
         {
-            _logger.LogDebug("Couldn't find a Context Key, Creating a new Context....");
+            _logger.LogDebug("Couldn't find a Context Key, creating a new context");
             result = ExtractContextKey(await SendContext());
         }
 

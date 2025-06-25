@@ -21,20 +21,24 @@ public class FileDecoderService : IFileDecoderService
 
     public async Task<string> GetFileContentAsync(string filename, byte[] content)
     {
-        _logger.LogDebug("Entering GetFileContentAsync");
+        _logger.LogDebug("Entering {Method}", nameof(GetFileContentAsync));
 
-        string extension = filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last();        
+        string extension = filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last();
+        _logger.LogDebug("Detected extension {Extension}", extension);
  
         if (!AllowedExtensions.Contains(extension))
             throw new NotSupportedException("Unknown file extension: " + extension);
 
         await LocalFileHandling.Save(filename, content);
+        _logger.LogDebug("Saved file {FileName}", filename);
 
         switch (extension)
         {
             case "txt":
+                _logger.LogDebug("Decoding text file {FileName}", filename);
                 return await LocalFileHandling.LoadAndDeleteTextFile(filename);
             case "pdf":
+                _logger.LogDebug("Decoding pdf file {FileName}", filename);
                 return LocalFileHandling.LoadAndDeletePdfFile(filename);
             default:
                 throw new NotSupportedException($"File extension {extension} is not supported.");

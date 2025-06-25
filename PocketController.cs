@@ -54,7 +54,7 @@ public class PocketController : ControllerBase
     [HttpGet("/mockdata")]
     public async Task<ActionResult<string>> GetMockData()
     {
-        _logger.Log(LogLevel.Debug, "Entered PocketController.GetMockData");
+        _logger.LogDebug("Entering {Method}", nameof(GetMockData));
 
         string responsesPath = Path.Combine(
             _environment.ContentRootPath,
@@ -70,7 +70,7 @@ public class PocketController : ControllerBase
     [HttpPost("/validate")]
     public async Task<ActionResult<string>> ValidateBinaryContract()
     {
-        _logger.LogDebug("Entered PocketController.ValidateBinaryContract");
+        _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
         FileContentDto requestContent;
         try
         {
@@ -78,7 +78,7 @@ public class PocketController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message, ex);
+            _logger.LogError(ex, "Pre-validation failed");
             return BadRequest($"{{\"isReadable\":false, \"isContract\":false, \"result\":\"{ex.Message}\"}}");
         }
 
@@ -100,7 +100,7 @@ public class PocketController : ControllerBase
     [HttpPost("/contract")]
     public async Task<ActionResult<string>> PostBinaryContract()
     {
-        _logger.LogDebug("Entered PocketController.PostBinaryContract");
+        _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
         FileContentDto requestContent;
         try
         {
@@ -114,8 +114,8 @@ public class PocketController : ControllerBase
         string filename = requestContent.FileName;
         string filecontent = requestContent.FileContent;
 
-
-        _logger.LogDebug("Extracted contend: {fn} {fc}", filename, filecontent);
+        _logger.LogDebug("Extracted content from {FileName} with length {Length}",
+            filename, filecontent.Length);
 
 
         //prompt += GeminiService.ReadLawContent();
@@ -128,19 +128,21 @@ public class PocketController : ControllerBase
 
     private async Task<FileContentDto> PreValidate(HttpRequest request)
     {
+        _logger.LogDebug("Entering {Method}", nameof(PreValidate));
+
         string? filename = request.Headers["filename"];
         string filecontent;
 
         if (filename == null)
         {
-            _logger.LogDebug("Filename missing");
+            _logger.LogWarning("Filename missing");
             throw new BadHttpRequestException("Filename missing.");
         }
 
         var extension = Path.GetExtension(filename).TrimStart('.');
         if (!_fileDecoderService.AllowedExtensions.Contains(extension))
         {
-            _logger.LogDebug("Fileextension not allowed: {ex}", filename);
+            _logger.LogWarning("Fileextension not allowed: {FileName}", filename);
             throw new BadHttpRequestException($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
         }
 
@@ -167,7 +169,7 @@ public class PocketController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error in decoding file: {err}", ex.Message);
+            _logger.LogError(ex, "Error decoding file {FileName}", filename);
             throw new BadHttpRequestException(ex.Message);
         }
 
