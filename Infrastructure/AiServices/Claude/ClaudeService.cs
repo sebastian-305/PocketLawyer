@@ -54,12 +54,4 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             return jsonContent;
         }
     }
-
-    public class ResponseFormat
-    {
-        public int Population { get; set; }
-        public int Flaeche { get; set; }
-
-        public string[] Bundeslaender { get; set; }
-    }
 }
