@@ -16,7 +16,7 @@
 function upload_file(event) {
     event.preventDefault();
 
-    console.log("File Upload started.")
+    console.info("File upload started.")
 
     const loading = document.createElement("img");
     loading.setAttribute('alt', 'loading');
@@ -29,7 +29,7 @@ function upload_file(event) {
         loading);
 
     if (event.target.myfile.files.length > 0) {
-        console.log("REAL REQUEST!");
+        console.info("REAL REQUEST!");
         const init = {
             method: "POST",
             headers: {
@@ -53,13 +53,13 @@ function upload_file(event) {
         .then(response => {
             document.getElementById("printbtn").style.visibility = "hidden";
             let status = response.status
-            console.log("Response:");
-            console.log(status);
-            console.log(response);
+            console.info("Response:");
+            console.info(status);
+            console.debug(response);
             return response.json();
         })
         .then(message => {
-            console.log(message);
+            console.debug(message);
             document.getElementById("evaluation-body").replaceChildren(
                 generatePreAnalysis(message));
 
@@ -72,22 +72,22 @@ function upload_file(event) {
         })
         .then(response => {
             let status = response.status
-            console.log("Response:");
-            console.log(status);
+            console.info("Response:");
+            console.info(status);
 
             event.target.myfile.value = null;
 
             return response.json();
         })
         .then(message => {
-            console.log(message);
+            console.debug(message);
             document.getElementById("evaluation-body").removeChild(loading);
             document.getElementById("evaluation-body")
                 .appendChild(generateAnalysis(message));
             document.getElementById("printbtn").style.visibility = "visible";
         })
         .catch(ex => {
-            console.warn(ex);
+            console.error(ex);
         });
 
 }
@@ -114,8 +114,8 @@ function generatePreAnalysis(message) {
     fadHd.innerHTML = "Voranalyse";
     fadWrap.appendChild(fadHd);
     const fadVal = document.createElement("p");
-    console.log("Voranalyse:");
-    console.log(message.result);
+    console.debug("Voranalyse:");
+    console.debug(message.result);
     fadVal.innerHTML = message.result;
     fadWrap.appendChild(fadVal);
     container.appendChild(fadWrap);
@@ -177,8 +177,8 @@ function generateAnalysis(message) {
     fadHd.innerHTML = "📝 Fazit";
     fadWrap.appendChild(fadHd);
     const fadVal = document.createElement("p");
-    console.log("Fazit:");
-    console.log(message.fazit);
+    console.debug("Fazit:");
+    console.debug(message.fazit);
     fadVal.innerHTML = message.fazit;
     fadWrap.appendChild(fadVal);
     container.appendChild(fadWrap);
