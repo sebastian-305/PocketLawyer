@@ -213,7 +213,7 @@ public class GeminiService : IAiService
         _logger.LogDebug("Writing response to file");
 
         string folder = Path.Combine(Directory.GetCurrentDirectory(), "Responses");
-        string filePath = Path.Combine(folder, Directory.GetFiles(folder).Length + ".txt");
+        string filePath = Path.Combine(folder, Directory.GetFiles(folder).Length + ".json");
 
         _logger.LogDebug("Filename: {Name} Content Length: {Length}", Path.GetFileName(filePath), response.Length);
         using (StreamWriter sr = new StreamWriter(filePath))

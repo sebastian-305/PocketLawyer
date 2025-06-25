@@ -61,7 +61,7 @@ public class PocketController : ControllerBase
 
         string mockContent = await System.IO.File.ReadAllTextAsync(
             Path.Combine(responsesPath,
-                $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.txt"));
+                $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.json"));
 
         ContractAnalysisDto? dto = JsonSerializer.Deserialize<ContractAnalysisDto>(mockContent);
         if (dto == null)
