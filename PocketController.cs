@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
+using System.Text.Json;
 
 namespace PocketLawyer;
 
@@ -30,7 +31,7 @@ public class PocketController : ControllerBase
     }
 
     [HttpGet("/test")]
-    public async Task<string?> Test()
+    public async Task<ResponseFormat?> Test()
     {
 
         // Beispiel 2: Mit spezifischer JSON-Struktur
@@ -45,11 +46,12 @@ public class PocketController : ControllerBase
             'Sehenswuerdigkeiten': ['string'],
         }";
 
-        return await _claudeService.SendPrompt(analysisPrompt, null, false);
+        string answer = await _claudeService.SendPrompt(analysisPrompt, null, false);
+        return JsonSerializer.Deserialize<ResponseFormat>(answer);
     }
 
     [HttpGet("/mockdata")]
-    public async Task<ActionResult<string>> GetMockData()
+    public async Task<ActionResult<ContractAnalysisDto>> GetMockData()
     {
         _logger.LogDebug("Entering {Method}", nameof(GetMockData));
 
@@ -61,21 +63,25 @@ public class PocketController : ControllerBase
             Path.Combine(responsesPath,
                 $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.txt"));
 
-        return Content(mockContent, "application/json");
+        ContractAnalysisDto? dto = JsonSerializer.Deserialize<ContractAnalysisDto>(mockContent);
+        if (dto == null)
+            return BadRequest("Invalid mock data");
+
+        return Ok(dto);
     }
 
 
     [HttpPost("/validate")]
-    public async Task<ActionResult<string>> ValidateBinaryContract()
+    public async Task<ActionResult<ContractValidationDto>> ValidateBinaryContract()
     {
         _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
-        return await ProcessContractRequest(BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
+        return await ProcessContractRequest<ContractValidationDto>(BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
     }
     [HttpPost("/contract")]
-    public async Task<ActionResult<string>> PostBinaryContract()
+    public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract()
     {
         _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
-        return await ProcessContractRequest(_geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
+        return await ProcessContractRequest<ContractAnalysisDto>(_geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
     }
 
     private static string BuildValidationPrompt(string filename, string filecontent)
@@ -90,7 +96,7 @@ public class PocketController : ControllerBase
                filecontent;
     }
 
-    private async Task<ActionResult<string>> ProcessContractRequest(Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
+    private async Task<ActionResult<T>> ProcessContractRequest<T>(Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
     {
         FileContentDto requestContent;
         try
@@ -110,7 +116,11 @@ public class PocketController : ControllerBase
         string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
         string answer = await _geminiService.SendPrompt(prompt, schema, sendAltKey);
 
-        return Ok(answer);
+        T? dto = JsonSerializer.Deserialize<T>(answer);
+        if (dto == null)
+            return BadRequest("Invalid AI response");
+
+        return Ok(dto);
     }
 
     private async Task<FileContentDto> PreValidate(HttpRequest request)
