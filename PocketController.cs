@@ -64,7 +64,17 @@ public class PocketController : ControllerBase
             Path.Combine(responsesPath,
                 $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.json"));
 
-        ContractAnalysisDto? dto = JsonSerializer.Deserialize<ContractAnalysisDto>(mockContent);
+        ContractAnalysisDto? dto;
+        try
+        {
+            dto = JsonSerializer.Deserialize<ContractAnalysisDto>(mockContent);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Failed to parse mock data");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Fehler beim Lesen der Beispieldaten.");
+        }
         if (dto == null)
             return BadRequest("Invalid mock data");
 
@@ -118,7 +128,17 @@ public class PocketController : ControllerBase
         string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
         string answer = await _geminiService.SendPrompt(prompt, schema, sendAltKey);
 
-        T? dto = JsonSerializer.Deserialize<T>(answer);
+        T? dto;
+        try
+        {
+            dto = JsonSerializer.Deserialize<T>(answer);
+        }
+        catch (JsonException ex)
+        {
+            string truncated = answer.Length > 200 ? answer[..200] + "..." : answer;
+            _logger.LogError(ex, "Failed to parse AI response: {Snippet}", truncated);
+            return BadRequest($"Fehler beim Interpretieren der KI-Antwort: {truncated}");
+        }
         if (dto == null)
             return BadRequest("Invalid AI response");
 
