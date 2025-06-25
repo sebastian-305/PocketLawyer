@@ -1,4 +1,6 @@
 ﻿using PocketLawyer.Service;
+using Microsoft.Extensions.Logging;
+using System.IO;
 using System.Text;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
@@ -7,7 +9,12 @@ namespace PocketLawyer.Infrastructure.FileDecoding;
 
 public class FileDecoderService : IFileDecoderService
 {
-    private static ILogger<FileDecoderService> _logger = new LoggerFactory().CreateLogger<FileDecoderService>();
+    private readonly ILogger<FileDecoderService> _logger;
+
+    public FileDecoderService(ILogger<FileDecoderService> logger)
+    {
+        _logger = logger;
+    }
 
     public string[] AllowedExtensions => ["txt", "pdf"];
     public string AllowedExtensionsString => string.Join(", ", AllowedExtensions);
@@ -19,7 +26,7 @@ public class FileDecoderService : IFileDecoderService
         string extension = filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last();        
  
         if (!AllowedExtensions.Contains(extension))
-            throw new NotSupportedException("Unkown file extension: " + extension);
+            throw new NotSupportedException("Unknown file extension: " + extension);
 
         await LocalFileHandling.Save(filename, content);
 
@@ -30,7 +37,7 @@ public class FileDecoderService : IFileDecoderService
             case "pdf":
                 return LocalFileHandling.LoadAndDeletePdfFile(filename);
             default:
-                throw new Exception("Programmer fucked up and forgot the extension: " + extension);
+                throw new NotSupportedException($"File extension {extension} is not supported.");
         }
     }
 
@@ -38,14 +45,16 @@ public class FileDecoderService : IFileDecoderService
     {
         public async static Task Save(string filename, byte[] binary)
         {
-            await File.WriteAllBytesAsync(Directory.GetCurrentDirectory() + @"\" + filename, binary);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), filename);
+            await File.WriteAllBytesAsync(filePath, binary);
         }
 
         public async static Task<string> LoadAndDeleteTextFile(string filename)
         {
-            string data = await File.ReadAllTextAsync(Directory.GetCurrentDirectory() + @"\" + filename);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), filename);
+            string data = await File.ReadAllTextAsync(filePath);
 
-            File.Delete(Directory.GetCurrentDirectory() + @"\" + filename);
+            File.Delete(filePath);
 
             return data;
         }
@@ -53,14 +62,15 @@ public class FileDecoderService : IFileDecoderService
         public static string LoadAndDeletePdfFile(string filename)
         {
             StringBuilder contentBuilder = new StringBuilder();
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), filename);
 
-            using (PdfDocument document = PdfDocument.Open(Directory.GetCurrentDirectory() + @"\" + filename))
+            using (PdfDocument document = PdfDocument.Open(filePath))
                 foreach (Page page in document.GetPages())
                     contentBuilder.Append(page.Text);
 
-            File.Delete(Directory.GetCurrentDirectory() + @"\" + filename);
+            File.Delete(filePath);
             return contentBuilder.ToString();
-        }        
+        }
 
     }
 }
