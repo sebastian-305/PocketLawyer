@@ -32,7 +32,7 @@ public class PocketController : ControllerBase
     }
 
     [HttpGet("/test")]
-    public async Task<ResponseFormat?> Test()
+    public async Task<string?> Test()
     {
 
         // Beispiel 2: Mit spezifischer JSON-Struktur
@@ -48,7 +48,7 @@ public class PocketController : ControllerBase
         }";
 
         string answer = await _claudeService.SendPrompt(analysisPrompt, null, false);
-        return JsonSerializer.Deserialize<ResponseFormat>(answer);
+        return answer;
     }
 
     [HttpGet("/mockdata")]
