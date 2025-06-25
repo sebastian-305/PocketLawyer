@@ -73,17 +73,17 @@ public class PocketController : ControllerBase
 
 
     [HttpPost("/validate")]
-    public async Task<ActionResult<ContractValidationDto>> ValidateBinaryContract([FromForm] IFormFile myfile)
+    public async Task<ActionResult<ContractValidationDto>> ValidateBinaryContract([FromForm] FileUploadDto request)
     {
         _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
-        return await ProcessContractRequest<ContractValidationDto>(myfile, BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
+        return await ProcessContractRequest<ContractValidationDto>(request.MyFile!, BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
     }
 
     [HttpPost("/contract")]
-    public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract([FromForm] IFormFile myfile)
+    public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract([FromForm] FileUploadDto request)
     {
         _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
-        return await ProcessContractRequest<ContractAnalysisDto>(myfile, _geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
+        return await ProcessContractRequest<ContractAnalysisDto>(request.MyFile!, _geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
     }
 
     private static string BuildValidationPrompt(string filename, string filecontent)

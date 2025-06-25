@@ -25,14 +25,14 @@ function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     container.classList.add("item");
 
     const heading = document.createElement("strong");
-    heading.innerHTML = title;
+    heading.textContent = title;
     container.appendChild(heading);
 
     const firstWrap = document.createElement("p");
     const firstTit = document.createElement("em");
-    firstTit.innerHTML = textLabel;
+    firstTit.textContent = textLabel;
     const firstVal = document.createElement("div");
-    firstVal.innerHTML = textValue;
+    firstVal.textContent = textValue;
     firstWrap.appendChild(firstTit);
     firstWrap.appendChild(firstVal);
     container.appendChild(firstWrap);
@@ -40,9 +40,9 @@ function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     extraFields.forEach((f) => {
         const wrap = document.createElement("p");
         const titleEl = document.createElement(f.emphasize ? "em" : "strong");
-        titleEl.innerHTML = f.label;
+        titleEl.textContent = f.label;
         const valueEl = document.createElement("div");
-        valueEl.innerHTML = f.value;
+        valueEl.textContent = f.value;
         wrap.appendChild(titleEl);
         wrap.appendChild(valueEl);
         container.appendChild(wrap);
@@ -212,7 +212,7 @@ function generatePreAnalysis(message) {
     const fadVal = document.createElement("p");
     console.debug("Voranalyse:");
     console.debug(message.result);
-    fadVal.innerHTML = message.result;
+    fadVal.textContent = message.result;
     fadWrap.appendChild(fadVal);
     container.appendChild(fadWrap);
     return container;
@@ -299,7 +299,7 @@ function generateAnalysis(message) {
     const fadVal = document.createElement("p");
     console.debug("Fazit:");
     console.debug(message.fazit);
-    fadVal.innerHTML = message.fazit;
+    fadVal.textContent = message.fazit;
     fadWrap.appendChild(fadVal);
     container.appendChild(fadWrap);
 
@@ -347,8 +347,8 @@ function generateAnalysis(message) {
 
             elemWrapper.appendChild(elemKey);
             elemWrapper.appendChild(elemValue);
-            elemKey.innerHTML = keys[i] + ":";
-            elemValue.innerHTML = values[i];
+            elemKey.textContent = keys[i] + ":";
+            elemValue.textContent = values[i];
             list.appendChild(elemWrapper);
         }
 
