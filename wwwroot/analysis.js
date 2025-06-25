@@ -198,7 +198,6 @@ function generateAnalysis(message) {
         const list = document.createElement("ul");
 
         container.appendChild(list);
-        const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' };
         const keys = ["Arbeitgeber", "Tätigkeit", "Beginn", "Dauer", "Gehalt (Brutto)", "Zuschläge", "Arbeitsstunden", "Überstunden", "Probezeit"];
         const values = [summaryObj.arbeitgeber, summaryObj.taetigkeit, summaryObj.beginn, summaryObj.dauer, summaryObj.gehalt_brutto, summaryObj.zuschlaege, summaryObj.arbeitsstunden, summaryObj.ueberstunden, summaryObj.probezeit];
 
