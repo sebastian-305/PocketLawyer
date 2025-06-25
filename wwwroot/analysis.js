@@ -6,12 +6,8 @@ function printer() {
 
     const link = doc.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'styles.css';
+    link.href = 'print.css';
     doc.head.appendChild(link);
-
-    const style = doc.createElement('style');
-    style.textContent = '.nprint { display: none; } body { margin: 20px; font-family: sans-serif; }';
-    doc.head.appendChild(style);
 
     const content = document.getElementById('evaluation-body').cloneNode(true);
     doc.body.appendChild(content);
