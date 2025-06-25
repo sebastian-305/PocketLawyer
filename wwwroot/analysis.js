@@ -101,13 +101,10 @@ async function upload_file(event) {
 
     if (event.target.myfile.files.length > 0) {
         console.info("REAL REQUEST!");
-        const fd1 = new FormData();
-        fd1.append("myfile", event.target.myfile.files[0]);
-        validationRequest = new Request("/validate", { method: "POST", body: fd1 });
-
-        const fd2 = new FormData();
-        fd2.append("myfile", event.target.myfile.files[0]);
-        analyzeRequest = new Request("/contract", { method: "POST", body: fd2 });
+        const formData = new FormData();
+        formData.append("myfile", event.target.myfile.files[0]);
+        validationRequest = new Request("/validate", { method: "POST", body: formData });  
+        analyzeRequest = new Request("/contract", { method: "POST", body: formData });
     } else {
         console.warn("MOCK REQUEST!");
         mock = true;
