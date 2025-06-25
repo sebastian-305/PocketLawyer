@@ -89,6 +89,9 @@ function generateConflictClauses(clause) {
 
 async function upload_file(event) {
 
+    let validationRequest;
+    let analyzeRequest;
+
     event.preventDefault();
 
     console.info("File upload started.")
@@ -118,9 +121,8 @@ async function upload_file(event) {
     }
     else {
         console.warn("MOCK REQUEST!");
-        request = new Request("/mockdata", {
-            method: "GET",
-        });
+        validationRequest = new Request("/mockdata", { method: "GET" });
+        analyzeRequest = validationRequest;
     }
 
     try {

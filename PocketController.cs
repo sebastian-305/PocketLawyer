@@ -64,7 +64,7 @@ public class PocketController : ControllerBase
             Path.Combine(responsesPath,
                 $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.txt"));
 
-        return filename;
+        return Content(filename, "application/json");
     }
 
 
