@@ -1,8 +1,15 @@
+using System.Text.Json.Serialization;
+
 namespace PocketLawyer;
 
 public class ContractValidationDto
 {
-    public bool isReadable { get; set; }
-    public bool isContract { get; set; }
-    public string result { get; set; } = string.Empty;
+    [JsonPropertyName("isReadable")]
+    public bool IsReadable { get; set; }
+
+    [JsonPropertyName("isContract")]
+    public bool IsContract { get; set; }
+
+    [JsonPropertyName("result")]
+    public string Result { get; set; } = string.Empty;
 }
