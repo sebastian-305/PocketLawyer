@@ -2,7 +2,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 
 //File from LectureEvaluationAPI2 repository
 
-public class GeminiReponse
+public class GeminiResponse
 {
     public Candidates[] candidates { get; set; }
     public UsageMetadata usageMetadata { get; set; }
