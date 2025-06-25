@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
 using System.Text.Json;
+using System.Text;
 
 namespace PocketLawyer;
 
@@ -98,14 +99,16 @@ public class PocketController : ControllerBase
 
     private static string BuildValidationPrompt(string filename, string filecontent)
     {
-        return "Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolean Variable \"isReadable\"." +
-               "Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!" +
-               "Schreibe das Ergebnis in die bool Variable \"isContract\". " +
-               "Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine überblicksmäßige Zusammenfassung vom Vertrag in die Variable \"result\". " +
-               "Verwende keine Markdown-Formatierungen! Formatiere die Antwort in HTML! Hier die Datei:\n\n Dateiname: \n" +
-               filename +
-               "\nDateiinhalt: " +
-               filecontent;
+        var sb = new StringBuilder();
+        sb.Append("Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolean Variable \"isReadable\".");
+        sb.Append("Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!");
+        sb.Append("Schreibe das Ergebnis in die bool Variable \"isContract\". ");
+        sb.Append("Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine überblicksmäßige Zusammenfassung vom Vertrag in die Variable \"result\". ");
+        sb.Append("Verwende keine Markdown-Formatierungen! Formatiere die Antwort in HTML! Hier die Datei:\n\n Dateiname: \n");
+        sb.Append(filename);
+        sb.Append("\nDateiinhalt: ");
+        sb.Append(filecontent);
+        return sb.ToString();
     }
 
     private async Task<ActionResult<T>> ProcessContractRequest<T>(IFormFile file, Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
