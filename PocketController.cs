@@ -42,7 +42,7 @@ public class PocketController : ControllerBase
     [HttpGet("/mockdata")]
     public async Task<ActionResult<string>> GetMockData()
     {
-        _logger.Log(LogLevel.Debug, "Entered MainController.GetMockData");
+        _logger.Log(LogLevel.Debug, "Entered PocketController.GetMockData");
 
         string path = Directory.GetCurrentDirectory() + @"\Responses";
 
@@ -54,7 +54,7 @@ public class PocketController : ControllerBase
     [HttpPost("/validate")]
     public async Task<ActionResult<string>> ValidateBinaryContract()
     {
-        _logger.LogDebug("Entered MainController.ValidateBinaryContract");
+        _logger.LogDebug("Entered PocketController.ValidateBinaryContract");
         string[] requestContent;
         try
         {
@@ -84,7 +84,7 @@ public class PocketController : ControllerBase
     [HttpPost("/contract")]
     public async Task<ActionResult<string>> PostBinaryContract()
     {
-        _logger.LogDebug("Entered MainController.PostBinaryContract");
+        _logger.LogDebug("Entered PocketController.PostBinaryContract");
         string[] requestContent;
         try
         {

@@ -20,7 +20,7 @@ function upload_file(event) {
 
     const loading = document.createElement("img");
     loading.setAttribute('alt', 'loading');
-    loading.setAttribute('src', 'media/loading.gif');
+    loading.setAttribute('src', 'Media/loading.gif');
     loading.style.width = "30%";
     loading.style.margin = "auto";
     loading.style.display = "block";
