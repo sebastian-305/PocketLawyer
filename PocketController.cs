@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Infrastructure.Claude;
 using PocketLawyer.Service;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PocketLawyer;
 
@@ -14,7 +13,7 @@ public class PocketController : ControllerBase
     private readonly IAiService _geminiService;
     private readonly IAiService _claudeService;
     private readonly IFileDecoderService _fileDecoderService;
-    
+
     public PocketController(ILogger<PocketController> logger, [FromKeyedServices("gemini")] IAiService geminiService, IFileDecoderService fileDecoderService, [FromKeyedServices("claude")] IAiService claudeService)
     {
         _logger = logger;
@@ -26,13 +25,13 @@ public class PocketController : ControllerBase
     [HttpGet("/test")]
     public async Task<string?> Test()
     {
- 
+
         // Beispiel 2: Mit spezifischer JSON-Struktur
         var analysisPrompt = @"Gib mir die gefragten Daten vom Land Liechtenstein an.
         Verwende diese JSON-Struktur:
         {
-            'Name': 'String',    
-            'Hauptstadt': 'String',    
+            'Name': 'String',
+            'Hauptstadt': 'String',
             'Population': 'number',
             'Flaeche': 'number',
             'Bundeslaender': ['string'],
@@ -40,12 +39,6 @@ public class PocketController : ControllerBase
         }";
 
         return await _claudeService.SendPrompt(analysisPrompt, null, false);
-    }
-
-    [HttpGet("/createcontext")]
-    public async Task<string> CreateContext()
-    {
-        return await _geminiService.SendContext();
     }
 
     [HttpGet("/mockdata")]
@@ -92,43 +85,6 @@ public class PocketController : ControllerBase
         return answer;
     }
 
-    private async Task<string[]> PreValidate(HttpRequest request)
-    {
-        string? filename = Request.Headers["filename"];
-        string filecontent;
-
-        if (filename == null)
-        {
-            _logger.LogDebug("Filename missing");
-            throw new BadHttpRequestException("Filename missing.");
-        }
-
-        if (!_fileDecoderService.AllowedExtensions.Contains(filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last()))
-        {
-            _logger.LogDebug("Fileextension not allowed: {ex}", filename);
-            throw new BadHttpRequestException($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
-        }
-
-        byte[] data; //Hier werden die Daten der Datei gespeichert
-        using (var ms = new MemoryStream(2048))
-        {
-            await Request.Body.CopyToAsync(ms);
-            data = ms.ToArray();//Daten der Datei werden im Byte-Array gespeichert
-        }
-
-        try
-        {
-            filecontent = await _fileDecoderService.GetFileContentAsync(filename, data);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error in decoding file: {err}", ex.Message);
-            throw new BadHttpRequestException(ex.Message);
-        }
-
-        return [request.Headers["filename"].ToString(), filecontent];
-    }
-
     [HttpPost("/contract")]
     public async Task<ActionResult<string>> PostBinaryContract()
     {
@@ -161,57 +117,41 @@ public class PocketController : ControllerBase
         return Ok(answer);
     }
 
-
-    [HttpPost("/upload")]
-    public async Task<ActionResult<string>> PostFile()
+    private async Task<string[]> PreValidate(HttpRequest request)
     {
-        _logger.Log(LogLevel.Debug, "Entered MainController.PostFile");
-
-        string? filename = Request.Headers["filename"];
-
-
-        if (filename?.Split('.').Last() != "txt")
-            return BadRequest($"Wrong file type! Only txt files are allowed!");
-
-        //byte[] data; //Hier werden die Daten der Datei gespeichert
-        //using (var ms = new MemoryStream(2048))
-        //{
-        //    await Request.Body.CopyToAsync(ms);
-        //    data = ms.ToArray();//Daten der Datei werden im Byte-Array gespeichert
-        //}
-
-        //int size = data.Length;
-        //string sizeString = size.ToString("#,##0").Replace(",", " ");
-
-        //_logger.LogInformation("Size of the uploaded file is {size} bytes", sizeString);
-
-        //if (size > 40_000)
-        //    return BadRequest($"File size is too big! Maximum Filesize is 40 000 bytes and your file has {sizeString} bytes");
-
-
+        string? filename = request.Headers["filename"];
+        string filecontent;
 
         if (filename == null)
-            return BadRequest("Filename missing!");
-
-        string text;
-        using (StreamReader s = new StreamReader(Request.Body))
         {
-            text = await s.ReadToEndAsync();
+            _logger.LogDebug("Filename missing");
+            throw new BadHttpRequestException("Filename missing.");
         }
 
-        string prompt = "Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. Falls es sich nicht um einen Arbeitsvertrag handelt, schreibe dass es sich  nicht um einen Arbeitsvertrag handelt." +
-            " Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln." + " " +
-            "Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. Gibt zu einer fachlichen Begrüdung auch immer eine Erklärung in einfacher Sprache.  Bitte beachte folgende Gesetze: \n";
+        if (!_fileDecoderService.AllowedExtensions.Contains(filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last()))
+        {
+            _logger.LogDebug("Fileextension not allowed: {ex}", filename);
+            throw new BadHttpRequestException($"Fileextension not recognised! Recognised exensions are {_fileDecoderService.AllowedExtensionsString}.");
+        }
 
-        prompt += GeminiService.ReadLawContent();
+        byte[] data; //Hier werden die Daten der Datei gespeichert
+        using (var ms = new MemoryStream(2048))
+        {
+            await Request.Body.CopyToAsync(ms);
+            data = ms.ToArray();//Daten der Datei werden im Byte-Array gespeichert
+        }
 
-        var file = new KeyValuePair<string, string>(filename, text);
+        try
+        {
+            filecontent = await _fileDecoderService.GetFileContentAsync(filename, data);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in decoding file: {err}", ex.Message);
+            throw new BadHttpRequestException(ex.Message);
+        }
 
-        //var answer = await _geminiService.SendPrompt(prompt, new List<KeyValuePair<string, string>>() { file });
-
-        return "Not Implemented";
+        return [filename, filecontent];
     }
-
- 
 
 }

@@ -14,7 +14,6 @@ public class GeminiService : IAiService
     private readonly string _model;
     private readonly ILogger<GeminiService> _logger;
     private readonly bool _writeInFile;
-
     public static object AnalyzerSchema => new
     {
         type = "object",
@@ -118,7 +117,6 @@ public class GeminiService : IAiService
 
 
     };
-
     public static object PreAnalyzerSchema => new
     {
         type = "object",
@@ -133,8 +131,6 @@ public class GeminiService : IAiService
                 "result",
             }
     };
-
-
     public GeminiService(IConfiguration configuration, ILogger<GeminiService> logger)
     {
         _httpClient = new HttpClient();
@@ -146,8 +142,8 @@ public class GeminiService : IAiService
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
-
-    //Deshalb nicht fertig implementiert, aber so wie sie ist schon funktionsfähig    
+   
+    #region public_methods
     public async Task<string> SendContext()
     {
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
@@ -306,7 +302,10 @@ public class GeminiService : IAiService
             return "Error";
         }
     }
-    public static string ReadLawContent()
+    #endregion
+    
+    #region private_methods
+    private static string ReadLawContent()
     {
         var dir = Directory.GetCurrentDirectory() + @"\Infrastructure\Context";
 
@@ -327,7 +326,7 @@ public class GeminiService : IAiService
 
         return context;
     }
-    public void WriteResponseInFile(string response)
+    private void WriteResponseInFile(string response)
     {
 
         _logger.LogDebug("Writing Response to file");
@@ -345,7 +344,7 @@ public class GeminiService : IAiService
             sr.Write(response);
         }
     }
-    public async Task<string?> GetContextKey()
+    private async Task<string?> GetContextKey()
     {
         _logger.LogDebug("GeminiService.GetContextKey()");
         var contextUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
@@ -363,8 +362,9 @@ public class GeminiService : IAiService
         //_logger.LogDebug($"{contextUri}");
         return result;
     }
-    public string? ExtractContextKey(string responseString)
+    private string? ExtractContextKey(string responseString)
     {
         return JsonSerializer.Deserialize<GeminiContext>(responseString)?.cachedContents?.First().name;
     }
+    #endregion
 }

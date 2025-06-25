@@ -7,11 +7,10 @@ namespace PocketLawyer.Infrastructure.FileDecoding;
 
 public class FileDecoderService : IFileDecoderService
 {
-    public string[] AllowedExtensions => ["txt", "pdf"];
-
-    public string AllowedExtensionsString => string.Join(", ", AllowedExtensions);
-
     private static ILogger<FileDecoderService> _logger = new LoggerFactory().CreateLogger<FileDecoderService>();
+
+    public string[] AllowedExtensions => ["txt", "pdf"];
+    public string AllowedExtensionsString => string.Join(", ", AllowedExtensions);
 
     public async Task<string> GetFileContentAsync(string filename, byte[] content)
     {
@@ -20,7 +19,7 @@ public class FileDecoderService : IFileDecoderService
         string extension = filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last();        
  
         if (!AllowedExtensions.Contains(extension))
-            throw (new NotSupportedException("Unkown file extension: " + extension));
+            throw new NotSupportedException("Unkown file extension: " + extension);
 
         await LocalFileHandling.Save(filename, content);
 
@@ -31,7 +30,7 @@ public class FileDecoderService : IFileDecoderService
             case "pdf":
                 return LocalFileHandling.LoadAndDeletePdfFile(filename);
             default:
-                throw new Exception("Programmer fucked up and forgot the extension " + extension);
+                throw new Exception("Programmer fucked up and forgot the extension: " + extension);
         }
     }
 
@@ -61,7 +60,7 @@ public class FileDecoderService : IFileDecoderService
 
             File.Delete(Directory.GetCurrentDirectory() + @"\" + filename);
             return contentBuilder.ToString();
-        }
+        }        
 
     }
 }
