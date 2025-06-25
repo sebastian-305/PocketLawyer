@@ -330,3 +330,8 @@ function generateAnalysis(message) {
         return container;
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".upload-form")
+        .forEach(form => form.addEventListener("submit", upload_file));
+});
