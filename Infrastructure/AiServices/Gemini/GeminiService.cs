@@ -223,7 +223,7 @@ public class GeminiService : IAiService
         promptBuilder.Append("Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. ");
         promptBuilder.Append("Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln.");
         promptBuilder.Append("Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. ");
-        promptBuilder.Append("Gibt zu einer fachlichen Begrüdung auch immer eine Erklärung in einfacher Sprache.");
+        promptBuilder.Append("Gibt zu einer fachlichen Begründung auch immer eine Erklärung in einfacher Sprache.");
         promptBuilder.Append("Bitte gründe deine Aussagen auf die Gesetze im Cached Kontext. \n");
         promptBuilder.Append("Bitte verwende keine Markdownformatierung, * oder #");
         promptBuilder.Append("Formatiere deine Antwort in HTML.");
