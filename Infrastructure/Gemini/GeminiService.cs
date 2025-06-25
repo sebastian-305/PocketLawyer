@@ -191,7 +191,7 @@ public class GeminiService : IAiService
                     {
                         text = "Du bist ein juristischer Experte, der Arbeitsverträge auf Basis des österreichischen Arbeitsrechts analysieren kann. " +
                         "Im Kontext befinden sich die relevanten Gesetzestexte auf die du dich beziehst. " +
-                        "\n\"Bitte verwende keine Markdownformatierung, * or #\" " +
+                        "\n\"Bitte verwende keine Markdownformatierung, * oder #\" " +
                         "\n\"Formatiere deine Antwort in HTML\""
                     }
                 }
@@ -275,6 +275,7 @@ public class GeminiService : IAiService
             {
                 responseMimeType = "application/json",
                 responseSchema = outputSchema,
+                temperature= 0.2,
             },
             cachedContent = useAltKey? null : await GetContextKey(),
         };
@@ -290,7 +291,7 @@ public class GeminiService : IAiService
             _logger.LogDebug(responseString);
             var result = JsonSerializer.Deserialize<GeminiReponse>(responseString);
 
-            _logger.LogDebug(responseString);
+            
             response.EnsureSuccessStatusCode();
 
             string resultText = result?.candidates[0]?.content?.parts[0]?.text ?? String.Empty;

@@ -1,5 +1,7 @@
 using Chatbot_in.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using PocketLawyer.Infrastructure.Claude;
 using PocketLawyer.Infrastructure.FileDecoding;
 using PocketLawyer.Service;
 
@@ -7,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddScoped<IAiService, GeminiService>();
+builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
+builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();

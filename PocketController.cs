@@ -1,6 +1,7 @@
 ﻿using Chatbot_in.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PocketLawyer.Infrastructure.Claude;
 using PocketLawyer.Service;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -11,18 +12,34 @@ public class PocketController : ControllerBase
 {
     private readonly ILogger<PocketController> _logger;
     private readonly IAiService _geminiService;
+    private readonly IAiService _claudeService;
     private readonly IFileDecoderService _fileDecoderService;
-    public PocketController(ILogger<PocketController> logger, IAiService geminiService, IFileDecoderService fileDecoderService)
+    
+    public PocketController(ILogger<PocketController> logger, [FromKeyedServices("gemini")] IAiService geminiService, IFileDecoderService fileDecoderService, [FromKeyedServices("claude")] IAiService claudeService)
     {
         _logger = logger;
         _geminiService = geminiService;
         _fileDecoderService = fileDecoderService;
+        _claudeService = claudeService;
     }
 
     [HttpGet("/test")]
     public async Task<string?> Test()
     {
-        return await ((GeminiService)_geminiService).GetContextKey() ?? "nope";
+ 
+        // Beispiel 2: Mit spezifischer JSON-Struktur
+        var analysisPrompt = @"Gib mir die gefragten Daten vom Land Liechtenstein an.
+        Verwende diese JSON-Struktur:
+        {
+            'Name': 'String',    
+            'Hauptstadt': 'String',    
+            'Population': 'number',
+            'Flaeche': 'number',
+            'Bundeslaender': ['string'],
+            'Sehenswuerdigkeiten': ['string'],
+        }";
+
+        return await _claudeService.SendPrompt(analysisPrompt, null, false);
     }
 
     [HttpGet("/createcontext")]
@@ -194,4 +211,7 @@ public class PocketController : ControllerBase
 
         return "Not Implemented";
     }
+
+ 
+
 }
