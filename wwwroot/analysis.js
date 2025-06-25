@@ -82,109 +82,121 @@ function generateConflictClauses(clause) {
     });
 }
 
-async function upload_file(event) {
-    let validationRequest;
-    let analyzeRequest;
-    let mock = false;
-    event.preventDefault();
-
-    console.info("File upload started.");
-
+function createLoadingElement() {
     const loading = document.createElement("img");
     loading.setAttribute("alt", "loading");
     loading.setAttribute("src", "Media/loading.gif");
     loading.style.width = "30%";
     loading.style.margin = "auto";
     loading.style.display = "block";
+    return loading;
+}
 
-    document.getElementById("evaluation-body").replaceChildren(loading);
+function prepareRequests(fileInput) {
+    let validationRequest;
+    let analyzeRequest;
+    let mock = false;
 
-    if (event.target.myfile.files.length > 0) {
+    if (fileInput.files.length > 0) {
         console.info("REAL REQUEST!");
         const formData = new FormData();
-        formData.append("myfile", event.target.myfile.files[0]);
-        validationRequest = new Request("/validate", { method: "POST", body: formData });  
+        formData.append("myfile", fileInput.files[0]);
+        validationRequest = new Request("/validate", { method: "POST", body: formData });
         analyzeRequest = new Request("/contract", { method: "POST", body: formData });
     } else {
         console.warn("MOCK REQUEST!");
         mock = true;
-
         analyzeRequest = new Request("/mockdata", { method: "GET" });
     }
+
+    return { validationRequest, analyzeRequest, mock };
+}
+
+async function requestPreValidation(validationRequest, mock) {
+    if (mock) {
+        return { isReadable: true, isContract: true, result: "Mock Request. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." };
+    }
+
+    const response = await fetch(validationRequest);
+    document.getElementById("printbtn").style.visibility = "hidden";
+    let messageText = await response.text();
+    let message;
+    try {
+        message = JSON.parse(messageText);
+    } catch (err) {
+        throw new Error(messageText || "Ungültige Serverantwort");
+    }
+    if (message.error) {
+        throw new Error(message.error);
+    }
+    return message;
+}
+
+async function requestContractAnalysis(analyzeRequest) {
+    const response = await fetch(analyzeRequest);
+    let messageText = await response.text();
+    let message;
+    try {
+        message = JSON.parse(messageText);
+    } catch (err) {
+        throw new Error(messageText || "Ungültige Serverantwort");
+    }
+    return message;
+}
+
+function renderPreValidation(message, body) {
+    body.replaceChildren(generatePreAnalysis(message));
+}
+
+function renderContractResult(message, body) {
+    body.appendChild(generateAnalysis(message));
+}
+
+function displayUploadError(ex, body, loading, preAnalysisShown) {
+    console.error(ex);
+    if (body.contains(loading)) {
+        body.removeChild(loading);
+    }
+    if (!preAnalysisShown) {
+        body.replaceChildren();
+    }
+    const err = document.createElement("div");
+    err.classList.add("error-message");
+    err.textContent = `Fehler: ${ex.message}`;
+    body.appendChild(err);
+}
+
+async function upload_file(event) {
+    event.preventDefault();
+
+    console.info("File upload started.");
+
+    const body = document.getElementById("evaluation-body");
+    const loading = createLoadingElement();
+    body.replaceChildren(loading);
+
+    const { validationRequest, analyzeRequest, mock } = prepareRequests(event.target.myfile);
+
     let preAnalysisShown = false;
 
     try {
-
-        let message;
-
-        if (!mock) {
-            const response = await fetch(validationRequest);
-            document.getElementById("printbtn").style.visibility = "hidden";
-            let status = response.status;
-            console.info("Response:");
-            console.info(status);
-            console.debug(response);
-            let messageText = await response.text();
-
-
-            try {
-                message = JSON.parse(messageText);
-            } catch (err) {
-                throw new Error(messageText || "Ungültige Serverantwort");
-            }
-            if (message.error) {
-                throw new Error(message.error);
-            }
-        }
-        else {
-            message = { isReadable: true, isContract: true, result: "Mock Request. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." };
-        }
-        console.debug(message);
-        document
-            .getElementById("evaluation-body")
-            .replaceChildren(generatePreAnalysis(message));
+        const validationMessage = await requestPreValidation(validationRequest, mock);
+        renderPreValidation(validationMessage, body);
         preAnalysisShown = true;
 
-        if (!message.isReadable || !message.isContract) {
-            throw new Error(
-                `isReadable: ${message.isReadable}, isContract: ${message.isContract}`,
-            );
+        if (!validationMessage.isReadable || !validationMessage.isContract) {
+            throw new Error(`isReadable: ${validationMessage.isReadable}, isContract: ${validationMessage.isContract}`);
         }
 
-        document.getElementById("evaluation-body").appendChild(loading);
-        const response2 = await fetch(analyzeRequest);
-        let status2 = response2.status;
-        console.info("Response:");
-        console.info(status2);
-
-        event.target.myfile.value = null;
-
-        let messageText2 = await response2.text();
-        let message2;
-        try {
-            message2 = JSON.parse(messageText2);
-        } catch (err) {
-            throw new Error(messageText2 || "Ungültige Serverantwort");
-        }
-        console.debug(message2);
-        document.getElementById("evaluation-body").removeChild(loading);
-        document
-            .getElementById("evaluation-body")
-            .appendChild(generateAnalysis(message2));
+        body.appendChild(loading);
+        const analysisMessage = await requestContractAnalysis(analyzeRequest);
+        body.removeChild(loading);
+        renderContractResult(analysisMessage, body);
         document.getElementById("printbtn").style.visibility = "visible";
     } catch (ex) {
-        console.error(ex);
-        const body = document.getElementById("evaluation-body");
-        if (body.contains(loading)) {
-            body.removeChild(loading);
-        }
-        if (!preAnalysisShown) {
-            body.replaceChildren();
-        }
-        const err = document.createElement("div");
-        err.classList.add("error-message");
-        err.textContent = `Fehler: ${ex.message}`;
-        body.appendChild(err);
+        displayUploadError(ex, body, loading, preAnalysisShown);
+    } finally {
+        event.target.myfile.value = null;
     }
 }
 function generatePreAnalysis(message) {
