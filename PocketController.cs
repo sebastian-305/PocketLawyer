@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
 
@@ -66,16 +67,17 @@ public class PocketController : ControllerBase
 
 
     [HttpPost("/validate")]
-    public async Task<ActionResult<string>> ValidateBinaryContract()
+    public async Task<ActionResult<string>> ValidateBinaryContract([FromForm] IFormFile myfile)
     {
         _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
-        return await ProcessContractRequest(BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
+        return await ProcessContractRequest(myfile, BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
     }
+
     [HttpPost("/contract")]
-    public async Task<ActionResult<string>> PostBinaryContract()
+    public async Task<ActionResult<string>> PostBinaryContract([FromForm] IFormFile myfile)
     {
         _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
-        return await ProcessContractRequest(_geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
+        return await ProcessContractRequest(myfile, _geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
     }
 
     private static string BuildValidationPrompt(string filename, string filecontent)
@@ -90,12 +92,12 @@ public class PocketController : ControllerBase
                filecontent;
     }
 
-    private async Task<ActionResult<string>> ProcessContractRequest(Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
+    private async Task<ActionResult<string>> ProcessContractRequest(IFormFile file, Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
     {
         FileContentDto requestContent;
         try
         {
-            requestContent = await PreValidate(Request);
+            requestContent = await PreValidate(file);
         }
         catch (Exception ex)
         {
@@ -113,18 +115,12 @@ public class PocketController : ControllerBase
         return Ok(answer);
     }
 
-    private async Task<FileContentDto> PreValidate(HttpRequest request)
+    private async Task<FileContentDto> PreValidate(IFormFile file)
     {
         _logger.LogDebug("Entering {Method}", nameof(PreValidate));
 
-        string? filename = request.Headers["filename"];
+        string filename = file.FileName;
         string filecontent;
-
-        if (filename == null)
-        {
-            _logger.LogWarning("Filename missing");
-            throw new BadHttpRequestException("Filename missing.");
-        }
 
         var extension = Path.GetExtension(filename).TrimStart('.');
         if (!_fileDecoderService.AllowedExtensions.Contains(extension))
@@ -134,20 +130,20 @@ public class PocketController : ControllerBase
         }
 
         long maxBytes = _configuration.GetValue<long>("MaxUploadSizeMB") * 1024 * 1024;
-        if (request.ContentLength != null && request.ContentLength > maxBytes)
+        if (file.Length > maxBytes)
         {
             throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
         }
 
-        byte[] data; //Hier werden die Daten der Datei gespeichert
+        byte[] data;
         using (var ms = new MemoryStream())
         {
-            await Request.Body.CopyToAsync(ms);
+            await file.CopyToAsync(ms);
             if (ms.Length > maxBytes)
             {
                 throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
             }
-            data = ms.ToArray();//Daten der Datei werden im Byte-Array gespeichert
+            data = ms.ToArray();
         }
 
         try
