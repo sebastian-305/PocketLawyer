@@ -283,7 +283,7 @@ public class GeminiService : IAiService
             var response = await _httpClient.PostAsync(requestUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("Prompt response: {Response}", responseString);
-            var result = JsonSerializer.Deserialize<GeminiReponse>(responseString);
+            var result = JsonSerializer.Deserialize<GeminiResponse>(responseString);
 
 
             response.EnsureSuccessStatusCode();
