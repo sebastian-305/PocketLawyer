@@ -258,7 +258,9 @@ public class GeminiService : IAiService
     }
     private string? ExtractContextKey(string responseString)
     {
-        return JsonSerializer.Deserialize<GeminiContext>(responseString)?.cachedContents?.First().name;
+        return JsonSerializer.Deserialize<GeminiContext>(responseString)?
+            .cachedContents?
+            .FirstOrDefault()?.name;
     }
     #endregion
 }
