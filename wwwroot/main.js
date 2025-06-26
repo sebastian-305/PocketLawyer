@@ -27,6 +27,13 @@ async function upload_file(event) {
         const analysisMessage = await requestContractAnalysis(analyzeRequest);
         body.removeChild(loading);
         renderContractResult(analysisMessage, body);
+        sessionStorage.setItem(
+            'analysisResult',
+            JSON.stringify({
+                validation: validationMessage,
+                analysis: analysisMessage,
+            }),
+        );
         document.getElementById('printbtn').style.visibility = 'visible';
     } catch (ex) {
         displayUploadError(ex, body, loading, preAnalysisShown);
@@ -40,4 +47,36 @@ document.addEventListener('DOMContentLoaded', () => {
         .querySelectorAll('.upload-form')
         .forEach((form) => form.addEventListener('submit', upload_file));
     window.printer = printer;
+
+    const restoreToastEl = document.getElementById('restoreToast');
+    const restoreToast = bootstrap.Toast.getOrCreateInstance(restoreToastEl);
+    const evaluationModalEl = document.getElementById('evaluation');
+
+    evaluationModalEl.addEventListener('hidden.bs.modal', () => {
+        if (sessionStorage.getItem('analysisResult')) {
+            restoreToast.show();
+        }
+    });
+
+    evaluationModalEl.addEventListener('show.bs.modal', () => {
+        restoreToast.hide();
+    });
+
+    document
+        .getElementById('restoreBtn')
+        .addEventListener('click', () => {
+            const stored = sessionStorage.getItem('analysisResult');
+            if (stored) {
+                const { validation, analysis } = JSON.parse(stored);
+                const body = document.getElementById('evaluation-body');
+                body.replaceChildren();
+                renderPreValidation(validation, body);
+                renderContractResult(analysis, body);
+                document.getElementById('printbtn').style.visibility = 'visible';
+                const modal = bootstrap.Modal.getOrCreateInstance(
+                    evaluationModalEl,
+                );
+                modal.show();
+            }
+        });
 });
