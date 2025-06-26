@@ -413,6 +413,11 @@ body {
     .intro-image img, .cta-image img {
         height: 50vh;
     }
+
+    /* Ensure narrow layouts use full width for upload elements */
+    .w-60 {
+        width: 100%;
+    }
 }
 
 @media (max-width: 576px) {
