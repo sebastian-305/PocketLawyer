@@ -182,7 +182,7 @@ public class GeminiService : IAiService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while sending prompt");
-            return "Error";
+            throw new AiServiceException("Gemini API request failed", ex);
         }
     }
     #endregion

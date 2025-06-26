@@ -53,14 +53,9 @@ body {
 }
 
 .main-page {
-/*    height: 100vh;*/
-/*    overflow-y: scroll;*/
     scroll-snap-type: y mandatory;
 }
 
-    .main-page section {
-/*        scroll-snap-align: start;*/
-    }
 
 .intro-section, .mission-section, .cta-section {
     flex-direction: row;
@@ -69,12 +64,10 @@ body {
 
 .intro-image, .cta-image {
     flex: 1;
-/*    height: 100vh;*/
     overflow: hidden;
 }
 
     .intro-image img, .cta-image img {
-/*        height: 100vh;*/
         width: auto;
         object-fit: cover;
     }
