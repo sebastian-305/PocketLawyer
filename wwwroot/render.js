@@ -18,7 +18,7 @@ export function printer() {
 
     printWindow.focus();
     printWindow.print();
-    printWindow.close();
+    printWindow.close();    
 }
 
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
