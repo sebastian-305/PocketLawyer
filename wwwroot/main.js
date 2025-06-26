@@ -4,7 +4,7 @@ import { createLoadingElement, renderPreValidation, renderContractResult, displa
 async function upload_file(event) {
     event.preventDefault();
 
-    console.info('File upload started.');
+    console.debug('File upload started.');
 
     const body = document.getElementById('evaluation-body');
     const loading = createLoadingElement();
