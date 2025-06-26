@@ -1,5 +1,8 @@
 namespace PocketLawyer.Service;
 
+// Eigene Exception-Klasse, um Fehler aus den KI-Diensten
+// eindeutig kennzeichnen zu können.
+
 /// <summary>
 /// Exception that represents errors returned from an AI service.
 /// </summary>

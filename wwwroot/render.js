@@ -1,3 +1,4 @@
+// Öffnet ein neues Fenster und erstellt eine Druckansicht
 export function printer() {
     const printWindow = window.open(
         "about:blank",
@@ -21,6 +22,7 @@ export function printer() {
     printWindow.close();
 }
 
+// Hilfsfunktion zum Aufbau eines Abschnitts
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -87,6 +89,7 @@ function generateConflictClauses(clause) {
 }
 
 export function createLoadingElement() {
+    // Zeigt während der Analyse ein Ladesymbol an
     const loading = document.createElement("img");
     loading.setAttribute("alt", "loading");
     loading.setAttribute("src", "Media/loading.gif");
@@ -97,19 +100,23 @@ export function createLoadingElement() {
 }
 
 export function renderPreValidation(message, body) {
+    // Löscht vorherigen Inhalt und zeigt die Voranalyse an
     body.replaceChildren(generatePreAnalysis(message));
 }
 
 export function renderContractResult(message, body) {
+    // Fügt die detaillierte Analyse dem Dialog hinzu
     body.appendChild(generateAnalysis(message));
 }
 
 export function displayUploadError(ex, body, loading, preAnalysisShown) {
+    // Darstellung eines Fehlers im Dialog
     console.error(ex);
     if (body.contains(loading)) {
         body.removeChild(loading);
     }
     if (!preAnalysisShown) {
+        // Modal leeren, falls noch keine Ergebnisse angezeigt wurden
         body.replaceChildren();
     }
     const err = document.createElement("div");
@@ -118,6 +125,7 @@ export function displayUploadError(ex, body, loading, preAnalysisShown) {
     body.appendChild(err);
 }
 
+// Erstellt die Darstellung der Voranalyse
 function generatePreAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("preanalysis-container");
@@ -149,6 +157,7 @@ function generatePreAnalysis(message) {
     return container;
 }
 
+// Erstellt alle Bereiche der detaillierten Analyse
 function generateAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("analysis-container");
@@ -236,6 +245,7 @@ function generateAnalysis(message) {
     container.appendChild(fadWrap);
 
     return container;
+    // Tabelle mit den Kerndaten des Vertrags erzeugen
     function generateSummary(summaryObj) {
         const container = document.createElement("div");
 
