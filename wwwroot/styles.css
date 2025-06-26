@@ -391,7 +391,11 @@ body {
 }
 
 @media (max-width: 768px) {
-    .intro-section, .mission-section, .cta-section {
+    .intro-section {
+        flex-direction: column-reverse;
+    }
+    .mission-section,
+    .cta-section {
         flex-direction: column;
     }
 
