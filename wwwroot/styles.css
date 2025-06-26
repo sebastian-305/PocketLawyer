@@ -482,12 +482,18 @@ body {
     border-radius: 10px;
 }
 
+
 .accordion-button {
     background-color: var(--paper-bg);
     color: black;
     font-size: 16px;
     font-weight: bold;
     text-transform: uppercase;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--paper-bg);
+    color: black;
 }
 
 .accordion-button:focus {
