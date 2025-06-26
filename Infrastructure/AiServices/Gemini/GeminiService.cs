@@ -173,7 +173,7 @@ public class GeminiService : IAiService
 
             response.EnsureSuccessStatusCode();
 
-            string resultText = result?.candidates[0]?.content?.parts[0]?.text ?? string.Empty;
+            string resultText = result?.Candidates[0]?.Content?.Parts[0]?.Text ?? string.Empty;
 
             if (_writeInFile)
                 WriteResponseInFile(resultText);
@@ -258,7 +258,7 @@ public class GeminiService : IAiService
     }
     private string? ExtractContextKey(string responseString)
     {
-        return JsonSerializer.Deserialize<GeminiContext>(responseString)?.cachedContents?.First().name;
+        return JsonSerializer.Deserialize<GeminiContext>(responseString)?.CachedContents?.First().Name;
     }
     #endregion
 }

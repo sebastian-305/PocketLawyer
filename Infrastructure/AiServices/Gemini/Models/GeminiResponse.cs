@@ -1,49 +1,69 @@
+using System.Text.Json.Serialization;
+
 namespace PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 
 //File from LectureEvaluationAPI2 repository
 
 public class GeminiResponse
 {
-    public Candidates[] candidates { get; set; }
-    public UsageMetadata usageMetadata { get; set; }
-    public string modelVersion { get; set; }
+    [JsonPropertyName("candidates")]
+    public Candidates[] Candidates { get; set; }
+    [JsonPropertyName("usageMetadata")]
+    public UsageMetadata UsageMetadata { get; set; }
+    [JsonPropertyName("modelVersion")]
+    public string ModelVersion { get; set; }
 }
 
 public class Candidates
 {
-    public Content content { get; set; }
-    public string finishReason { get; set; }
-    public double avgLogprobs { get; set; }
+    [JsonPropertyName("content")]
+    public Content Content { get; set; }
+    [JsonPropertyName("finishReason")]
+    public string FinishReason { get; set; }
+    [JsonPropertyName("avgLogprobs")]
+    public double AvgLogprobs { get; set; }
 }
 
 public class Content
 {
-    public Parts[] parts { get; set; }
-    public string role { get; set; }
+    [JsonPropertyName("parts")]
+    public Parts[] Parts { get; set; }
+    [JsonPropertyName("role")]
+    public string Role { get; set; }
 }
 
 public class Parts
 {
-    public string text { get; set; }
+    [JsonPropertyName("text")]
+    public string Text { get; set; }
 }
 
 public class UsageMetadata
 {
-    public int promptTokenCount { get; set; }
-    public int candidatesTokenCount { get; set; }
-    public int totalTokenCount { get; set; }
-    public PromptTokensDetails[] promptTokensDetails { get; set; }
-    public CandidatesTokensDetails[] candidatesTokensDetails { get; set; }
+    [JsonPropertyName("promptTokenCount")]
+    public int PromptTokenCount { get; set; }
+    [JsonPropertyName("candidatesTokenCount")]
+    public int CandidatesTokenCount { get; set; }
+    [JsonPropertyName("totalTokenCount")]
+    public int TotalTokenCount { get; set; }
+    [JsonPropertyName("promptTokensDetails")]
+    public PromptTokensDetails[] PromptTokensDetails { get; set; }
+    [JsonPropertyName("candidatesTokensDetails")]
+    public CandidatesTokensDetails[] CandidatesTokensDetails { get; set; }
 }
 
 public class PromptTokensDetails
 {
-    public string modality { get; set; }
-    public int tokenCount { get; set; }
+    [JsonPropertyName("modality")]
+    public string Modality { get; set; }
+    [JsonPropertyName("tokenCount")]
+    public int TokenCount { get; set; }
 }
 
 public class CandidatesTokensDetails
 {
-    public string modality { get; set; }
-    public int tokenCount { get; set; }
+    [JsonPropertyName("modality")]
+    public string Modality { get; set; }
+    [JsonPropertyName("tokenCount")]
+    public int TokenCount { get; set; }
 }
