@@ -413,6 +413,10 @@ body {
     .intro-image img, .cta-image img {
         height: 50vh;
     }
+
+    .w-60 {
+        width: 100%;
+    }
 }
 
 @media (max-width: 576px) {
