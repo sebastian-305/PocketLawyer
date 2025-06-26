@@ -94,11 +94,11 @@ function createAccordionItem(title, content, cls, id) {
     header.classList.add("accordion-header");
 
     const button = document.createElement("button");
-    button.classList.add("accordion-button", "collapsed");
+    button.classList.add("accordion-button");
     button.type = "button";
     button.setAttribute("data-bs-toggle", "collapse");
     button.setAttribute("data-bs-target", `#${id}`);
-    button.setAttribute("aria-expanded", "false");
+    button.setAttribute("aria-expanded", "true");
     button.setAttribute("aria-controls", id);
     button.innerHTML = title;
 
@@ -107,8 +107,7 @@ function createAccordionItem(title, content, cls, id) {
 
     const collapse = document.createElement("div");
     collapse.id = id;
-    collapse.classList.add("accordion-collapse", "collapse");
-    collapse.setAttribute("data-bs-parent", "#evaluation-body");
+    collapse.classList.add("accordion-collapse", "collapse", "show");
 
     const body = document.createElement("div");
     body.classList.add("accordion-body", "section", cls);
