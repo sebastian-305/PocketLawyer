@@ -54,12 +54,16 @@ body {
 
 .main-page {
     scroll-snap-type: y mandatory;
+    overflow-y: auto;
+    height: 100vh;
 }
 
 
 .intro-section, .mission-section, .cta-section {
     flex-direction: row;
     gap: 20px;
+    scroll-snap-align: start;
+    min-height: 100vh;
 }
 
 .intro-image, .cta-image {
