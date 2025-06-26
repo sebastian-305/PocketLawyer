@@ -43,6 +43,11 @@ li {
     text-align: left;
     display: block;
     width: 100%;
+    color: #000;
+    font-size: 1.2rem;
+    text-transform: none;
+    cursor: default;
+    appearance: none;
 }
 
 .accordion-button::after {
@@ -53,6 +58,3 @@ li {
     margin-bottom: 1rem;
 }
 
-.summary > h3 {
-    display: none;
-}
