@@ -262,7 +262,7 @@ public class GeminiService : IAiService
     {
         return JsonSerializer.Deserialize<GeminiContext>(responseString)?
             .CachedContents?
-            .FirstOrDefault()?.name;
+            .FirstOrDefault()?.Name;
 
     }
     #endregion
