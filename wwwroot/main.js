@@ -42,7 +42,21 @@ async function upload_file(event) {
     }
 }
 
+function updateSnapHeights() {
+    const root = document.documentElement;
+    const header = document.querySelector('.header');
+    const footer = document.querySelector('.footer');
+    if (header) {
+        root.style.setProperty('--header-height', `${header.offsetHeight}px`);
+    }
+    if (footer) {
+        root.style.setProperty('--footer-height', `${footer.offsetHeight}px`);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    updateSnapHeights();
+    window.addEventListener('resize', updateSnapHeights);
     document
         .querySelectorAll('.upload-form')
         .forEach((form) => form.addEventListener('submit', upload_file));
