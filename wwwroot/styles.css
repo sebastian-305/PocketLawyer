@@ -332,6 +332,12 @@ body {
 
     .section .item {
         margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--neutral-bg);
+    }
+
+    .section .item:last-child {
+        border-bottom: none;
     }
 
         .section .item p {
