@@ -61,9 +61,28 @@ public class PocketController : ControllerBase
             _environment.ContentRootPath,
             _configuration["ResponsesPath"] ?? "Responses");
 
-        string mockContent = await System.IO.File.ReadAllTextAsync(
-            Path.Combine(responsesPath,
-                $"{Random.Shared.Next(Directory.GetFiles(responsesPath).Length)}.json"));
+        Directory.CreateDirectory(responsesPath);
+
+        string mockContent;
+        try
+        {
+            var files = Directory.GetFiles(responsesPath);
+            if (files.Length == 0)
+                return StatusCode(StatusCodes.Status500InternalServerError, "Keine Beispieldaten gefunden.");
+
+            string filePath = files[Random.Shared.Next(files.Length)];
+            mockContent = await System.IO.File.ReadAllTextAsync(filePath);
+        }
+        catch (IOException ex)
+        {
+            _logger.LogError(ex, "Failed to read mock data");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldaten.");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogError(ex, "No permission to access mock data");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldaten.");
+        }
 
         ContractAnalysisDto? dto;
         try
