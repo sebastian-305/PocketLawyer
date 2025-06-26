@@ -86,9 +86,9 @@ public class GeminiService : IAiService
 
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(requestUri, content);
+            response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("Context API response: {Response}", responseString);
-            response.EnsureSuccessStatusCode();
             return responseString ?? "";
         }
         catch (HttpRequestException ex)
@@ -166,12 +166,10 @@ public class GeminiService : IAiService
         try
         {
             var response = await _httpClient.PostAsync(requestUri, content);
+            response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("Prompt response: {Response}", responseString);
             var result = JsonSerializer.Deserialize<GeminiResponse>(responseString);
-
-
-            response.EnsureSuccessStatusCode();
 
             string resultText = result?.Candidates[0]?.Content?.Parts[0]?.Text ?? string.Empty;
 
