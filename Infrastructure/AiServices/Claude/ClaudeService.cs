@@ -6,6 +6,7 @@ using PocketLawyer.Service;
 
 namespace PocketLawyer.Infrastructure.AiServices.Claude
 {
+    // Alternative Implementierung für den KI-Dienst "Claude"
     public class ClaudeService : IAiService
     {
         private readonly AnthropicClient _client;
@@ -13,6 +14,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
 
         public ClaudeService(IConfiguration configuration, ILogger<ClaudeService> logger)
         {
+            // API-Schlüssel aus der Konfiguration lesen und Client initialisieren
             _client = new AnthropicClient(new APIAuthentication(configuration["Claude:Key"] ?? ""));
             _logger = logger;
         }
@@ -29,6 +31,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
 
         public async Task<string> SendPrompt(string prompt, object? outputSchema, bool sendAltKey = false)
         {
+            // Baut eine einfache Anfrage an den Claude-Service zusammen
             _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
 
             SystemMessage systemPrompt = new (@"Du antwortest immer in gültigem JSON Format.
@@ -47,6 +50,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
                 System = new List<SystemMessage>() { systemPrompt }
             };
 
+            // Anfrage an den Claude-Client schicken und erste Antwort auslesen
             var response = await _client.Messages.GetClaudeMessageAsync(parameters);
             var jsonContent = response.FirstMessage.Text;
 
