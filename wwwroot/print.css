@@ -16,3 +16,13 @@ body {
 .section h3 {
     margin-bottom: 0.5rem;
 }
+
+.section .item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #000;
+}
+
+.section .item:last-child {
+    border-bottom: none;
+}
