@@ -4,13 +4,13 @@ export function prepareRequests(fileInput) {
     let mock = false;
 
     if (fileInput.files.length > 0) {
-        console.info("REAL REQUEST!");
+        console.debug("REAL REQUEST!");
         const formData = new FormData();
         formData.append("myfile", fileInput.files[0]);
         validationRequest = new Request("/validate", { method: "POST", body: formData });
         analyzeRequest = new Request("/contract", { method: "POST", body: formData });
     } else {
-        console.warn("MOCK REQUEST!");
+        console.debug("MOCK REQUEST!");
         mock = true;
         analyzeRequest = new Request("/mockdata", { method: "GET" });
     }
