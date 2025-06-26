@@ -184,7 +184,7 @@ public class PocketController : ControllerBase
         string filename = file.FileName;
         string filecontent;
 
-        var extension = Path.GetExtension(filename).TrimStart('.');
+        var extension = Path.GetExtension(filename).TrimStart('.').ToLowerInvariant();
         if (!_fileDecoderService.AllowedExtensions.Contains(extension))
         {
             _logger.LogWarning("Fileextension not allowed: {FileName}", filename);
