@@ -424,9 +424,25 @@ body {
         font-size: 2.25rem;
     }
 
-    .file-upload,
+.file-upload,
     .cta-button,
     .w-60 {
         width: 100%;
     }
+}
+
+/* Restore-Toast Styling */
+#restoreToast {
+    width: max-content;
+    font-family: var(--font-primary);
+}
+
+#restoreToast .toast-body {
+    padding: 0.25rem 0.75rem;
+}
+
+#restoreToast button {
+    font-family: inherit;
+    font-weight: 800;
+    color: var(--blue-bg);
 }
