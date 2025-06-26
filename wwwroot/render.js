@@ -277,19 +277,16 @@ function generateAnalysis(message) {
     }
 
     const fadWrap = document.createElement("div");
+    fadWrap.classList.add("section", "summary-box");
+    const fadHd = document.createElement("h3");
+    fadHd.innerHTML = "📝 Fazit";
+    fadWrap.appendChild(fadHd);
     const fadVal = document.createElement("p");
     console.debug("Fazit:");
     console.debug(message.fazit);
     fadVal.textContent = message.fazit;
     fadWrap.appendChild(fadVal);
-    container.appendChild(
-        createAccordionItem(
-            "📝 Fazit",
-            fadWrap,
-            "summary-box",
-            `acc-${idx++}`
-        )
-    );
+    container.appendChild(fadWrap);
 
     return container;
     function generateSummary(summaryObj) {
