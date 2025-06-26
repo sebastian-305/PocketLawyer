@@ -191,10 +191,11 @@ public class PocketController : ControllerBase
             throw new BadHttpRequestException($"Fileextension not recognised! Recognised extensions are {_fileDecoderService.AllowedExtensionsString}.");
         }
 
-        long maxBytes = _configuration.GetValue<long>("MaxUploadSizeMB") * 1024 * 1024;
+        long maxUploadSizeMb = _configuration.GetValue<long>("MaxUploadSizeMB");
+        long maxBytes = maxUploadSizeMb * 1024 * 1024;
         if (file.Length > maxBytes)
         {
-            throw new BadHttpRequestException($"File too large. Maximum {_configuration.GetValue<long>("MaxUploadSizeMB")} MB allowed.");
+            throw new BadHttpRequestException($"File too large. Maximum {maxUploadSizeMb} MB allowed.");
         }
 
         await using var stream = file.OpenReadStream();
