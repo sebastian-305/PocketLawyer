@@ -293,11 +293,6 @@ function generateAnalysis(message) {
         const container = document.createElement("div");
 
         container.classList.add("section", "summary");
-        const heading = document.createElement("h3");
-
-        heading.innerHTML = "Zusammenfassung";
-
-        container.appendChild(heading);
 
         const list = document.createElement("ul");
 
