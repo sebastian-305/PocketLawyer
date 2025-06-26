@@ -196,14 +196,16 @@ public class GeminiService : IAiService
 
         StringBuilder contextBuilder = new StringBuilder();
 
+        int index = 1;
         foreach (var file in files)
         {
-            contextBuilder.Append("Erster Gesetzestext mit dem Dateinamen ");
-            contextBuilder.Append(file);
+            contextBuilder.Append($"Gesetzestext {index} mit dem Dateinamen ");
+            contextBuilder.Append(Path.GetFileName(file));
             contextBuilder.AppendLine();
             contextBuilder.Append(await File.ReadAllTextAsync(file));
             contextBuilder.AppendLine();
             contextBuilder.AppendLine();
+            index++;
         }
 
         return contextBuilder.ToString();
@@ -258,7 +260,10 @@ public class GeminiService : IAiService
     }
     private string? ExtractContextKey(string responseString)
     {
-        return JsonSerializer.Deserialize<GeminiContext>(responseString)?.CachedContents?.First().Name;
+        return JsonSerializer.Deserialize<GeminiContext>(responseString)?
+            .CachedContents?
+            .FirstOrDefault()?.name;
+
     }
     #endregion
 }

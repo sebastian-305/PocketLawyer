@@ -52,3 +52,7 @@ li {
 .accordion-body {
     margin-bottom: 1rem;
 }
+
+.summary > h3 {
+    display: none;
+}
