@@ -213,12 +213,30 @@ public class GeminiService : IAiService
         _logger.LogDebug("Writing response to file");
 
         string folder = Path.Combine(Directory.GetCurrentDirectory(), "Responses");
-        string filePath = Path.Combine(folder, Directory.GetFiles(folder).Length + ".json");
 
-        _logger.LogDebug("Filename: {Name} Content Length: {Length}", Path.GetFileName(filePath), response.Length);
-        using (StreamWriter sr = new StreamWriter(filePath))
+        try
         {
+            Directory.CreateDirectory(folder);
+
+            string filePath = Path.Combine(
+                folder,
+                $"{DateTime.UtcNow:yyyyMMddHHmmssfff}.json");
+
+            _logger.LogDebug(
+                "Filename: {Name} Content Length: {Length}",
+                Path.GetFileName(filePath),
+                response.Length);
+
+            using StreamWriter sr = new StreamWriter(filePath);
             sr.Write(response);
+        }
+        catch (IOException ex)
+        {
+            _logger.LogError(ex, "Failed to write response to file");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogError(ex, "Failed to write response due to permission issues");
         }
     }
     private async Task<string?> GetContextKey()
