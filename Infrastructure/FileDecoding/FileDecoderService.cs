@@ -21,7 +21,7 @@ public class FileDecoderService : IFileDecoderService
     {
         _logger.LogDebug("Entering {Method}", nameof(GetFileContentAsync));
 
-        string extension = filename.Split(".", StringSplitOptions.RemoveEmptyEntries).Last();
+        string extension = Path.GetExtension(filename).TrimStart('.');
         _logger.LogDebug("Detected extension {Extension}", extension);
  
         if (!AllowedExtensions.Contains(extension))
