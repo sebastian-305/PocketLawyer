@@ -11,14 +11,15 @@ export function printer() {
     const link = doc.createElement("link");
     link.rel = "stylesheet";
     link.href = "print.css";
+    link.addEventListener("load", () => {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    });
     doc.head.appendChild(link);
 
     const content = document.getElementById("evaluation-body").cloneNode(true);
     doc.body.appendChild(content);
-
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();    
 }
 
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
