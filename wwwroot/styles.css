@@ -5,6 +5,8 @@
     --neutral-bg: #e9e6e0;
     --font-primary: 'Agrandir', sans-serif;
     --font-secondary: 'Crimson Text', serif;
+    --header-height: 0px;
+    --footer-height: 0px;
 }
 
 body {
@@ -13,9 +15,6 @@ body {
     background-color: var(--blue-bg);
     color: var(--neutral-bg);
     scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
-    overflow-y: auto;
-    height: 100vh;
 }
 
 .w-60 {
@@ -56,15 +55,30 @@ body {
 }
 
 .main-page {
-    /* scrolling is handled by the body */
+    scroll-snap-type: y mandatory;
+    overflow-y: auto;
+    height: 100vh;
 }
 
 
-.intro-section, .mission-section, .cta-section {
+.intro-section,
+.mission-section,
+.cta-section {
     flex-direction: row;
     gap: 20px;
     scroll-snap-align: start;
+}
+
+.intro-section {
+    min-height: calc(100vh - var(--header-height));
+}
+
+.mission-section {
     min-height: 100vh;
+}
+
+.cta-section {
+    min-height: calc(100vh - var(--footer-height));
 }
 
 .intro-image, .cta-image {
