@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.printer = printer;
 
     const restoreToastEl = document.getElementById('restoreToast');
-    const restoreToast = bootstrap.Toast.getOrCreateInstance(restoreToastEl);
+    const restoreToast = bootstrap.Toast.getOrCreateInstance(restoreToastEl, { autohide: false });
     const evaluationModalEl = document.getElementById('evaluation');
 
     evaluationModalEl.addEventListener('hidden.bs.modal', () => {
