@@ -473,3 +473,27 @@ body {
         transform: rotate(360deg);
     }
 }
+
+/* Accordion Styling */
+.accordion-item {
+    border: none;
+    margin-bottom: 20px;
+    background-color: var(--paper-bg);
+    border-radius: 10px;
+}
+
+.accordion-button {
+    background-color: var(--paper-bg);
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+}
+
+.accordion-body.section {
+    padding: 20px;
+}
