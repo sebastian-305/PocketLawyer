@@ -129,7 +129,17 @@ public class PocketController : ControllerBase
         }
 
         string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
-        string answer = await _geminiService.SendPrompt(prompt, schema, sendAltKey);
+        string answer;
+        try
+        {
+            answer = await _geminiService.SendPrompt(prompt, schema, sendAltKey);
+        }
+        catch (AiServiceException ex)
+        {
+            _logger.LogError(ex, "AI service failed while processing the prompt");
+            return StatusCode(StatusCodes.Status502BadGateway,
+                "Fehler bei der Anfrage an den KI-Dienst.");
+        }
 
         T? dto;
         try
