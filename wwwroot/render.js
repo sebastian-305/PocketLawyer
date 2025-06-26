@@ -87,12 +87,8 @@ function generateConflictClauses(clause) {
 }
 
 export function createLoadingElement() {
-    const loading = document.createElement("img");
-    loading.setAttribute("alt", "loading");
-    loading.setAttribute("src", "Media/loading.gif");
-    loading.style.width = "30%";
-    loading.style.margin = "auto";
-    loading.style.display = "block";
+    const loading = document.createElement("div");
+    loading.classList.add("loading-spinner");
     return loading;
 }
 
