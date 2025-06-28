@@ -40,7 +40,7 @@ public class PocketController : ControllerBase
         string contractPath = Path.Combine(
             _environment.ContentRootPath,
             "Samples",
-            "contract.txt");
+            "ctr2.txt");
         string contractContent;
         try
         {
