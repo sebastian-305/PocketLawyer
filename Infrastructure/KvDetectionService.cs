@@ -40,11 +40,15 @@ public class KvDetectionService : IKvDetectionService
         promptBuilder.AppendLine("Antworte im JSON-Format {\"kollektivvertrag\":\"NAME Oder Multiple ODER Keiner\"}.");
         promptBuilder.AppendLine("Der Wortlaut deiner Antwort solle exakt dem Wortlaut der übermittelten Namen der Kollektivverträge entsprechen, weil diese danach in einem Programm verarbeitet werden.");
 
-        var answers = new List<string>();
-        for (int i = 0; i < 3; i++)
-        {
-            answers.Add(await _aiService.SendPrompt(promptBuilder.ToString(), null, false));
-        }
+        var tasks = Enumerable
+            .Range(0, 3)
+            .Select(_ => _aiService.SendPrompt(promptBuilder.ToString(), null, false))
+            .ToArray();
+
+        string[] answers = await Task.WhenAll(tasks);
+
+        bool allEqual = answers.Distinct().Count() == 1;
+        _logger.LogDebug("Detection answers all equal: {AllEqual}", allEqual);
 
         string result = answers
             .GroupBy(a => a)
