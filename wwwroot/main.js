@@ -1,7 +1,7 @@
 import { prepareRequests, createAnalysisRequest, requestPreValidation, requestContractAnalysis } from './network.js';
 import { createLoadingElement, renderPreValidation, renderContractResult, displayUploadError, printer } from './render.js';
 
-async function upload_file(event) {
+async function uploadFile(event) {
     event.preventDefault();
 
     console.debug('File upload started.');
@@ -50,7 +50,7 @@ async function upload_file(event) {
 document.addEventListener('DOMContentLoaded', () => {
     document
         .querySelectorAll('.upload-form')
-        .forEach((form) => form.addEventListener('submit', upload_file));
+        .forEach((form) => form.addEventListener('submit', uploadFile));
     window.printer = printer;
 
     const restoreToastEl = document.getElementById('restoreToast');

@@ -39,7 +39,7 @@ public class PocketController : ControllerBase
     }
 
     [HttpGet("/test")]
-    public async Task<ActionResult<TestResultDto>> Test()
+    public async Task<ActionResult<KvDetectionTestResultDto>> Test()
     {
         _logger.LogDebug("Entering {Method}", nameof(Test));
 
@@ -71,7 +71,7 @@ public class PocketController : ControllerBase
             return StatusCode(StatusCodes.Status502BadGateway, "Fehler bei der Anfrage an den KI-Dienst.");
         }
 
-        var resultDto = new TestResultDto
+        var resultDto = new KvDetectionTestResultDto
         {
             AllEqual = detection.AllEqual
         };
@@ -137,7 +137,7 @@ public class PocketController : ControllerBase
         string? kvName = null;
         try
         {
-            var requestContent = await PreValidate(request.MyFile!);
+            var requestContent = await PreValidate(request.UploadedFile!);
             KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
             if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
             {
@@ -150,9 +150,9 @@ public class PocketController : ControllerBase
         }
 
         var result = await ProcessContractRequest<ContractValidationDto>(
-            request.MyFile!,
+            request.UploadedFile!,
             BuildValidationPrompt,
-            GeminiService.PreAnalyzerSchema,
+            GeminiService.PreAnalyzerSchemaDefinition,
             true,
             true);
 
@@ -171,9 +171,9 @@ public class PocketController : ControllerBase
 
         string? kvName = request.Kollektivvertrag;
         return await ProcessContractRequest<ContractAnalysisDto>(
-            request.MyFile!,
+            request.UploadedFile!,
             _geminiService.PromptBuilder,
-            GeminiService.AnalyzerSchema,
+            GeminiService.AnalyzerSchemaDefinition,
             false,
             false,
             string.IsNullOrWhiteSpace(kvName),
@@ -197,7 +197,7 @@ public class PocketController : ControllerBase
     private async Task<ActionResult<T>> ProcessContractRequest<T>(IFormFile file,
         Func<string, string, string> promptBuilder,
         object schema,
-        bool sendAltKey,
+        bool useAltKey,
         bool validationErrorFormat,
         bool detectKv = false,
         string? kvName = null)
@@ -255,7 +255,7 @@ public class PocketController : ControllerBase
         string answer;
         try
         {
-            answer = await _geminiService.SendPrompt(prompt, schema, sendAltKey);
+            answer = await _geminiService.SendPrompt(prompt, schema, useAltKey);
         }
         catch (AiServiceException ex)
         {
