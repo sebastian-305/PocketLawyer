@@ -1,21 +1,32 @@
 export function prepareRequests(fileInput) {
     let validationRequest;
-    let analyzeRequest;
+    let file = null;
     let mock = false;
 
     if (fileInput.files.length > 0) {
         console.debug("REAL REQUEST!");
         const formData = new FormData();
-        formData.append("myfile", fileInput.files[0]);
-        validationRequest = new Request("/validate", { method: "POST", body: formData });
-        analyzeRequest = new Request("/contract", { method: "POST", body: formData });
+        file = fileInput.files[0];
+        formData.append("myfile", file);
+        validationRequest = new Request("/preanalysis", { method: "POST", body: formData });
     } else {
         console.debug("MOCK REQUEST!");
         mock = true;
-        analyzeRequest = new Request("/mockdata", { method: "GET" });
     }
 
-    return { validationRequest, analyzeRequest, mock };
+    return { validationRequest, file, mock };
+}
+
+export function createAnalysisRequest(file, kvName, mock) {
+    if (mock) {
+        return new Request("/mockdata", { method: "GET" });
+    }
+    const formData = new FormData();
+    formData.append("myfile", file);
+    if (kvName) {
+        formData.append("kollektivvertrag", kvName);
+    }
+    return new Request("/mainanalysis", { method: "POST", body: formData });
 }
 
 export async function requestPreValidation(validationRequest, mock) {

@@ -1,4 +1,4 @@
-import { prepareRequests, requestPreValidation, requestContractAnalysis } from './network.js';
+import { prepareRequests, createAnalysisRequest, requestPreValidation, requestContractAnalysis } from './network.js';
 import { createLoadingElement, renderPreValidation, renderContractResult, displayUploadError, printer } from './render.js';
 
 async function upload_file(event) {
@@ -10,7 +10,7 @@ async function upload_file(event) {
     const loading = createLoadingElement();
     body.replaceChildren(loading);
 
-    const { validationRequest, analyzeRequest, mock } = prepareRequests(event.target.myfile);
+    const { validationRequest, file, mock } = prepareRequests(event.target.myfile);
 
     let preAnalysisShown = false;
 
@@ -23,8 +23,13 @@ async function upload_file(event) {
             throw new Error(`isReadable: ${validationMessage.isReadable}, isContract: ${validationMessage.isContract}`);
         }
 
+        const analysisRequest = createAnalysisRequest(
+            file,
+            validationMessage.kollektivvertrag,
+            mock,
+        );
         body.appendChild(loading);
-        const analysisMessage = await requestContractAnalysis(analyzeRequest);
+        const analysisMessage = await requestContractAnalysis(analysisRequest);
         body.removeChild(loading);
         renderContractResult(analysisMessage, body);
         sessionStorage.setItem(

@@ -12,4 +12,7 @@ public class ContractValidationDto
 
     [JsonPropertyName("result")]
     public string Result { get; set; } = string.Empty;
+
+    [JsonPropertyName("kollektivvertrag")]
+    public string? Kollektivvertrag { get; set; }
 }

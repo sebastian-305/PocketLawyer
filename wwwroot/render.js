@@ -175,6 +175,11 @@ function generatePreAnalysis(message) {
     console.debug(message.result);
     fadVal.textContent = message.result;
     fadWrap.appendChild(fadVal);
+    if (message.kollektivvertrag) {
+        const kvWrap = document.createElement("p");
+        kvWrap.textContent = `Erkannter Kollektivvertrag: ${message.kollektivvertrag}`;
+        fadWrap.appendChild(kvWrap);
+    }
     container.appendChild(fadWrap);
     return container;
 }
@@ -190,6 +195,11 @@ function generateAnalysis(message) {
     heading.innerHTML = "Deine Vertragsanalyse";
     hdr.appendChild(heading);
     container.appendChild(hdr);
+    if (message.kollektivvertrag) {
+        const kvInfo = document.createElement("p");
+        kvInfo.textContent = `Kollektivvertrag: ${message.kollektivvertrag}`;
+        container.appendChild(kvInfo);
+    }
 
     let idx = 0;
     container.appendChild(
