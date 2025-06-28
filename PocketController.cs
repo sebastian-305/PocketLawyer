@@ -4,8 +4,6 @@ using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
 using System.Text.Json;
 using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PocketLawyer;
 
@@ -19,6 +17,7 @@ public class PocketController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
     private readonly IKollektivvertragService _kvService;
+    private readonly IKvDetectionService _kvDetectionService;
 
     public PocketController(ILogger<PocketController> logger,
         [FromKeyedServices("gemini")] IAiService geminiService,
@@ -26,7 +25,8 @@ public class PocketController : ControllerBase
         [FromKeyedServices("claude")] IAiService claudeService,
         IConfiguration configuration,
         IWebHostEnvironment environment,
-        IKollektivvertragService kvService)
+        IKollektivvertragService kvService,
+        IKvDetectionService kvDetectionService)
     {
         _logger = logger;
         _geminiService = geminiService;
@@ -35,6 +35,7 @@ public class PocketController : ControllerBase
         _configuration = configuration;
         _environment = environment;
         _kvService = kvService;
+        _kvDetectionService = kvDetectionService;
     }
 
     [HttpGet("/test")]
@@ -43,12 +44,10 @@ public class PocketController : ControllerBase
         _logger.LogDebug("Entering {Method}", nameof(Test));
 
         string contractContent;
-        string[] kvsFolders;
         try
         {
             contractContent = await _kvService.GetSampleContractAsync();
-            kvsFolders = await _kvService.GetKvsDirectoriesAsync();
-            _logger.LogDebug("KVs: {KV}", string.Join(", ", kvsFolders));
+            _logger.LogDebug("Loaded sample contract");
         }
         catch (IOException ex)
         {
@@ -61,27 +60,10 @@ public class PocketController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei oder der Kollektivverträge.");
         }
 
-        var promptBuilder = new StringBuilder();
-
-     
-        promptBuilder.AppendLine("Arbeitsvertrag:");
-        promptBuilder.AppendLine(contractContent);
-        promptBuilder.AppendLine();
-        promptBuilder.AppendLine("Kollektivverträge:");
-        promptBuilder.AppendLine(string.Join(", ", kvsFolders));
-        promptBuilder.AppendLine();
-        promptBuilder.AppendLine("Finde heraus, ob einer der bereits übermittleten Kollektivverträge zu dem Arbeitsvertrag passt. Schreibe Multiple wenn mehrere Kollektivverträge passen würden.");
-        promptBuilder.AppendLine("Falls keiner Kollektivvertrag ausfindig gemacht werden kann oder wenn keiner der Kollegtivveträge in der übermittelten Liste zum Arbeitsvertrag passt.");
-        promptBuilder.AppendLine("Antworte im JSON-Format {\"kollektivvertrag\":\"NAME Oder Multiple ODER Keiner\"}.");
-        promptBuilder.AppendLine("Der Wortlaut deiner Antwort solle exakt dem Wortlaut der übermittelten Namen der Kollektivverträge entsprechen, weil diese danach in einem Programm verarbeitet werden.");
-
-        var answers = new List<string>();
+        string answer;
         try
         {
-            for (int i = 0; i < 3; i++)
-            {
-                answers.Add(await _claudeService.SendPrompt(promptBuilder.ToString(), null, false));
-            }
+            answer = await _kvDetectionService.DetectAsync(contractContent);
         }
         catch (Exception ex)
         {
@@ -89,11 +71,10 @@ public class PocketController : ControllerBase
             return StatusCode(StatusCodes.Status502BadGateway, "Fehler bei der Anfrage an den KI-Dienst.");
         }
 
-        bool allEqual = answers.Distinct().Count() == 1;
         var resultDto = new TestResultDto
         {
-            Responses = answers.ToArray(),
-            AllEqual = allEqual
+            Responses = new[] { answer },
+            AllEqual = true
         };
 
         return Ok(resultDto);
