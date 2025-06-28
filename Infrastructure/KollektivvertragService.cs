@@ -35,7 +35,7 @@ public class KollektivvertragService : IKollektivvertragService
         return await File.ReadAllTextAsync(path);
     }
 
-    public Task<string[]> GetKvsDirectoriesAsync()
+    public string[] GetKvsDirectories()
     {
         _logger.LogDebug("Listing KVS directories");
         string configuredPath = _configuration["KVSPath"] ?? "Infrastructure/KVS";
@@ -46,7 +46,7 @@ public class KollektivvertragService : IKollektivvertragService
             .Select(name => Path.GetFileName(name) ?? string.Empty)
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .ToArray();
-        return Task.FromResult(folders);
+        return folders;
     }
 
     public async Task<string[]> GetKvFileContentsAsync(string kvName)
