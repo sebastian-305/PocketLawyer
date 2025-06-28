@@ -103,7 +103,7 @@ public class GeminiService : IAiService
             return "Something went wrong";
         }
     }
-    public string PromptBuilder(string filename, string filecontent)
+    public string PromptBuilder(string filename, string fileContent)
     {
         StringBuilder promptBuilder = new StringBuilder();
 
@@ -122,7 +122,7 @@ public class GeminiService : IAiService
         promptBuilder.Append("\n\nDateiname des Vertrags: ");
         promptBuilder.Append(filename);
         promptBuilder.Append("\n\nVertragsinhalt: \n");
-        promptBuilder.Append(filecontent);
+        promptBuilder.Append(fileContent);
         promptBuilder.Append("---------------------------------");
 
         _logger.LogInformation("Built prompt with the length of {length} symbols", promptBuilder.Length);

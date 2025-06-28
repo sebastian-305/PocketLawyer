@@ -180,7 +180,7 @@ public class PocketController : ControllerBase
             kvName);
     }
 
-    private static string BuildValidationPrompt(string filename, string filecontent)
+    private static string BuildValidationPrompt(string filename, string fileContent)
     {
         var sb = new StringBuilder();
         sb.Append("Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolean Variable \"isReadable\".");
@@ -190,7 +190,7 @@ public class PocketController : ControllerBase
         sb.Append("Verwende keine Markdown-Formatierungen! Formatiere die Antwort in HTML! Hier die Datei:\n\n Dateiname: \n");
         sb.Append(filename);
         sb.Append("\nDateiinhalt: ");
-        sb.Append(filecontent);
+        sb.Append(fileContent);
         return sb.ToString();
     }
 
@@ -299,7 +299,7 @@ public class PocketController : ControllerBase
         _logger.LogDebug("Entering {Method}", nameof(PreValidate));
 
         string filename = file.FileName;
-        string filecontent;
+        string fileContent;
 
         var extension = Path.GetExtension(filename).TrimStart('.').ToLowerInvariant();
         if (!_fileDecoderService.AllowedExtensions.Contains(extension))
@@ -319,7 +319,7 @@ public class PocketController : ControllerBase
 
         try
         {
-            filecontent = await _fileDecoderService.GetFileContentAsync(filename, stream);
+            fileContent = await _fileDecoderService.GetFileContentAsync(filename, stream);
         }
         catch (Exception ex)
         {
@@ -327,7 +327,7 @@ public class PocketController : ControllerBase
             throw new BadHttpRequestException(ex.Message);
         }
 
-        return new FileContentDto(filename, filecontent);
+        return new FileContentDto(filename, fileContent);
     }
 
 }
