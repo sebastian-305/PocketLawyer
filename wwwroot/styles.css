@@ -28,7 +28,6 @@ body {
     }
 
 .header {
-    --header-height: 5rem; /* adjust to actual header size */
     border-bottom: 1px solid #e9e6e0;
     position: relative;
 }
@@ -64,16 +63,33 @@ body {
     gap: 20px;
 }
 
+<<<<<<< HEAD
+.intro-image, .cta-image {
+=======
 .intro-section {
     min-height: calc(100vh - var(--header-height));
 }
 
-.intro-image, .cta-image {
+.intro-image {
+    flex: 1;
+    overflow: hidden;
+    max-width: calc(100vh - var(--header-height));
+}
+
+.cta-image {
+>>>>>>> parent of 10b7a6b (Revert "Merge pull request #109 from sebastian-305/codex/bildgröße-an-bildschirmbreite-anpassen")
     flex: 1;
     overflow: hidden;
 }
 
-    .intro-image img, .cta-image img {
+    .intro-image img {
+        width: 100%;
+        max-height: calc(100vh - var(--header-height));
+        height: auto;
+        object-fit: cover;
+    }
+
+    .cta-image img {
         width: 100%;
         max-height: 100vh;
         height: auto;
@@ -421,8 +437,12 @@ body {
         font-size: 2.25rem;
     }
 
+    .intro-image {
+        max-width: none;
+    }
+
     .intro-image img, .cta-image img {
-        height: 50vh;
+        max-height: 50vh;
     }
 
     .w-60 {
