@@ -64,6 +64,7 @@ body {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .intro-image, .cta-image {
 =======
 .intro-section {
@@ -80,6 +81,8 @@ body {
 .cta-image {
 >>>>>>> parent of 10b7a6b (Revert "Merge pull request #109 from sebastian-305/codex/bildgröße-an-bildschirmbreite-anpassen")
 =======
+=======
+>>>>>>> parent of c5ff8af (style: adjust sections for header height)
 .intro-image, .cta-image {
 >>>>>>> parent of 8a10872 (Limit intro image width)
     flex: 1;
