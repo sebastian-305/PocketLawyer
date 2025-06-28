@@ -176,7 +176,7 @@ public class GeminiService : IAiService
             string resultText = result?.Candidates[0]?.Content?.Parts[0]?.Text ?? string.Empty;
 
             if (_writeInFile)
-                WriteResponseInFile(resultText);
+                WriteResponseToFile(resultText);
             return resultText;
         }
         catch (Exception ex)
@@ -210,7 +210,7 @@ public class GeminiService : IAiService
 
         return contextBuilder.ToString();
     }
-    private void WriteResponseInFile(string response)
+    private void WriteResponseToFile(string response)
     {
         _logger.LogDebug("Writing response to file");
 
