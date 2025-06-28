@@ -112,6 +112,7 @@ public class GeminiService : IAiService
         promptBuilder.AppendLine("Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. ");
         promptBuilder.AppendLine("Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln.");
         promptBuilder.AppendLine("Falls ein Kollektivvertrag mitgeschickt wird, hebe alle Klauseln heraus, die für den Arbeitnehmer eine Verbesserung gegenüber dem Kollektivvertrag darstellen.");
+        promptBuilder.AppendLine("Finde sonstige vorteilhafte Klauseln, falls es welche gibt.");
         promptBuilder.AppendLine("Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. ");
         promptBuilder.AppendLine("Gibt zu einer fachlichen Begründung auch immer eine Erklärung in einfacher Sprache.");
         promptBuilder.AppendLine("Bitte gründe deine Aussagen auf die Gesetze im Cached Kontext. \n");
