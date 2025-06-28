@@ -1,6 +1,6 @@
 namespace PocketLawyer;
 
-public class TestResultDto
+public class KvDetectionTestResultDto
 {
     public bool AllEqual { get; set; }
 }

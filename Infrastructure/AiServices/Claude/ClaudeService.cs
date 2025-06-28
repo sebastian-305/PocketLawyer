@@ -17,7 +17,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             _logger = logger;
         }
 
-        public string PromptBuilder(string filename, string filecontent)
+        public string PromptBuilder(string filename, string fileContent)
         {
             throw new NotImplementedException();
         }
@@ -27,7 +27,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             throw new NotImplementedException();
         }
 
-        public async Task<string> SendPrompt(string prompt, object? outputSchema, bool sendAltKey = false)
+        public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
         {
             _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
 
