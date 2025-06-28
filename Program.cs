@@ -21,7 +21,6 @@ builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
 builder.Services.AddScoped<IKollektivvertragService, KollektivvertragService>();
 builder.Services.AddScoped<IKvDetectionService, KvDetectionService>();
-//var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
