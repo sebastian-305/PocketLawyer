@@ -39,7 +39,7 @@ public class PocketController : ControllerBase
     }
 
     [HttpGet("/test")]
-    public async Task<ActionResult<TestResultDto>> Test()
+    public async Task<ActionResult<KvDetectionTestResultDto>> Test()
     {
         _logger.LogDebug("Entering {Method}", nameof(Test));
 
@@ -71,7 +71,7 @@ public class PocketController : ControllerBase
             return StatusCode(StatusCodes.Status502BadGateway, "Fehler bei der Anfrage an den KI-Dienst.");
         }
 
-        var resultDto = new TestResultDto
+        var resultDto = new KvDetectionTestResultDto
         {
             AllEqual = detection.AllEqual
         };
