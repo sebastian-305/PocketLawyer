@@ -137,7 +137,7 @@ public class PocketController : ControllerBase
         string? kvName = null;
         try
         {
-            var requestContent = await PreValidate(request.MyFile!);
+            var requestContent = await PreValidate(request.UploadedFile!);
             KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
             if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
             {
@@ -150,7 +150,7 @@ public class PocketController : ControllerBase
         }
 
         var result = await ProcessContractRequest<ContractValidationDto>(
-            request.MyFile!,
+            request.UploadedFile!,
             BuildValidationPrompt,
             GeminiService.PreAnalyzerSchema,
             true,
@@ -171,7 +171,7 @@ public class PocketController : ControllerBase
 
         string? kvName = request.Kollektivvertrag;
         return await ProcessContractRequest<ContractAnalysisDto>(
-            request.MyFile!,
+            request.UploadedFile!,
             _geminiService.PromptBuilder,
             GeminiService.AnalyzerSchema,
             false,
