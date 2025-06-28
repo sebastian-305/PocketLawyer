@@ -42,7 +42,7 @@ public class FileDecoderService : IFileDecoderService
                 using (PdfDocument document = PdfDocument.Open(content))
                 {
                     StringBuilder contentBuilder = new StringBuilder();
-                    foreach (Page page in document.GetPages())
+                    foreach (UglyToad.PdfPig.Content.Page page in document.GetPages())
                         contentBuilder.Append(page.Text);
                     return contentBuilder.ToString();
                 }
