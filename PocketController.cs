@@ -197,7 +197,7 @@ public class PocketController : ControllerBase
     private async Task<ActionResult<T>> ProcessContractRequest<T>(IFormFile file,
         Func<string, string, string> promptBuilder,
         object schema,
-        bool sendAltKey,
+        bool useAltKey,
         bool validationErrorFormat,
         bool detectKv = false,
         string? kvName = null)
@@ -255,7 +255,7 @@ public class PocketController : ControllerBase
         string answer;
         try
         {
-            answer = await _geminiService.SendPrompt(prompt, schema, sendAltKey);
+            answer = await _geminiService.SendPrompt(prompt, schema, useAltKey);
         }
         catch (AiServiceException ex)
         {
