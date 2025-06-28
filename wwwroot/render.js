@@ -136,15 +136,24 @@ function createAccordionItem(title, content, cls, id) {
 export function createLoadingElement() {
     const loading = document.createElement("div");
     loading.classList.add("loading-spinner");
+    loading.setAttribute("role", "status");
+    const srText = document.createElement("span");
+    srText.classList.add("visually-hidden");
+    srText.textContent = "Analyse läuft…";
+    loading.appendChild(srText);
     return loading;
 }
 
 export function renderPreValidation(message, body) {
-    body.replaceChildren(generatePreAnalysis(message));
+    const container = generatePreAnalysis(message);
+    body.replaceChildren(container);
+    container.focus();
 }
 
 export function renderContractResult(message, body) {
-    body.appendChild(generateAnalysis(message));
+    const container = generateAnalysis(message);
+    body.appendChild(container);
+    container.focus();
 }
 
 export function displayUploadError(ex, body, loading, preAnalysisShown) {
@@ -157,8 +166,10 @@ export function displayUploadError(ex, body, loading, preAnalysisShown) {
     }
     const err = document.createElement("div");
     err.classList.add("error-message");
+
     err.setAttribute("role", "alert");
     err.setAttribute("tabindex", "-1");
+
     err.textContent = `Fehler: ${ex.message}`;
     body.appendChild(err);
     err.focus();
@@ -167,6 +178,7 @@ export function displayUploadError(ex, body, loading, preAnalysisShown) {
 function generatePreAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("preanalysis-container");
+    container.tabIndex = -1;
     if (!message.isReadable) {
         const heading = document.createElement("h2");
         heading.innerHTML =
@@ -199,6 +211,7 @@ function generatePreAnalysis(message) {
 function generateAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("analysis-container");
+    container.tabIndex = -1;
 
     const hdr = document.createElement("div");
     hdr.classList.add("header-a");
