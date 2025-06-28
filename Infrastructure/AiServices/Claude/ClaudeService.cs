@@ -17,7 +17,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             _logger = logger;
         }
 
-        public string PromptBuilder(string filename, string filecontent)
+        public string PromptBuilder(string filename, string fileContent)
         {
             throw new NotImplementedException();
         }
