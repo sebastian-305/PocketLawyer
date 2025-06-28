@@ -19,6 +19,9 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             _logger = logger;
         }
 
+        // In diesem Beispiel ist nur die Methode SendPrompt implementiert.
+        // Die anderen Methoden könnten analog zur Gemini-Implementierung
+        // ausgefüllt werden.
         public string PromptBuilder(string filename, string fileContent)
         {
             throw new NotImplementedException();

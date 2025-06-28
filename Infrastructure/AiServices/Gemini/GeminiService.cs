@@ -8,16 +8,30 @@ using System.Text.Json;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// Implementierung des IAiService, die mit der Google Gemini API kommuniziert.
+// Dieser Dienst baut die Prompts, sendet sie an die API und liefert die
+// JSON-Antwort zurück.
+
 public class GeminiService : IAiService
 {
+    // Gemeinsame HttpClient-Instanz für alle Anfragen
     private readonly HttpClient _httpClient;
+    // Primärer API-Schlüssel aus der Konfiguration
     private readonly string _apiKey;
+    // Optionaler zweiter Schlüssel, wenn useAltKey == true
     private readonly string _apiAltKey;
+    // Kennung des zu verwendenden Gemini-Modells
     private readonly string _modelId;
+    // Logger für Diagnoseausgaben
     private readonly ILogger<GeminiService> _logger;
+    // Bei true wird die Rohantwort im Responses-Ordner gespeichert
     private readonly bool _writeInFile;
+    // JSON-Schema, das die erwartete Antwort der Hauptanalyse beschreibt
     public static AnalyzerSchema AnalyzerSchemaDefinition => new AnalyzerSchema();
+    // Schema für die Vorvalidierung
     public static PreAnalyzerSchema PreAnalyzerSchemaDefinition => new PreAnalyzerSchema();
+    // Abhängigkeiten werden vom Framework injiziert. Konfigurationswerte
+    // stammen aus appsettings.json oder Umgebungsvariablen.
     public GeminiService(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiService> logger)
     {
         _httpClient = httpClient;
@@ -29,6 +43,9 @@ public class GeminiService : IAiService
     }
 
     #region public_methods
+    // Lädt den zwischengespeicherten juristischen Kontext (Gesetzestexte)
+    // zu Gemini hoch, damit das Modell ihn in späteren Prompts verwenden kann.
+    // Die API liefert dabei einen Schlüssel zurück, der mehrfach genutzt werden kann.
     public async Task<string> SendContext()
     {
         _logger.LogDebug("Entering {Method}", nameof(SendContext));
@@ -103,6 +120,9 @@ public class GeminiService : IAiService
             return "Something went wrong";
         }
     }
+    // Erstellt den Instruktionstext, der zusammen mit dem Vertrag an Gemini
+    // gesendet wird. Die KI liefert JSON zurück, das der
+    // AnalyzerSchemaDefinition entspricht.
     public string PromptBuilder(string filename, string fileContent)
     {
         StringBuilder promptBuilder = new StringBuilder();
@@ -132,6 +152,9 @@ public class GeminiService : IAiService
         _logger.LogInformation("Built prompt with the length of {length} symbols", promptBuilder.Length);
         return promptBuilder.ToString();
     }
+    // Sendet ein Prompt an die Gemini API und liefert die Textantwort zurück.
+    // Wenn <useAltKey> wahr ist, wird der alternative API-Schlüssel genutzt und
+    // es wird kein zuvor hochgeladener Kontext angehängt.
     public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
     {
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
@@ -193,6 +216,9 @@ public class GeminiService : IAiService
     #endregion
 
     #region private_methods
+    // Liest alle Gesetzestexte aus dem Ordner Infrastructure/Context ein
+    // und fügt sie zu einem großen String zusammen, der später von der
+    // Gemini API zwischengespeichert wird.
     private static async Task<string> ReadLawContentAsync()
     {
         var dir = Path.Combine(Directory.GetCurrentDirectory(), "Infrastructure", "Context");
@@ -215,6 +241,9 @@ public class GeminiService : IAiService
 
         return contextBuilder.ToString();
     }
+    // Schreibt die rohe JSON-Antwort in den Ordner Responses, damit sie
+    // später eingesehen werden kann. Fehler beim Schreiben werden nur
+    // protokolliert und unterbrechen den Ablauf nicht.
     private void WriteResponseToFile(string response)
     {
         _logger.LogDebug("Writing response to file");
@@ -246,6 +275,8 @@ public class GeminiService : IAiService
             _logger.LogError(ex, "Failed to write response due to permission issues");
         }
     }
+    // Ruft den aktuell gültigen Context-Key von Gemini ab. Falls keiner
+    // vorhanden ist, wird ein neuer Kontext hochgeladen.
     private async Task<string?> GetContextKey()
     {
         _logger.LogDebug("Entering {Method}", nameof(GetContextKey));
@@ -263,6 +294,7 @@ public class GeminiService : IAiService
 
         return result;
     }
+    // Hilfsfunktion, um den Context-Key aus der API-Antwort zu lesen
     private string? ExtractContextKey(string responseString)
     {
         return JsonSerializer.Deserialize<GeminiContext>(responseString)?

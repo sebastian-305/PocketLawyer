@@ -1,3 +1,4 @@
+// Rendering-Helfer für das Analyse-Modal und zugehörige UI-Elemente
 export function printer() {
     const printWindow = window.open(
         "about:blank",
@@ -21,7 +22,7 @@ export function printer() {
     const content = document.getElementById("evaluation-body").cloneNode(true);
     doc.body.appendChild(content);
 }
-
+// Helferfunktion für die verschiedenen Klausel-Generatoren
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -132,7 +133,7 @@ function createAccordionItem(title, content, cls, id) {
 
     return item;
 }
-
+// Erstellt den animierten Spinner, der während laufender Requests angezeigt wird
 export function createLoadingElement() {
     const loading = document.createElement("div");
     loading.classList.add("loading-spinner");
@@ -144,18 +145,21 @@ export function createLoadingElement() {
     return loading;
 }
 
+// Rendert das Ergebnis der Voranalyse
 export function renderPreValidation(message, body) {
     const container = generatePreAnalysis(message);
     body.replaceChildren(container);
     container.focus();
 }
 
+// Rendert die detaillierte Vertragsanalyse
 export function renderContractResult(message, body) {
     const container = generateAnalysis(message);
     body.appendChild(container);
     container.focus();
 }
 
+// Zeigt eine Fehlermeldung im Modal an
 export function displayUploadError(ex, body, loading, preAnalysisShown) {
     console.error(ex);
     if (body.contains(loading)) {
@@ -175,6 +179,7 @@ export function displayUploadError(ex, body, loading, preAnalysisShown) {
     err.focus();
 }
 
+// Erstellt den DOM-Aufbau für das Ergebnis der Voranalyse
 function generatePreAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("preanalysis-container");
@@ -208,6 +213,7 @@ function generatePreAnalysis(message) {
     return container;
 }
 
+// Erstellt den DOM-Aufbau für die detaillierte Analyse
 function generateAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("analysis-container");

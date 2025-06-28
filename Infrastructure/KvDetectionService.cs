@@ -8,12 +8,19 @@ using PocketLawyer;
 
 namespace PocketLawyer.Infrastructure;
 
+// Nutzt einen KI-Dienst, um zu ermitteln, welchem Kollektivvertrag ein Vertrag
+// höchstwahrscheinlich zuzuordnen ist.
+
 public class KvDetectionService : IKvDetectionService
 {
+    // Logger für Fehlersuche
     private readonly ILogger<KvDetectionService> _logger;
+    // Zugriff auf die verfügbaren Kollektivverträge
     private readonly IKollektivvertragService _kvService;
+    // KI-Dienst (hier Claude), der die Erkennung durchführt
     private readonly IAiService _aiService;
 
+    // Konstruktor, dem die Abhängigkeiten vom DI-Container übergeben werden
     public KvDetectionService(
         ILogger<KvDetectionService> logger,
         IKollektivvertragService kvService,
@@ -24,6 +31,8 @@ public class KvDetectionService : IKvDetectionService
         _aiService = aiService;
     }
 
+    // Sendet den Vertragstext mehrfach an den KI-Dienst und fasst die Antworten
+    // zusammen, um den wahrscheinlichsten KV-Namen zu ermitteln.
     public async Task<KvDetectionResult> DetectAsync(string contractContent)
     {
         _logger.LogDebug("Entering {Method}", nameof(DetectAsync));
@@ -68,6 +77,9 @@ public class KvDetectionService : IKvDetectionService
         };
     }
 
+    // Versucht, das von der KI gelieferte JSON zu parsen und die Property
+    // "kollektivvertrag" auszulesen. Schlägt das fehl, wird der rohe String
+    // zurückgegeben, damit der Aufrufer damit umgehen kann.
     private string ExtractKvName(string json)
     {
         try

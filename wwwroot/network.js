@@ -1,3 +1,6 @@
+// Erstellt die Fetch-Requests für Voranalyse und Hauptanalyse.
+// Gibt die gewählte Datei sowie ein Flag zurück, ob wir im Mock-Modus arbeiten
+// (keine echte Datei ausgewählt).
 export function prepareRequests(fileInput) {
     let validationRequest;
     let file = null;
@@ -17,6 +20,7 @@ export function prepareRequests(fileInput) {
     return { validationRequest, file, mock };
 }
 
+// Baut den Request für den Analyse-Endpunkt
 export function createAnalysisRequest(file, kvName, mock) {
     if (mock) {
         return new Request("/mockdata", { method: "GET" });
@@ -29,6 +33,8 @@ export function createAnalysisRequest(file, kvName, mock) {
     return new Request("/mainanalysis", { method: "POST", body: formData });
 }
 
+// Ruft den Voranalyse-Endpunkt auf und liest die JSON-Antwort ein.
+// Im Mock-Modus wird stattdessen ein statisches Objekt zurückgegeben.
 export async function requestPreValidation(validationRequest, mock) {
     if (mock) {
         return {
@@ -54,6 +60,7 @@ export async function requestPreValidation(validationRequest, mock) {
     return message;
 }
 
+// Ruft den Analyse-Endpunkt auf und liest die JSON-Antwort ein
 export async function requestContractAnalysis(analyzeRequest) {
     const response = await fetch(analyzeRequest);
     let messageText = await response.text();

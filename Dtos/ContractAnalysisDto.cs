@@ -2,6 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace PocketLawyer;
 
+// Datenklassen zum Deserialisieren der JSON-Antwort der Vertragsanalyse.
+// Die Property-Namen entsprechen genau den Feldern des KI-Dienstes.
+
+/// <summary>
+/// Repräsentiert das komplette Analyseergebnis des KI-Dienstes.
+/// </summary>
 public class ContractAnalysisDto
 {
     [JsonPropertyName("summary")]
@@ -26,6 +32,9 @@ public class ContractAnalysisDto
     public string? Kollektivvertrag { get; set; }
 }
 
+/// <summary>
+/// Kurzer Überblick über die wichtigsten Vertragsdaten.
+/// </summary>
 public class Summary
 {
     [JsonPropertyName("arbeitgeber")]

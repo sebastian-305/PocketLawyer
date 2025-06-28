@@ -7,13 +7,22 @@ using System.IO;
 
 namespace PocketLawyer.Infrastructure;
 
+// Stellt Zugriff auf die auf der Festplatte gespeicherten Kollektivverträge bereit.
+// Der Dienst kapselt das Dateisystem, sodass andere Komponenten nur mit
+// einfachen String-Arrays arbeiten müssen.
+
 public class KollektivvertragService : IKollektivvertragService
 {
+    // Logger-Hilfe
     private readonly ILogger<KollektivvertragService> _logger;
+    // Zugriff auf konfigurierte Pfade
     private readonly IConfiguration _configuration;
+    // Benötigt, um relative Pfade aufzulösen
     private readonly IWebHostEnvironment _environment;
+    // Wandelt KV-PDFs in Text um
     private readonly IFileDecoderService _fileDecoderService;
 
+    // Abhängigkeiten werden via Dependency Injection bereitgestellt
     public KollektivvertragService(ILogger<KollektivvertragService> logger,
         IConfiguration configuration,
         IWebHostEnvironment environment,
@@ -25,6 +34,7 @@ public class KollektivvertragService : IKollektivvertragService
         _fileDecoderService = fileDecoderService;
     }
 
+    // Lädt einen Beispielvertrag, der für den Test-Endpunkt verwendet wird
     public async Task<string> GetSampleContractAsync()
     {
         _logger.LogDebug("Reading sample contract");
@@ -35,6 +45,7 @@ public class KollektivvertragService : IKollektivvertragService
         return await File.ReadAllTextAsync(path);
     }
 
+    // Gibt eine Liste vorhandener Kollektivvertragsordner zurück
     public Task<string[]> GetKvsDirectoriesAsync()
     {
         _logger.LogDebug("Listing KVS directories");
@@ -49,6 +60,8 @@ public class KollektivvertragService : IKollektivvertragService
         return Task.FromResult(folders);
     }
 
+    // Liest alle Dateien eines bestimmten Kollektivvertrags und
+    // wandelt sie in reinen Text um.
     public async Task<string[]> GetKvFileContentsAsync(string kvName)
     {
         _logger.LogDebug("Reading KV files for {KvName}", kvName);
