@@ -23,7 +23,7 @@ public class GeminiService : IAiService
         _httpClient = httpClient;
         _apiKey = configuration["Gemini:Key"] ?? string.Empty;
         _apiAltKey = configuration["Gemini:Key:Alternative"] ?? string.Empty;
-        _modelId = "gemini-1.5-flash-002";
+        _modelId = configuration["Gemini:ModelId"] ?? "gemini-1.5-flash-002";
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
