@@ -129,24 +129,55 @@ public class PocketController : ControllerBase
     }
 
 
-    [HttpPost("/validate")]
+    [HttpPost("/preanalysis")]
     public async Task<ActionResult<ContractValidationDto>> ValidateBinaryContract([FromForm] FileUploadDto request)
     {
         _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
-        return await ProcessContractRequest<ContractValidationDto>(request.MyFile!, BuildValidationPrompt, GeminiService.PreAnalyzerSchema, true, true);
+
+        string? kvName = null;
+        try
+        {
+            var requestContent = await PreValidate(request.MyFile!);
+            KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
+            if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
+            {
+                kvName = kvResult.KvName;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "KV detection failed during validation");
+        }
+
+        var result = await ProcessContractRequest<ContractValidationDto>(
+            request.MyFile!,
+            BuildValidationPrompt,
+            GeminiService.PreAnalyzerSchema,
+            true,
+            true);
+
+        if (result.Value != null)
+        {
+            result.Value.Kollektivvertrag = kvName;
+        }
+
+        return result;
     }
 
-    [HttpPost("/contract")]
+    [HttpPost("/mainanalysis")]
     public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract([FromForm] FileUploadDto request)
     {
         _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
+
+        string? kvName = request.Kollektivvertrag;
         return await ProcessContractRequest<ContractAnalysisDto>(
             request.MyFile!,
             _geminiService.PromptBuilder,
             GeminiService.AnalyzerSchema,
             false,
             false,
-            true);
+            string.IsNullOrWhiteSpace(kvName),
+            kvName);
     }
 
     private static string BuildValidationPrompt(string filename, string filecontent)
@@ -168,7 +199,8 @@ public class PocketController : ControllerBase
         object schema,
         bool sendAltKey,
         bool validationErrorFormat,
-        bool detectKv = false)
+        bool detectKv = false,
+        string? kvName = null)
     {
         FileContentDto requestContent;
         try
@@ -187,18 +219,27 @@ public class PocketController : ControllerBase
 
         string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
 
-        if (detectKv)
+        if (!string.IsNullOrWhiteSpace(kvName) || detectKv)
         {
             try
             {
-                KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
-                _logger.LogInformation("KV detection result: {Result}", kvResult.KvName);
-
-                if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
+                if (detectKv && string.IsNullOrWhiteSpace(kvName))
                 {
-                    string[] kvFiles = await _kvService.GetKvFileContentsAsync(kvResult.KvName);
+                    KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
+                    _logger.LogInformation("KV detection result: {Result}", kvResult.KvName);
+
+                    if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
+                    {
+                        kvName = kvResult.KvName;
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(kvName))
+                {
+                    string[] kvFiles = await _kvService.GetKvFileContentsAsync(kvName);
                     var sbPrompt = new StringBuilder(prompt);
                     sbPrompt.AppendLine();
+
                     sbPrompt.AppendLine($"Der folgende Text enthält den dazugehörigen Kollektivvertrag \"{kvResult.KvName}\" und mögliche Anhänge. " +
                         $"Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse. Wenn der Vertrag in einem Punkt so etwas schreibt wie \"laut Kollektivvertrag\" soll die entsprechende Regelung" +
                         $"aus dem Kollektivvetrag angegeben werden mit dem Zusatz \"(lt. Kollektivvertrag)\"");
@@ -236,6 +277,19 @@ public class PocketController : ControllerBase
         }
         if (dto == null)
             return BadRequest("Invalid AI response");
+
+        if (!string.IsNullOrWhiteSpace(kvName))
+        {
+            switch (dto)
+            {
+                case ContractValidationDto v:
+                    v.Kollektivvertrag = kvName;
+                    break;
+                case ContractAnalysisDto a:
+                    a.Kollektivvertrag = kvName;
+                    break;
+            }
+        }
 
         return Ok(dto);
     }
