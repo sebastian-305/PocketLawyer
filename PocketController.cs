@@ -152,7 +152,7 @@ public class PocketController : ControllerBase
         var result = await ProcessContractRequest<ContractValidationDto>(
             request.MyFile!,
             BuildValidationPrompt,
-            GeminiService.PreAnalyzerSchema,
+            GeminiService.PreAnalyzerSchemaDefinition,
             true,
             true);
 
@@ -173,7 +173,7 @@ public class PocketController : ControllerBase
         return await ProcessContractRequest<ContractAnalysisDto>(
             request.MyFile!,
             _geminiService.PromptBuilder,
-            GeminiService.AnalyzerSchema,
+            GeminiService.AnalyzerSchemaDefinition,
             false,
             false,
             string.IsNullOrWhiteSpace(kvName),

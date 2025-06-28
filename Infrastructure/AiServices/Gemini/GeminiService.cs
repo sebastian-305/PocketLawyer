@@ -16,8 +16,8 @@ public class GeminiService : IAiService
     private readonly string _model;
     private readonly ILogger<GeminiService> _logger;
     private readonly bool _writeInFile;
-    public static AnalyzerSchema AnalyzerSchema => new AnalyzerSchema();
-    public static PreAnalyzerSchema PreAnalyzerSchema => new PreAnalyzerSchema();
+    public static AnalyzerSchema AnalyzerSchemaDefinition => new AnalyzerSchema();
+    public static PreAnalyzerSchema PreAnalyzerSchemaDefinition => new PreAnalyzerSchema();
     public GeminiService(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiService> logger)
     {
         _httpClient = httpClient;
