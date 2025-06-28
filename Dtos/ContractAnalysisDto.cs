@@ -21,6 +21,9 @@ public class ContractAnalysisDto
 
     [JsonPropertyName("fazit")]
     public string Fazit { get; set; } = string.Empty;
+
+    [JsonPropertyName("kollektivvertrag")]
+    public string? Kollektivvertrag { get; set; }
 }
 
 public class Summary
