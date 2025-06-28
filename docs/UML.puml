@@ -1,0 +1,47 @@
+@startuml
+skinparam packageStyle rectangle
+
+package Controllers {
+  class PocketController
+}
+
+package Services {
+  interface IAiService
+  class GeminiService
+  class KvAiDetectionService
+  interface IKvDetectionService
+  interface IKollektivvertragService
+  class KvFileService
+  interface IFileDecoderService
+  class FileDecoderService
+}
+
+package DTOs {
+  class ContractAnalysisDto
+  class ContractValidationDto
+  class FileUploadDto
+  class FileContentDto
+  class KvDetectionResult
+  class KvDetectionTestResultDto
+  class KvDetectionAnswer
+}
+
+PocketController --> IAiService : uses
+PocketController --> IFileDecoderService : uses
+PocketController --> IKollektivvertragService : uses
+PocketController --> IKvDetectionService : uses
+PocketController --> ContractAnalysisDto
+PocketController --> ContractValidationDto
+PocketController --> KvDetectionTestResultDto
+PocketController --> FileUploadDto
+PocketController --> FileContentDto
+
+GeminiService ..|> IAiService
+KvAiDetectionService ..|> IKvDetectionService
+KvFileService ..|> IKollektivvertragService
+FileDecoderService ..|> IFileDecoderService
+
+KvAiDetectionService --> KvDetectionResult
+KvAiDetectionService --> KvDetectionAnswer
+
+@enduml
