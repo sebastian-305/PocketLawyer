@@ -28,6 +28,7 @@ body {
     }
 
 .header {
+    --header-height: 5rem; /* adjust to actual header size */
     border-bottom: 1px solid #e9e6e0;
     position: relative;
 }
@@ -61,6 +62,10 @@ body {
 .intro-section, .mission-section, .cta-section {
     flex-direction: row;
     gap: 20px;
+}
+
+.intro-section {
+    min-height: calc(100vh - var(--header-height));
 }
 
 .intro-image, .cta-image {
