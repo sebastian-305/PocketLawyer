@@ -28,7 +28,7 @@ public class KvDetectionService : IKvDetectionService
     {
         _logger.LogDebug("Entering {Method}", nameof(DetectAsync));
 
-        string[] kvsFolders = await _kvService.GetKvsDirectoriesAsync();
+        string[] kvsFolders = _kvService.GetKvsDirectories();
 
         var promptBuilder = new StringBuilder();
         promptBuilder.AppendLine("Arbeitsvertrag:");
