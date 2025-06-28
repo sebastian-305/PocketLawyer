@@ -13,7 +13,7 @@ public class GeminiService : IAiService
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
     private readonly string _apiAltKey;
-    private readonly string _model;
+    private readonly string _modelId;
     private readonly ILogger<GeminiService> _logger;
     private readonly bool _writeInFile;
     public static AnalyzerSchema AnalyzerSchema => new AnalyzerSchema();
@@ -23,7 +23,7 @@ public class GeminiService : IAiService
         _httpClient = httpClient;
         _apiKey = configuration["Gemini:Key"] ?? string.Empty;
         _apiAltKey = configuration["Gemini:Key:Alternative"] ?? string.Empty;
-        _model = "gemini-1.5-flash-002";
+        _modelId = "gemini-1.5-flash-002";
         _logger = logger;
         _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
     }
@@ -47,7 +47,7 @@ public class GeminiService : IAiService
         {
             var context = new
             {
-                model = $"models/{_model}",
+                model = $"models/{_modelId}",
                 contents = new[]
                 {
             new
@@ -133,7 +133,7 @@ public class GeminiService : IAiService
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
         string apiKey = useAltKey ? _apiAltKey : _apiKey;
 
-        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={apiKey}";
+        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_modelId}:generateContent?key={apiKey}";
 
         var requestBody = new
         {
