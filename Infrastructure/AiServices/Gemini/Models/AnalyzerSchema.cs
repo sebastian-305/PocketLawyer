@@ -7,6 +7,19 @@ public class SimpleSchema
     public string type { get; set; } = string.Empty;
 }
 
+public class LegalReference
+{
+    public string type { get; set; } = "object";
+    public LegalReferenceProperties properties { get; set; } = new();
+    public string[] required { get; set; } = new[] { "rechtsgrundlage", "wortlaut" };
+}
+
+public class LegalReferenceProperties
+{
+    public SimpleSchema rechtsgrundlage { get; set; } = new() { type = "string" };
+    public SimpleSchema wortlaut { get; set; } = new() { type = "string" };
+}
+
 public class ClauseInfo
 {
     public string type { get; set; } = "object";
@@ -19,7 +32,7 @@ public class ClauseInfoProperties
     public SimpleSchema titel { get; set; } = new() { type = "string" };
     public SimpleSchema zitat { get; set; } = new() { type = "string" };
     public SimpleSchema problem { get; set; } = new() { type = "string" };
-    public SimpleSchema rechtsgrundlage { get; set; } = new() { type = "string" };
+    public ArraySchema<LegalReference> rechtsgrundlage { get; set; } = new();
 }
 
 public class AdvantageClauseInfo
@@ -49,7 +62,7 @@ public class ConflictingClauseInfoProperties
     public SimpleSchema zitat_klausel_a { get; set; } = new() { type = "string" };
     public SimpleSchema zitat_klausel_b { get; set; } = new() { type = "string" };
     public SimpleSchema problem { get; set; } = new() { type = "string" };
-    public SimpleSchema rechtsgrundlage { get; set; } = new() { type = "string" };
+    public ArraySchema<LegalReference> rechtsgrundlage { get; set; } = new();
 }
 
 public class SummarySchema
