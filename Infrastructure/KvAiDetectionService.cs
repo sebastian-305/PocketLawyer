@@ -8,14 +8,14 @@ using PocketLawyer;
 
 namespace PocketLawyer.Infrastructure;
 
-public class KvDetectionService : IKvDetectionService
+public class KvAiDetectionService : IKvDetectionService
 {
-    private readonly ILogger<KvDetectionService> _logger;
+    private readonly ILogger<KvAiDetectionService> _logger;
     private readonly IKollektivvertragService _kvService;
     private readonly IAiService _aiService;
 
-    public KvDetectionService(
-        ILogger<KvDetectionService> logger,
+    public KvAiDetectionService(
+        ILogger<KvAiDetectionService> logger,
         IKollektivvertragService kvService,
         [FromKeyedServices("claude")] IAiService aiService)
     {

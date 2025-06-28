@@ -1,20 +1,15 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using PocketLawyer.Service;
-using System.Collections.Generic;
-using System.IO;
 
 namespace PocketLawyer.Infrastructure;
 
-public class KollektivvertragService : IKollektivvertragService
+public class KvFileService : IKollektivvertragService
 {
-    private readonly ILogger<KollektivvertragService> _logger;
+    private readonly ILogger<KvFileService> _logger;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
     private readonly IFileDecoderService _fileDecoderService;
 
-    public KollektivvertragService(ILogger<KollektivvertragService> logger,
+    public KvFileService(ILogger<KvFileService> logger,
         IConfiguration configuration,
         IWebHostEnvironment environment,
         IFileDecoderService fileDecoderService)
