@@ -159,6 +159,14 @@ public class PocketController : ControllerBase
         if (result.Value != null)
         {
             result.Value.Kollektivvertrag = kvName;
+            if (!string.IsNullOrWhiteSpace(kvName))
+            {
+                result.Value.Result = string.Concat(
+                    result.Value.Result.TrimEnd(),
+                    " Es wurde der Kollektivvertrag \"",
+                    kvName,
+                    "\" erkannt.");
+            }
         }
 
         return result;
