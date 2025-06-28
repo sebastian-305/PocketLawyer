@@ -157,8 +157,11 @@ export function displayUploadError(ex, body, loading, preAnalysisShown) {
     }
     const err = document.createElement("div");
     err.classList.add("error-message");
+    err.setAttribute("role", "alert");
+    err.setAttribute("tabindex", "-1");
     err.textContent = `Fehler: ${ex.message}`;
     body.appendChild(err);
+    err.focus();
 }
 
 function generatePreAnalysis(message) {
