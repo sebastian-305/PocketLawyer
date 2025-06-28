@@ -199,7 +199,9 @@ public class PocketController : ControllerBase
                     string[] kvFiles = await _kvService.GetKvFileContentsAsync(kvResult.KvName);
                     var sbPrompt = new StringBuilder(prompt);
                     sbPrompt.AppendLine();
-                    sbPrompt.AppendLine($"Der folgende Text enthält den dazugehörigen Kollektivvertrag \"{kvResult.KvName}\" und mögliche Anhänge. Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse.");
+                    sbPrompt.AppendLine($"Der folgende Text enthält den dazugehörigen Kollektivvertrag \"{kvResult.KvName}\" und mögliche Anhänge. " +
+                        $"Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse. Wenn der Vertrag in einem Punkt so etwas schreibt wie \"laut Kollektivvertrag\" soll die entsprechende Regelung" +
+                        $"aus dem Kollektivvetrag angegeben werden mit dem Zusatz \"(lt. Kollektivvertrag)\"");
                     sbPrompt.AppendLine(string.Join("\n\n", kvFiles));
                     prompt = sbPrompt.ToString();
                 }
