@@ -18,13 +18,15 @@ public class PocketController : ControllerBase
     private readonly IFileDecoderService _fileDecoderService;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
+    private readonly IKollektivvertragService _kvService;
 
     public PocketController(ILogger<PocketController> logger,
         [FromKeyedServices("gemini")] IAiService geminiService,
         IFileDecoderService fileDecoderService,
         [FromKeyedServices("claude")] IAiService claudeService,
         IConfiguration configuration,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        IKollektivvertragService kvService)
     {
         _logger = logger;
         _geminiService = geminiService;
@@ -32,6 +34,7 @@ public class PocketController : ControllerBase
         _claudeService = claudeService;
         _configuration = configuration;
         _environment = environment;
+        _kvService = kvService;
     }
 
     [HttpGet("/test")]
@@ -39,48 +42,23 @@ public class PocketController : ControllerBase
     {
         _logger.LogDebug("Entering {Method}", nameof(Test));
 
-        string contractPath = Path.Combine(
-            _environment.ContentRootPath,
-            "Samples",
-            "int.txt");
         string contractContent;
-        try
-        {
-            contractContent = await System.IO.File.ReadAllTextAsync(contractPath);
-        }
-        catch (IOException ex)
-        {
-            _logger.LogError(ex, "Failed to read contract sample");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei.");
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            _logger.LogError(ex, "No permission to access contract sample");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei.");
-        }
-
-        string kvsPath = Path.Combine(
-            _environment.ContentRootPath,
-            "Infrastructure",
-            "KVS");
         string[] kvsFolders;
         try
         {
-            kvsFolders = Directory.GetDirectories(kvsPath)
-                .Select(name => Path.GetFileName(name) ?? "")
-                .Where(name => !string.IsNullOrWhiteSpace(name))                
-                .ToArray();
+            contractContent = await _kvService.GetSampleContractAsync();
+            kvsFolders = await _kvService.GetKvsDirectoriesAsync();
             _logger.LogDebug("KVs: {KV}", string.Join(", ", kvsFolders));
         }
         catch (IOException ex)
         {
-            _logger.LogError(ex, "Failed to read KVS folders");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Kollektivverträge.");
+            _logger.LogError(ex, "Failed to load samples");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei oder der Kollektivverträge.");
         }
         catch (UnauthorizedAccessException ex)
         {
-            _logger.LogError(ex, "No permission to access KVS folders");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Kollektivverträge.");
+            _logger.LogError(ex, "No permission to access samples");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei oder der Kollektivverträge.");
         }
 
         var promptBuilder = new StringBuilder();

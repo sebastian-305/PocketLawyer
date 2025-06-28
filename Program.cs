@@ -19,6 +19,7 @@ builder.Services
 builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
 builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
+builder.Services.AddScoped<IKollektivvertragService, KollektivvertragService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
