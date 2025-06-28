@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using PocketLawyer.Service;
 using System.Text;
+using PocketLawyer;
 
 namespace PocketLawyer.Infrastructure;
 
@@ -22,7 +23,7 @@ public class KvDetectionService : IKvDetectionService
         _aiService = aiService;
     }
 
-    public async Task<string> DetectAsync(string contractContent)
+    public async Task<KvDetectionResult> DetectAsync(string contractContent)
     {
         _logger.LogDebug("Entering {Method}", nameof(DetectAsync));
 
@@ -55,6 +56,10 @@ public class KvDetectionService : IKvDetectionService
             .OrderByDescending(g => g.Count())
             .First().Key;
 
-        return result;
+        return new KvDetectionResult
+        {
+            KvName = result,
+            AllEqual = allEqual
+        };
     }
 }
