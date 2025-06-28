@@ -141,7 +141,13 @@ public class PocketController : ControllerBase
     public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract([FromForm] FileUploadDto request)
     {
         _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
-        return await ProcessContractRequest<ContractAnalysisDto>(request.MyFile!, _geminiService.PromptBuilder, GeminiService.AnalyzerSchema, false, false);
+        return await ProcessContractRequest<ContractAnalysisDto>(
+            request.MyFile!,
+            _geminiService.PromptBuilder,
+            GeminiService.AnalyzerSchema,
+            false,
+            false,
+            true);
     }
 
     private static string BuildValidationPrompt(string filename, string filecontent)
@@ -158,7 +164,12 @@ public class PocketController : ControllerBase
         return sb.ToString();
     }
 
-    private async Task<ActionResult<T>> ProcessContractRequest<T>(IFormFile file, Func<string, string, string> promptBuilder, object schema, bool sendAltKey, bool validationErrorFormat)
+    private async Task<ActionResult<T>> ProcessContractRequest<T>(IFormFile file,
+        Func<string, string, string> promptBuilder,
+        object schema,
+        bool sendAltKey,
+        bool validationErrorFormat,
+        bool detectKv = false)
     {
         FileContentDto requestContent;
         try
@@ -173,6 +184,19 @@ public class PocketController : ControllerBase
                 return BadRequest($"{{\"isReadable\":false, \"isContract\":false, \"result\":\"{ex.Message}\"}}");
             }
             return BadRequest(ex.Message);
+        }
+
+        if (detectKv)
+        {
+            try
+            {
+                string kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
+                _logger.LogInformation("KV detection result: {Result}", kvResult);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kollektivvertrag detection failed");
+            }
         }
 
         string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
