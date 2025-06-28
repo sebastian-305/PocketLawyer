@@ -1,6 +1,6 @@
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Service;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Text;
@@ -18,14 +18,15 @@ public class GeminiService : IAiService
     private readonly bool _writeInFile;
     public static AnalyzerSchema AnalyzerSchemaDefinition => new AnalyzerSchema();
     public static PreAnalyzerSchema PreAnalyzerSchemaDefinition => new PreAnalyzerSchema();
-    public GeminiService(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiService> logger)
+    public GeminiService(HttpClient httpClient, IOptions<GeminiOptions> options, ILogger<GeminiService> logger)
     {
         _httpClient = httpClient;
-        _apiKey = configuration["Gemini:Key"] ?? string.Empty;
-        _apiAltKey = configuration["Gemini:Key:Alternative"] ?? string.Empty;
+        var config = options.Value;
+        _apiKey = config.Key ?? string.Empty;
+        _apiAltKey = config.AlternativeKey ?? string.Empty;
         _modelId = "gemini-1.5-flash-002";
         _logger = logger;
-        _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
+        _writeInFile = config.WriteResponseInFile;
     }
 
     #region public_methods

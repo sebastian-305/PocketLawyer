@@ -4,6 +4,7 @@ using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
 using System.Text.Json;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace PocketLawyer;
 
@@ -14,16 +15,17 @@ public class PocketController : ControllerBase
     private readonly IAiService _geminiService;
     private readonly IAiService _claudeService;
     private readonly IFileDecoderService _fileDecoderService;
-    private readonly IConfiguration _configuration;
+    private readonly UploadOptions _uploadOptions;
     private readonly IWebHostEnvironment _environment;
     private readonly IKollektivvertragService _kvService;
     private readonly IKvDetectionService _kvDetectionService;
 
-    public PocketController(ILogger<PocketController> logger,
+    public PocketController(
+        ILogger<PocketController> logger,
         [FromKeyedServices("gemini")] IAiService geminiService,
         IFileDecoderService fileDecoderService,
         [FromKeyedServices("claude")] IAiService claudeService,
-        IConfiguration configuration,
+        IOptionsSnapshot<UploadOptions> uploadOptions,
         IWebHostEnvironment environment,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService)
@@ -32,7 +34,7 @@ public class PocketController : ControllerBase
         _geminiService = geminiService;
         _fileDecoderService = fileDecoderService;
         _claudeService = claudeService;
-        _configuration = configuration;
+        _uploadOptions = uploadOptions.Value;
         _environment = environment;
         _kvService = kvService;
         _kvDetectionService = kvDetectionService;
@@ -86,7 +88,7 @@ public class PocketController : ControllerBase
 
         string responsesPath = Path.Combine(
             _environment.ContentRootPath,
-            _configuration["ResponsesPath"] ?? "Responses");
+            _uploadOptions.ResponsesPath ?? "Responses");
 
         Directory.CreateDirectory(responsesPath);
 
@@ -334,7 +336,7 @@ public class PocketController : ControllerBase
             throw new BadHttpRequestException($"Fileextension not recognised! Recognised extensions are {_fileDecoderService.AllowedExtensionsString}.");
         }
 
-        long maxUploadSizeMb = _configuration.GetValue<long>("MaxUploadSizeMB");
+        long maxUploadSizeMb = _uploadOptions.MaxUploadSizeMB;
         long maxBytes = maxUploadSizeMb * 1024 * 1024;
         if (file.Length > maxBytes)
         {

@@ -3,7 +3,7 @@ using PocketLawyer.Service;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using Tesseract;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace PocketLawyer.Infrastructure.FileDecoding;
 
@@ -12,10 +12,10 @@ public class FileDecoderService : IFileDecoderService
     private readonly ILogger<FileDecoderService> _logger;
     private readonly string _tesseractDataPath;
 
-    public FileDecoderService(ILogger<FileDecoderService> logger, IConfiguration configuration)
+    public FileDecoderService(ILogger<FileDecoderService> logger, IOptions<FileDecoderOptions> options)
     {
         _logger = logger;
-        _tesseractDataPath = configuration["TesseractDataPath"] ?? "./tessdata";
+        _tesseractDataPath = options.Value.TesseractDataPath ?? "./tessdata";
     }
 
     public string[] AllowedExtensions => ["txt", "pdf", "jpg", "jpeg", "png"];

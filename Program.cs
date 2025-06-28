@@ -6,8 +6,16 @@ using PocketLawyer.Service;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Http;
 using System.Linq;
+using PocketLawyer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Bind configuration to option classes
+builder.Services.Configure<GeminiOptions>(builder.Configuration.GetSection("Gemini"));
+builder.Services.Configure<ClaudeOptions>(builder.Configuration.GetSection("Claude"));
+builder.Services.Configure<FileDecoderOptions>(builder.Configuration);
+builder.Services.Configure<KollektivvertragOptions>(builder.Configuration);
+builder.Services.Configure<UploadOptions>(builder.Configuration);
 
 // Add services to the container.
 

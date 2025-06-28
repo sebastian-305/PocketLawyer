@@ -3,6 +3,7 @@ using Anthropic.SDK;
 using Anthropic.SDK.Constants;
 using Anthropic.SDK.Messaging;
 using PocketLawyer.Service;
+using Microsoft.Extensions.Options;
 
 namespace PocketLawyer.Infrastructure.AiServices.Claude
 {
@@ -11,9 +12,9 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
         private readonly AnthropicClient _client;
         private readonly ILogger<ClaudeService> _logger;
 
-        public ClaudeService(IConfiguration configuration, ILogger<ClaudeService> logger)
+        public ClaudeService(IOptions<ClaudeOptions> options, ILogger<ClaudeService> logger)
         {
-            _client = new AnthropicClient(new APIAuthentication(configuration["Claude:Key"] ?? ""));
+            _client = new AnthropicClient(new APIAuthentication(options.Value.Key ?? ""));
             _logger = logger;
         }
 

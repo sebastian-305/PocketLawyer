@@ -1,26 +1,27 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Service;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Options;
 
 namespace PocketLawyer.Infrastructure;
 
 public class KollektivvertragService : IKollektivvertragService
 {
     private readonly ILogger<KollektivvertragService> _logger;
-    private readonly IConfiguration _configuration;
+    private readonly KollektivvertragOptions _options;
     private readonly IWebHostEnvironment _environment;
     private readonly IFileDecoderService _fileDecoderService;
 
-    public KollektivvertragService(ILogger<KollektivvertragService> logger,
-        IConfiguration configuration,
+    public KollektivvertragService(
+        ILogger<KollektivvertragService> logger,
+        IOptions<KollektivvertragOptions> options,
         IWebHostEnvironment environment,
         IFileDecoderService fileDecoderService)
     {
         _logger = logger;
-        _configuration = configuration;
+        _options = options.Value;
         _environment = environment;
         _fileDecoderService = fileDecoderService;
     }
@@ -28,7 +29,7 @@ public class KollektivvertragService : IKollektivvertragService
     public async Task<string> GetSampleContractAsync()
     {
         _logger.LogDebug("Reading sample contract");
-        string configuredPath = _configuration["SampleContractPath"] ?? "Samples/int.txt";
+        string configuredPath = _options.SampleContractPath ?? "Samples/int.txt";
         string path = Path.IsPathRooted(configuredPath)
             ? configuredPath
             : Path.Combine(_environment.ContentRootPath, configuredPath);
@@ -38,7 +39,7 @@ public class KollektivvertragService : IKollektivvertragService
     public Task<string[]> GetKvsDirectoriesAsync()
     {
         _logger.LogDebug("Listing KVS directories");
-        string configuredPath = _configuration["KVSPath"] ?? "Infrastructure/KVS";
+        string configuredPath = _options.KVSPath ?? "Infrastructure/KVS";
         string kvsPath = Path.IsPathRooted(configuredPath)
             ? configuredPath
             : Path.Combine(_environment.ContentRootPath, configuredPath);
@@ -53,7 +54,7 @@ public class KollektivvertragService : IKollektivvertragService
     {
         _logger.LogDebug("Reading KV files for {KvName}", kvName);
 
-        string configuredPath = _configuration["KVSPath"] ?? "Infrastructure/KVS";
+        string configuredPath = _options.KVSPath ?? "Infrastructure/KVS";
         string kvsPath = Path.IsPathRooted(configuredPath)
             ? configuredPath
             : Path.Combine(_environment.ContentRootPath, configuredPath);
