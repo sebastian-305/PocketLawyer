@@ -111,11 +111,12 @@ public class GeminiService : IAiService
         promptBuilder.AppendLine("Als Rechtsgrundlage der einzelenen Analysepunkte soll neben dem Paragraphen und dem Namen des jeweiligen Gesetztes auch der Wortlaut des Gesetztes angegeben werden.\n");
         promptBuilder.AppendLine("Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. ");
         promptBuilder.AppendLine("Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln.");
-        promptBuilder.AppendLine("Falls ein Kollektivvertrag mitgeschickt wird, hebe alle Klauseln heraus, die für den Arbeitnehmer eine Verbesserung gegenüber dem Kollektivvertrag darstellen.");
-        promptBuilder.AppendLine("Finde sonstige vorteilhafte Klauseln, falls es welche gibt.");
+        promptBuilder.AppendLine("Finde alle vorteilhafte Klauseln, falls es welche gibt.");
+        promptBuilder.AppendLine("Falls ein Kollektivvertrag mitgeschickt wird, hebe auch alle Klauseln heraus, die für den Arbeitnehmer eine Verbesserung gegenüber dem Kollektivvertrag darstellen.");        
         promptBuilder.AppendLine("Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. ");
         promptBuilder.AppendLine("Gibt zu einer fachlichen Begründung auch immer eine Erklärung in einfacher Sprache.");
-        promptBuilder.AppendLine("Bitte gründe deine Aussagen auf die Gesetze im Cached Kontext. \n");
+        promptBuilder.AppendLine("Bitte gründe deine Aussagen auf die Gesetze im Cached Kontext und auf den eventuell mitgeschickten Kollektivvertrag. \n");
+        promptBuilder.AppendLine("Gib ein sehr ausführliches Fazit an. ");
         promptBuilder.AppendLine("Bitte verwende keine Markdownformatierung, * oder #");
         promptBuilder.AppendLine("Formatiere deine Antwort in HTML.");
         promptBuilder.AppendLine("Gib neben dem Paragraphen der Rechtsgrundlage auch den Wortlaut des Gesetztestextes an.\n");
@@ -169,10 +170,11 @@ public class GeminiService : IAiService
         _logger.LogInformation("Sending prompt to Gemini API");
         try
         {
-            var response = await _httpClient.PostAsync(requestUri, content);
-            response.EnsureSuccessStatusCode();
+            var response = await _httpClient.PostAsync(requestUri, content);                      
             var responseString = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("Prompt response: {Response}", responseString);
+            response.EnsureSuccessStatusCode();
+
             var result = JsonSerializer.Deserialize<GeminiResponse>(responseString);
 
             string resultText = result?.Candidates[0]?.Content?.Parts[0]?.Text ?? string.Empty;
