@@ -107,23 +107,24 @@ public class GeminiService : IAiService
     {
         StringBuilder promptBuilder = new StringBuilder();
 
-        promptBuilder.Append("Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. ");
-        promptBuilder.Append("Als Rechtsgrundlage der einzelenen Analysepunkte soll neben dem Paragraphen und dem Namen des jeweiligen Gesetztes auch der Wortlaut des Gesetztes angegeben werden.\n");
-        promptBuilder.Append("Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. ");
-        promptBuilder.Append("Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln.");
-        promptBuilder.Append("Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. ");
-        promptBuilder.Append("Gibt zu einer fachlichen Begründung auch immer eine Erklärung in einfacher Sprache.");
-        promptBuilder.Append("Bitte gründe deine Aussagen auf die Gesetze im Cached Kontext. \n");
-        promptBuilder.Append("Bitte verwende keine Markdownformatierung, * oder #");
-        promptBuilder.Append("Formatiere deine Antwort in HTML.");
-        promptBuilder.Append("Gib neben dem Paragraphen der Rechtsgrundlage auch den Wortlaut des Gesetztestextes an.\n");
-        promptBuilder.Append("Für Regelungen die im Arbeitsvertrag mit \"laut Gesetzt\" oder \"laut Kollektivvertrag\" angegeben werden, ziehe die entsprechende Regelung aus diesen Quellen (falls vorhanden) und die Informtation aus den Quellen an.\n");
-        promptBuilder.Append("---------------------------------");
-        promptBuilder.Append("\n\nDateiname des Vertrags: ");
-        promptBuilder.Append(filename);
-        promptBuilder.Append("\n\nVertragsinhalt: \n");
-        promptBuilder.Append(fileContent);
-        promptBuilder.Append("---------------------------------");
+        promptBuilder.AppendLine("Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. Eventuell schicke ich dir auch noch den Kollektivvertrag mit. Der Kollektivvetrag is die wichtigste Grundlage der Analyse.");
+        promptBuilder.AppendLine("Als Rechtsgrundlage der einzelenen Analysepunkte soll neben dem Paragraphen und dem Namen des jeweiligen Gesetztes auch der Wortlaut des Gesetztes angegeben werden.\n");
+        promptBuilder.AppendLine("Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. ");
+        promptBuilder.AppendLine("Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln.");
+        promptBuilder.AppendLine("Falls ein Kollektivvertrag mitgeschickt wird, hebe alle Klauseln heraus, die für den Arbeitnehmer eine Verbesserung gegenüber dem Kollektivvertrag darstellen.");
+        promptBuilder.AppendLine("Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. ");
+        promptBuilder.AppendLine("Gibt zu einer fachlichen Begründung auch immer eine Erklärung in einfacher Sprache.");
+        promptBuilder.AppendLine("Bitte gründe deine Aussagen auf die Gesetze im Cached Kontext. \n");
+        promptBuilder.AppendLine("Bitte verwende keine Markdownformatierung, * oder #");
+        promptBuilder.AppendLine("Formatiere deine Antwort in HTML.");
+        promptBuilder.AppendLine("Gib neben dem Paragraphen der Rechtsgrundlage auch den Wortlaut des Gesetztestextes an.\n");
+        promptBuilder.AppendLine("Für Regelungen die im Arbeitsvertrag mit \"laut Gesetzt\" oder \"laut Kollektivvertrag\" angegeben werden, ziehe die entsprechende Regelung aus diesen Quellen (falls vorhanden) und die Informtation aus den Quellen an.\n");
+        promptBuilder.AppendLine("---------------------------------");
+        promptBuilder.AppendLine("\n\nDateiname des Vertrags: ");
+        promptBuilder.AppendLine(filename);
+        promptBuilder.AppendLine("\n\nVertragsinhalt: \n");
+        promptBuilder.AppendLine(fileContent);
+        promptBuilder.AppendLine("---------------------------------");
 
         _logger.LogInformation("Built prompt with the length of {length} symbols", promptBuilder.Length);
         return promptBuilder.ToString();
