@@ -109,6 +109,7 @@ public class GeminiService : IAiService
 
         promptBuilder.AppendLine("Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. Eventuell schicke ich dir auch noch den Kollektivvertrag mit. Der Kollektivvetrag is die wichtigste Grundlage der Analyse.");
         promptBuilder.AppendLine("Als Rechtsgrundlage der einzelenen Analysepunkte soll neben dem Paragraphen und dem Namen des jeweiligen Gesetztes auch der Wortlaut des Gesetztes angegeben werden.\n");
+        promptBuilder.AppendLine("Die Property 'rechtsgrundlage' ist ein Array von Objekten mit den Feldern 'rechtsgrundlage' und 'wortlaut'. Beide Felder sind erforderlich.\n");
         promptBuilder.AppendLine("Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. ");
         promptBuilder.AppendLine("Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln.");
         promptBuilder.AppendLine("Finde alle vorteilhafte Klauseln, falls es welche gibt.");

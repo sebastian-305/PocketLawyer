@@ -53,6 +53,13 @@ function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     return container;
 }
 
+function formatRechtsgrundlage(arr) {
+    if (!Array.isArray(arr)) return arr ?? "";
+    return arr
+        .map((e) => `${e.rechtsgrundlage}: ${e.wortlaut}`)
+        .join("; ");
+}
+
 function generateClauses(clause) {
     return renderClause({
         title: clause.titel,
@@ -60,7 +67,10 @@ function generateClauses(clause) {
         textValue: clause.zitat,
         extraFields: [
             { label: "Problem:", value: clause.problem },
-            { label: "Rechtsgrundlage:", value: clause.rechtsgrundlage },
+            {
+                label: "Rechtsgrundlage:",
+                value: formatRechtsgrundlage(clause.rechtsgrundlage),
+            },
         ],
     });
 }
@@ -82,7 +92,10 @@ function generateConflictClauses(clause) {
         extraFields: [
             { label: "Zitat B:", value: clause.zitat_klausel_b, emphasize: true },
             { label: "Problem:", value: clause.problem },
-            { label: "Rechtsgrundlage:", value: clause.rechtsgrundlage },
+            {
+                label: "Rechtsgrundlage:",
+                value: formatRechtsgrundlage(clause.rechtsgrundlage),
+            },
         ],
     });
 }
