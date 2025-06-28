@@ -108,6 +108,7 @@ public class GeminiService : IAiService
         StringBuilder promptBuilder = new StringBuilder();
 
         promptBuilder.Append("Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. ");
+        promptBuilder.Append("Als Rechtsgrundlage der einzelenen Analysepunkte soll neben dem Paragraphen und dem Namen des jeweiligen Gesetztes auch der Wortlaut des Gesetztes angegeben werden.\n");
         promptBuilder.Append("Falls es sich um einen Arbeitsvertrag handelt, bitte analysiere diesen und präsentiere mir deine Auswertungen. ");
         promptBuilder.Append("Bewerte ihn und untersuche ihn nach fragwürdigen Klauseln.");
         promptBuilder.Append("Die Analyse und Bewertung erfolgt aus Sicht des Arbeitnehmers. ");
@@ -116,7 +117,7 @@ public class GeminiService : IAiService
         promptBuilder.Append("Bitte verwende keine Markdownformatierung, * oder #");
         promptBuilder.Append("Formatiere deine Antwort in HTML.");
         promptBuilder.Append("Gib neben dem Paragraphen der Rechtsgrundlage auch den Wortlaut des Gesetztestextes an.\n");
-        promptBuilder.Append("Bei Regelungen die im Arbeitsvertrag mit \"laut Gesetzt\" oder \"laut Kollektivvertrag\" angegeben werden, ziehe die entsprechende Regelung aus diesen Quellen (falls vorhanden).\n");
+        promptBuilder.Append("Für Regelungen die im Arbeitsvertrag mit \"laut Gesetzt\" oder \"laut Kollektivvertrag\" angegeben werden, ziehe die entsprechende Regelung aus diesen Quellen (falls vorhanden) und die Informtation aus den Quellen an.\n");
         promptBuilder.Append("---------------------------------");
         promptBuilder.Append("\n\nDateiname des Vertrags: ");
         promptBuilder.Append(filename);

@@ -43,7 +43,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             {
                 Messages = messages,
                 MaxTokens = 1000,
-                Model = AnthropicModels.Claude35Sonnet,
+                Model = AnthropicModels.Claude3Haiku,
                 System = new List<SystemMessage>() { systemPrompt },
                 Temperature = 0.1m
             };
