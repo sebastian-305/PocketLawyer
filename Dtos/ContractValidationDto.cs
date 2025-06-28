@@ -2,6 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace PocketLawyer;
 
+// Ergebnis der Voranalyse, bei der Lesbarkeit und
+// Vertragscharakter der hochgeladenen Datei geprüft werden.
+
+/// <summary>
+/// DTO, das nach dem Aufruf der Vorvalidierung zurückgegeben wird.
+/// </summary>
 public class ContractValidationDto
 {
     [JsonPropertyName("isReadable")]

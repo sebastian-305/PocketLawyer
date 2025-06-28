@@ -6,6 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// Benutzerdefinierter HTTP-Handler, der ausgehende Requests und Responses
+// protokolliert, jedoch Query-Parameter aus der URL entfernt, damit keine
+// sensiblen Daten wie API-Schlüssel im Log landen.
 public class RedactingLoggingHandler : DelegatingHandler
 {
     private readonly ILogger<RedactingLoggingHandler> _logger;
@@ -26,6 +29,7 @@ public class RedactingLoggingHandler : DelegatingHandler
         return response;
     }
 
+    // Entfernt Query-Parameter aus der URI, damit keine Geheimnisse im Log landen
     private static string Sanitize(Uri? uri)
     {
         if (uri == null)

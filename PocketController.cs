@@ -7,18 +7,33 @@ using System.Text;
 
 namespace PocketLawyer;
 
+// Controller, der die vom Frontend genutzte HTTP-API bereitstellt.
+// Er empfängt hochgeladene Vertragsdateien, führt Vorprüfungen durch
+// und übergibt die eigentliche Analyse an die KI-Dienste.
 [ApiController]
 public class PocketController : ControllerBase
 {
+    // Gibt detaillierte Laufzeitinformationen aus
     private readonly ILogger<PocketController> _logger;
+    // KI-Dienst basierend auf Googles Gemini API
     private readonly IAiService _geminiService;
+    // Alternativer KI-Dienst, der auf Claudes API basiert
     private readonly IAiService _claudeService;
+    // Wandelt hochgeladene Dateien in reinen Text um
     private readonly IFileDecoderService _fileDecoderService;
+    // Zugriff auf die Anwendungskonfiguration
     private readonly IConfiguration _configuration;
+    // Liefert den Pfad zum Content-Root für Dateizugriffe
     private readonly IWebHostEnvironment _environment;
+    // Dienst zum Laden der Kollektivverträge von der Festplatte
     private readonly IKollektivvertragService _kvService;
+    // Dienst, der versucht, den passenden Kollektivvertrag zu erkennen
     private readonly IKvDetectionService _kvDetectionService;
 
+    /// <summary>
+    /// Alle Abhängigkeiten werden vom Framework aus dem Service-Container
+    /// aufgelöst und diesem Konstruktor übergeben.
+    /// </summary>
     public PocketController(ILogger<PocketController> logger,
         [FromKeyedServices("gemini")] IAiService geminiService,
         IFileDecoderService fileDecoderService,
@@ -38,6 +53,7 @@ public class PocketController : ControllerBase
         _kvDetectionService = kvDetectionService;
     }
 
+    // Einfacher Endpunkt, um während der Entwicklung die KV-Erkennung zu testen
     [HttpGet("/test")]
     public async Task<ActionResult<KvDetectionTestResultDto>> Test()
     {
@@ -79,6 +95,8 @@ public class PocketController : ControllerBase
         return Ok(resultDto);
     }
 
+    // Liefert ein zufälliges Analyseergebnis aus dem Responses-Ordner.
+    // Nützlich, wenn keine Verbindung zur KI besteht oder für UI-Tests.
     [HttpGet("/mockdata")]
     public async Task<ActionResult<ContractAnalysisDto>> GetMockData()
     {
@@ -129,6 +147,8 @@ public class PocketController : ControllerBase
     }
 
 
+    // Erster Schritt nach dem Upload: Der Vertrag wird validiert und bei Bedarf
+    // per OCR ausgelesen. Zudem wird versucht, den passenden Kollektivvertrag zu ermitteln.
     [HttpPost("/preanalysis")]
     public async Task<ActionResult<ContractValidationDto>> ValidateBinaryContract([FromForm] FileUploadDto request)
     {
@@ -194,6 +214,9 @@ public class PocketController : ControllerBase
         return Ok(resultDto);
     }
 
+    // Führt die vollständige Vertragsanalyse durch, indem der vorbereitete Text
+    // an den Gemini-Dienst gesendet wird. Optional kann ein Kollektivvertrag
+    // mitgegeben werden, um die Analyse zu verbessern.
     [HttpPost("/mainanalysis")]
     public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract([FromForm] FileUploadDto request)
     {
@@ -229,6 +252,8 @@ public class PocketController : ControllerBase
         return Ok(dto);
     }
 
+    // Erstellt das Prompt für die Vorvalidierung. Die KI soll prüfen,
+    // ob der Text lesbar ist und ob es sich um einen Arbeitsvertrag handelt.
     private static string BuildValidationPrompt(string filename, string fileContent)
     {
         var sb = new StringBuilder();
@@ -243,6 +268,10 @@ public class PocketController : ControllerBase
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Gemeinsame Hilfsmethode, die das Prompt erstellt, es optional mit
+    /// Kollektivvertragsdaten anreichert und anschließend an den KI-Dienst sendet.
+    /// </summary>
     private async Task<T> ProcessContractRequest<T>(IFormFile file,
         Func<string, string, string> promptBuilder,
         object schema,
@@ -320,6 +349,8 @@ public class PocketController : ControllerBase
         return dto;
     }
 
+    // Liest die hochgeladene Datei ein und prüft Größe sowie Dateiendung,
+    // bevor der Inhalt an den KI-Dienst weitergegeben wird.
     private async Task<FileContentDto> PreValidate(IFormFile file)
     {
         _logger.LogDebug("Entering {Method}", nameof(PreValidate));

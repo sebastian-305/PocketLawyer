@@ -7,9 +7,14 @@ using Microsoft.Extensions.Configuration;
 
 namespace PocketLawyer.Infrastructure.FileDecoding;
 
+// Dienst, der hochgeladene Dateien in reinen Text umwandelt,
+// damit die KI den Inhalt unabhängig vom Ursprungsformat analysieren kann.
+
 public class FileDecoderService : IFileDecoderService
 {
+    // Für Debug-Ausgaben und Fehlermeldungen
     private readonly ILogger<FileDecoderService> _logger;
+    // Pfad zu den Sprachdaten für Tesseract-OCR
     private readonly string _tesseractDataPath;
 
     public FileDecoderService(ILogger<FileDecoderService> logger, IConfiguration configuration)
@@ -18,9 +23,13 @@ public class FileDecoderService : IFileDecoderService
         _tesseractDataPath = configuration["TesseractDataPath"] ?? "./tessdata";
     }
 
+    // Unterstützte Dateitypen
     public string[] AllowedExtensions => ["txt", "pdf", "jpg", "jpeg", "png"];
+    // Gleiche Liste als Zeichenkette für Fehlermeldungen
     public string AllowedExtensionsString => string.Join(", ", AllowedExtensions);
 
+    // Erkennt den Dateityp und extrahiert den lesbaren Text über
+    // spezialisierte Bibliotheken. Bilder werden per OCR verarbeitet.
     public async Task<string> GetFileContentAsync(string filename, Stream content)
     {
         _logger.LogDebug("Entering {Method}", nameof(GetFileContentAsync));
@@ -59,6 +68,7 @@ public class FileDecoderService : IFileDecoderService
         }
     }
 
+    // Nutzt Tesseract-OCR, um Text aus Bilddateien zu gewinnen
     private async Task<string> DecodeImageAsync(Stream content)
     {
         using var ms = new MemoryStream();
