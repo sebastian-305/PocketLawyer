@@ -14,22 +14,22 @@ public class PocketController : ControllerBase
 {
     private readonly ILogger<PocketController> _logger;
     private readonly IAiService _geminiService;
-    private readonly IAiService _claudeService;
     private readonly IFileDecoderService _fileDecoderService;
+    private readonly IKvDetectionService _kvDetectionService;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
 
     public PocketController(ILogger<PocketController> logger,
         [FromKeyedServices("gemini")] IAiService geminiService,
         IFileDecoderService fileDecoderService,
-        [FromKeyedServices("claude")] IAiService claudeService,
+        IKvDetectionService kvDetectionService,
         IConfiguration configuration,
         IWebHostEnvironment environment)
     {
         _logger = logger;
         _geminiService = geminiService;
         _fileDecoderService = fileDecoderService;
-        _claudeService = claudeService;
+        _kvDetectionService = kvDetectionService;
         _configuration = configuration;
         _environment = environment;
     }
@@ -59,55 +59,18 @@ public class PocketController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei.");
         }
 
-        string kvsPath = Path.Combine(
-            _environment.ContentRootPath,
-            "Infrastructure",
-            "KVS");
-        string[] kvsFolders;
-        try
-        {
-            kvsFolders = Directory.GetDirectories(kvsPath)
-                .Select(name => Path.GetFileName(name) ?? "")
-                .Where(name => !string.IsNullOrWhiteSpace(name))                
-                .ToArray();
-            _logger.LogDebug("KVs: {KV}", string.Join(", ", kvsFolders));
-        }
-        catch (IOException ex)
-        {
-            _logger.LogError(ex, "Failed to read KVS folders");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Kollektivverträge.");
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            _logger.LogError(ex, "No permission to access KVS folders");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Kollektivverträge.");
-        }
-
-        var promptBuilder = new StringBuilder();
-
-     
-        promptBuilder.AppendLine("Arbeitsvertrag:");
-        promptBuilder.AppendLine(contractContent);
-        promptBuilder.AppendLine();
-        promptBuilder.AppendLine("Kollektivverträge:");
-        promptBuilder.AppendLine(string.Join(", ", kvsFolders));
-        promptBuilder.AppendLine();
-        promptBuilder.AppendLine("Finde heraus, ob einer der bereits übermittleten Kollektivverträge zu dem Arbeitsvertrag passt. Schreibe Multiple wenn mehrere Kollektivverträge passen würden.");
-        promptBuilder.AppendLine("Falls keiner Kollektivvertrag ausfindig gemacht werden kann oder wenn keiner der Kollegtivveträge in der übermittelten Liste zum Arbeitsvertrag passt.");
-        promptBuilder.AppendLine("Antworte im JSON-Format {\"kollektivvertrag\":\"NAME Oder Multiple ODER Keiner\"}.");
-        promptBuilder.AppendLine("Der Wortlaut deiner Antwort solle exakt dem Wortlaut der übermittelten Namen der Kollektivverträge entsprechen, weil diese danach in einem Programm verarbeitet werden.");
 
         var answers = new List<string>();
         try
         {
             for (int i = 0; i < 3; i++)
             {
-                answers.Add(await _claudeService.SendPrompt(promptBuilder.ToString(), null, false));
+                answers.Add(await _kvDetectionService.DetectKvAsync(contractContent));
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "AI service failed while processing the prompt");
+            _logger.LogError(ex, "KV detection failed");
             return StatusCode(StatusCodes.Status502BadGateway, "Fehler bei der Anfrage an den KI-Dienst.");
         }
 

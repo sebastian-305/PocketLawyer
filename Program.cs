@@ -1,6 +1,7 @@
 using PocketLawyer.Infrastructure.AiServices.Claude;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.FileDecoding;
+using PocketLawyer.Infrastructure.KvDetection;
 using PocketLawyer.Infrastructure;
 using PocketLawyer.Service;
 using Microsoft.AspNetCore.Diagnostics;
@@ -19,6 +20,7 @@ builder.Services
 builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
 builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
+builder.Services.AddScoped<IKvDetectionService, KvDetectionService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
