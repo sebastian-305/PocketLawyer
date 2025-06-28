@@ -1,31 +1,36 @@
-// Bereitet die HTTP-Requests vor, abhängig davon ob eine Datei ausgewählt wurde
 export function prepareRequests(fileInput) {
     let validationRequest;
-    let analyzeRequest;
+    let file = null;
     let mock = false;
 
     if (fileInput.files.length > 0) {
-        // Es wurde eine Datei hochgeladen -> echte Anfrage an den Server
         console.debug("REAL REQUEST!");
         const formData = new FormData();
-        formData.append("myfile", fileInput.files[0]);
-        validationRequest = new Request("/validate", { method: "POST", body: formData });
-        analyzeRequest = new Request("/contract", { method: "POST", body: formData });
+        file = fileInput.files[0];
+        formData.append("myfile", file);
+        validationRequest = new Request("/preanalysis", { method: "POST", body: formData });
     } else {
-        // Keine Datei: es wird nur ein Mock zurückgegeben
         console.debug("MOCK REQUEST!");
         mock = true;
-        analyzeRequest = new Request("/mockdata", { method: "GET" });
     }
 
-    // Dem Aufrufer werden beide Requests und ein Flag zurückgegeben
-    return { validationRequest, analyzeRequest, mock };
+    return { validationRequest, file, mock };
 }
 
-// Sendet die Vorvalidierung und liefert das Ergebnis als Objekt zurück
+export function createAnalysisRequest(file, kvName, mock) {
+    if (mock) {
+        return new Request("/mockdata", { method: "GET" });
+    }
+    const formData = new FormData();
+    formData.append("myfile", file);
+    if (kvName) {
+        formData.append("kollektivvertrag", kvName);
+    }
+    return new Request("/mainanalysis", { method: "POST", body: formData });
+}
+
 export async function requestPreValidation(validationRequest, mock) {
     if (mock) {
-        // Für Demozwecke geben wir hier feste Daten zurück
         return {
             isReadable: true,
             isContract: true,
@@ -34,9 +39,7 @@ export async function requestPreValidation(validationRequest, mock) {
         };
     }
 
-    // Anfrage an den Server senden
     const response = await fetch(validationRequest);
-    // Drucken deaktivieren, bis die Analyse abgeschlossen ist
     document.getElementById("printbtn").style.visibility = "hidden";
     let messageText = await response.text();
     let message;
@@ -45,15 +48,12 @@ export async function requestPreValidation(validationRequest, mock) {
     } catch (err) {
         throw new Error(messageText || "Ungültige Serverantwort");
     }
-    // Server kann Fehlermeldungen zurückliefern
     if (message.error) {
         throw new Error(message.error);
     }
-    // Parsed JSON an den Aufrufer weitergeben
     return message;
 }
 
-// Sendet den eigentlichen Analyse-Request an den Server
 export async function requestContractAnalysis(analyzeRequest) {
     const response = await fetch(analyzeRequest);
     let messageText = await response.text();

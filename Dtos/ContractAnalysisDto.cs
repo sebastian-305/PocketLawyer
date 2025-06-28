@@ -21,6 +21,9 @@ public class ContractAnalysisDto
 
     [JsonPropertyName("fazit")]
     public string Fazit { get; set; } = string.Empty;
+
+    [JsonPropertyName("kollektivvertrag")]
+    public string? Kollektivvertrag { get; set; }
 }
 
 public class Summary
@@ -53,6 +56,15 @@ public class Summary
     public string Probezeit { get; set; } = string.Empty;
 }
 
+public class RechtsgrundlageEintrag
+{
+    [JsonPropertyName("rechtsgrundlage")]
+    public string Rechtsgrundlage { get; set; } = string.Empty;
+
+    [JsonPropertyName("wortlaut")]
+    public string Wortlaut { get; set; } = string.Empty;
+}
+
 public class ProblemKlausel
 {
     [JsonPropertyName("titel")]
@@ -65,7 +77,7 @@ public class ProblemKlausel
     public string Problem { get; set; } = string.Empty;
 
     [JsonPropertyName("rechtsgrundlage")]
-    public string Rechtsgrundlage { get; set; } = string.Empty;
+    public RechtsgrundlageEintrag[] Rechtsgrundlage { get; set; } = [];
 }
 
 public class WiderspruechlicheKlausel
@@ -83,7 +95,7 @@ public class WiderspruechlicheKlausel
     public string Problem { get; set; } = string.Empty;
 
     [JsonPropertyName("rechtsgrundlage")]
-    public string Rechtsgrundlage { get; set; } = string.Empty;
+    public RechtsgrundlageEintrag[] Rechtsgrundlage { get; set; } = [];
 }
 
 public class VorteilKlausel

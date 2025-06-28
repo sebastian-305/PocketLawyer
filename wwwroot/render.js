@@ -1,4 +1,3 @@
-// Öffnet ein neues Fenster und erstellt eine Druckansicht
 export function printer() {
     const printWindow = window.open(
         "about:blank",
@@ -12,17 +11,17 @@ export function printer() {
     const link = doc.createElement("link");
     link.rel = "stylesheet";
     link.href = "print.css";
+    link.addEventListener("load", () => {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    });
     doc.head.appendChild(link);
 
     const content = document.getElementById("evaluation-body").cloneNode(true);
     doc.body.appendChild(content);
-
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
 }
 
-// Hilfsfunktion zum Aufbau eines Abschnitts
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -54,6 +53,13 @@ function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     return container;
 }
 
+function formatRechtsgrundlage(arr) {
+    if (!Array.isArray(arr)) return arr ?? "";
+    return arr
+        .map((e) => `${e.rechtsgrundlage}: ${e.wortlaut}`)
+        .join("; ");
+}
+
 function generateClauses(clause) {
     return renderClause({
         title: clause.titel,
@@ -61,7 +67,10 @@ function generateClauses(clause) {
         textValue: clause.zitat,
         extraFields: [
             { label: "Problem:", value: clause.problem },
-            { label: "Rechtsgrundlage:", value: clause.rechtsgrundlage },
+            {
+                label: "Rechtsgrundlage:",
+                value: formatRechtsgrundlage(clause.rechtsgrundlage),
+            },
         ],
     });
 }
@@ -83,52 +92,93 @@ function generateConflictClauses(clause) {
         extraFields: [
             { label: "Zitat B:", value: clause.zitat_klausel_b, emphasize: true },
             { label: "Problem:", value: clause.problem },
-            { label: "Rechtsgrundlage:", value: clause.rechtsgrundlage },
+            {
+                label: "Rechtsgrundlage:",
+                value: formatRechtsgrundlage(clause.rechtsgrundlage),
+            },
         ],
     });
 }
 
+function createAccordionItem(title, content, cls, id) {
+    const item = document.createElement("div");
+    item.classList.add("accordion-item", cls);
+
+    const header = document.createElement("h2");
+    header.classList.add("accordion-header");
+
+    const button = document.createElement("button");
+    button.classList.add("accordion-button");
+    button.type = "button";
+    button.setAttribute("data-bs-toggle", "collapse");
+    button.setAttribute("data-bs-target", `#${id}`);
+    button.setAttribute("aria-expanded", "true");
+    button.setAttribute("aria-controls", id);
+    button.innerHTML = title;
+
+    header.appendChild(button);
+    item.appendChild(header);
+
+    const collapse = document.createElement("div");
+    collapse.id = id;
+    collapse.classList.add("accordion-collapse", "collapse", "show");
+
+    const body = document.createElement("div");
+    body.classList.add("accordion-body", "section", cls);
+    body.appendChild(content);
+
+    collapse.appendChild(body);
+    item.appendChild(collapse);
+
+    return item;
+}
+
 export function createLoadingElement() {
-    // Zeigt während der Analyse ein Ladesymbol an
-    const loading = document.createElement("img");
-    loading.setAttribute("alt", "loading");
-    loading.setAttribute("src", "Media/loading.gif");
-    loading.style.width = "30%";
-    loading.style.margin = "auto";
-    loading.style.display = "block";
+    const loading = document.createElement("div");
+    loading.classList.add("loading-spinner");
+    loading.setAttribute("role", "status");
+    const srText = document.createElement("span");
+    srText.classList.add("visually-hidden");
+    srText.textContent = "Analyse läuft…";
+    loading.appendChild(srText);
     return loading;
 }
 
 export function renderPreValidation(message, body) {
-    // Löscht vorherigen Inhalt und zeigt die Voranalyse an
-    body.replaceChildren(generatePreAnalysis(message));
+    const container = generatePreAnalysis(message);
+    body.replaceChildren(container);
+    container.focus();
 }
 
 export function renderContractResult(message, body) {
-    // Fügt die detaillierte Analyse dem Dialog hinzu
-    body.appendChild(generateAnalysis(message));
+    const container = generateAnalysis(message);
+    body.appendChild(container);
+    container.focus();
 }
 
 export function displayUploadError(ex, body, loading, preAnalysisShown) {
-    // Darstellung eines Fehlers im Dialog
     console.error(ex);
     if (body.contains(loading)) {
         body.removeChild(loading);
     }
     if (!preAnalysisShown) {
-        // Modal leeren, falls noch keine Ergebnisse angezeigt wurden
         body.replaceChildren();
     }
     const err = document.createElement("div");
     err.classList.add("error-message");
+
+    err.setAttribute("role", "alert");
+    err.setAttribute("tabindex", "-1");
+
     err.textContent = `Fehler: ${ex.message}`;
     body.appendChild(err);
+    err.focus();
 }
 
-// Erstellt die Darstellung der Voranalyse
 function generatePreAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("preanalysis-container");
+    container.tabIndex = -1;
     if (!message.isReadable) {
         const heading = document.createElement("h2");
         heading.innerHTML =
@@ -153,14 +203,15 @@ function generatePreAnalysis(message) {
     console.debug(message.result);
     fadVal.textContent = message.result;
     fadWrap.appendChild(fadVal);
+   
     container.appendChild(fadWrap);
     return container;
 }
 
-// Erstellt alle Bereiche der detaillierten Analyse
 function generateAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("analysis-container");
+    container.tabIndex = -1;
 
     const hdr = document.createElement("div");
     hdr.classList.add("header-a");
@@ -170,67 +221,92 @@ function generateAnalysis(message) {
     hdr.appendChild(heading);
     container.appendChild(hdr);
 
-    container.appendChild(generateSummary(message.summary));
 
-    const badWrap = document.createElement("div");
-    badWrap.classList.add("section", "bad");
-    const badHd = document.createElement("h3");
-    badHd.innerHTML = "❗ Unzulässige Klauseln";
-    badWrap.appendChild(badHd);
-    message.unzulaessige_klauseln.forEach((e) =>
-        badWrap.appendChild(generateClauses(e)),
+    let idx = 0;
+    container.appendChild(
+        createAccordionItem(
+            "Zusammenfassung",
+            generateSummary(message.summary),
+            "summary",
+            `acc-${idx++}`
+        )
     );
+
     if (
         message["unzulaessige_klauseln"] !== undefined &&
         message.unzulaessige_klauseln != null &&
         message.unzulaessige_klauseln.length > 0
-    )
-        container.appendChild(badWrap);
+    ) {
+        const wrap = document.createElement("div");
+        message.unzulaessige_klauseln.forEach((e) =>
+            wrap.appendChild(generateClauses(e)),
+        );
+        container.appendChild(
+            createAccordionItem(
+                "❗ Unzulässige Klauseln",
+                wrap,
+                "bad",
+                `acc-${idx++}`
+            )
+        );
+    }
 
-    const nadWrap = document.createElement("div");
-    nadWrap.classList.add("section", "warning");
-    const nadHd = document.createElement("h3");
-    nadHd.innerHTML = "⚠️ Nachteilige Klauseln";
-    nadWrap.appendChild(nadHd);
-    message.nachteile_klauseln.forEach((e) =>
-        nadWrap.appendChild(generateClauses(e)),
-    );
     if (
         message["nachteile_klauseln"] !== undefined &&
         message.nachteile_klauseln != null &&
         message.nachteile_klauseln.length > 0
-    )
-        container.appendChild(nadWrap);
+    ) {
+        const wrap = document.createElement("div");
+        message.nachteile_klauseln.forEach((e) =>
+            wrap.appendChild(generateClauses(e)),
+        );
+        container.appendChild(
+            createAccordionItem(
+                "⚠️ Nachteilige Klauseln",
+                wrap,
+                "warning",
+                `acc-${idx++}`
+            )
+        );
+    }
 
-    const cadWrap = document.createElement("div");
-    cadWrap.classList.add("section", "conflict");
-    const cadHd = document.createElement("h3");
-    cadHd.innerHTML = "🟠 Widersprüchliche Klauseln";
-    cadWrap.appendChild(cadHd);
-    message.widerspruechliche_klauseln.forEach((e) =>
-        cadWrap.appendChild(generateConflictClauses(e)),
-    );
     if (
         message["widerspruechliche_klauseln"] !== undefined &&
         message.widerspruechliche_klauseln != null &&
         message.widerspruechliche_klauseln.length > 0
-    )
-        container.appendChild(cadWrap);
+    ) {
+        const wrap = document.createElement("div");
+        message.widerspruechliche_klauseln.forEach((e) =>
+            wrap.appendChild(generateConflictClauses(e)),
+        );
+        container.appendChild(
+            createAccordionItem(
+                "🟠 Widersprüchliche Klauseln",
+                wrap,
+                "conflict",
+                `acc-${idx++}`
+            )
+        );
+    }
 
-    const gadWrap = document.createElement("div");
-    gadWrap.classList.add("section", "good");
-    const gadHd = document.createElement("h3");
-    gadHd.innerHTML = "✅ Vorteilhafte Klauseln";
-    gadWrap.appendChild(gadHd);
-    message.vorteilhafte_klauseln.forEach((e) =>
-        gadWrap.appendChild(generateGoodClauses(e)),
-    );
     if (
         message["vorteilhafte_klauseln"] !== undefined &&
         message.vorteilhafte_klauseln != null &&
         message.vorteilhafte_klauseln.length > 0
-    )
-        container.appendChild(gadWrap);
+    ) {
+        const wrap = document.createElement("div");
+        message.vorteilhafte_klauseln.forEach((e) =>
+            wrap.appendChild(generateGoodClauses(e)),
+        );
+        container.appendChild(
+            createAccordionItem(
+                "✅ Vorteilhafte Klauseln",
+                wrap,
+                "good",
+                `acc-${idx++}`
+            )
+        );
+    }
 
     const fadWrap = document.createElement("div");
     fadWrap.classList.add("section", "summary-box");
@@ -245,16 +321,10 @@ function generateAnalysis(message) {
     container.appendChild(fadWrap);
 
     return container;
-    // Tabelle mit den Kerndaten des Vertrags erzeugen
     function generateSummary(summaryObj) {
         const container = document.createElement("div");
 
         container.classList.add("section", "summary");
-        const heading = document.createElement("h3");
-
-        heading.innerHTML = "Zusammenfassung";
-
-        container.appendChild(heading);
 
         const list = document.createElement("ul");
 

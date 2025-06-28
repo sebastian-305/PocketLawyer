@@ -19,7 +19,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             _logger = logger;
         }
 
-        public string PromptBuilder(string filename, string filecontent)
+        public string PromptBuilder(string filename, string fileContent)
         {
             throw new NotImplementedException();
         }
@@ -29,7 +29,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             throw new NotImplementedException();
         }
 
-        public async Task<string> SendPrompt(string prompt, object? outputSchema, bool sendAltKey = false)
+        public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
         {
             // Baut eine einfache Anfrage an den Claude-Service zusammen
             _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
@@ -45,9 +45,10 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             var parameters = new MessageParameters
             {
                 Messages = messages,
-                MaxTokens = 4000,
-                Model = AnthropicModels.Claude35Sonnet,
-                System = new List<SystemMessage>() { systemPrompt }
+                MaxTokens = 1000,
+                Model = AnthropicModels.Claude3Haiku,
+                System = new List<SystemMessage>() { systemPrompt },
+                Temperature = 0.1m
             };
 
             // Anfrage an den Claude-Client schicken und erste Antwort auslesen

@@ -1,0 +1,63 @@
+ARBEITSVERTRAG
+
+zwischen der xyz AG, Musterstraße 1, 1010 Wien (im Folgenden "Arbeitgeber") 
+und Herrn Max Mustermann, Musterweg 5, 1150 Wien (im Folgenden "Arbeitnehmer")
+
+§1 Beginn und Dauer
+Der Arbeitnehmer tritt seine Tätigkeit am 01.05.2025 an. Das Arbeitsverhältnis ist unbefristet.
+Die ersten fünf Monate gelten als Probezeit, während der das Arbeitsverhältnis beidseitig unter Einhaltung einer Frist von 1 Woche gekündigt werden kann.
+
+§2 Tätigkeit
+Der Arbeitnehmer wird als Softwareentwickler mit Schwerpunkt Backend-Entwicklung eingesetzt.
+Zu seinen Aufgaben zählen insbesondere:
+- Konzeption und Entwicklung von Backend-Systemen auf Basis von Java und Spring Boot
+- Durchführung von Code-Reviews
+- Mitarbeit an Architekturentscheidungen
+- Dokumentation der entwickelten Software
+Der Arbeitgeber behält sich vor, dem Arbeitnehmer auch andere, gleichwertige Tätigkeiten zuzuweisen, sofern dies im Rahmen seiner Qualifikation zumutbar ist.
+
+§3 Arbeitszeit
+Die regelmäßige Wochenarbeitszeit beträgt 40 Stunden, Montag bis Freitag. Beginn und Ende der täglichen Arbeitszeit orientieren sich an den betrieblichen Erfordernissen.
+Überstunden sind mit dem Gehalt abgegolten. Es erfolgt keine gesonderte Vergütung oder Zeitausgleich, es sei denn, dies wird ausdrücklich vereinbart.
+
+§4 Gehalt
+Der Arbeitnehmer erhält ein monatliches Bruttogehalt in Höhe von EUR 5.800,-. Dieses Gehalt übersteigt das kollektivvertragliche Mindestentgelt für diese Tätigkeit deutlich.
+Mit dieser Überzahlung sind sämtliche gesetzlichen und kollektivvertraglichen Mehrleistungen (z.B. Mehrarbeitszuschläge, Bereitschaftsdienst) abgegolten.
+
+§5 Sonderzahlungen
+Der Arbeitnehmer erhält jeweils im Juni und Dezember eine Sonderzahlung in Höhe eines Bruttomonatsgehalts.
+Diese Zahlungen erfolgen freiwillig und begründen keinen Rechtsanspruch, auch wenn sie wiederholt gewährt wurden.
+
+§6 Urlaub
+Dem Arbeitnehmer stehen pro Kalenderjahr 25 Werktage bezahlter Urlaub zu.
+Die Einteilung des Urlaubs erfolgt im Einvernehmen mit dem Arbeitgeber unter Berücksichtigung betrieblicher Notwendigkeiten.
+Nicht konsumierte Urlaubstage werden bis zu maximal einem Jahr ins nächste Kalenderjahr übertragen.
+
+§7 Vertragsstrafe
+Bei einer unberechtigten vorzeitigen Beendigung des Arbeitsverhältnisses durch den Arbeitnehmer verpflichtet sich dieser zur Zahlung einer Vertragsstrafe in Höhe von drei Bruttomonatsgehältern.
+Die Geltendmachung eines weiteren Schadens bleibt vorbehalten.
+
+§8 Vertraulichkeit
+Der Arbeitnehmer verpflichtet sich, über sämtliche Betriebs- und Geschäftsgeheimnisse Stillschweigen zu bewahren.
+Diese Verpflichtung besteht auch nach Beendigung des Arbeitsverhältnisses fort.
+
+§9 Nebentätigkeiten
+Nebentätigkeiten, insbesondere eine selbstständige Tätigkeit im gleichen Fachgebiet, sind dem Arbeitgeber im Vorfeld schriftlich anzuzeigen und bedürfen dessen Zustimmung.
+
+§10 Arbeitsmittel
+Der Arbeitgeber stellt dem Arbeitnehmer ein Notebook, Monitor, Maus, Tastatur sowie bei Bedarf ein Mobiltelefon zur Verfügung.
+Diese Arbeitsmittel dürfen ausschließlich dienstlich genutzt werden.
+
+§11 Fortbildung
+Der Arbeitgeber unterstützt den Arbeitnehmer in seiner beruflichen Weiterentwicklung.
+Fortbildungsmaßnahmen müssen im Vorfeld abgestimmt und genehmigt werden. Die dabei entstehenden Kosten trägt in der Regel der Arbeitgeber.
+
+§12 Kündigungsfrist
+Die Kündigungsfrist beträgt für den Arbeitnehmer 6 Wochen zum Quartalsende.
+Für den Arbeitgeber gelten die gesetzlichen Kündigungsfristen nach § 20 AngG.
+Kündigungen bedürfen der Schriftform.
+
+§13 Schlussbestimmungen
+Mündliche Nebenabreden bestehen nicht.
+Änderungen und Ergänzungen dieses Vertrags bedürfen der Schriftform.
+Sollten einzelne Bestimmungen dieses Vertrags unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.
