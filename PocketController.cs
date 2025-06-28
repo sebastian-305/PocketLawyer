@@ -35,20 +35,72 @@ public class PocketController : ControllerBase
     [HttpGet("/test")]
     public async Task<string?> Test()
     {
+        _logger.LogDebug("Entering {Method}", nameof(Test));
 
-        // Beispiel 2: Mit spezifischer JSON-Struktur
-        var analysisPrompt = @"Gib mir die gefragten Daten vom Land Liechtenstein an.
-        Verwende diese JSON-Struktur:
+        string contractPath = Path.Combine(
+            _environment.ContentRootPath,
+            "Samples",
+            "contract.txt");
+        string contractContent;
+        try
         {
-            'Name': 'String',
-            'Hauptstadt': 'String',
-            'Population': 'number',
-            'Flaeche': 'number',
-            'Bundeslaender': ['string'],
-            'Sehenswuerdigkeiten': ['string'],
-        }";
+            contractContent = await System.IO.File.ReadAllTextAsync(contractPath);
+        }
+        catch (IOException ex)
+        {
+            _logger.LogError(ex, "Failed to read contract sample");
+            return "Fehler beim Lesen der Beispieldatei.";
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogError(ex, "No permission to access contract sample");
+            return "Fehler beim Lesen der Beispieldatei.";
+        }
 
-        string answer = await _claudeService.SendPrompt(analysisPrompt, null, false);
+        string kvsPath = Path.Combine(
+            _environment.ContentRootPath,
+            "Infrastructure",
+            "KVS");
+        string[] kvsFolders;
+        try
+        {
+            kvsFolders = Directory.GetDirectories(kvsPath)
+                .Select(Path.GetFileName)
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .ToArray();
+        }
+        catch (IOException ex)
+        {
+            _logger.LogError(ex, "Failed to read KVS folders");
+            return "Fehler beim Lesen der Kollektivverträge.";
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogError(ex, "No permission to access KVS folders");
+            return "Fehler beim Lesen der Kollektivverträge.";
+        }
+
+        var promptBuilder = new StringBuilder();
+        promptBuilder.AppendLine("Finde heraus, ob einer der folgenden Kollektivverträge zu dem Arbeitsvertrag passt.");
+        promptBuilder.AppendLine("Antworte im JSON-Format {\"kollektivvertrag\":\"NAME ODER Keiner\"}.");
+        promptBuilder.AppendLine();
+        promptBuilder.AppendLine("Arbeitsvertrag:");
+        promptBuilder.AppendLine(contractContent);
+        promptBuilder.AppendLine();
+        promptBuilder.AppendLine("Kollektivverträge:");
+        promptBuilder.AppendLine(string.Join(", ", kvsFolders));
+
+        string answer;
+        try
+        {
+            answer = await _claudeService.SendPrompt(promptBuilder.ToString(), null, false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "AI service failed while processing the prompt");
+            return "Fehler bei der Anfrage an den KI-Dienst.";
+        }
+
         return answer;
     }
 
