@@ -4,6 +4,8 @@ using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
 using System.Text.Json;
 using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PocketLawyer;
 
@@ -33,7 +35,7 @@ public class PocketController : ControllerBase
     }
 
     [HttpGet("/test")]
-    public async Task<string?> Test()
+    public async Task<ActionResult<TestResultDto>> Test()
     {
         _logger.LogDebug("Entering {Method}", nameof(Test));
 
@@ -49,12 +51,12 @@ public class PocketController : ControllerBase
         catch (IOException ex)
         {
             _logger.LogError(ex, "Failed to read contract sample");
-            return "Fehler beim Lesen der Beispieldatei.";
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei.");
         }
         catch (UnauthorizedAccessException ex)
         {
             _logger.LogError(ex, "No permission to access contract sample");
-            return "Fehler beim Lesen der Beispieldatei.";
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei.");
         }
 
         string kvsPath = Path.Combine(
@@ -72,12 +74,12 @@ public class PocketController : ControllerBase
         catch (IOException ex)
         {
             _logger.LogError(ex, "Failed to read KVS folders");
-            return "Fehler beim Lesen der Kollektivverträge.";
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Kollektivverträge.");
         }
         catch (UnauthorizedAccessException ex)
         {
             _logger.LogError(ex, "No permission to access KVS folders");
-            return "Fehler beim Lesen der Kollektivverträge.";
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Kollektivverträge.");
         }
 
         var promptBuilder = new StringBuilder();
@@ -90,18 +92,28 @@ public class PocketController : ControllerBase
         promptBuilder.AppendLine("Kollektivverträge:");
         promptBuilder.AppendLine(string.Join(", ", kvsFolders));
 
-        string answer;
+        var answers = new List<string>();
         try
         {
-            answer = await _claudeService.SendPrompt(promptBuilder.ToString(), null, false);
+            for (int i = 0; i < 5; i++)
+            {
+                answers.Add(await _claudeService.SendPrompt(promptBuilder.ToString(), null, false));
+            }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "AI service failed while processing the prompt");
-            return "Fehler bei der Anfrage an den KI-Dienst.";
+            return StatusCode(StatusCodes.Status502BadGateway, "Fehler bei der Anfrage an den KI-Dienst.");
         }
 
-        return answer;
+        bool allEqual = answers.Distinct().Count() == 1;
+        var resultDto = new TestResultDto
+        {
+            Responses = answers.ToArray(),
+            AllEqual = allEqual
+        };
+
+        return Ok(resultDto);
     }
 
     [HttpGet("/mockdata")]
