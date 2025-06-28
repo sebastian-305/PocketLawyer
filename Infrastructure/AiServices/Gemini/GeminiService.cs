@@ -115,7 +115,8 @@ public class GeminiService : IAiService
         promptBuilder.Append("Bitte gründe deine Aussagen auf die Gesetze im Cached Kontext. \n");
         promptBuilder.Append("Bitte verwende keine Markdownformatierung, * oder #");
         promptBuilder.Append("Formatiere deine Antwort in HTML.");
-        promptBuilder.Append("Gib neben dem Paragraphen der Rechtsgrundlage auch den Gesetztestext an.\n");
+        promptBuilder.Append("Gib neben dem Paragraphen der Rechtsgrundlage auch den Wortlaut des Gesetztestextes an.\n");
+        promptBuilder.Append("Bei Regelungen die im Arbeitsvertrag mit \"laut Gesetzt\" oder \"laut Kollektivvertrag\" angegeben werden, ziehe die entsprechende Regelung aus diesen Quellen (falls vorhanden).\n");
         promptBuilder.Append("---------------------------------");
         promptBuilder.Append("\n\nDateiname des Vertrags: ");
         promptBuilder.Append(filename);
