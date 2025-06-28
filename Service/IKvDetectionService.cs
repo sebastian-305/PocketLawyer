@@ -1,6 +1,8 @@
+using PocketLawyer;
+
 namespace PocketLawyer.Service;
 
 public interface IKvDetectionService
 {
-    Task<string> DetectAsync(string contractContent);
+    Task<KvDetectionResult> DetectAsync(string contractContent);
 }

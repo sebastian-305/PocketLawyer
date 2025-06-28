@@ -60,10 +60,10 @@ public class PocketController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei oder der Kollektivverträge.");
         }
 
-        string answer;
+        KvDetectionResult detection;
         try
         {
-            answer = await _kvDetectionService.DetectAsync(contractContent);
+            detection = await _kvDetectionService.DetectAsync(contractContent);
         }
         catch (Exception ex)
         {
@@ -73,8 +73,7 @@ public class PocketController : ControllerBase
 
         var resultDto = new TestResultDto
         {
-            Responses = new[] { answer },
-            AllEqual = true
+            AllEqual = detection.AllEqual
         };
 
         return Ok(resultDto);
@@ -186,20 +185,30 @@ public class PocketController : ControllerBase
             return BadRequest(ex.Message);
         }
 
+        string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
+
         if (detectKv)
         {
             try
             {
-                string kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
-                _logger.LogInformation("KV detection result: {Result}", kvResult);
+                KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
+                _logger.LogInformation("KV detection result: {Result}", kvResult.KvName);
+
+                if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
+                {
+                    string[] kvFiles = await _kvService.GetKvFileContentsAsync(kvResult.KvName);
+                    var sbPrompt = new StringBuilder(prompt);
+                    sbPrompt.AppendLine();
+                    sbPrompt.AppendLine($"Der folgende Text enthält den dazugehörigen Kollektivvertrag \"{kvResult.KvName}\" und mögliche Anhänge. Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse.");
+                    sbPrompt.AppendLine(string.Join("\n\n", kvFiles));
+                    prompt = sbPrompt.ToString();
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Kollektivvertrag detection failed");
             }
         }
-
-        string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
         string answer;
         try
         {
