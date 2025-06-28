@@ -149,31 +149,49 @@ public class PocketController : ControllerBase
             _logger.LogError(ex, "KV detection failed during validation");
         }
 
-        var result = await ProcessContractRequest<ContractValidationDto>(
-            request.UploadedFile!,
-            BuildValidationPrompt,
-            GeminiService.PreAnalyzerSchemaDefinition,
-            true,
-            true);
-
-        if (result.Value != null)
+        ContractValidationDto resultDto;
+        try
         {
-            result.Value.Kollektivvertrag = kvName;
-            if (!string.IsNullOrWhiteSpace(kvName))
+            resultDto = await ProcessContractRequest<ContractValidationDto>(
+                request.UploadedFile!,
+                BuildValidationPrompt,
+                GeminiService.PreAnalyzerSchemaDefinition,
+                true);
+        }
+        catch (BadHttpRequestException ex)
+        {
+            _logger.LogError(ex, "Pre-validation failed");
+            return BadRequest(new ContractValidationDto
             {
-                result.Value.Result = string.Concat(
-                    result.Value.Result.TrimEnd(),
-                    " Es wurde der Kollektivvertrag \"",
-                    kvName,
-                    "\" erkannt.");
-            }
-                
-            _logger.LogDebug("Result: {result}", result.Value.Result);
+                IsReadable = false,
+                IsContract = false,
+                Result = ex.Message
+            });
+        }
+        catch (AiServiceException ex)
+        {
+            _logger.LogError(ex, "AI service failed while processing the prompt");
+            return StatusCode(StatusCodes.Status502BadGateway,
+                "Fehler bei der Anfrage an den KI-Dienst.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
         }
 
-        
+        resultDto.Kollektivvertrag = kvName;
+        if (!string.IsNullOrWhiteSpace(kvName))
+        {
+            resultDto.Result = string.Concat(
+                resultDto.Result.TrimEnd(),
+                " Es wurde der Kollektivvertrag \"",
+                kvName,
+                "\" erkannt.");
+        }
 
-        return result;
+        _logger.LogDebug("Result: {result}", resultDto.Result);
+
+        return Ok(resultDto);
     }
 
     [HttpPost("/mainanalysis")]
@@ -182,14 +200,33 @@ public class PocketController : ControllerBase
         _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
 
         string? kvName = request.Kollektivvertrag;
-        return await ProcessContractRequest<ContractAnalysisDto>(
-            request.UploadedFile!,
-            _geminiService.PromptBuilder,
-            GeminiService.AnalyzerSchemaDefinition,
-            false,
-            false,
-            string.IsNullOrWhiteSpace(kvName),
-            kvName);
+        ContractAnalysisDto dto;
+        try
+        {
+            dto = await ProcessContractRequest<ContractAnalysisDto>(
+                request.UploadedFile!,
+                _geminiService.PromptBuilder,
+                GeminiService.AnalyzerSchemaDefinition,
+                false,
+                string.IsNullOrWhiteSpace(kvName),
+                kvName);
+        }
+        catch (BadHttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (AiServiceException ex)
+        {
+            _logger.LogError(ex, "AI service failed while processing the prompt");
+            return StatusCode(StatusCodes.Status502BadGateway,
+                "Fehler bei der Anfrage an den KI-Dienst.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+        return Ok(dto);
     }
 
     private static string BuildValidationPrompt(string filename, string fileContent)
@@ -206,28 +243,14 @@ public class PocketController : ControllerBase
         return sb.ToString();
     }
 
-    private async Task<ActionResult<T>> ProcessContractRequest<T>(IFormFile file,
+    private async Task<T> ProcessContractRequest<T>(IFormFile file,
         Func<string, string, string> promptBuilder,
         object schema,
         bool useAltKey,
-        bool validationErrorFormat,
         bool detectKv = false,
         string? kvName = null)
     {
-        FileContentDto requestContent;
-        try
-        {
-            requestContent = await PreValidate(file);
-        }
-        catch (Exception ex)
-        {
-            if (validationErrorFormat)
-            {
-                _logger.LogError(ex, "Pre-validation failed");
-                return BadRequest($"{{\"isReadable\":false, \"isContract\":false, \"result\":\"{ex.Message}\"}}");
-            }
-            return BadRequest(ex.Message);
-        }
+        FileContentDto requestContent = await PreValidate(file);
 
         string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
 
@@ -265,17 +288,7 @@ public class PocketController : ControllerBase
                 _logger.LogError(ex, "Kollektivvertrag detection failed");
             }
         }
-        string answer;
-        try
-        {
-            answer = await _geminiService.SendPrompt(prompt, schema, useAltKey);
-        }
-        catch (AiServiceException ex)
-        {
-            _logger.LogError(ex, "AI service failed while processing the prompt");
-            return StatusCode(StatusCodes.Status502BadGateway,
-                "Fehler bei der Anfrage an den KI-Dienst.");
-        }
+        string answer = await _geminiService.SendPrompt(prompt, schema, useAltKey);
 
         T? dto;
         try
@@ -286,10 +299,10 @@ public class PocketController : ControllerBase
         {
             string truncated = answer.Length > 200 ? answer[..200] + "..." : answer;
             _logger.LogError(ex, "Failed to parse AI response: {Snippet}", truncated);
-            return BadRequest($"Fehler beim Interpretieren der KI-Antwort: {truncated}");
+            throw new InvalidOperationException($"Fehler beim Interpretieren der KI-Antwort: {truncated}", ex);
         }
         if (dto == null)
-            return BadRequest("Invalid AI response");
+            throw new InvalidOperationException("Invalid AI response");
 
         if (!string.IsNullOrWhiteSpace(kvName))
         {
@@ -304,7 +317,7 @@ public class PocketController : ControllerBase
             }
         }
 
-        return Ok(dto);
+        return dto;
     }
 
     private async Task<FileContentDto> PreValidate(IFormFile file)
