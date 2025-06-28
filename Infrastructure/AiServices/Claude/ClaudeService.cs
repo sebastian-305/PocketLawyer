@@ -42,9 +42,10 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             var parameters = new MessageParameters
             {
                 Messages = messages,
-                MaxTokens = 4000,
+                MaxTokens = 1000,
                 Model = AnthropicModels.Claude35Sonnet,
-                System = new List<SystemMessage>() { systemPrompt }
+                System = new List<SystemMessage>() { systemPrompt },
+                Temperature = 0.1m
             };
 
             var response = await _client.Messages.GetClaudeMessageAsync(parameters);

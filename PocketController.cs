@@ -42,7 +42,7 @@ public class PocketController : ControllerBase
         string contractPath = Path.Combine(
             _environment.ContentRootPath,
             "Samples",
-            "ctr2.txt");
+            "int.txt");
         string contractContent;
         try
         {
@@ -67,9 +67,10 @@ public class PocketController : ControllerBase
         try
         {
             kvsFolders = Directory.GetDirectories(kvsPath)
-                .Select(Path.GetFileName)
-                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Select(name => Path.GetFileName(name) ?? "")
+                .Where(name => !string.IsNullOrWhiteSpace(name))                
                 .ToArray();
+            _logger.LogDebug("KVs: {KV}", string.Join(", ", kvsFolders));
         }
         catch (IOException ex)
         {
@@ -83,19 +84,23 @@ public class PocketController : ControllerBase
         }
 
         var promptBuilder = new StringBuilder();
-        promptBuilder.AppendLine("Finde heraus, ob einer der folgenden Kollektivverträge zu dem Arbeitsvertrag passt.");
-        promptBuilder.AppendLine("Antworte im JSON-Format {\"kollektivvertrag\":\"NAME ODER Keiner\"}.");
-        promptBuilder.AppendLine();
+
+     
         promptBuilder.AppendLine("Arbeitsvertrag:");
         promptBuilder.AppendLine(contractContent);
         promptBuilder.AppendLine();
         promptBuilder.AppendLine("Kollektivverträge:");
         promptBuilder.AppendLine(string.Join(", ", kvsFolders));
+        promptBuilder.AppendLine();
+        promptBuilder.AppendLine("Finde heraus, ob einer der bereits übermittleten Kollektivverträge zu dem Arbeitsvertrag passt. Schreibe Multiple wenn mehrere Kollektivverträge passen würden.");
+        promptBuilder.AppendLine("Falls keiner Kollektivvertrag ausfindig gemacht werden kann oder wenn keiner der Kollegtivveträge in der übermittelten Liste zum Arbeitsvertrag passt.");
+        promptBuilder.AppendLine("Antworte im JSON-Format {\"kollektivvertrag\":\"NAME Oder Multiple ODER Keiner\"}.");
+        promptBuilder.AppendLine("Der Wortlaut deiner Antwort solle exakt dem Wortlaut der übermittelten Namen der Kollektivverträge entsprechen, weil diese danach in einem Programm verarbeitet werden.");
 
         var answers = new List<string>();
         try
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 3; i++)
             {
                 answers.Add(await _claudeService.SendPrompt(promptBuilder.ToString(), null, false));
             }
