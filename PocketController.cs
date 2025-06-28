@@ -167,7 +167,11 @@ public class PocketController : ControllerBase
                     kvName,
                     "\" erkannt.");
             }
+                
+            _logger.LogDebug("Result: {result}", result.Value.Result);
         }
+
+        
 
         return result;
     }
