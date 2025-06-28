@@ -2,6 +2,7 @@ using System.Text;
 using PocketLawyer.Service;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
+using Tesseract;
 
 namespace PocketLawyer.Infrastructure.FileDecoding;
 
@@ -14,7 +15,7 @@ public class FileDecoderService : IFileDecoderService
         _logger = logger;
     }
 
-    public string[] AllowedExtensions => ["txt", "pdf"];
+    public string[] AllowedExtensions => ["txt", "pdf", "jpg", "jpeg", "png"];
     public string AllowedExtensionsString => string.Join(", ", AllowedExtensions);
 
     public async Task<string> GetFileContentAsync(string filename, Stream content)
@@ -45,9 +46,26 @@ public class FileDecoderService : IFileDecoderService
                         contentBuilder.Append(page.Text);
                     return contentBuilder.ToString();
                 }
+            case "jpg":
+            case "jpeg":
+            case "png":
+                _logger.LogDebug("Decoding image file {FileName}", filename);
+                return await DecodeImageAsync(content);
             default:
                 throw new NotSupportedException($"File extension {extension} is not supported.");
         }
+    }
+
+    private static async Task<string> DecodeImageAsync(Stream content)
+    {
+        using var ms = new MemoryStream();
+        await content.CopyToAsync(ms);
+        ms.Position = 0;
+
+        using var engine = new TesseractEngine("./tessdata", "deu+eng", EngineMode.Default);
+        using var img = Pix.LoadFromMemory(ms.ToArray());
+        using var page = engine.Process(img);
+        return page.GetText();
     }
 
 }
