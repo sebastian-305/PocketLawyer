@@ -26,6 +26,7 @@ data/tessdata/   Sprachdaten für Tesseract OCR.
 data/KVS/        Kollektivverträge für die Analyse.
 data/Context/    Vorverarbeitete Kontextdaten für Prompts.
 data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
+
 ```
 
 ## Diagramme
