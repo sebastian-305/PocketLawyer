@@ -1,67 +1,49 @@
-export function prepareRequests(fileInput) {
-    let validationRequest;
-    let file = null;
-    let mock = false;
-
-    if (fileInput.files.length > 0) {
-        console.debug("REAL REQUEST!");
-        const formData = new FormData();
-        file = fileInput.files[0];
-        formData.append("myfile", file);
-        validationRequest = new Request("/preanalysis", { method: "POST", body: formData });
-    } else {
-        console.debug("MOCK REQUEST!");
-        mock = true;
-    }
-
-    return { validationRequest, file, mock };
+export function startAnalysisSocket(file, onMessage) {
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const socket = new WebSocket(`${protocol}://${window.location.host}/analysis`);
+    socket.addEventListener('open', async () => {
+        const buffer = await file.arrayBuffer();
+        socket.send(
+            JSON.stringify({
+                fileName: file.name,
+                data: bufferToBase64(buffer),
+            }),
+        );
+    });
+    socket.addEventListener('message', (e) => {
+        try {
+            onMessage(JSON.parse(e.data));
+        } catch (err) {
+            console.error('Ungültige Serverantwort', e.data);
+        }
+    });
+    return socket;
 }
 
-export function createAnalysisRequest(file, kvName, mock) {
-    if (mock) {
-        return new Request("/mockdata", { method: "GET" });
+function bufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
     }
-    const formData = new FormData();
-    formData.append("myfile", file);
-    if (kvName) {
-        formData.append("kollektivvertrag", kvName);
-    }
-    return new Request("/mainanalysis", { method: "POST", body: formData });
+    return btoa(binary);
 }
 
-export async function requestPreValidation(validationRequest, mock) {
-    if (mock) {
-        return {
-            isReadable: true,
-            isContract: true,
-            result:
-                "Mock Request. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-        };
-    }
-
-    const response = await fetch(validationRequest);
-    document.getElementById("printbtn").style.visibility = "hidden";
-    let messageText = await response.text();
-    let message;
+export async function requestMockAnalysis() {
+    const response = await fetch('/mockdata', { method: 'GET' });
+    const text = await response.text();
     try {
-        message = JSON.parse(messageText);
+        return JSON.parse(text);
     } catch (err) {
-        throw new Error(messageText || "Ungültige Serverantwort");
+        throw new Error(text || 'Ungültige Serverantwort');
     }
-    if (message.error) {
-        throw new Error(message.error);
-    }
-    return message;
 }
 
-export async function requestContractAnalysis(analyzeRequest) {
-    const response = await fetch(analyzeRequest);
-    let messageText = await response.text();
-    let message;
-    try {
-        message = JSON.parse(messageText);
-    } catch (err) {
-        throw new Error(messageText || "Ungültige Serverantwort");
-    }
-    return message;
+export function mockPreValidationMessage() {
+    return {
+        isReadable: true,
+        isContract: true,
+        result:
+            'Mock Request. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+    };
 }
