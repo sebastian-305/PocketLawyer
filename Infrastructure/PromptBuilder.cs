@@ -55,7 +55,7 @@ public static class PromptBuilder
         promptBuilder.AppendLine(string.Join(", ", kvsFolders));
         promptBuilder.AppendLine();
         promptBuilder.AppendLine("Finde heraus, ob einer der bereits \u00fcbermittelten Kollektivvertr\u00e4ge zu dem Arbeitsvertrag passt. Schreibe Multiple wenn mehrere Kollektivvertr\u00e4ge passen w\u00fcrden.");
-        promptBuilder.AppendLine("Falls keiner Kollektivvertrag ausfindig gemacht werden kann oder wenn keiner der Kollegtivvetr\u00e4ge in der \u00fcbermittelten Liste zum Arbeitsvertrag passt.");
+        promptBuilder.AppendLine("Falls keiner Kollektivvertrag ausfindig gemacht werden kann oder wenn keiner der Kollektivvertr\u00e4ge in der \u00fcbermittelten Liste zum Arbeitsvertrag passt.");
         promptBuilder.AppendLine("Antworte im JSON-Format {\"kollektivvertrag\":\"NAME Oder Multiple ODER Keiner\"}.");
         promptBuilder.AppendLine("Der Wortlaut deiner Antwort solle exakt dem Wortlaut der \u00fcbermittelten Namen der Kollektivvertr\u00e4ge entsprechen, weil diese danach in einem Programm verarbeitet werden.");
         return promptBuilder.ToString();
