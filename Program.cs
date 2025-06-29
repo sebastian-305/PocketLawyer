@@ -43,6 +43,7 @@ app.UseExceptionHandler(errorApp =>
 app.UseStatusCodePages();
 
 app.UseHttpsRedirection();
+app.UseWebSockets();
 
 if (app.Environment.IsDevelopment())
 {

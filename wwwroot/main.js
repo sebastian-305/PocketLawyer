@@ -1,4 +1,4 @@
-import { prepareRequests, createAnalysisRequest, requestPreValidation, requestContractAnalysis } from './network.js';
+import { startAnalysisSocket, requestMockAnalysis, mockPreValidationMessage } from './network.js';
 import { createLoadingElement, renderPreValidation, renderContractResult, displayUploadError, printer } from './render.js';
 
 async function uploadFile(event) {
@@ -10,40 +10,57 @@ async function uploadFile(event) {
     const loading = createLoadingElement();
     body.replaceChildren(loading);
 
-    const { validationRequest, file, mock } = prepareRequests(event.target.myfile);
-
+    const input = event.target.myfile;
     let preAnalysisShown = false;
+    let preMessage = null;
 
     try {
-        const validationMessage = await requestPreValidation(validationRequest, mock);
-        renderPreValidation(validationMessage, body);
-        preAnalysisShown = true;
-
-        if (!validationMessage.isReadable || !validationMessage.isContract) {
-            throw new Error(`isReadable: ${validationMessage.isReadable}, isContract: ${validationMessage.isContract}`);
+        if (input.files.length === 0) {
+            preMessage = mockPreValidationMessage();
+            body.replaceChildren();
+            renderPreValidation(preMessage, body);
+            preAnalysisShown = true;
+            body.appendChild(loading);
+            const analysisMessage = await requestMockAnalysis();
+            body.removeChild(loading);
+            renderContractResult(analysisMessage, body);
+            sessionStorage.setItem(
+                'analysisResult',
+                JSON.stringify({ validation: preMessage, analysis: analysisMessage }),
+            );
+            document.getElementById('printbtn').style.visibility = 'visible';
+        } else {
+            const file = input.files[0];
+            const socket = startAnalysisSocket(file, (msg) => {
+                if (!preAnalysisShown) {
+                    preMessage = msg;
+                    body.replaceChildren();
+                    renderPreValidation(msg, body);
+                    preAnalysisShown = true;
+                    if (!msg.isReadable || !msg.isContract) {
+                        socket.close();
+                    } else {
+                        body.appendChild(loading);
+                    }
+                } else {
+                    body.removeChild(loading);
+                    renderContractResult(msg, body);
+                    sessionStorage.setItem(
+                        'analysisResult',
+                        JSON.stringify({ validation: preMessage, analysis: msg }),
+                    );
+                    document.getElementById('printbtn').style.visibility = 'visible';
+                    socket.close();
+                }
+            });
+            socket.addEventListener('error', () => {
+                displayUploadError(new Error('WebSocket Fehler'), body, loading, preAnalysisShown);
+            });
         }
-
-        const analysisRequest = createAnalysisRequest(
-            file,
-            validationMessage.kollektivvertrag,
-            mock,
-        );
-        body.appendChild(loading);
-        const analysisMessage = await requestContractAnalysis(analysisRequest);
-        body.removeChild(loading);
-        renderContractResult(analysisMessage, body);
-        sessionStorage.setItem(
-            'analysisResult',
-            JSON.stringify({
-                validation: validationMessage,
-                analysis: analysisMessage,
-            }),
-        );
-        document.getElementById('printbtn').style.visibility = 'visible';
     } catch (ex) {
         displayUploadError(ex, body, loading, preAnalysisShown);
     } finally {
-        event.target.myfile.value = null;
+        input.value = null;
     }
 }
 

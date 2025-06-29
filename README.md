@@ -24,8 +24,7 @@ tessdata/        Sprachdaten für Tesseract OCR.
 
 ## Endpunkte
 
-* `POST /preanalysis` – Prüft eine hochgeladene Datei vor (lesbar, Arbeitsvertrag?).
-* `POST /mainanalysis` – Führt die ausführliche Analyse eines Vertrags durch.
+* `GET  /analysis` – WebSocket-Endpunkt, der nach dem Senden einer Datei zuerst die Voranalyse und danach die Hauptanalyse überträgt.
 * `GET  /mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `Responses`-Ordner.
 * `GET  /test` – Führt einen einfachen KV-Erkennungstest gegen ein Sample aus.
 

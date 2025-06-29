@@ -4,6 +4,7 @@ using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
 using System.Text.Json;
 using System.Text;
+using System.Net.WebSockets;
 
 namespace PocketLawyer;
 
@@ -129,15 +130,54 @@ public class PocketController : ControllerBase
     }
 
 
-    [HttpPost("/preanalysis")]
-    public async Task<ActionResult<ContractValidationDto>> ValidateBinaryContract([FromForm] FileUploadDto request)
+    [HttpGet("/analysis")]
+    public async Task<ActionResult> AnalyzeViaWebSocket()
     {
-        _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
+        if (!HttpContext.WebSockets.IsWebSocketRequest)
+            return BadRequest();
+
+        using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+
+        var buffer = new byte[8192];
+        var ms = new MemoryStream();
+        WebSocketReceiveResult result;
+        do
+        {
+            result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
+            ms.Write(buffer, 0, result.Count);
+        } while (!result.EndOfMessage);
+
+        if (result.MessageType == WebSocketMessageType.Close)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            return new EmptyResult();
+        }
+
+        WebSocketFileDto? upload;
+        try
+        {
+            upload = JsonSerializer.Deserialize<WebSocketFileDto>(Encoding.UTF8.GetString(ms.ToArray()));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to parse websocket request");
+            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
+            return new EmptyResult();
+        }
+        if (upload == null)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
+            return new EmptyResult();
+        }
+
+        byte[] fileBytes = Convert.FromBase64String(upload.Data);
+
+        IFormFile CreateFormFile() => new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", upload.FileName);
 
         string? kvName = null;
         try
         {
-            var requestContent = await PreValidate(request.UploadedFile!);
+            var requestContent = await PreValidate(CreateFormFile());
             KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
             if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
             {
@@ -149,85 +189,71 @@ public class PocketController : ControllerBase
             _logger.LogError(ex, "KV detection failed during validation");
         }
 
-        ContractValidationDto resultDto;
+        ContractValidationDto validationDto;
         try
         {
-            resultDto = await ProcessContractRequest<ContractValidationDto>(
-                request.UploadedFile!,
+            validationDto = await ProcessContractRequest<ContractValidationDto>(
+                CreateFormFile(),
                 BuildValidationPrompt,
                 GeminiService.PreAnalyzerSchemaDefinition,
                 true);
         }
-        catch (BadHttpRequestException ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Pre-validation failed");
-            return BadRequest(new ContractValidationDto
-            {
-                IsReadable = false,
-                IsContract = false,
-                Result = ex.Message
-            });
-        }
-        catch (AiServiceException ex)
-        {
-            _logger.LogError(ex, "AI service failed while processing the prompt");
-            return StatusCode(StatusCodes.Status502BadGateway,
-                "Fehler bei der Anfrage an den KI-Dienst.");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
+            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            return new EmptyResult();
         }
 
-        resultDto.Kollektivvertrag = kvName;
+        validationDto.Kollektivvertrag = kvName;
         if (!string.IsNullOrWhiteSpace(kvName))
         {
-            resultDto.Result = string.Concat(
-                resultDto.Result.TrimEnd(),
+            validationDto.Result = string.Concat(
+                validationDto.Result.TrimEnd(),
                 " Es wurde der Kollektivvertrag \"",
                 kvName,
                 "\" erkannt.");
         }
 
-        _logger.LogDebug("Result: {result}", resultDto.Result);
+        await SendStringAsync(webSocket, JsonSerializer.Serialize(validationDto), CancellationToken.None);
 
-        return Ok(resultDto);
-    }
+        if (!validationDto.IsReadable || !validationDto.IsContract)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+            return new EmptyResult();
+        }
 
-    [HttpPost("/mainanalysis")]
-    public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract([FromForm] FileUploadDto request)
-    {
-        _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
-
-        string? kvName = request.Kollektivvertrag;
-        ContractAnalysisDto dto;
+        ContractAnalysisDto analysisDto;
         try
         {
-            dto = await ProcessContractRequest<ContractAnalysisDto>(
-                request.UploadedFile!,
+            analysisDto = await ProcessContractRequest<ContractAnalysisDto>(
+                CreateFormFile(),
                 _geminiService.PromptBuilder,
                 GeminiService.AnalyzerSchemaDefinition,
                 false,
                 string.IsNullOrWhiteSpace(kvName),
                 kvName);
         }
-        catch (BadHttpRequestException ex)
+        catch (Exception ex)
         {
-            return BadRequest(ex.Message);
-        }
-        catch (AiServiceException ex)
-        {
-            _logger.LogError(ex, "AI service failed while processing the prompt");
-            return StatusCode(StatusCodes.Status502BadGateway,
-                "Fehler bei der Anfrage an den KI-Dienst.");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
+            _logger.LogError(ex, "Analysis failed");
+            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            return new EmptyResult();
         }
 
-        return Ok(dto);
+        await SendStringAsync(webSocket, JsonSerializer.Serialize(analysisDto), CancellationToken.None);
+        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+        return new EmptyResult();
     }
+
+    private static Task SendStringAsync(WebSocket socket, string data, CancellationToken token)
+    {
+        var bytes = Encoding.UTF8.GetBytes(data);
+        return socket.SendAsync(bytes, WebSocketMessageType.Text, true, token);
+    }
+
 
     private static string BuildValidationPrompt(string filename, string fileContent)
     {
