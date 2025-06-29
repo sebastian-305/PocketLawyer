@@ -1,5 +1,8 @@
 using System.Text.Json.Serialization;
 
+// Wird für die Voranalyse verwendet und enthält Informationen,
+// ob die Datei lesbar und ein Arbeitsvertrag ist.
+
 namespace PocketLawyer.Domain.Dtos;
 
 public class ContractValidationDto

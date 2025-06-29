@@ -1,5 +1,7 @@
 using System.Text.Json;
 using Anthropic.SDK;
+
+// AI-Client für die Claude-API als Alternative zu Gemini.
 using Anthropic.SDK.Constants;
 using Anthropic.SDK.Messaging;
 using PocketLawyer.Application.Interfaces;
@@ -8,6 +10,7 @@ using PocketLawyer.Options;
 
 namespace PocketLawyer.Infrastructure.AiServices.Claude
 {
+    // Sendet Prompts an die Claude-API und liefert die JSON-Antwort zurück.
     public class ClaudeService : IAiClient
     {
         private readonly AnthropicClient _client;

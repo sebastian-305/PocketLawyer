@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+
+// Führt eine Kollektivvertragserkennung mittels KI durch.
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using PocketLawyer.Application.Interfaces;
@@ -7,6 +9,7 @@ using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Infrastructure;
 
+// Nutzt mehrfache KI-Anfragen, um den wahrscheinlichsten KV zu bestimmen.
 public class KvAiDetectionService : IKvDetectionService
 {
     private readonly ILogger<KvAiDetectionService> _logger;

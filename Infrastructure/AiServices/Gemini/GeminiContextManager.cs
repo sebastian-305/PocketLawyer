@@ -1,4 +1,6 @@
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
+
+// Verwalter für den Gemini-Kontextcache.
 using PocketLawyer.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,6 +13,8 @@ using PocketLawyer.Options;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// Lädt Gesetzestexte und erstellt bzw. liest einen Kontextschlüssel
+// für nachfolgende Gemini-API-Aufrufe.
 public class GeminiContextManager : IGeminiContextManager
 {
     private readonly HttpClient _httpClient;

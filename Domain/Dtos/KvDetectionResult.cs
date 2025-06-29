@@ -1,3 +1,5 @@
+// Ergebnisobjekt der KV-Erkennung, enthält den ermittelten KV-Namen
+// und ob alle Quellen übereinstimmten.
 namespace PocketLawyer.Domain.Dtos;
 
 public class KvDetectionResult

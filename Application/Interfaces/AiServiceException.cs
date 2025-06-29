@@ -1,8 +1,9 @@
 namespace PocketLawyer.Application.Interfaces;
 
 /// <summary>
-/// Exception that represents errors returned from an AI service.
+/// Ausnahme, die Fehler eines KI-Dienstes repräsentiert.
 /// </summary>
+// Basisfehler für Probleme beim Aufruf der KI.
 public class AiServiceException : Exception
 {
     public AiServiceException() { }

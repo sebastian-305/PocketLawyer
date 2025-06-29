@@ -1,8 +1,9 @@
 namespace PocketLawyer.Application.Interfaces;
 
 /// <summary>
-/// Exception thrown when validation or decoding of an uploaded file fails.
+/// Wird ausgelöst, wenn Validierung oder Dekodierung einer Datei scheitern.
 /// </summary>
+// Fehler die bei der Prüfung hochgeladener Dateien auftreten.
 public class FileValidationException : Exception
 {
     public string? FileName { get; }

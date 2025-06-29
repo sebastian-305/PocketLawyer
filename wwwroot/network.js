@@ -1,5 +1,8 @@
 const DEBUG = false;
 
+// Enthält Funktionen zur Kommunikation mit dem Backend.
+
+// Baut eine WebSocket-Verbindung auf und sendet die Datei.
 export function startAnalysisSocket(file, onMessage) {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const socket = new WebSocket(`${protocol}://${window.location.host}/analysis`);
@@ -22,6 +25,7 @@ export function startAnalysisSocket(file, onMessage) {
     return socket;
 }
 
+// Wandelt einen ArrayBuffer in eine Base64-Zeichenkette um.
 function bufferToBase64(buffer) {
     let binary = '';
     const bytes = new Uint8Array(buffer);
@@ -31,6 +35,7 @@ function bufferToBase64(buffer) {
     return btoa(binary);
 }
 
+// Holt eine zufällige Analyseantwort vom Server.
 export async function requestMockAnalysis() {
     const response = await fetch('/mockdata', { method: 'GET' });
     const text = await response.text();
@@ -41,6 +46,7 @@ export async function requestMockAnalysis() {
     }
 }
 
+// Liefert eine statische Voranalyse für den Demo-Modus.
 export function mockPreValidationMessage() {
     return {
         isReadable: true,

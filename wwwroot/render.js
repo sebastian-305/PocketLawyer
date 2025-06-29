@@ -1,5 +1,8 @@
 const DEBUG = false;
 
+// Enthält Funktionen zur Darstellung der Analyse im Browser.
+
+// Öffnet ein neues Fenster und druckt die Analyse aus.
 export function printer() {
     const printWindow = window.open(
         "about:blank",
@@ -102,6 +105,7 @@ function generateConflictClauses(clause) {
     });
 }
 
+// Hilfsfunktion für Bootstrap-Accordion-Einträge.
 function createAccordionItem(title, content, cls, id) {
     const item = document.createElement("div");
     item.classList.add("accordion-item", cls);
@@ -135,6 +139,7 @@ function createAccordionItem(title, content, cls, id) {
     return item;
 }
 
+// Erzeugt ein Spinner-Element für die Ladeanzeige.
 export function createLoadingElement() {
     const loading = document.createElement("div");
     loading.classList.add("loading-spinner");
@@ -146,18 +151,21 @@ export function createLoadingElement() {
     return loading;
 }
 
+// Zeigt das Ergebnis der Voranalyse im Dialog an.
 export function renderPreValidation(message, body) {
     const container = generatePreAnalysis(message);
     body.replaceChildren(container);
     container.focus();
 }
 
+// Hängt die ausführliche Analyse an das DOM an.
 export function renderContractResult(message, body) {
     const container = generateAnalysis(message);
     body.appendChild(container);
     container.focus();
 }
 
+// Zeigt eine Fehlermeldung innerhalb des Modals an.
 export function displayUploadError(ex, body, loading, preAnalysisShown) {
     if (DEBUG) console.error(ex);
     if (body.contains(loading)) {
@@ -177,6 +185,7 @@ export function displayUploadError(ex, body, loading, preAnalysisShown) {
     err.focus();
 }
 
+// Erstellt das HTML-Gerüst für die Voranalyse.
 function generatePreAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("preanalysis-container");
@@ -212,6 +221,7 @@ function generatePreAnalysis(message) {
     return container;
 }
 
+// Baut alle Abschnitte der finalen Analyse auf.
 function generateAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("analysis-container");

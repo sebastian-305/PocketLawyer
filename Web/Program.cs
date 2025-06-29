@@ -1,4 +1,6 @@
 using PocketLawyer.Infrastructure.AiServices.Claude;
+
+// Einstiegspunkt der Webanwendung. Registriert alle Services und Middleware.
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.FileDecoding;
 using PocketLawyer.Infrastructure;

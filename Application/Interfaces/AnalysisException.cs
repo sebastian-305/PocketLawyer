@@ -1,8 +1,9 @@
 namespace PocketLawyer.Application.Interfaces;
 
 /// <summary>
-/// Exception thrown when analysis of a contract fails.
+/// Wird geworfen, wenn die Analyse eines Vertrags fehlschlägt.
 /// </summary>
+// Speichert optional den Schritt der Analyse, der fehlgeschlagen ist.
 public class AnalysisException : Exception
 {
     public string? AnalysisStep { get; }

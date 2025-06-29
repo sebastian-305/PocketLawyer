@@ -1,7 +1,10 @@
 using System.Text;
 
+// Stellt Methoden bereit, um die Eingabeprompts für die KI zu erstellen.
+
 namespace PocketLawyer.Infrastructure;
 
+// Hilfsklasse zum Zusammenstellen der Prompt-Strings.
 public static class PromptBuilder
 {
     public static string BuildAnalysisPrompt(string filename, string fileContent)

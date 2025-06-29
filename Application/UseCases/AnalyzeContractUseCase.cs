@@ -1,10 +1,13 @@
 using System.Text;
+
+// Zentrale Logik um einen Arbeitsvertrag mit KI auszuwerten.
 using System.Text.Json;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Application.UseCases;
 
+// Baut Prompts auf, ruft die KI auf und interpretiert deren Antworten.
 public class AnalyzeContractUseCase : IContractAnalyzerService
 {
     private readonly ILogger<AnalyzeContractUseCase> _logger;
@@ -24,6 +27,7 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
         _kvDetectionService = kvDetectionService;
     }
 
+    // Führt je nach Parameter eine Voranalyse oder Vollanalyse durch.
     public async Task<T> ProcessContractRequest<T>(
         FileContentDto content,
         Func<string, string, string> promptBuilder,

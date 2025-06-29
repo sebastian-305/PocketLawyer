@@ -1,5 +1,8 @@
 namespace PocketLawyer.Options;
 
+// Konfiguration für die Gemini-API Anbindung.
+
+// Enthält API-Schlüssel und Modellinformationen für Gemini.
 public class GeminiOptions
 {
     public string Key { get; set; } = string.Empty;
