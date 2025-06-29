@@ -1,41 +1,46 @@
 # Projekt-Diagramme
 
-## Architektur-/Komponentenübersicht
+## Layered Component Diagram
 
 ```mermaid
 graph TD
-    subgraph Browser
-        FE[index.html<br>main.js<br>network.js]
-    end
-    subgraph Backend
+    subgraph Web
+        FE[index.html<br>main.js]
         PC[PocketController]
+    end
+    subgraph Application
         FVS[FileValidatorService]
-        FDS[FileDecoderService]
         CA[ContractAnalyzerService]
-        KFS[KvFileService]
         KAD[KvAiDetectionService]
+    end
+    subgraph Domain
+        DTOs[ContractValidationDto\nContractAnalysisDto]
+    end
+    subgraph Infrastructure
+        FDS[FileDecoderService]
         GEM[GeminiService]
-        GCM[GeminiContextManager]
-        RL[ResponseLogger]
         CLA[ClaudeService]
+        KFS[KvFileService]
+        RL[ResponseLogger]
+        GCM[GeminiContextManager]
     end
     subgraph External_APIs
         GeminiAPI[(Gemini API)]
         ClaudeAPI[(Claude API)]
     end
 
-    FE-->|WebSocket /analysis|PC
-    PC-->FVS
-    FVS-->FDS
-    PC-->KAD
-    KAD-->CLA
-    PC-->CA
-    CA-->GEM
-    GEM-->GCM
-    GEM-->RL
-    CA-->KFS
-    GEM-->GeminiAPI
-    CLA-->ClaudeAPI
+    FE -- WebSocket --> PC
+    PC --> FVS
+    PC --> KAD
+    PC --> CA
+    FVS --> FDS
+    KAD --> CLA
+    CA --> GEM
+    CA --> KFS
+    GEM --> GCM
+    GEM --> RL
+    GEM --> GeminiAPI
+    CLA --> ClaudeAPI
 ```
 
 ## Domänenmodell (DTOs)
@@ -111,42 +116,24 @@ classDiagram
     WiderspruechlicheKlausel --> RechtsgrundlageEintrag
 ```
 
-## Sequenzdiagramm der Analyse
+## Sequence Diagram with Layers
 
 ```mermaid
 sequenceDiagram
-    participant FE as Browser
-    participant PC as PocketController
-    participant FV as FileValidatorService
-    participant FDS as FileDecoderService
-    participant KD as KvAiDetectionService
-    participant CLA as ClaudeService
-    participant CA as ContractAnalyzerService
-    participant GEM as GeminiService
+    participant FE as Web
+    participant PC as Controller
+    participant APP as Application
+    participant INF as Infrastructure
+    participant EX as External APIs
 
-    FE->>PC: WebSocket /analysis öffnen
-    FE->>PC: Datei senden
-    PC->>FV: ValidateAndDecodeAsync()
-    FV->>FDS: GetFileContentAsync()
-    FDS-->>FV: Text
-    FV-->>PC: FileContentDto
-    PC->>KD: DetectAsync(Text)
-    KD->>CLA: SendPrompt()
-    CLA-->>KD: KV-Name
-    KD-->>PC: KvDetectionResult
-    PC->>CA: ProcessContractRequest(PreAnalysis)
-    CA->>GEM: SendPrompt()
-    GEM-->>CA: ContractValidationDto
-    CA-->>PC: ContractValidationDto
-    PC-->>FE: PreAnalysis
-    alt gültig
-        PC->>CA: ProcessContractRequest(Analysis)
-        CA->>GEM: SendPrompt()
-        GEM-->>CA: ContractAnalysisDto
-        CA-->>PC: ContractAnalysisDto
-        PC-->>FE: Analyseergebnis
-    end
-    FE-->>PC: Verbindung schließen
+    FE->>PC: Datei hochladen
+    PC->>APP: Analyse starten
+    APP->>INF: Datei dekodieren
+    INF->>EX: KI-Aufruf
+    EX-->>INF: Antwort
+    INF-->>APP: Domain DTO
+    APP-->>PC: Ergebnis
+    PC-->>FE: JSON
 ```
 
 ## Datenfluss-/Kontextdiagramm

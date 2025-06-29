@@ -30,6 +30,16 @@ data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
 ```
 
 Alle genannten Ressourcen liegen gebuendelt im Verzeichnis `data/`.
+## Onion-Architektur
+
+Dieses Projekt folgt einer Onion-Architektur mit vier Schichten:
+
+1. **Domain** – Enthält die Kernmodelle wie `ContractAnalysisDto` und `ContractValidationDto`.
+2. **Application** – Definiert die Anwendungsfälle (Voranalyse und Hauptanalyse) und orchestriert die Dienste.
+3. **Infrastructure** – Bindet externe Abhängigkeiten wie KI-Services oder Dateisysteme ein.
+4. **Web** – Beinhaltet den `PocketController` und die statische Oberfläche.
+
+Jede Schicht greift nur auf die darunterliegenden zu, sodass die Domain von technischen Details unabhängig bleibt.
 ## Diagramme
 
 ### Architekturübersicht
@@ -49,7 +59,7 @@ Alle genannten Ressourcen liegen gebuendelt im Verzeichnis `data/`.
 ## Analyse-Workflow
 1. Die Weboberfläche lädt eine Datei per WebSocket auf den Endpunkt `/analysis` hoch.
 2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt. Anschließend erkennt `KvAiDetectionService` gegebenenfalls den passenden Kollektivvertrag.
-3. `ContractAnalyzerService` führt zunächst eine Voranalyse und danach – sofern der Vertrag gültig ist – die Hauptanalyse durch. Beide Ergebnisse werden als JSON über den WebSocket zurückgesendet.
+3. `ContractAnalyzerService` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`. Ist der Vertrag gültig, folgt der Use Case **Hauptanalyse**, dessen Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
 
 ## Installation und Ausführung
 
