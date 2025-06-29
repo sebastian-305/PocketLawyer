@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using PocketLawyer.Service;
-using System.Text;
 using System.Text.Json;
 using PocketLawyer;
 
@@ -30,21 +29,11 @@ public class KvAiDetectionService : IKvDetectionService
 
         string[] kvsFolders = _kvService.GetKvsDirectories();
 
-        var promptBuilder = new StringBuilder();
-        promptBuilder.AppendLine("Arbeitsvertrag:");
-        promptBuilder.AppendLine(contractContent);
-        promptBuilder.AppendLine();
-        promptBuilder.AppendLine("Kollektivverträge:");
-        promptBuilder.AppendLine(string.Join(", ", kvsFolders));
-        promptBuilder.AppendLine();
-        promptBuilder.AppendLine("Finde heraus, ob einer der bereits übermittelten Kollektivverträge zu dem Arbeitsvertrag passt. Schreibe Multiple wenn mehrere Kollektivverträge passen würden.");
-        promptBuilder.AppendLine("Falls keiner Kollektivvertrag ausfindig gemacht werden kann oder wenn keiner der Kollegtivveträge in der übermittelten Liste zum Arbeitsvertrag passt.");
-        promptBuilder.AppendLine("Antworte im JSON-Format {\"kollektivvertrag\":\"NAME Oder Multiple ODER Keiner\"}.");
-        promptBuilder.AppendLine("Der Wortlaut deiner Antwort solle exakt dem Wortlaut der übermittelten Namen der Kollektivverträge entsprechen, weil diese danach in einem Programm verarbeitet werden.");
+        string prompt = PromptBuilder.BuildKvDetectionPrompt(contractContent, kvsFolders);
 
         var tasks = Enumerable
             .Range(0, 3)
-            .Select(_ => _aiService.SendPrompt(promptBuilder.ToString(), null, false))
+            .Select(_ => _aiService.SendPrompt(prompt, null, false))
             .ToArray();
 
         string[] answers = await Task.WhenAll(tasks);
