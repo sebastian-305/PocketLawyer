@@ -46,9 +46,6 @@ Enthält die grundlegenden Datenobjekte (DTOs) und einfache Entitäten.
 | `KvDetectionAnswer.cs` | Antwortformat der KI für Kollektivvertragserkennung (ein String). |
 | `KvDetectionResult.cs` | Ergebnis mehrerer KI-Aufrufe; enthält KV-Namen und Flag, ob alle Antworten gleich waren. |
 | `WebSocketFileDto.cs` | Format einer hochgeladenen Datei über WebSocket (Name + base64-Daten). |
-| `Entities/Contract.cs` | Repräsentiert einen Arbeitsvertrag mit einer Liste von Klauseln. |
-| `Entities/ContractClause.cs` | Einzelne Klausel eines Vertrags. |
-| `Entities/AnalysisResult.cs` | Stark vereinfachtes Ergebnis einer Analyse. |
 
 ---
 
