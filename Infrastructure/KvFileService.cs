@@ -1,4 +1,5 @@
 using PocketLawyer.Service;
+using PocketLawyer.Infrastructure;
 
 namespace PocketLawyer.Infrastructure;
 
@@ -24,7 +25,7 @@ public class KvFileService : IKollektivvertragService
     public string[] GetKvsDirectories()
     {
         _logger.LogDebug("Listing KVS directories");
-        string configuredPath = _configuration["KVSPath"] ?? Path.Combine("data", "KVS");
+        string configuredPath = _configuration["KVSPath"] ?? DefaultPaths.Kvs;
         string kvsPath = Path.IsPathRooted(configuredPath)
             ? configuredPath
             : Path.Combine(_environment.ContentRootPath, configuredPath);
@@ -39,7 +40,7 @@ public class KvFileService : IKollektivvertragService
     {
         _logger.LogDebug("Reading KV files for {KvName}", kvName);
 
-        string configuredPath = _configuration["KVSPath"] ?? Path.Combine("data", "KVS");
+        string configuredPath = _configuration["KVSPath"] ?? DefaultPaths.Kvs;
         string kvsPath = Path.IsPathRooted(configuredPath)
             ? configuredPath
             : Path.Combine(_environment.ContentRootPath, configuredPath);

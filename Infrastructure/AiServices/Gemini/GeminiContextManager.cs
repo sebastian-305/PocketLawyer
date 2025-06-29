@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Linq;
+using PocketLawyer.Infrastructure;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
@@ -98,7 +99,7 @@ public class GeminiContextManager : IGeminiContextManager
 
     private static async Task<string> ReadLawContentAsync()
     {
-        var dir = Path.Combine(Directory.GetCurrentDirectory(), "data", "Context");
+        var dir = Path.Combine(Directory.GetCurrentDirectory(), DefaultPaths.Context);
         var files = Directory.GetFiles(dir);
         StringBuilder contextBuilder = new StringBuilder();
         int index = 1;

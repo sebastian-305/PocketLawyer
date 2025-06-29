@@ -1,4 +1,5 @@
 using PocketLawyer.Service;
+using PocketLawyer.Infrastructure;
 using Tesseract;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
@@ -13,7 +14,7 @@ public class ImageFileDecoder : IFileDecoder
         IConfiguration configuration)
     {
         _logger = logger;
-        _tesseractDataPath = configuration["TesseractDataPath"] ?? Path.Combine("data", "tessdata");
+        _tesseractDataPath = configuration["TesseractDataPath"] ?? DefaultPaths.Tessdata;
     }
 
     public bool CanDecode(string ext)
