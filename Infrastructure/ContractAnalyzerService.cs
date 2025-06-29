@@ -80,10 +80,10 @@ public class ContractAnalyzerService : IContractAnalyzerService
         {
             string truncated = answer.Length > 200 ? answer[..200] + "..." : answer;
             _logger.LogError(ex, "Failed to parse AI response: {Snippet}", truncated);
-            throw new InvalidOperationException($"Fehler beim Interpretieren der KI-Antwort: {truncated}", ex);
+            throw new AnalysisException($"Fehler beim Interpretieren der KI-Antwort: {truncated}", "deserialization", ex);
         }
         if (dto == null)
-            throw new InvalidOperationException("Invalid AI response");
+            throw new AnalysisException("Invalid AI response", "deserialization");
 
         if (!string.IsNullOrWhiteSpace(kvName))
         {
