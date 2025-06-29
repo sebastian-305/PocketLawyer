@@ -104,13 +104,12 @@ public class GeminiContextManager : IGeminiContextManager
         int index = 1;
         foreach (var file in files)
         {
-            contextBuilder.Append($"Gesetzestext {index} mit dem Dateinamen ");
+            contextBuilder.Append($"Gesetzestext {index++} mit dem Dateinamen ");
             contextBuilder.Append(Path.GetFileName(file));
             contextBuilder.AppendLine();
             contextBuilder.Append(await File.ReadAllTextAsync(file));
             contextBuilder.AppendLine();
-            contextBuilder.AppendLine();
-            index++;
+            contextBuilder.AppendLine();            
         }
         return contextBuilder.ToString();
     }

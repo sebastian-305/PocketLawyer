@@ -237,7 +237,6 @@ public class PocketController : ControllerBase
         return socket.SendAsync(bytes, WebSocketMessageType.Text, true, token);
     }
 
-
     private static string BuildValidationPrompt(string filename, string fileContent)
     {
         var sb = new StringBuilder();
