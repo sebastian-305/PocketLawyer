@@ -1,13 +1,14 @@
 # PocketLawyer
 
-PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, welche Arbeitsverträge analysiert. Die Anwendung kann PDF‑ und Bilddateien über Tesseract OCR auslesen, sendet die extrahierten Texte an verschiedene KI‑Dienste und stellt die Ergebnisse übersichtlich dar.
+PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, welche Arbeitsverträge analysiert. PDF-Dateien werden dabei mit **UglyToad.PdfPig** ausgelesen, während Bilddateien per **Tesseract OCR** verarbeitet werden. Die extrahierten Texte werden an verschiedene KI‑Dienste gesendet und die Ergebnisse übersichtlich dargestellt.
 
 Im Ordner `Diagrams` liegen mehrere Ablauf‑ und Architekturdiagramme. Eine Übersicht der im Projekt verwendeten Entwurfsmuster findet sich in [DesignPatterns_de.md](./DesignPatterns_de.md).
 
 ## Funktionsweise
 * **Gemini API**: Hauptdienst für die Analyse von Verträgen.
 * **Claude API**: Optionaler Dienst, der aktuell für die Erkennung des passenden Kollektivvertrags genutzt wird.
-* **Tesseract OCR**: Unterstützt das Einlesen von PDFs oder Bildern und wandelt sie in Text um.
+* **UglyToad.PdfPig**: Liest Text direkt aus PDF-Dokumenten.
+* **Tesseract OCR**: Liest Bilddateien (JPG, PNG) per OCR aus und wandelt sie in Text um.
 
 Eine Datei wird zunächst vorvalidiert. Ist sie lesbar und als Arbeitsvertrag erkennbar, wird eine tiefere Analyse durchgeführt. Die Analyse bewertet Klauseln, gibt Zusammenfassungen und stellt Verstöße gegen Gesetz und Kollektivvertrag heraus.
 
