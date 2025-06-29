@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using PocketLawyer;
 namespace PocketLawyer.Service;
 
 public interface IFileValidatorService
