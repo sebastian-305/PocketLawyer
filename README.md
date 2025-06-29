@@ -29,6 +29,7 @@ data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
 
 ```
 
+Alle genannten Ressourcen liegen gebuendelt im Verzeichnis `data/`.
 ## Diagramme
 
 ### Architekturübersicht
