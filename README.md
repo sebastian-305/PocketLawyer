@@ -5,6 +5,7 @@ PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, welche Arbeitsve
 Im Ordner `docs/Diagrams` liegen mehrere Ablauf‑ und Architekturdiagramme. Eine Übersicht der im Projekt verwendeten Entwurfsmuster findet sich in [DesignPatterns_de.md](docs/DesignPatterns_de.md).
 
 ## Funktionsweise
+
 * **Gemini API**: Hauptdienst für die Analyse von Verträgen.
 * **Claude API**: Optionaler Dienst, der aktuell für die Erkennung des passenden Kollektivvertrags genutzt wird.
 * **UglyToad.PdfPig**: Liest Text direkt aus PDF-Dokumenten.
@@ -14,7 +15,7 @@ Eine Datei wird zunächst vorvalidiert. Ist sie lesbar und als Arbeitsvertrag er
 
 ## Ordnerstruktur
 
-```
+``` text
 Domain/         Enthält DTOs und einfache Entitäten.
 Application/    Use Cases und Interfaces für externe Dienste.
 Infrastructure/ Implementierung der Dienste (Gemini, Claude, Dateidecoder, KV-Erkennung etc.).
@@ -31,6 +32,7 @@ data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
 ```
 
 Alle genannten Ressourcen liegen gebündelt im Verzeichnis `data/`.
+
 ## Onion-Architektur
 
 Die Lösung ist ringförmig aufgebaut, wobei jede äußere Ebene nur auf die innenliegende zugreifen darf. Dadurch bleibt die Kernlogik isoliert von technischen Details.
@@ -41,15 +43,19 @@ Die Lösung ist ringförmig aufgebaut, wobei jede äußere Ebene nur auf die inn
 4. **Web** – ASP.NET‑Host mit Controllern und statischer Oberfläche. Im Ordner `Web/` befindet sich der `PocketController`, der den `WebSocketAnalysisService` aufruft. Diese äußere Schicht darf alle inneren verwenden, jedoch nicht umgekehrt.
 
 Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagrams/).
+
 ## Diagramme
 
 ### Architekturübersicht
+
 ![Architekturkomponenten](docs/Diagrams/Architecture-Components.png)
 
 ### Sequenzdiagramm der Onion-Layer
-![Sequenzdiagramm der Onion-Layer](docs/Diagrams/Sequence.png)
+
+![Sequenzdiagramm der Onion-Layer](docs/Diagrams/SequenceOnionLayer.png)
 
 ### UI-Flow
+
 ![UI-Flow](docs/Diagrams/UI-FLow.png)
 
 ## Endpunkte
@@ -58,26 +64,34 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 * `GET  /mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `data/Responses`-Ordner.
 
 ## Analyse-Workflow
+
 1. Die Weboberfläche lädt eine Datei per WebSocket auf den Endpunkt `/analysis` hoch.
 2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt. Anschließend erkennt `KvAiDetectionService` gegebenenfalls den passenden Kollektivvertrag.
 3. `AnalyzeContractUseCase` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`. Ist der Vertrag gültig, folgt der Use Case **Hauptanalyse**, dessen Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
 
 ## Installation und Ausführung
 
-1. Abhängigkeiten wiederherstellen:
-   ```bash
+1 Abhängigkeiten wiederherstellen:
+2
+
+```bash
    dotnet restore
-   ```
-2. Anwendung starten:
+```
+
+3 Anwendung starten:
+4
+
    ```bash
    dotnet run
    ```
-3. Die Weboberfläche ist danach unter `http://localhost:5112` erreichbar (vgl. `launchSettings.json`).
+
+5 Die Weboberfläche ist danach unter `http://localhost:5112` erreichbar (vgl. `launchSettings.json`).
 
 ## Konfiguration
+
 Benötigte Einstellungen befinden sich in `appsettings.json` bzw. den User-Secrets:
 
-```
+``` Text
 Gemini:Key            = API-Schlüssel für Gemini
 Gemini:Key:Alternative = optionaler Ausweichschlüssel
 Gemini:ModelId        = Modell-ID (Standard: "gemini-1.5-flash-002")
@@ -90,7 +104,4 @@ KVSPath               = Pfad zu den Kollektivvertragsdateien (Standard: "data/KV
 
 API-Schlüssel sollten über Umgebungsvariablen oder User-Secrets gesetzt werden und **nicht** im Quellcode liegen.
 
-## Lizenz & Beitrag
-Dieses Projekt steht ohne konkrete Lizenzangabe bereit. Beiträge sind willkommen. Weitere Informationen und Diagramme befinden sich im Ordner `docs/Diagrams`.
 Weitere Details zu den eingesetzten Entwurfsmustern findest du in [DesignPatterns_de.md](docs/DesignPatterns_de.md).
-
