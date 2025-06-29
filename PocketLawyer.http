@@ -1,6 +1,0 @@
-@PocketLawyer_HostAddress = http://localhost:5112
-
-GET {{PocketLawyer_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
