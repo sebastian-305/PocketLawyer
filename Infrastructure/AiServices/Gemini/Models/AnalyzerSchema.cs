@@ -120,7 +120,7 @@ public class PreAnalyzerSchema
 {
     public string type { get; set; } = "object";
     public PreAnalyzerProperties properties { get; set; } = new();
-    public string[] required { get; set; } = new[] { "isReadable", "result" };
+    public string[] required { get; set; } = new[] { "isReadable", "isContract", "result" };
 }
 
 public class PreAnalyzerProperties

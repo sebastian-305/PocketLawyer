@@ -46,9 +46,6 @@ Enthält die grundlegenden Datenobjekte (DTOs) und einfache Entitäten.
 | `KvDetectionAnswer.cs` | Antwortformat der KI für Kollektivvertragserkennung (ein String). |
 | `KvDetectionResult.cs` | Ergebnis mehrerer KI-Aufrufe; enthält KV-Namen und Flag, ob alle Antworten gleich waren. |
 | `WebSocketFileDto.cs` | Format einer hochgeladenen Datei über WebSocket (Name + base64-Daten). |
-| `Entities/Contract.cs` | Repräsentiert einen Arbeitsvertrag mit einer Liste von Klauseln. |
-| `Entities/ContractClause.cs` | Einzelne Klausel eines Vertrags. |
-| `Entities/AnalysisResult.cs` | Stark vereinfachtes Ergebnis einer Analyse. |
 
 ---
 
@@ -98,7 +95,7 @@ Enthält vorbereitete Gesetzestexte als reine Textdateien, z.\u00a0B.:
 
 | Datei | Zweck |
 |-------|-------|
-| `ContractAnalyzerService.cs` | Fassade zur Verarbeitung von Vertragsanfragen (Prompt-Erstellung, KV-Erkennung, KI-Aufruf). |
+| `AnalyzeContractUseCase.cs` | Fassade zur Verarbeitung von Vertragsanfragen (Prompt-Erstellung, KV-Erkennung, KI-Aufruf). |
 | `FileValidatorService.cs` | Pr\u00fcft Dateigr\u00f6\u00dfe/-typ und ruft den FileDecoderService auf. |
 | `KvAiDetectionService.cs` | L\u00e4sst von Claude den passenden Kollektivvertrag erkennen. |
 | `KvFileService.cs` | Liefert verf\u00fcgbare KV-Ordner und deren Dateiinhalte. |
@@ -160,7 +157,7 @@ Die Bilder liegen im Ordner `docs/Diagrams/`.
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `docs/Diagrams/Architecture-Compontents.png` | Bild einer Architektur\u00fcbersicht. |
+| `docs/Diagrams/Architecture-Components.png` | Bild einer Architektur\u00fcbersicht. |
 | `docs/Diagrams/Data-Flow.png` | Veranschaulicht den Datenfluss innerhalb der Anwendung. |
 | `docs/Diagrams/Domainmodell.png` | UML-Diagramm des Dom\u00e4nenmodells. |
 | `docs/Diagrams/Sequence.png` | Sequenzdiagramm des Analyse-Workflows. |
