@@ -37,48 +37,7 @@ public class PocketController : ControllerBase
         _kvService = kvService;
         _kvDetectionService = kvDetectionService;
     }
-
-    [HttpGet("/test")]
-    public async Task<ActionResult<KvDetectionTestResultDto>> Test()
-    {
-        _logger.LogDebug("Entering {Method}", nameof(Test));
-
-        string contractContent;
-        try
-        {
-            contractContent = await _kvService.GetSampleContractAsync();
-            _logger.LogDebug("Loaded sample contract");
-        }
-        catch (IOException ex)
-        {
-            _logger.LogError(ex, "Failed to load samples");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei oder der Kollektivverträge.");
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            _logger.LogError(ex, "No permission to access samples");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei oder der Kollektivverträge.");
-        }
-
-        KvDetectionResult detection;
-        try
-        {
-            detection = await _kvDetectionService.DetectAsync(contractContent);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "AI service failed while processing the prompt");
-            return StatusCode(StatusCodes.Status502BadGateway, "Fehler bei der Anfrage an den KI-Dienst.");
-        }
-
-        var resultDto = new KvDetectionTestResultDto
-        {
-            AllEqual = detection.AllEqual
-        };
-
-        return Ok(resultDto);
-    }
-
+ 
     [HttpGet("/mockdata")]
     public async Task<ActionResult<ContractAnalysisDto>> GetMockData()
     {
