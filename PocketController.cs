@@ -94,65 +94,19 @@ public class PocketController : ControllerBase
 
         using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
-        var buffer = new byte[8192];
-        var ms = new MemoryStream();
-        WebSocketReceiveResult result;
-        do
-        {
-            result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
-            ms.Write(buffer, 0, result.Count);
-        } while (!result.EndOfMessage);
-
-        if (result.MessageType == WebSocketMessageType.Close)
-        {
-            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-            return new EmptyResult();
-        }
-
-        WebSocketFileDto? upload;
-        try
-        {
-            upload = JsonSerializer.Deserialize<WebSocketFileDto>(Encoding.UTF8.GetString(ms.ToArray()));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to parse websocket request");
-            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
-            return new EmptyResult();
-        }
+        var upload = await ReceiveFileAsync(webSocket);
         if (upload == null)
-        {
-            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
             return new EmptyResult();
-        }
 
-        byte[] fileBytes = Convert.FromBase64String(upload.Data);
+        var (fileBytes, fileName) = upload.Value;
+        IFormFile CreateFormFile() => new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", fileName);
 
-        IFormFile CreateFormFile() => new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", upload.FileName);
-
-        string? kvName = null;
-        try
-        {
-            var requestContent = await PreValidate(CreateFormFile());
-            KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
-            if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
-            {
-                kvName = kvResult.KvName;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "KV detection failed during validation");
-        }
+        string? kvName = await DetectKvAsync(CreateFormFile);
 
         ContractValidationDto validationDto;
         try
         {
-            validationDto = await ProcessContractRequest<ContractValidationDto>(
-                CreateFormFile(),
-                BuildValidationPrompt,
-                GeminiService.PreAnalyzerSchemaDefinition,
-                true);
+            validationDto = await ValidateContractAsync(CreateFormFile, kvName);
         }
         catch (Exception ex)
         {
@@ -160,16 +114,6 @@ public class PocketController : ControllerBase
             await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
             await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
             return new EmptyResult();
-        }
-
-        validationDto.Kollektivvertrag = kvName;
-        if (!string.IsNullOrWhiteSpace(kvName))
-        {
-            validationDto.Result = string.Concat(
-                validationDto.Result.TrimEnd(),
-                " Es wurde der Kollektivvertrag \"",
-                kvName,
-                "\" erkannt.");
         }
 
         await SendStringAsync(webSocket, JsonSerializer.Serialize(validationDto), CancellationToken.None);
@@ -183,13 +127,7 @@ public class PocketController : ControllerBase
         ContractAnalysisDto analysisDto;
         try
         {
-            analysisDto = await ProcessContractRequest<ContractAnalysisDto>(
-                CreateFormFile(),
-                _geminiService.PromptBuilder,
-                GeminiService.AnalyzerSchemaDefinition,
-                false,
-                string.IsNullOrWhiteSpace(kvName),
-                kvName);
+            analysisDto = await AnalyzeContractAsync(CreateFormFile, kvName);
         }
         catch (Exception ex)
         {
@@ -202,6 +140,95 @@ public class PocketController : ControllerBase
         await SendStringAsync(webSocket, JsonSerializer.Serialize(analysisDto), CancellationToken.None);
         await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
         return new EmptyResult();
+    }
+
+    private async Task<(byte[] fileBytes, string fileName)?> ReceiveFileAsync(WebSocket webSocket)
+    {
+        var buffer = new byte[8192];
+        using var ms = new MemoryStream();
+        WebSocketReceiveResult result;
+        do
+        {
+            result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
+            ms.Write(buffer, 0, result.Count);
+        } while (!result.EndOfMessage);
+
+        if (result.MessageType == WebSocketMessageType.Close)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            return null;
+        }
+
+        WebSocketFileDto? upload;
+        try
+        {
+            upload = JsonSerializer.Deserialize<WebSocketFileDto>(Encoding.UTF8.GetString(ms.ToArray()));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to parse websocket request");
+            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
+            return null;
+        }
+
+        if (upload == null)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
+            return null;
+        }
+
+        byte[] fileBytes = Convert.FromBase64String(upload.Data);
+        return (fileBytes, upload.FileName);
+    }
+
+    private async Task<string?> DetectKvAsync(Func<IFormFile> createFormFile)
+    {
+        try
+        {
+            var requestContent = await PreValidate(createFormFile());
+            KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
+            if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
+            {
+                return kvResult.KvName;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "KV detection failed during validation");
+        }
+        return null;
+    }
+
+    private async Task<ContractValidationDto> ValidateContractAsync(Func<IFormFile> createFormFile, string? kvName)
+    {
+        var dto = await ProcessContractRequest<ContractValidationDto>(
+            createFormFile(),
+            BuildValidationPrompt,
+            GeminiService.PreAnalyzerSchemaDefinition,
+            true);
+
+        dto.Kollektivvertrag = kvName;
+        if (!string.IsNullOrWhiteSpace(kvName))
+        {
+            dto.Result = string.Concat(
+                dto.Result.TrimEnd(),
+                " Es wurde der Kollektivvertrag \"",
+                kvName,
+                "\" erkannt.");
+        }
+
+        return dto;
+    }
+
+    private Task<ContractAnalysisDto> AnalyzeContractAsync(Func<IFormFile> createFormFile, string? kvName)
+    {
+        return ProcessContractRequest<ContractAnalysisDto>(
+            createFormFile(),
+            _geminiService.PromptBuilder,
+            GeminiService.AnalyzerSchemaDefinition,
+            false,
+            string.IsNullOrWhiteSpace(kvName),
+            kvName);
     }
 
     private static Task SendStringAsync(WebSocket socket, string data, CancellationToken token)
