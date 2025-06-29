@@ -1,7 +1,7 @@
-using System.Text;
 using System.Text.Json;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Infrastructure;
 
 namespace PocketLawyer.Application.UseCases;
 
@@ -52,13 +52,7 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
                 if (!string.IsNullOrWhiteSpace(kvName))
                 {
                     string[] kvFiles = await _kvService.GetKvFileContentsAsync(kvName);
-                    var sbPrompt = new StringBuilder(prompt);
-                    sbPrompt.AppendLine();
-                    sbPrompt.AppendLine($"Der folgende Text enthält den dazugehörigen Kollektivvertrag \"{kvName}\" und mögliche Anhänge. " +
-                        $"Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse. Wenn der Vertrag in einem Punkt so etwas schreibt wie \"laut Kollektivvertrag\" soll die entsprechende Regelung" +
-                        $"aus dem Kollektivvetrag angegeben werden mit dem Zusatz \"(lt. Kollektivvertrag)\"");
-                    sbPrompt.AppendLine(string.Join("\n\n", kvFiles));
-                    prompt = sbPrompt.ToString();
+                    prompt = PromptBuilder.AddKvInfo(prompt, kvName, kvFiles);
                 }
             }
             catch (Exception ex)
