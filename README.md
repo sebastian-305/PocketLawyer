@@ -30,7 +30,7 @@ data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
 
 ```
 
-Alle genannten Ressourcen liegen gebuendelt im Verzeichnis `data/`.
+Alle genannten Ressourcen liegen gebündelt im Verzeichnis `data/`.
 ## Onion-Architektur
 
 Die Lösung ist ringförmig aufgebaut, wobei jede äußere Ebene nur auf die innenliegende zugreifen darf. Dadurch bleibt die Kernlogik isoliert von technischen Details.
