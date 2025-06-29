@@ -2,19 +2,22 @@ const DEBUG = false;
 
 // Enthält Funktionen zur Kommunikation mit dem Backend.
 
-// Baut eine WebSocket-Verbindung auf und sendet die Datei.
+// Baut eine WebSocket-Verbindung auf, überträgt die Datei und liefert eingehende Nachrichten.
 export function startAnalysisSocket(file, onMessage) {
+    // Protokoll abhängig von HTTP/HTTPS wählen und Verbindung herstellen
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const socket = new WebSocket(`${protocol}://${window.location.host}/analysis`);
+    // Nach Verbindungsaufbau Datei lesen und senden
     socket.addEventListener('open', async () => {
         const buffer = await file.arrayBuffer();
         socket.send(
             JSON.stringify({
                 fileName: file.name,
-                data: bufferToBase64(buffer),
+                data: bufferToBase64(buffer), // Dateiinhalt Base64-kodiert
             }),
         );
     });
+    // Jede eingehende Nachricht an den Callback weiterreichen
     socket.addEventListener('message', (e) => {
         try {
             onMessage(JSON.parse(e.data));
@@ -27,6 +30,7 @@ export function startAnalysisSocket(file, onMessage) {
 
 // Wandelt einen ArrayBuffer in eine Base64-Zeichenkette um.
 function bufferToBase64(buffer) {
+    // Browserfreundliche Umwandlung in einen Base64-String
     let binary = '';
     const bytes = new Uint8Array(buffer);
     for (let i = 0; i < bytes.length; i++) {
@@ -37,6 +41,7 @@ function bufferToBase64(buffer) {
 
 // Holt eine zufällige Analyseantwort vom Server.
 export async function requestMockAnalysis() {
+    // Ruft zufällige Beispielergebnisse vom Server ab
     const response = await fetch('/mockdata', { method: 'GET' });
     const text = await response.text();
     try {
@@ -48,6 +53,7 @@ export async function requestMockAnalysis() {
 
 // Liefert eine statische Voranalyse für den Demo-Modus.
 export function mockPreValidationMessage() {
+    // Statische Voranalyse für den Demo-Modus
     return {
         isReadable: true,
         isContract: true,
