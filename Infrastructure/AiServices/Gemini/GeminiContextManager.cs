@@ -1,11 +1,12 @@
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Service;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Linq;
+using PocketLawyer.Options;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
@@ -16,11 +17,11 @@ public class GeminiContextManager : IGeminiContextManager
     private readonly string _modelId;
     private readonly ILogger<GeminiContextManager> _logger;
 
-    public GeminiContextManager(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiContextManager> logger)
+    public GeminiContextManager(HttpClient httpClient, IOptions<GeminiOptions> options, ILogger<GeminiContextManager> logger)
     {
         _httpClient = httpClient;
-        _apiKey = configuration["Gemini:Key"] ?? string.Empty;
-        _modelId = configuration["Gemini:ModelId"] ?? "gemini-1.5-flash-002";
+        _apiKey = options.Value.Key;
+        _modelId = options.Value.ModelId;
         _logger = logger;
     }
 

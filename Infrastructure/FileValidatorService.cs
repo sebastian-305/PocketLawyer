@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Service;
 using PocketLawyer;
 using System.IO;
+using Microsoft.Extensions.Options;
+using PocketLawyer.Options;
 
 namespace PocketLawyer.Infrastructure;
 
@@ -11,16 +12,16 @@ public class FileValidatorService : IFileValidatorService
 {
     private readonly ILogger<FileValidatorService> _logger;
     private readonly IFileDecoderService _decoderService;
-    private readonly IConfiguration _configuration;
+    private readonly long _maxUploadSizeMb;
 
     public FileValidatorService(
         ILogger<FileValidatorService> logger,
         IFileDecoderService decoderService,
-        IConfiguration configuration)
+        IOptions<UploadOptions> options)
     {
         _logger = logger;
         _decoderService = decoderService;
-        _configuration = configuration;
+        _maxUploadSizeMb = options.Value.MaxUploadSizeMB;
     }
 
     public async Task<FileContentDto> ValidateAndDecodeAsync(IFormFile file)
@@ -35,11 +36,10 @@ public class FileValidatorService : IFileValidatorService
             throw new BadHttpRequestException($"Fileextension not recognised! Recognised extensions are {_decoderService.AllowedExtensionsString}.");
         }
 
-        long maxUploadSizeMb = _configuration.GetValue<long>("MaxUploadSizeMB");
-        long maxBytes = maxUploadSizeMb * 1024 * 1024;
+        long maxBytes = _maxUploadSizeMb * 1024 * 1024;
         if (file.Length > maxBytes)
         {
-            throw new BadHttpRequestException($"File too large. Maximum {maxUploadSizeMb} MB allowed.");
+            throw new BadHttpRequestException($"File too large. Maximum {_maxUploadSizeMb} MB allowed.");
         }
 
         await using var stream = file.OpenReadStream();

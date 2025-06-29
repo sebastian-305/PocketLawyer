@@ -6,6 +6,8 @@ using System.Text.Json;
 using System.Text;
 using System.Net.WebSockets;
 using PocketLawyer.Infrastructure;
+using Microsoft.Extensions.Options;
+using PocketLawyer.Options;
 
 namespace PocketLawyer;
 
@@ -15,7 +17,7 @@ public class PocketController : ControllerBase
     private readonly ILogger<PocketController> _logger;
     private readonly IContractAnalyzerService _contractAnalyzerService;
     private readonly IFileValidatorService _fileValidatorService;
-    private readonly IConfiguration _configuration;
+    private readonly PathOptions _pathOptions;
     private readonly IWebHostEnvironment _environment;
     private readonly IKollektivvertragService _kvService;
     private readonly IKvDetectionService _kvDetectionService;
@@ -23,7 +25,7 @@ public class PocketController : ControllerBase
     public PocketController(ILogger<PocketController> logger,
 
         IFileValidatorService fileValidatorService,
-        IConfiguration configuration,
+        IOptions<PathOptions> pathOptions,
         IWebHostEnvironment environment,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService,
@@ -32,7 +34,7 @@ public class PocketController : ControllerBase
         _logger = logger;
 
         _fileValidatorService = fileValidatorService;
-        _configuration = configuration;
+        _pathOptions = pathOptions.Value;
         _environment = environment;
         _kvService = kvService;
         _kvDetectionService = kvDetectionService;
@@ -46,7 +48,7 @@ public class PocketController : ControllerBase
 
         string responsesPath = Path.Combine(
             _environment.ContentRootPath,
-            _configuration["ResponsesPath"] ?? Path.Combine("data", "Responses"));
+            _pathOptions.ResponsesPath);
 
         Directory.CreateDirectory(responsesPath);
 
