@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Http;
 namespace PocketLawyer.Service;
 
 public interface IContractAnalyzerService
 {
     Task<T> ProcessContractRequest<T>(
-        IFormFile file,
+        FileContentDto content,
         Func<string, string, string> promptBuilder,
         object schema,
         bool useAltKey,
