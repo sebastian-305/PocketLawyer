@@ -1,6 +1,8 @@
 # PocketLawyer
 
-PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, welche Arbeitsverträge analysiert. Die Anwendung kann PDF- und Bilddateien über Tesseract OCR auslesen, sendet die extrahierten Texte an verschiedene KI-Dienste und stellt die Ergebnisse übersichtlich dar.
+PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, welche Arbeitsverträge analysiert. Die Anwendung kann PDF‑ und Bilddateien über Tesseract OCR auslesen, sendet die extrahierten Texte an verschiedene KI‑Dienste und stellt die Ergebnisse übersichtlich dar.
+
+Im Ordner `Diagrams` liegen mehrere Ablauf‑ und Architekturdiagramme. Eine Übersicht der im Projekt verwendeten Entwurfsmuster findet sich in [DesignPatterns_de.md](./DesignPatterns_de.md).
 
 ## Funktionsweise
 * **Gemini API**: Hauptdienst für die Analyse von Verträgen.
@@ -19,13 +21,27 @@ wwwroot/         Statische Dateien der Weboberfläche (HTML, JS, CSS, Medien).
 Responses/       Ablage für gesicherte Antworten der KI.
 Samples/         Beispielverträge für Tests.
 Diagrams/        Architektur- und Ablaufdiagramme.
-tessdata/        Sprachdaten für Tesseract OCR.
+Infrastructure/tessdata/  Sprachdaten für Tesseract OCR.
+Infrastructure/KVS/       Kollektivverträge für die Analyse.
 ```
+
+## Diagramme
+
+![Architekturübersicht](Diagrams/Architecture-Compontents.png)
+
+![Datenfluss](Diagrams/Data-Flow.png)
+
+![UML-Services](Diagrams/UML.png)
 
 ## Endpunkte
 
 * `GET  /analysis` – WebSocket-Endpunkt, der nach dem Senden einer Datei zuerst die Voranalyse und danach die Hauptanalyse überträgt.
 * `GET  /mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `Responses`-Ordner.
+
+## Analyse-Workflow
+1. Die Weboberfläche lädt eine Datei per WebSocket auf den Endpunkt `/analysis` hoch.
+2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt. Anschließend erkennt `KvAiDetectionService` gegebenenfalls den passenden Kollektivvertrag.
+3. `ContractAnalyzerService` führt zunächst eine Voranalyse und danach – sofern der Vertrag gültig ist – die Hauptanalyse durch. Beide Ergebnisse werden als JSON über den WebSocket zurückgesendet.
 
 ## Installation und Ausführung
 
@@ -57,4 +73,5 @@ API-Schlüssel sollten über Umgebungsvariablen oder User-Secrets gesetzt werden
 
 ## Lizenz & Beitrag
 Dieses Projekt steht ohne konkrete Lizenzangabe bereit. Beiträge sind willkommen. Weitere Informationen und Diagramme befinden sich im Ordner `Diagrams`.
+Weitere Details zu den eingesetzten Entwurfsmustern findest du in [DesignPatterns_de.md](./DesignPatterns_de.md).
 
