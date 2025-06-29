@@ -25,6 +25,7 @@ builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
 builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
+builder.Services.AddScoped<IContractAnalyzerService, ContractAnalyzerService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
