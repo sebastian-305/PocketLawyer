@@ -44,7 +44,7 @@ Jede Schicht greift nur auf die darunterliegenden zu, sodass die Domain von tech
 ## Diagramme
 
 ### Architekturübersicht
-![Architekturübersicht](docs/Diagrams/Architecture-Compontents.png)
+![Architekturübersicht](docs/Diagrams/Architecture-Components.png)
 
 ### Datenfluss
 ![Datenfluss](docs/Diagrams/Data-Flow.png)

@@ -160,7 +160,7 @@ Die Bilder liegen im Ordner `docs/Diagrams/`.
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `docs/Diagrams/Architecture-Compontents.png` | Bild einer Architektur\u00fcbersicht. |
+| `docs/Diagrams/Architecture-Components.png` | Bild einer Architektur\u00fcbersicht. |
 | `docs/Diagrams/Data-Flow.png` | Veranschaulicht den Datenfluss innerhalb der Anwendung. |
 | `docs/Diagrams/Domainmodell.png` | UML-Diagramm des Dom\u00e4nenmodells. |
 | `docs/Diagrams/Sequence.png` | Sequenzdiagramm des Analyse-Workflows. |
