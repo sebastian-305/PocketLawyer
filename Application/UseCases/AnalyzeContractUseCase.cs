@@ -1,8 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using PocketLawyer.Domain.Services;
-using PocketLawyer.Service;
-using PocketLawyer;
 using System.Text;
 using System.Text.Json;
 using PocketLawyer.Application.Interfaces;
@@ -23,13 +18,13 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService)
     {
-        _analyzer = analyzer;
+        _logger = logger;
         _aiService = aiService;
         _kvService = kvService;
         _kvDetectionService = kvDetectionService;
     }
 
-    public Task<T> ProcessContractRequest<T>(
+    public async Task<T> ProcessContractRequest<T>(
         FileContentDto content,
         Func<string, string, string> promptBuilder,
         object schema,

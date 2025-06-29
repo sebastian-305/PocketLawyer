@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Domain.Services;
 
@@ -18,7 +18,7 @@ public class ContractAnalyzer
         FileContentDto content,
         Func<string, string, string> promptBuilder,
         object schema,
-        IAiService aiService,
+        IAiClient aiService,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService,
         bool useAltKey,
