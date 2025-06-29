@@ -12,7 +12,7 @@ using Microsoft.Extensions.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Dienste im Container registrieren (Service-Registrierung)
 builder.Services.Configure<GeminiOptions>(builder.Configuration.GetSection("Gemini"));
 builder.Services.Configure<PathOptions>(builder.Configuration.GetSection("Paths"));
 builder.Services.Configure<UploadOptions>(builder.Configuration.GetSection("Upload"));
@@ -44,7 +44,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// HTTP-Anfragepipeline konfigurieren (Middleware-Pipeline)
 app.UseMiddleware<ExceptionTranslatorMiddleware>();
 app.UseExceptionHandler(errorApp =>
 {
