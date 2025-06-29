@@ -30,7 +30,7 @@ data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
 
 ```
 
-Alle genannten Ressourcen liegen gebuendelt im Verzeichnis `data/`.
+Alle genannten Ressourcen liegen gebündelt im Verzeichnis `data/`.
 ## Onion-Architektur
 
 Die Lösung ist ringförmig aufgebaut, wobei jede äußere Ebene nur auf die innenliegende zugreifen darf. Dadurch bleibt die Kernlogik isoliert von technischen Details.
@@ -40,17 +40,17 @@ Die Lösung ist ringförmig aufgebaut, wobei jede äußere Ebene nur auf die inn
 3. **Infrastructure** – Implementiert die Interfaces aus der Application und bindet KI‑Dienste oder Dateisysteme an. Der unter `Infrastructure/` liegende `WebSocketAnalysisService` orchestriert dabei Datei­validierung, KV‑Erkennung und Analyse.
 4. **Web** – ASP.NET‑Host mit Controllern und statischer Oberfläche. Im Ordner `Web/` befindet sich der `PocketController`, der den `WebSocketAnalysisService` aufruft. Diese äußere Schicht darf alle inneren verwenden, jedoch nicht umgekehrt.
 
-Weitere Diagramme zur Architektur sind im Ordner [docs/Diagrams](docs/Diagrams/) zu finden.
+Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagrams/).
 ## Diagramme
 
 ### Architekturübersicht
-![Architekturübersicht](docs/Diagrams/Architecture-Components.png)
+![Architekturkomponenten](docs/Diagrams/Architecture-Components.png)
 
-### Datenfluss
-![Datenfluss](docs/Diagrams/Data-Flow.png)
+### Sequenzdiagramm der Onion-Layer
+![Sequenzdiagramm der Onion-Layer](docs/Diagrams/Sequence.png)
 
-### UML-Services
-![UML-Services](docs/Diagrams/UML.png)
+### UI-Flow
+![UI-Flow](docs/Diagrams/UI-FLow.png)
 
 ## Endpunkte
 
