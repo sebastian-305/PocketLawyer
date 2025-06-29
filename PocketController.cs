@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
+using PocketLawyer.Infrastructure;
 using PocketLawyer.Service;
 using System.Text.Json;
 using System.Text;
@@ -206,7 +207,7 @@ public class PocketController : ControllerBase
     {
         var dto = await _contractAnalyzerService.ProcessContractRequest<ContractValidationDto>(
             createFormFile(),
-            BuildValidationPrompt,
+            PromptBuilder.BuildValidationPrompt,
             GeminiService.PreAnalyzerSchemaDefinition,
             true);
 
@@ -227,7 +228,7 @@ public class PocketController : ControllerBase
     {
         return _contractAnalyzerService.ProcessContractRequest<ContractAnalysisDto>(
             createFormFile(),
-            _geminiService.PromptBuilder,
+            PromptBuilder.BuildAnalysisPrompt,
             GeminiService.AnalyzerSchemaDefinition,
             false,
             string.IsNullOrWhiteSpace(kvName),
@@ -241,19 +242,6 @@ public class PocketController : ControllerBase
     }
 
 
-    private static string BuildValidationPrompt(string filename, string fileContent)
-    {
-        var sb = new StringBuilder();
-        sb.Append("Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolean Variable \"isReadable\".");
-        sb.Append("Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!");
-        sb.Append("Schreibe das Ergebnis in die bool Variable \"isContract\". ");
-        sb.Append("Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine überblicksmäßige Zusammenfassung vom Vertrag in die Variable \"result\". ");
-        sb.Append("Verwende keine Markdown-Formatierungen! Formatiere die Antwort in HTML! Hier die Datei:\n\n Dateiname: \n");
-        sb.Append(filename);
-        sb.Append("\nDateiinhalt: ");
-        sb.Append(fileContent);
-        return sb.ToString();
-    }
 
 
     private async Task<FileContentDto> PreValidate(IFormFile file)
