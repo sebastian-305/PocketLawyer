@@ -26,7 +26,6 @@ tessdata/        Sprachdaten für Tesseract OCR.
 
 * `GET  /analysis` – WebSocket-Endpunkt, der nach dem Senden einer Datei zuerst die Voranalyse und danach die Hauptanalyse überträgt.
 * `GET  /mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `Responses`-Ordner.
-* `GET  /test` – Führt einen einfachen KV-Erkennungstest gegen ein Sample aus.
 
 ## Installation und Ausführung
 
