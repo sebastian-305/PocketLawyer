@@ -1,24 +1,24 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using PocketLawyer.Service;
 using PocketLawyer.Infrastructure;
+using Microsoft.Extensions.Options;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
 public class ResponseLogger : IResponseLogger
 {
     private readonly ILogger<ResponseLogger> _logger;
-    private readonly IConfiguration _configuration;
+    private readonly PathOptions _paths;
     private readonly IWebHostEnvironment _environment;
 
     public ResponseLogger(
         ILogger<ResponseLogger> logger,
-        IConfiguration configuration,
+        IOptions<PathOptions> pathOptions,
         IWebHostEnvironment environment)
     {
         _logger = logger;
-        _configuration = configuration;
+        _paths = pathOptions.Value;
         _environment = environment;
     }
 
@@ -28,7 +28,7 @@ public class ResponseLogger : IResponseLogger
 
         string folder = Path.Combine(
             _environment.ContentRootPath,
-            _configuration["ResponsesPath"] ?? DefaultPaths.Responses);
+            _paths.ResponsesPath);
 
         try
         {

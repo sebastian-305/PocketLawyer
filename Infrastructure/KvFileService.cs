@@ -1,22 +1,23 @@
 using PocketLawyer.Service;
 using PocketLawyer.Infrastructure;
+using Microsoft.Extensions.Options;
 
 namespace PocketLawyer.Infrastructure;
 
 public class KvFileService : IKollektivvertragService
 {
     private readonly ILogger<KvFileService> _logger;
-    private readonly IConfiguration _configuration;
+    private readonly PathOptions _paths;
     private readonly IWebHostEnvironment _environment;
     private readonly IFileDecoderService _fileDecoderService;
 
     public KvFileService(ILogger<KvFileService> logger,
-        IConfiguration configuration,
+        IOptions<PathOptions> pathOptions,
         IWebHostEnvironment environment,
         IFileDecoderService fileDecoderService)
     {
         _logger = logger;
-        _configuration = configuration;
+        _paths = pathOptions.Value;
         _environment = environment;
         _fileDecoderService = fileDecoderService;
     }
@@ -25,7 +26,7 @@ public class KvFileService : IKollektivvertragService
     public string[] GetKvsDirectories()
     {
         _logger.LogDebug("Listing KVS directories");
-        string configuredPath = _configuration["KVSPath"] ?? DefaultPaths.Kvs;
+        string configuredPath = _paths.KVSPath;
         string kvsPath = Path.IsPathRooted(configuredPath)
             ? configuredPath
             : Path.Combine(_environment.ContentRootPath, configuredPath);
@@ -40,7 +41,7 @@ public class KvFileService : IKollektivvertragService
     {
         _logger.LogDebug("Reading KV files for {KvName}", kvName);
 
-        string configuredPath = _configuration["KVSPath"] ?? DefaultPaths.Kvs;
+        string configuredPath = _paths.KVSPath;
         string kvsPath = Path.IsPathRooted(configuredPath)
             ? configuredPath
             : Path.Combine(_environment.ContentRootPath, configuredPath);

@@ -1,7 +1,7 @@
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Service;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.IO;
 using System.Text;
 using System.Text.Json;
@@ -13,22 +13,20 @@ namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 public class GeminiContextManager : IGeminiContextManager
 {
     private readonly HttpClient _httpClient;
-    private readonly string _apiKey;
-    private readonly string _modelId;
+    private readonly GeminiOptions _options;
     private readonly ILogger<GeminiContextManager> _logger;
 
-    public GeminiContextManager(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiContextManager> logger)
+    public GeminiContextManager(HttpClient httpClient, IOptions<GeminiOptions> options, ILogger<GeminiContextManager> logger)
     {
         _httpClient = httpClient;
-        _apiKey = configuration["Gemini:Key"] ?? string.Empty;
-        _modelId = configuration["Gemini:ModelId"] ?? "gemini-1.5-flash-002";
+        _options = options.Value;
         _logger = logger;
     }
 
     public async Task<string?> GetContextKeyAsync()
     {
         _logger.LogDebug("Entering {Method}", nameof(GetContextKeyAsync));
-        var contextUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
+        var contextUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_options.Key}";
         var response = await _httpClient.GetAsync(contextUri);
         var responseString = await response.Content.ReadAsStringAsync();
 
@@ -46,14 +44,14 @@ public class GeminiContextManager : IGeminiContextManager
     public async Task<string> SendContextAsync()
     {
         _logger.LogDebug("Entering {Method}", nameof(SendContextAsync));
-        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
+        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_options.Key}";
 
         var contentAsString = await ReadLawContentAsync();
         var contentAs64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(contentAsString));
 
         var context = new
         {
-            model = $"models/{_modelId}",
+            model = $"models/{_options.ModelId}",
             contents = new[]
             {
                 new

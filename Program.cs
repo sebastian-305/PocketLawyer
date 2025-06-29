@@ -3,6 +3,7 @@ using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.FileDecoding;
 using PocketLawyer.Infrastructure;
 using PocketLawyer.Service;
+using PocketLawyer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Http;
 using System.Linq;
@@ -10,6 +11,10 @@ using System.Linq;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<GeminiOptions>(builder.Configuration.GetSection("Gemini"));
+builder.Services.Configure<PathOptions>(builder.Configuration.GetSection("Paths"));
+builder.Services.Configure<UploadOptions>(builder.Configuration.GetSection("Upload"));
+builder.Services.Configure<ClaudeOptions>(builder.Configuration.GetSection("Claude"));
 
 builder.Services.AddTransient<RedactingLoggingHandler>();
 builder.Services.AddSingleton<IHttpMessageHandlerBuilderFilter, NoLoggingHttpClientBuilderFilter>();
