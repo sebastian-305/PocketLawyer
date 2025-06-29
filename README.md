@@ -27,10 +27,13 @@ Infrastructure/KVS/       Kollektivverträge für die Analyse.
 
 ## Diagramme
 
+### Architekturübersicht
 ![Architekturübersicht](Diagrams/Architecture-Compontents.png)
 
+### Datenfluss
 ![Datenfluss](Diagrams/Data-Flow.png)
 
+### UML-Services
 ![UML-Services](Diagrams/UML.png)
 
 ## Endpunkte
