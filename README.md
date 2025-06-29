@@ -71,21 +71,19 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 
 ## Installation und Ausführung
 
-1 Abhängigkeiten wiederherstellen:
-2
+1. Abhängigkeiten wiederherstellen:
 
-```bash
-dotnet restore
-```
+   ```bash
+   dotnet restore
+   ```
 
-3 Anwendung starten:
-4
+2. Anwendung starten:
 
-```bash
-dotnet run
-```
+   ```bash
+   dotnet run
+   ```
 
-5 Die Weboberfläche ist danach unter `http://localhost:5112` erreichbar (vgl. `launchSettings.json`).
+3. Die Weboberfläche ist danach unter `http://localhost:5112` erreichbar (vgl. `launchSettings.json`).
 
 ## Konfiguration
 
