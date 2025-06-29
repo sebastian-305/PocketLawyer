@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
 using System.Text.Json;
-using PocketLawyer;
+using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Infrastructure;
 
@@ -11,12 +11,12 @@ public class KvAiDetectionService : IKvDetectionService
 {
     private readonly ILogger<KvAiDetectionService> _logger;
     private readonly IKollektivvertragService _kvService;
-    private readonly IAiService _aiService;
+    private readonly IAiClient _aiService;
 
     public KvAiDetectionService(
         ILogger<KvAiDetectionService> logger,
         IKollektivvertragService kvService,
-        [FromKeyedServices("claude")] IAiService aiService)
+        [FromKeyedServices("claude")] IAiClient aiService)
     {
         _logger = logger;
         _kvService = kvService;

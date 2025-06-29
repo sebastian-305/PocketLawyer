@@ -1,4 +1,4 @@
-namespace PocketLawyer;
+namespace PocketLawyer.Domain.Dtos;
 
 public class KvDetectionResult
 {

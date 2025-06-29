@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using PocketLawyer.Service;
-using PocketLawyer;
+using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Options;
+using PocketLawyer.Domain.Dtos;
 using System.IO;
 
 namespace PocketLawyer.Infrastructure;
 
 public class FileValidatorService : IFileValidatorService
 {
+
     private readonly ILogger<FileValidatorService> _logger;
     private readonly IFileDecoderService _decoderService;
     private readonly UploadOptions _options;

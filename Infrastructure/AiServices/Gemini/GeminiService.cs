@@ -1,14 +1,15 @@
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text;
+using PocketLawyer.Options;
 using System.Text.Json;
 
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
-public class GeminiService : IAiService
+public class GeminiService : IAiClient
 {
     private readonly HttpClient _httpClient;
     private readonly GeminiOptions _options;

@@ -1,4 +1,4 @@
-namespace PocketLawyer;
+namespace PocketLawyer.Options;
 
 public class ClaudeOptions
 {

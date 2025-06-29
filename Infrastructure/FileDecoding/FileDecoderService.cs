@@ -1,4 +1,4 @@
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
 
 namespace PocketLawyer.Infrastructure.FileDecoding;
 

@@ -1,4 +1,4 @@
-namespace PocketLawyer.Service;
+namespace PocketLawyer.Application.Interfaces;
 
 /// <summary>
 /// Exception thrown when analysis of a contract fails.

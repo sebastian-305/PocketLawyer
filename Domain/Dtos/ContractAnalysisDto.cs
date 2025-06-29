@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace PocketLawyer;
+namespace PocketLawyer.Domain.Dtos;
 
 public class ContractAnalysisDto
 {

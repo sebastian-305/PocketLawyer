@@ -1,12 +1,12 @@
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Linq;
-using PocketLawyer.Infrastructure;
+using PocketLawyer.Options;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 

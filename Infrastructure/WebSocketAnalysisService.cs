@@ -3,8 +3,9 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
+using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Infrastructure;
 

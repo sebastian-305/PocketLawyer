@@ -1,4 +1,4 @@
-namespace PocketLawyer.Service;
+namespace PocketLawyer.Application.Interfaces;
 
 public interface IResponseLogger
 {

@@ -1,6 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
 

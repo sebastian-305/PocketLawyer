@@ -1,5 +1,5 @@
-using PocketLawyer.Service;
-using PocketLawyer.Infrastructure;
+using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Options;
 using Microsoft.Extensions.Options;
 
 namespace PocketLawyer.Infrastructure;
