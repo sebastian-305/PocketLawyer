@@ -1,3 +1,5 @@
+using PocketLawyer.Infrastructure;
+
 namespace PocketLawyer;
 
 public class PathOptions
