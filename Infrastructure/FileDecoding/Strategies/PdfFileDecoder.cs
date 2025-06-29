@@ -6,6 +6,7 @@ using UglyToad.PdfPig.Content;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
 
+// Extrahiert Text aus PDF-Dateien ueber PdfPig
 public class PdfFileDecoder : IFileDecoder
 {
     private readonly ILogger<PdfFileDecoder> _logger;
@@ -17,9 +18,11 @@ public class PdfFileDecoder : IFileDecoder
 
     public bool CanDecode(string ext)
     {
+        // Nur PDF-Dateien
         return string.Equals(ext, "pdf", StringComparison.OrdinalIgnoreCase);
     }
 
+    // Liest jede Seite des PDFs ein und gibt den zusammengefuehrten Text zurueck
     public Task<string> DecodeAsync(Stream input)
     {
         _logger.LogDebug("Decoding pdf stream");

@@ -1,8 +1,11 @@
+// Baut die WebSocket-Verbindung zum Backend auf und sendet die Datei
 export function startAnalysisSocket(file, onMessage) {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    // Verbindung zu unserem Analyse-Endpunkt herstellen
     const socket = new WebSocket(`${protocol}://${window.location.host}/analysis`);
     socket.addEventListener('open', async () => {
         const buffer = await file.arrayBuffer();
+        // Datei in Base64 umwandeln und senden
         socket.send(
             JSON.stringify({
                 fileName: file.name,
@@ -10,6 +13,7 @@ export function startAnalysisSocket(file, onMessage) {
             }),
         );
     });
+    // Nachrichten des Servers verarbeiten
     socket.addEventListener('message', (e) => {
         try {
             onMessage(JSON.parse(e.data));
@@ -20,6 +24,7 @@ export function startAnalysisSocket(file, onMessage) {
     return socket;
 }
 
+// Hilfsfunktion zur Umwandlung eines ArrayBuffers in Base64
 function bufferToBase64(buffer) {
     let binary = '';
     const bytes = new Uint8Array(buffer);
@@ -29,6 +34,7 @@ function bufferToBase64(buffer) {
     return btoa(binary);
 }
 
+// Holt ein zufaelliges Analyseergebnis vom Server (Demo-Modus)
 export async function requestMockAnalysis() {
     const response = await fetch('/mockdata', { method: 'GET' });
     const text = await response.text();
@@ -39,6 +45,7 @@ export async function requestMockAnalysis() {
     }
 }
 
+// Wird verwendet, wenn keine Datei hochgeladen wurde
 export function mockPreValidationMessage() {
     return {
         isReadable: true,

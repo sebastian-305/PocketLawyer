@@ -7,38 +7,52 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Http;
 using System.Linq;
 
+// Einstiegspunkt der ASP.NET-Anwendung.
+// Hier wird die WebApplication konfiguriert und alle benoetigten
+// Abhaengigkeiten dem Dependency-Injection-Container hinzugefuegt.
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// -------- Service-Registrierungen --------
 
+// HTTP-Handler fuer Logging von API-Aufrufen
 builder.Services.AddTransient<RedactingLoggingHandler>();
+// Entfernt automatisch eingebautes Logging der HttpClients
 builder.Services.AddSingleton<IHttpMessageHandlerBuilderFilter, NoLoggingHttpClientBuilderFilter>();
+// HttpClient fuer das Verwenden des Kontextmanagers der Gemini-API
 builder.Services
     .AddHttpClient<IGeminiContextManager, GeminiContextManager>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
+// HttpClient fuer den eigentlichen Zugriff auf die Gemini-API
 builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
+// Die Anwendung kann unterschiedliche KI-Dienste nutzen.
+// Per Keyed-Service wird festgelegt, welche Implementierung spaeter verwendet wird.
 builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
 builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
 builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.TextFileDecoder>();
 builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.PdfFileDecoder>();
 builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.ImageFileDecoder>();
+// ueber IFileDecoderService koennen Dateien unabhaengig vom Format eingelesen werden
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
 builder.Services.AddScoped<IFileValidatorService, FileValidatorService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
 builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
+// Hauptlogik fuer die Analyse des Vertrages
 builder.Services.AddScoped<IContractAnalyzerService, ContractAnalyzerService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// Jetzt wird die Anwendung gebaut
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// -------- Middleware-Pipeline --------
 app.UseExceptionHandler(errorApp =>
 {
+    // Eigener Error-Handler, der alle ungefangenen Fehler
+    // als JSON an den Client zurueckgibt
     errorApp.Run(async context =>
     {
         var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
@@ -51,16 +65,20 @@ app.UseExceptionHandler(errorApp =>
 });
 app.UseStatusCodePages();
 
+// Weiterleitung auf HTTPS und Aktivierung von WebSockets
 app.UseHttpsRedirection();
 app.UseWebSockets();
 
 if (app.Environment.IsDevelopment())
 {
+    // Im Entwicklungsmodus API-Dokumentation aktivieren
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 
+// Routing der API-Controller und Ausliefern statischer Dateien
 app.MapControllers();
 app.UseStaticFiles();
+// Startet den Webserver
 app.Run();

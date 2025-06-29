@@ -7,12 +7,14 @@ using System.IO;
 
 namespace PocketLawyer.Infrastructure;
 
+// Validiert hochgeladene Dateien und wandelt sie in Text um.
 public class FileValidatorService : IFileValidatorService
 {
     private readonly ILogger<FileValidatorService> _logger;
     private readonly IFileDecoderService _decoderService;
     private readonly IConfiguration _configuration;
 
+    // Abhaengigkeiten werden injiziert: Logger, Decoder und Konfiguration
     public FileValidatorService(
         ILogger<FileValidatorService> logger,
         IFileDecoderService decoderService,
@@ -23,12 +25,14 @@ public class FileValidatorService : IFileValidatorService
         _configuration = configuration;
     }
 
+    // Prueft Dateiendung und Groesse und ruft anschliessend den passenden Decoder auf
     public async Task<FileContentDto> ValidateAndDecodeAsync(IFormFile file)
     {
         _logger.LogDebug("Entering {Method}", nameof(ValidateAndDecodeAsync));
 
         string filename = file.FileName;
         string extension = Path.GetExtension(filename).TrimStart('.').ToLowerInvariant();
+        // Nur bestimmte Dateitypen werden unterstuetzt
         if (!_decoderService.AllowedExtensions.Contains(extension))
         {
             _logger.LogWarning("Fileextension not allowed: {FileName}", filename);
@@ -37,6 +41,7 @@ public class FileValidatorService : IFileValidatorService
 
         long maxUploadSizeMb = _configuration.GetValue<long>("MaxUploadSizeMB");
         long maxBytes = maxUploadSizeMb * 1024 * 1024;
+        // Uebergrosse Dateien ablehnen
         if (file.Length > maxBytes)
         {
             throw new BadHttpRequestException($"File too large. Maximum {maxUploadSizeMb} MB allowed.");
@@ -47,8 +52,10 @@ public class FileValidatorService : IFileValidatorService
         string fileContent;
         try
         {
+            // Dateiinhalte in Text umwandeln
             fileContent = await _decoderService.GetFileContentAsync(filename, stream);
         }
+        // Fehler beim Dekodieren werden an den Aufrufer weitergegeben
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error decoding file {FileName}", filename);

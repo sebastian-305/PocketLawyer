@@ -4,6 +4,7 @@ using PocketLawyer.Service;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
 
+// Dekodiert einfache Textdateien
 public class TextFileDecoder : IFileDecoder
 {
     private readonly ILogger<TextFileDecoder> _logger;
@@ -15,9 +16,11 @@ public class TextFileDecoder : IFileDecoder
 
     public bool CanDecode(string ext)
     {
+        // Nur .txt Dateien
         return string.Equals(ext, "txt", StringComparison.OrdinalIgnoreCase);
     }
 
+    // Liest den Text direkt aus dem Stream
     public async Task<string> DecodeAsync(Stream input)
     {
         _logger.LogDebug("Decoding text stream");

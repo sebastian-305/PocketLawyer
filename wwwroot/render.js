@@ -1,3 +1,4 @@
+// Öffnet ein neues Fenster zum Drucken der Analyse
 export function printer() {
     const printWindow = window.open(
         "about:blank",
@@ -22,6 +23,7 @@ export function printer() {
     doc.body.appendChild(content);
 }
 
+// Hilfsfunktion zum Erzeugen eines DOM-Blocks fuer eine Klausel
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -100,6 +102,7 @@ function generateConflictClauses(clause) {
     });
 }
 
+// Erstellt ein Bootstrap-Accordion-Element
 function createAccordionItem(title, content, cls, id) {
     const item = document.createElement("div");
     item.classList.add("accordion-item", cls);
@@ -133,6 +136,7 @@ function createAccordionItem(title, content, cls, id) {
     return item;
 }
 
+// Spinner fuer die Ladeanzeige
 export function createLoadingElement() {
     const loading = document.createElement("div");
     loading.classList.add("loading-spinner");
@@ -144,18 +148,21 @@ export function createLoadingElement() {
     return loading;
 }
 
+// Zeigt die Voranalyse im Modalfenster an
 export function renderPreValidation(message, body) {
     const container = generatePreAnalysis(message);
     body.replaceChildren(container);
     container.focus();
 }
 
+// Rendert das eigentliche Analyseergebnis
 export function renderContractResult(message, body) {
     const container = generateAnalysis(message);
     body.appendChild(container);
     container.focus();
 }
 
+// Zeigt eine Fehlermeldung innerhalb des Modals an
 export function displayUploadError(ex, body, loading, preAnalysisShown) {
     console.error(ex);
     if (body.contains(loading)) {

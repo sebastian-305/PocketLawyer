@@ -5,6 +5,7 @@ using PocketLawyer.Service;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// Speichert KI-Antworten optional auf der Festplatte
 public class ResponseLogger : IResponseLogger
 {
     private readonly ILogger<ResponseLogger> _logger;
@@ -21,6 +22,7 @@ public class ResponseLogger : IResponseLogger
         _environment = environment;
     }
 
+    // Schreibt die KI-Antwort in eine Datei im konfigurierten Ordner
     public async Task LogResponseAsync(string response)
     {
         _logger.LogDebug("Writing response to file");

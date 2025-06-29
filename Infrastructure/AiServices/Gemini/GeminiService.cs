@@ -8,6 +8,7 @@ using System.Text.Json;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// Implementierung des IAiService fuer die Google Gemini API
 public class GeminiService : IAiService
 {
     private readonly HttpClient _httpClient;
@@ -20,6 +21,7 @@ public class GeminiService : IAiService
     private readonly IResponseLogger _responseLogger;
     public static AnalyzerSchema AnalyzerSchemaDefinition => new AnalyzerSchema();
     public static PreAnalyzerSchema PreAnalyzerSchemaDefinition => new PreAnalyzerSchema();
+    // HttpClient und weitere Abhaengigkeiten werden via DI eingefuegt
     public GeminiService(
         HttpClient httpClient,
         IConfiguration configuration,
@@ -39,11 +41,13 @@ public class GeminiService : IAiService
 
     #region public_methods
 
+    // Schickt einen Prompt an die Gemini API und gibt die Textantwort zurueck
     public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
     {
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
         string apiKey = useAltKey ? _apiAltKey : _apiKey;
 
+        // Ziel-URL inkl. Modell-ID und API-Key
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_modelId}:generateContent?key={apiKey}";
 
         var requestBody = new
@@ -69,6 +73,7 @@ public class GeminiService : IAiService
                 responseSchema = outputSchema,
                 temperature = 0.2,
             },
+            // Bereits erzeugter Kontext wird angehaengt, falls verfuegbar
             cachedContent = useAltKey ? null : await _contextManager.GetContextKeyAsync(),
         };
 

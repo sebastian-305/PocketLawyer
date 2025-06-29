@@ -1,6 +1,8 @@
+// Netzwerkfunktionen und Rendering-Hilfen importieren
 import { startAnalysisSocket, requestMockAnalysis, mockPreValidationMessage } from './network.js';
 import { createLoadingElement, renderPreValidation, renderContractResult, displayUploadError, printer } from './render.js';
 
+// Behandelt den Upload und startet die Analyse
 async function uploadFile(event) {
     event.preventDefault();
 
@@ -8,6 +10,7 @@ async function uploadFile(event) {
 
     const body = document.getElementById('evaluation-body');
     const loading = createLoadingElement();
+    // Platzhalter anzeigen, waehrend die Analyse laeuft
     body.replaceChildren(loading);
 
     const input = event.target.myfile;
@@ -24,6 +27,7 @@ async function uploadFile(event) {
             const analysisMessage = await requestMockAnalysis();
             body.removeChild(loading);
             renderContractResult(analysisMessage, body);
+            // Ergebnis im SessionStorage merken, um es wiederherstellen zu koennen
             sessionStorage.setItem(
                 'analysisResult',
                 JSON.stringify({ validation: preMessage, analysis: analysisMessage }),
@@ -45,6 +49,7 @@ async function uploadFile(event) {
                 } else {
                     body.removeChild(loading);
                     renderContractResult(msg, body);
+                    // Analyseergebnis speichern, um es spaeter erneut anzeigen zu koennen
                     sessionStorage.setItem(
                         'analysisResult',
                         JSON.stringify({ validation: preMessage, analysis: msg }),
@@ -74,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const restoreToast = bootstrap.Toast.getOrCreateInstance(restoreToastEl, { autohide: false });
     const evaluationModalEl = document.getElementById('evaluation');
 
+    // Wenn das Analysefenster geschlossen wird, kann der Benutzer die letzte Analyse wiederherstellen
     evaluationModalEl.addEventListener('hidden.bs.modal', () => {
         if (sessionStorage.getItem('analysisResult')) {
             restoreToast.show();

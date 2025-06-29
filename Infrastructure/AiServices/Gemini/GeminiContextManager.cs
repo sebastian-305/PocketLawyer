@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// Verwaltet den Kontext-Cache der Gemini API
 public class GeminiContextManager : IGeminiContextManager
 {
     private readonly HttpClient _httpClient;
@@ -24,6 +25,7 @@ public class GeminiContextManager : IGeminiContextManager
         _logger = logger;
     }
 
+    // Ruft den aktuellen Context Key ab oder erzeugt einen neuen
     public async Task<string?> GetContextKeyAsync()
     {
         _logger.LogDebug("Entering {Method}", nameof(GetContextKeyAsync));
@@ -42,6 +44,7 @@ public class GeminiContextManager : IGeminiContextManager
         return result;
     }
 
+    // Legt einen neuen Kontext bei Gemini an, der Gesetzestexte enthaelt
     public async Task<string> SendContextAsync()
     {
         _logger.LogDebug("Entering {Method}", nameof(SendContextAsync));

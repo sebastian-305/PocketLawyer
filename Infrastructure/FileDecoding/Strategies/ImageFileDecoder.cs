@@ -3,6 +3,7 @@ using Tesseract;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
 
+// Nutzt Tesseract OCR um Text aus Bilddateien zu extrahieren
 public class ImageFileDecoder : IFileDecoder
 {
     private readonly ILogger<ImageFileDecoder> _logger;
@@ -18,11 +19,13 @@ public class ImageFileDecoder : IFileDecoder
 
     public bool CanDecode(string ext)
     {
+        // JPG, JPEG und PNG werden unterstuetzt
         return string.Equals(ext, "jpg", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(ext, "jpeg", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(ext, "png", StringComparison.OrdinalIgnoreCase);
     }
 
+    // Fuehrt die OCR-Erkennung durch
     public async Task<string> DecodeAsync(Stream input)
     {
         _logger.LogDebug("Decoding image stream via tesseract");

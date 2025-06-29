@@ -7,6 +7,8 @@ using PocketLawyer.Service;
 
 namespace PocketLawyer.Infrastructure;
 
+// Zentrale Logik fuer die Kommunikation mit dem KI-Dienst.
+// Erstellt aus einem Vertragstext einen Prompt und wertet die Antwort aus.
 public class ContractAnalyzerService : IContractAnalyzerService
 {
     private readonly ILogger<ContractAnalyzerService> _logger;
@@ -14,6 +16,8 @@ public class ContractAnalyzerService : IContractAnalyzerService
     private readonly IKollektivvertragService _kvService;
     private readonly IKvDetectionService _kvDetectionService;
 
+    // Alle benoetigten Services werden injiziert. Vor allem der KI-Service
+    // (hier Gemini) kann so spaeter leicht ausgetauscht werden.
     public ContractAnalyzerService(
         ILogger<ContractAnalyzerService> logger,
         [FromKeyedServices("gemini")] IAiService aiService,
@@ -26,6 +30,8 @@ public class ContractAnalyzerService : IContractAnalyzerService
         _kvDetectionService = kvDetectionService;
     }
 
+    // Baut den Prompt zusammen, ruft den KI-Dienst auf und
+    // wandelt die Antwort in ein DTO des Typs T um.
     public async Task<T> ProcessContractRequest<T>(
         FileContentDto content,
         Func<string, string, string> promptBuilder,
@@ -34,14 +40,18 @@ public class ContractAnalyzerService : IContractAnalyzerService
         bool detectKv = false,
         string? kvName = null)
     {
+        // Grund-Prompt fuer die KI erstellen
         string prompt = promptBuilder(content.FileName, content.FileContent);
 
+        // Optional kann hier ein passender Kollektivvertrag erkannt
+        // und an den Prompt angehaengt werden.
         if (!string.IsNullOrWhiteSpace(kvName) || detectKv)
         {
             try
             {
                 if (detectKv && string.IsNullOrWhiteSpace(kvName))
                 {
+                    // KI nach dem passenden KV fragen
                     KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(content.FileContent);
                     _logger.LogInformation("KV detection result: {Result}", kvResult.KvName);
 
@@ -53,6 +63,7 @@ public class ContractAnalyzerService : IContractAnalyzerService
 
                 if (!string.IsNullOrWhiteSpace(kvName))
                 {
+                    // Alle Dateien des erkannten Kollektivvertrags lesen
                     string[] kvFiles = await _kvService.GetKvFileContentsAsync(kvName);
                     var sbPrompt = new StringBuilder(prompt);
                     sbPrompt.AppendLine();
@@ -69,8 +80,10 @@ public class ContractAnalyzerService : IContractAnalyzerService
             }
         }
 
+        // Anfrage an den KI-Dienst schicken
         string answer = await _aiService.SendPrompt(prompt, schema, useAltKey);
 
+        // Antwort in unser Datenmodell ueberfuehren
         T? dto;
         try
         {
@@ -85,6 +98,7 @@ public class ContractAnalyzerService : IContractAnalyzerService
         if (dto == null)
             throw new InvalidOperationException("Invalid AI response");
 
+        // Erkenntnis ueber den KV ins Ergebnis schreiben
         if (!string.IsNullOrWhiteSpace(kvName))
         {
             switch (dto)

@@ -2,6 +2,7 @@ using PocketLawyer.Service;
 
 namespace PocketLawyer.Infrastructure;
 
+// Liest Kollektivvertrag-Dateien vom Dateisystem
 public class KvFileService : IKollektivvertragService
 {
     private readonly ILogger<KvFileService> _logger;
@@ -9,6 +10,7 @@ public class KvFileService : IKollektivvertragService
     private readonly IWebHostEnvironment _environment;
     private readonly IFileDecoderService _fileDecoderService;
 
+    // Logger, Konfiguration und Pfade werden injiziert
     public KvFileService(ILogger<KvFileService> logger,
         IConfiguration configuration,
         IWebHostEnvironment environment,
@@ -21,6 +23,7 @@ public class KvFileService : IKollektivvertragService
     }
 
 
+    // Liefert alle vorhandenen KV-Verzeichnisse zurueck
     public string[] GetKvsDirectories()
     {
         _logger.LogDebug("Listing KVS directories");
@@ -35,6 +38,7 @@ public class KvFileService : IKollektivvertragService
         return folders;
     }
 
+    // Liest alle Dateien des angegebenen Kollektivvertrags und dekodiert sie
     public async Task<string[]> GetKvFileContentsAsync(string kvName)
     {
         _logger.LogDebug("Reading KV files for {KvName}", kvName);
@@ -54,6 +58,7 @@ public class KvFileService : IKollektivvertragService
         var files = Directory.GetFiles(kvPath);
         List<string> contents = new();
 
+        // Jede Datei des KV-Ordners wird eingelesen
         foreach (var file in files)
         {
             try
