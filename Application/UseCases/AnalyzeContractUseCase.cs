@@ -36,10 +36,12 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
         bool detectKv = false,
         string? kvName = null)
     {
+        // Prompt-Erstellung: erzeugt aus Dateiname und Inhalt einen KI-tauglichen Text
         string prompt = promptBuilder(content.FileName, content.FileContent);
 
         if (!string.IsNullOrWhiteSpace(kvName) || detectKv)
         {
+            // Optionale KV-Erkennung und Einbindung in das Prompt
             try
             {
                 if (detectKv && string.IsNullOrWhiteSpace(kvName))
@@ -71,15 +73,18 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
             }
         }
 
+        // Aufruf des KI-Dienstes mit Haupt- oder Voranalyse
         string answer = await _aiService.SendPrompt(prompt, schema, useAltKey);
 
         T? dto;
         try
         {
+            // JSON-Deserialisierung der KI-Antwort
             dto = JsonSerializer.Deserialize<T>(answer);
         }
         catch (JsonException ex)
         {
+            // Fehlerbehandlung bei ungültigem JSON
             string truncated = answer.Length > 200 ? answer[..200] + "..." : answer;
             _logger.LogError(ex, "Failed to parse AI response: {Snippet}", truncated);
             throw new AnalysisException($"Fehler beim Interpretieren der KI-Antwort: {truncated}", "deserialization", ex);
@@ -87,6 +92,7 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
         if (dto == null)
             throw new AnalysisException("Invalid AI response", "deserialization");
 
+        // Einfügen des KV-Namens ins Ergebnis
         if (!string.IsNullOrWhiteSpace(kvName))
         {
             switch (dto)
