@@ -13,6 +13,7 @@ public class PocketController : ControllerBase
 {
     private readonly ILogger<PocketController> _logger;
     private readonly IAiService _geminiService;
+    private readonly IContractAnalyzerService _contractAnalyzerService;
     private readonly IFileDecoderService _fileDecoderService;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
@@ -25,7 +26,8 @@ public class PocketController : ControllerBase
         IConfiguration configuration,
         IWebHostEnvironment environment,
         IKollektivvertragService kvService,
-        IKvDetectionService kvDetectionService)
+        IKvDetectionService kvDetectionService,
+        IContractAnalyzerService contractAnalyzerService)
     {
         _logger = logger;
         _geminiService = geminiService;
@@ -34,6 +36,7 @@ public class PocketController : ControllerBase
         _environment = environment;
         _kvService = kvService;
         _kvDetectionService = kvDetectionService;
+        _contractAnalyzerService = contractAnalyzerService;
     }
  
     [HttpGet("/mockdata")]
@@ -201,7 +204,7 @@ public class PocketController : ControllerBase
 
     private async Task<ContractValidationDto> ValidateContractAsync(Func<IFormFile> createFormFile, string? kvName)
     {
-        var dto = await ProcessContractRequest<ContractValidationDto>(
+        var dto = await _contractAnalyzerService.ProcessContractRequest<ContractValidationDto>(
             createFormFile(),
             BuildValidationPrompt,
             GeminiService.PreAnalyzerSchemaDefinition,
@@ -222,7 +225,7 @@ public class PocketController : ControllerBase
 
     private Task<ContractAnalysisDto> AnalyzeContractAsync(Func<IFormFile> createFormFile, string? kvName)
     {
-        return ProcessContractRequest<ContractAnalysisDto>(
+        return _contractAnalyzerService.ProcessContractRequest<ContractAnalysisDto>(
             createFormFile(),
             _geminiService.PromptBuilder,
             GeminiService.AnalyzerSchemaDefinition,
@@ -252,82 +255,6 @@ public class PocketController : ControllerBase
         return sb.ToString();
     }
 
-    private async Task<T> ProcessContractRequest<T>(IFormFile file,
-        Func<string, string, string> promptBuilder,
-        object schema,
-        bool useAltKey,
-        bool detectKv = false,
-        string? kvName = null)
-    {
-        FileContentDto requestContent = await PreValidate(file);
-
-        string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
-
-        if (!string.IsNullOrWhiteSpace(kvName) || detectKv)
-        {
-            try
-            {
-
-                if (detectKv && string.IsNullOrWhiteSpace(kvName))
-                {
-                    KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
-                    _logger.LogInformation("KV detection result: {Result}", kvResult.KvName);
-
-                    if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
-                    {
-                        kvName = kvResult.KvName;
-                    }
-                }
-
-                if (!string.IsNullOrWhiteSpace(kvName))
-                {
-                    string[] kvFiles = await _kvService.GetKvFileContentsAsync(kvName);
-                    var sbPrompt = new StringBuilder(prompt);
-                    sbPrompt.AppendLine();
-
-                    sbPrompt.AppendLine($"Der folgende Text enthält den dazugehörigen Kollektivvertrag \"{kvName}\" und mögliche Anhänge. " +
-                        $"Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse. Wenn der Vertrag in einem Punkt so etwas schreibt wie \"laut Kollektivvertrag\" soll die entsprechende Regelung" +
-                        $"aus dem Kollektivvetrag angegeben werden mit dem Zusatz \"(lt. Kollektivvertrag)\"");
-                    sbPrompt.AppendLine(string.Join("\n\n", kvFiles));
-                    prompt = sbPrompt.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Kollektivvertrag detection failed");
-            }
-        }
-        string answer = await _geminiService.SendPrompt(prompt, schema, useAltKey);
-
-        T? dto;
-        try
-        {
-            dto = JsonSerializer.Deserialize<T>(answer);
-        }
-        catch (JsonException ex)
-        {
-            string truncated = answer.Length > 200 ? answer[..200] + "..." : answer;
-            _logger.LogError(ex, "Failed to parse AI response: {Snippet}", truncated);
-            throw new InvalidOperationException($"Fehler beim Interpretieren der KI-Antwort: {truncated}", ex);
-        }
-        if (dto == null)
-            throw new InvalidOperationException("Invalid AI response");
-
-        if (!string.IsNullOrWhiteSpace(kvName))
-        {
-            switch (dto)
-            {
-                case ContractValidationDto v:
-                    v.Kollektivvertrag = kvName;
-                    break;
-                case ContractAnalysisDto a:
-                    a.Kollektivvertrag = kvName;
-                    break;
-            }
-        }
-
-        return dto;
-    }
 
     private async Task<FileContentDto> PreValidate(IFormFile file)
     {
