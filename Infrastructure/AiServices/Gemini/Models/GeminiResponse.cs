@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 
-//File from LectureEvaluationAPI2 repository
 
 public class GeminiResponse
 {
