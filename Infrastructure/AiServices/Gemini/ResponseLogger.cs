@@ -27,7 +27,7 @@ public class ResponseLogger : IResponseLogger
 
         string folder = Path.Combine(
             _environment.ContentRootPath,
-            _configuration["ResponsesPath"] ?? "Responses");
+            _configuration["ResponsesPath"] ?? "data/Responses");
 
         try
         {

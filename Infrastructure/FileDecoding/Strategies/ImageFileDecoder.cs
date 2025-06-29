@@ -13,7 +13,7 @@ public class ImageFileDecoder : IFileDecoder
         IConfiguration configuration)
     {
         _logger = logger;
-        _tesseractDataPath = configuration["TesseractDataPath"] ?? "./tessdata";
+        _tesseractDataPath = configuration["TesseractDataPath"] ?? "data/tessdata";
     }
 
     public bool CanDecode(string ext)
