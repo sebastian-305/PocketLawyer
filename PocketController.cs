@@ -12,26 +12,18 @@ public class PocketController : ControllerBase
 {
     private readonly ILogger<PocketController> _logger;
 
-    private readonly IContractAnalyzerService _contractAnalyzerService;
-    private readonly IFileValidatorService _fileValidatorService;
     private readonly IWebHostEnvironment _environment;
-    private readonly IKollektivvertragService _kvService;
-    private readonly IKvDetectionService _kvDetectionService;
     private readonly PathOptions _paths;
+    private readonly IWebSocketAnalysisService _socketService;
 
-    public PocketController(ILogger<PocketController> logger,
-
-        IFileValidatorService fileValidatorService,
+    public PocketController(
+        ILogger<PocketController> logger,
         IOptions<PathOptions> pathOptions,
-
         IWebHostEnvironment environment,
         IWebSocketAnalysisService socketService)
     {
         _logger = logger;
-
-
-        _fileValidatorService = fileValidatorService;
-
+        _paths = pathOptions.Value;
         _environment = environment;
         _socketService = socketService;
     }
