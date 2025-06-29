@@ -1,5 +1,6 @@
 using PocketLawyer.Service;
 using PocketLawyer.Infrastructure;
+using Microsoft.Extensions.Options;
 using Tesseract;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
@@ -7,14 +8,14 @@ namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
 public class ImageFileDecoder : IFileDecoder
 {
     private readonly ILogger<ImageFileDecoder> _logger;
-    private readonly string _tesseractDataPath;
+    private readonly PathOptions _paths;
 
     public ImageFileDecoder(
         ILogger<ImageFileDecoder> logger,
-        IConfiguration configuration)
+        IOptions<PathOptions> pathOptions)
     {
         _logger = logger;
-        _tesseractDataPath = configuration["TesseractDataPath"] ?? DefaultPaths.Tessdata;
+        _paths = pathOptions.Value;
     }
 
     public bool CanDecode(string ext)
@@ -31,7 +32,7 @@ public class ImageFileDecoder : IFileDecoder
         await input.CopyToAsync(ms);
         ms.Position = 0;
 
-        using var engine = new TesseractEngine(_tesseractDataPath, "deu+eng", EngineMode.Default);
+        using var engine = new TesseractEngine(_paths.TesseractDataPath, "deu+eng", EngineMode.Default);
         using var img = Pix.LoadFromMemory(ms.ToArray());
         using var page = engine.Process(img);
         return page.GetText();

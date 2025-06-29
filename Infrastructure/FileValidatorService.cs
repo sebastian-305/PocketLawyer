@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Service;
 using PocketLawyer;
@@ -11,16 +11,16 @@ public class FileValidatorService : IFileValidatorService
 {
     private readonly ILogger<FileValidatorService> _logger;
     private readonly IFileDecoderService _decoderService;
-    private readonly IConfiguration _configuration;
+    private readonly UploadOptions _options;
 
     public FileValidatorService(
         ILogger<FileValidatorService> logger,
         IFileDecoderService decoderService,
-        IConfiguration configuration)
+        IOptions<UploadOptions> uploadOptions)
     {
         _logger = logger;
         _decoderService = decoderService;
-        _configuration = configuration;
+        _options = uploadOptions.Value;
     }
 
     public async Task<FileContentDto> ValidateAndDecodeAsync(IFormFile file)
@@ -37,7 +37,7 @@ public class FileValidatorService : IFileValidatorService
                 filename);
         }
 
-        long maxUploadSizeMb = _configuration.GetValue<long>("MaxUploadSizeMB");
+        long maxUploadSizeMb = _options.MaxUploadSizeMB;
         long maxBytes = maxUploadSizeMb * 1024 * 1024;
         if (file.Length > maxBytes)
         {

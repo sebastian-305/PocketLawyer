@@ -1,7 +1,7 @@
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Service;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
 
@@ -11,9 +11,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 public class GeminiService : IAiService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _apiKey;
-    private readonly string _apiAltKey;
-    private readonly string _modelId;
+    private readonly GeminiOptions _options;
     private readonly ILogger<GeminiService> _logger;
     private readonly bool _writeInFile;
     private readonly IGeminiContextManager _contextManager;
@@ -22,17 +20,15 @@ public class GeminiService : IAiService
     public static PreAnalyzerSchema PreAnalyzerSchemaDefinition => new PreAnalyzerSchema();
     public GeminiService(
         HttpClient httpClient,
-        IConfiguration configuration,
+        IOptions<GeminiOptions> options,
         ILogger<GeminiService> logger,
         IGeminiContextManager contextManager,
         IResponseLogger responseLogger)
     {
         _httpClient = httpClient;
-        _apiKey = configuration["Gemini:Key"] ?? string.Empty;
-        _apiAltKey = configuration["Gemini:Key:Alternative"] ?? string.Empty;
-        _modelId = configuration["Gemini:ModelId"] ?? "gemini-1.5-flash-002";
+        _options = options.Value;
         _logger = logger;
-        _writeInFile = configuration.GetValue<bool>("WriteGeminiResponseInFile");
+        _writeInFile = _options.WriteGeminiResponseInFile;
         _contextManager = contextManager;
         _responseLogger = responseLogger;
     }
@@ -42,9 +38,9 @@ public class GeminiService : IAiService
     public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
     {
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
-        string apiKey = useAltKey ? _apiAltKey : _apiKey;
+        string apiKey = useAltKey ? _options.AltKey : _options.Key;
 
-        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_modelId}:generateContent?key={apiKey}";
+        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_options.ModelId}:generateContent?key={apiKey}";
 
         var requestBody = new
         {
