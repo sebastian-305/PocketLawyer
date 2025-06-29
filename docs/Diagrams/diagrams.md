@@ -9,6 +9,7 @@ graph TD
         PC[PocketController]
     end
     subgraph Application
+        WSAS[WebSocketAnalysisService]
         FVS[FileValidatorService]
         CA[AnalyzeContractUseCase]
         KAD[KvAiDetectionService]
@@ -30,9 +31,10 @@ graph TD
     end
 
     FE -- WebSocket --> PC
-    PC --> FVS
-    PC --> KAD
-    PC --> CA
+    PC --> WSAS
+    WSAS --> FVS
+    WSAS --> KAD
+    WSAS --> CA
     FVS --> FDS
     KAD --> CLA
     CA --> GEM
@@ -122,17 +124,20 @@ classDiagram
 sequenceDiagram
     participant FE as Web
     participant PC as Controller
+    participant WS as WebSocketAnalysisService
     participant APP as Application
     participant INF as Infrastructure
     participant EX as External APIs
 
     FE->>PC: Datei hochladen
-    PC->>APP: Analyse starten
+    PC->>WS: Upload verarbeiten
+    WS->>APP: Analyse starten
     APP->>INF: Datei dekodieren
     INF->>EX: KI-Aufruf
     EX-->>INF: Antwort
     INF-->>APP: Domain DTO
-    APP-->>PC: Ergebnis
+    APP-->>WS: Ergebnis
+    WS-->>PC: JSON
     PC-->>FE: JSON
 ```
 
@@ -144,11 +149,12 @@ graph TD
         U[File Upload] --> N[network.js]
     end
     N -- WebSocket --> PC[WebSocket /analysis]
-    PC --> FV[FileValidatorService]
+    PC --> WSAS[WebSocketAnalysisService]
+    WSAS --> FV[FileValidatorService]
     FV --> FDS[FileDecoderService]
-    PC --> KD[KvAiDetectionService]
+    WSAS --> KD[KvAiDetectionService]
     KD --> CLA[ClaudeService]
-    PC --> CA[AnalyzeContractUseCase]
+    WSAS --> CA[AnalyzeContractUseCase]
     CA --> GEM[GeminiService]
     CA --> KFS[KvFileService]
     GEM --> RL[ResponseLogger]
@@ -238,8 +244,15 @@ classDiagram
     AnalyzeContractUseCase --> IKvDetectionService
     AnalyzeContractUseCase --> IKollektivvertragService
 
+    class IWebSocketAnalysisService {
+        +HandleAsync(context)
+    }
+    class WebSocketAnalysisService
+    IWebSocketAnalysisService <|.. WebSocketAnalysisService
+    WebSocketAnalysisService --> IFileValidatorService
+    WebSocketAnalysisService --> IKvDetectionService
+    WebSocketAnalysisService --> IContractAnalyzerService
+
     class PocketController
-    PocketController --> IFileValidatorService
-    PocketController --> IKvDetectionService
-    PocketController --> IContractAnalyzerService
+    PocketController --> IWebSocketAnalysisService
 ```
