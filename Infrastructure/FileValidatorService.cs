@@ -35,6 +35,8 @@ public class FileValidatorService : IFileValidatorService
 
         string filename = file.FileName;
         string extension = Path.GetExtension(filename).TrimStart('.').ToLowerInvariant();
+
+        // Prüfen der Dateiendung gegen die Liste erlaubter Formate
         if (!_decoderService.AllowedExtensions.Contains(extension))
         {
             _logger.LogWarning("Fileextension not allowed: {FileName}", filename);
@@ -43,6 +45,7 @@ public class FileValidatorService : IFileValidatorService
                 filename);
         }
 
+        // Größenlimit berechnen
         long maxUploadSizeMb = _options.MaxUploadSizeMB;
         long maxBytes = maxUploadSizeMb * 1024 * 1024;
         if (file.Length > maxBytes)
@@ -52,6 +55,7 @@ public class FileValidatorService : IFileValidatorService
                 filename);
         }
 
+        // Öffnen und Dekodieren des Streams
         await using var stream = file.OpenReadStream();
 
         string fileContent;
@@ -61,6 +65,7 @@ public class FileValidatorService : IFileValidatorService
         }
         catch (Exception ex)
         {
+            // Umgang mit Fehlersituationen: Fehler loggen und aussagekräftige Exception werfen
             _logger.LogError(ex, "Error decoding file {FileName}", filename);
             throw new FileValidationException("Error decoding file", filename, ex);
         }
