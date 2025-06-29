@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
-using PocketLawyer.Infrastructure;
 using PocketLawyer.Service;
 using System.Text.Json;
 using System.Text;
@@ -15,7 +14,7 @@ public class PocketController : ControllerBase
     private readonly ILogger<PocketController> _logger;
     private readonly IAiService _geminiService;
     private readonly IContractAnalyzerService _contractAnalyzerService;
-    private readonly IFileDecoderService _fileDecoderService;
+    private readonly IFileValidatorService _fileValidatorService;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
     private readonly IKollektivvertragService _kvService;
@@ -23,7 +22,7 @@ public class PocketController : ControllerBase
 
     public PocketController(ILogger<PocketController> logger,
         [FromKeyedServices("gemini")] IAiService geminiService,
-        IFileDecoderService fileDecoderService,
+        IFileValidatorService fileValidatorService,
         IConfiguration configuration,
         IWebHostEnvironment environment,
         IKollektivvertragService kvService,
@@ -32,7 +31,7 @@ public class PocketController : ControllerBase
     {
         _logger = logger;
         _geminiService = geminiService;
-        _fileDecoderService = fileDecoderService;
+        _fileValidatorService = fileValidatorService;
         _configuration = configuration;
         _environment = environment;
         _kvService = kvService;
@@ -105,12 +104,14 @@ public class PocketController : ControllerBase
         var (fileBytes, fileName) = upload.Value;
         IFormFile CreateFormFile() => new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", fileName);
 
-        string? kvName = await DetectKvAsync(CreateFormFile);
+        FileContentDto requestContent = await _fileValidatorService.ValidateAndDecodeAsync(CreateFormFile());
+
+        string? kvName = await DetectKvAsync(requestContent);
 
         ContractValidationDto validationDto;
         try
         {
-            validationDto = await ValidateContractAsync(CreateFormFile, kvName);
+            validationDto = await ValidateContractAsync(requestContent, kvName);
         }
         catch (Exception ex)
         {
@@ -131,7 +132,7 @@ public class PocketController : ControllerBase
         ContractAnalysisDto analysisDto;
         try
         {
-            analysisDto = await AnalyzeContractAsync(CreateFormFile, kvName);
+            analysisDto = await AnalyzeContractAsync(requestContent, kvName);
         }
         catch (Exception ex)
         {
@@ -185,12 +186,11 @@ public class PocketController : ControllerBase
         return (fileBytes, upload.FileName);
     }
 
-    private async Task<string?> DetectKvAsync(Func<IFormFile> createFormFile)
+    private async Task<string?> DetectKvAsync(FileContentDto content)
     {
         try
         {
-            var requestContent = await PreValidate(createFormFile());
-            KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
+            KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(content.FileContent);
             if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
             {
                 return kvResult.KvName;
@@ -203,10 +203,10 @@ public class PocketController : ControllerBase
         return null;
     }
 
-    private async Task<ContractValidationDto> ValidateContractAsync(Func<IFormFile> createFormFile, string? kvName)
+    private async Task<ContractValidationDto> ValidateContractAsync(FileContentDto content, string? kvName)
     {
         var dto = await _contractAnalyzerService.ProcessContractRequest<ContractValidationDto>(
-            createFormFile(),
+            content,
             PromptBuilder.BuildValidationPrompt,
             GeminiService.PreAnalyzerSchemaDefinition,
             true);
@@ -224,10 +224,10 @@ public class PocketController : ControllerBase
         return dto;
     }
 
-    private Task<ContractAnalysisDto> AnalyzeContractAsync(Func<IFormFile> createFormFile, string? kvName)
+    private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
     {
         return _contractAnalyzerService.ProcessContractRequest<ContractAnalysisDto>(
-            createFormFile(),
+            content,
             PromptBuilder.BuildAnalysisPrompt,
             GeminiService.AnalyzerSchemaDefinition,
             false,
@@ -239,44 +239,6 @@ public class PocketController : ControllerBase
     {
         var bytes = Encoding.UTF8.GetBytes(data);
         return socket.SendAsync(bytes, WebSocketMessageType.Text, true, token);
-    }
-
-
-
-    private async Task<FileContentDto> PreValidate(IFormFile file)
-    {
-        _logger.LogDebug("Entering {Method}", nameof(PreValidate));
-
-        string filename = file.FileName;
-        string fileContent;
-
-        var extension = Path.GetExtension(filename).TrimStart('.').ToLowerInvariant();
-        if (!_fileDecoderService.AllowedExtensions.Contains(extension))
-        {
-            _logger.LogWarning("Fileextension not allowed: {FileName}", filename);
-            throw new BadHttpRequestException($"Fileextension not recognised! Recognised extensions are {_fileDecoderService.AllowedExtensionsString}.");
-        }
-
-        long maxUploadSizeMb = _configuration.GetValue<long>("MaxUploadSizeMB");
-        long maxBytes = maxUploadSizeMb * 1024 * 1024;
-        if (file.Length > maxBytes)
-        {
-            throw new BadHttpRequestException($"File too large. Maximum {maxUploadSizeMb} MB allowed.");
-        }
-
-        await using var stream = file.OpenReadStream();
-
-        try
-        {
-            fileContent = await _fileDecoderService.GetFileContentAsync(filename, stream);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error decoding file {FileName}", filename);
-            throw new BadHttpRequestException(ex.Message);
-        }
-
-        return new FileContentDto(filename, fileContent);
     }
 
 }
