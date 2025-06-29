@@ -30,10 +30,13 @@ public class KvAiDetectionService : IKvDetectionService
     {
         _logger.LogDebug("Entering {Method}", nameof(DetectAsync));
 
+        // 1. Laden verfügbarer KV-Verzeichnisse
         string[] kvsFolders = _kvService.GetKvsDirectories();
 
+        // 2. Erstellen des Prompt-Strings
         string prompt = PromptBuilder.BuildKvDetectionPrompt(contractContent, kvsFolders);
 
+        // 3. Parallele KI-Anfragen (z.B. drei Stück)
         var tasks = Enumerable
             .Range(0, 3)
             .Select(_ => _aiService.SendPrompt(prompt, null, false))
@@ -41,6 +44,7 @@ public class KvAiDetectionService : IKvDetectionService
 
         string[] answers = await Task.WhenAll(tasks);
 
+        // 4. Auswertung der Antworten und Majority Vote
         string[] kvNames = answers
             .Select(ExtractKvName)
             .ToArray();
@@ -53,6 +57,7 @@ public class KvAiDetectionService : IKvDetectionService
             .OrderByDescending(g => g.Count())
             .First().Key;
 
+        // 5. Aufbau des KvDetectionResult
         return new KvDetectionResult
         {
             KvName = result,
