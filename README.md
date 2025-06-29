@@ -2,7 +2,7 @@
 
 PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, welche Arbeitsverträge analysiert. PDF-Dateien werden dabei mit **UglyToad.PdfPig** ausgelesen, während Bilddateien per **Tesseract OCR** verarbeitet werden. Die extrahierten Texte werden an verschiedene KI‑Dienste gesendet und die Ergebnisse übersichtlich dargestellt.
 
-Im Ordner `docs/Diagrams` liegen mehrere Ablauf‑ und Architekturdiagramme. Eine Übersicht der im Projekt verwendeten Entwurfsmuster findet sich in [DesignPatterns_de.md](docs/DesignPatterns_de.md).
+Im Ordner `docs/Diagrams` liegen mehrere Ablauf‑ und Architekturdiagramme. Die Diagramme sind sowohl als Code in [diagrams.md](docs/Diagrams/diagrams.md) als auch als Bilder in [diagrams_images.md](docs/Diagrams/diagrams_images.md) hinterlegt. Eine Übersicht der im Projekt verwendeten Entwurfsmuster findet sich in [DesignPatterns_de.md](docs/DesignPatterns_de.md).
 
 ## Funktionsweise
 
@@ -42,7 +42,7 @@ Die Lösung ist ringförmig aufgebaut, wobei jede äußere Ebene nur auf die inn
 3. **Infrastructure** – Implementiert die Interfaces aus der Application und bindet KI‑Dienste oder Dateisysteme an. Der unter `Infrastructure/` liegende `WebSocketAnalysisService` orchestriert dabei Datei­validierung, KV‑Erkennung und Analyse.
 4. **Web** – ASP.NET‑Host mit Controllern und statischer Oberfläche. Im Ordner `Web/` befindet sich der `PocketController`, der den `WebSocketAnalysisService` aufruft. Diese äußere Schicht darf alle inneren verwenden, jedoch nicht umgekehrt.
 
-Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagrams/).
+Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagrams/). Dort gibt es sowohl den Markdown-Quellcode der Diagramme in [diagrams.md](docs/Diagrams/diagrams.md) als auch eine Variante mit den gerenderten Bildern in [diagrams_images.md](docs/Diagrams/diagrams_images.md).
 
 ## Diagramme
 
