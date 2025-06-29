@@ -4,6 +4,8 @@ PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, welche Arbeitsve
 
 Im Ordner `docs/Diagrams` liegen mehrere Ablauf‑ und Architekturdiagramme. Die Diagramme sind sowohl als Code in [diagrams.md](docs/Diagrams/diagrams.md) als auch als Bilder in [diagrams_images.md](docs/Diagrams/diagrams_images.md) hinterlegt. Eine Übersicht der im Projekt verwendeten Entwurfsmuster findet sich in [DesignPatterns_de.md](docs/DesignPatterns_de.md).
 
+Eine vollständige Auflistung aller Dateien befindet sich in [FILE_OVERVIEW.md](FILE_OVERVIEW.md).
+
 ## Funktionsweise
 
 * **Gemini API**: Hauptdienst für die Analyse von Verträgen.
