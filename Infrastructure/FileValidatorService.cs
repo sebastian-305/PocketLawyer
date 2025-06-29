@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Service;
+using PocketLawyer;
 using System.IO;
 
 namespace PocketLawyer.Infrastructure;

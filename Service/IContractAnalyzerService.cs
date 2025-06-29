@@ -1,3 +1,4 @@
+using PocketLawyer;
 namespace PocketLawyer.Service;
 
 public interface IContractAnalyzerService
