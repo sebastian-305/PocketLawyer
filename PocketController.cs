@@ -13,7 +13,6 @@ namespace PocketLawyer;
 public class PocketController : ControllerBase
 {
     private readonly ILogger<PocketController> _logger;
-    private readonly IAiService _geminiService;
     private readonly IContractAnalyzerService _contractAnalyzerService;
     private readonly IFileDecoderService _fileDecoderService;
     private readonly IConfiguration _configuration;
@@ -22,7 +21,6 @@ public class PocketController : ControllerBase
     private readonly IKvDetectionService _kvDetectionService;
 
     public PocketController(ILogger<PocketController> logger,
-        [FromKeyedServices("gemini")] IAiService geminiService,
         IFileDecoderService fileDecoderService,
         IConfiguration configuration,
         IWebHostEnvironment environment,
@@ -31,7 +29,6 @@ public class PocketController : ControllerBase
         IContractAnalyzerService contractAnalyzerService)
     {
         _logger = logger;
-        _geminiService = geminiService;
         _fileDecoderService = fileDecoderService;
         _configuration = configuration;
         _environment = environment;
