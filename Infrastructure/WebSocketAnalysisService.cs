@@ -39,26 +39,26 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             FileContentDto content = await _fileValidatorService.ValidateAndDecodeAsync(CreateFile());
             string? kvName = await DetectKvAsync(content);
             ContractValidationDto validation = await ValidateContractAsync(content, kvName);
-            await SendStringAsync(socket, JsonSerializer.Serialize(validation), CancellationToken.None);
+            await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(validation), CancellationToken.None);
             if (!validation.IsReadable || !validation.IsContract)
             {
                 await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
                 return;
             }
             ContractAnalysisDto analysis = await AnalyzeContractAsync(content, kvName);
-            await SendStringAsync(socket, JsonSerializer.Serialize(analysis), CancellationToken.None);
+            await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis), CancellationToken.None);
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
         }
         catch (FileValidationException ex)
         {
             _logger.LogWarning(ex, "File validation failed");
-            await SendStringAsync(socket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await WebSocketHelpers.SendErrorAsync(socket, ex.Message, CancellationToken.None);
             await socket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, ex.Message, CancellationToken.None);
         }
         catch (AnalysisException ex)
         {
             _logger.LogError(ex, "Analysis failed at {Step}", ex.AnalysisStep);
-            await SendStringAsync(socket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await WebSocketHelpers.SendErrorAsync(socket, ex.Message, CancellationToken.None);
             await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
         }
     }
@@ -134,9 +134,4 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             kvName);
     }
 
-    private static Task SendStringAsync(WebSocket socket, string data, CancellationToken token)
-    {
-        var bytes = Encoding.UTF8.GetBytes(data);
-        return socket.SendAsync(bytes, WebSocketMessageType.Text, true, token);
-    }
 }
