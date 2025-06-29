@@ -1,3 +1,5 @@
+const DEBUG = false;
+
 export function printer() {
     const printWindow = window.open(
         "about:blank",
@@ -157,7 +159,7 @@ export function renderContractResult(message, body) {
 }
 
 export function displayUploadError(ex, body, loading, preAnalysisShown) {
-    console.error(ex);
+    if (DEBUG) console.error(ex);
     if (body.contains(loading)) {
         body.removeChild(loading);
     }
@@ -199,8 +201,10 @@ function generatePreAnalysis(message) {
     fadHd.innerHTML = "Voranalyse";
     fadWrap.appendChild(fadHd);
     const fadVal = document.createElement("p");
-    console.debug("Voranalyse:");
-    console.debug(message.result);
+    if (DEBUG) {
+        console.debug("Voranalyse:");
+        console.debug(message.result);
+    }
     fadVal.textContent = message.result;
     fadWrap.appendChild(fadVal);
    
@@ -314,8 +318,10 @@ function generateAnalysis(message) {
     fadHd.innerHTML = "📝 Fazit";
     fadWrap.appendChild(fadHd);
     const fadVal = document.createElement("p");
-    console.debug("Fazit:");
-    console.debug(message.fazit);
+    if (DEBUG) {
+        console.debug("Fazit:");
+        console.debug(message.fazit);
+    }
     fadVal.textContent = message.fazit;
     fadWrap.appendChild(fadVal);
     container.appendChild(fadWrap);
