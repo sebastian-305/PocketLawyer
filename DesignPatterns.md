@@ -42,14 +42,14 @@ This document identifies design patterns and principles used in the PocketLawyer
 
 ### Facade
 * **Implementation:** `ContractAnalyzerService` acts as a facade that hides the complexity of file decoding, Kollektivvertrag detection, and AI service calls. Consumers only call `ProcessContractRequest` without dealing with the underlying steps.
-* **Benefit:** Simplifies controller logic and offers a single entry point for contract analysis.
+* **Benefit:** Simplifies controller logic and offers a single entry point for contract analysis. This keeps the controller lean and encourages reuse.
+* **Alternative:** The controller could orchestrate each step itself, but that would make the code harder to test and maintain.
 
 ### Adapter
 * **Implementation:** The file decoding strategy classes (`TextFileDecoder`, `PdfFileDecoder`, `ImageFileDecoder`) adapt different libraries (plain text reader, PdfPig, Tesseract) to the common `IFileDecoder` interface.
-* **Benefit:** Allows `FileDecoderService` to treat disparate decoding mechanisms uniformly.
+* **Benefit:** Allows `FileDecoderService` to treat disparate decoding mechanisms uniformly and extend them easily.
+* **Alternative:** The service could invoke each library directly. This would duplicate code and create tight coupling to specific libraries.
 
-### Composite
-* **Status:** No explicit composite structures were found in the repository.
 
 ## Behavioral Patterns
 
@@ -61,10 +61,8 @@ This document identifies design patterns and principles used in the PocketLawyer
       throw new NotSupportedException("Unknown file extension: " + extension);
   return await decoder.DecodeAsync(content);
   ```
-* **Benefit:** Makes it easy to extend support for new file types by providing another `IFileDecoder` implementation without modifying existing code.
-
-### State & Command
-* **Status:** The codebase does not implement explicit State or Command patterns.
+* **Benefit:** Makes it easy to extend support for new file types by providing another `IFileDecoder` implementation without modifying existing code. Each decoder is isolated from the others.
+* **Alternative:** A large `switch` statement could handle each extension directly in the service, but this would grow complex and require changes for every new file type.
 
 ## Summary
-PocketLawyer relies heavily on dependency injection and interface-based design, applying SOLID and GRASP principles. The domain model is mostly anemic, with simple DTOs representing data. Structural patterns such as Facade and Adapter simplify subsystem interactions, while the Strategy pattern is used for file decoding. No implementations of Composite, State, or Command were identified.
+PocketLawyer relies heavily on dependency injection and interface-based design, applying SOLID and GRASP principles. The domain model is mostly anemic, with simple DTOs representing data. Structural patterns such as Facade and Adapter simplify subsystem interactions, while the Strategy pattern is used for file decoding.

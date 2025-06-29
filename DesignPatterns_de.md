@@ -42,29 +42,27 @@ Dieses Dokument identifiziert die im Projekt PocketLawyer verwendeten Design- un
 
 ### Fassade
 * **Implementierung:** `ContractAnalyzerService` fungiert als Fassade, die die Komplexität von Dateidekodierung, Kollektivvertragserkennung und KI-Aufrufen verbirgt. Verbraucher rufen lediglich `ProcessContractRequest` auf, ohne sich um die zugrunde liegenden Schritte zu kümmern.
-* **Nutzen:** Vereinfacht die Logik im Controller und stellt einen einzigen Einstiegspunkt für die Vertragsanalyse bereit.
+* **Nutzen:** Vereinfacht die Logik im Controller und stellt einen einzigen Einstiegspunkt für die Vertragsanalyse bereit. Dadurch kann der Controller schlank bleiben und wiederverwendbarer Code entsteht.
+* **Alternative:** Der Controller könnte jeden Schritt selbst orchestrieren. Das würde jedoch die Wiederverwendbarkeit einschränken und den Code schwerer testbar machen.
 
 ### Adapter
 * **Implementierung:** Die Klassen der Dekodierungsstrategie (`TextFileDecoder`, `PdfFileDecoder`, `ImageFileDecoder`) passen verschiedene Bibliotheken (Plain-Text-Leser, PdfPig, Tesseract) an das gemeinsame Interface `IFileDecoder` an.
-* **Nutzen:** Dadurch kann der `FileDecoderService` unterschiedliche Dekodierungsmechanismen einheitlich behandeln.
+* **Nutzen:** Dadurch kann der `FileDecoderService` unterschiedliche Dekodierungsmechanismen einheitlich behandeln und einfach erweitern.
+* **Alternative:** Man hätte die Bibliotheken direkt im `FileDecoderService` ansprechen können. Das hätte aber zu dupliziertem Code und enger Kopplung geführt.
 
-### Composite
-* **Status:** Im Repository wurden keine expliziten Composite-Strukturen gefunden.
 
 ## Verhaltensmuster
 
 ### Strategy
 * **Implementierung:** `FileDecoderService` wählt zur Laufzeit eine Dekodierungsstrategie aus den registrierten `IFileDecoder`-Implementierungen auf Basis der Dateierweiterung.
-  ```csharp
-  var decoder = _decoders.FirstOrDefault(d => d.CanDecode(extension));
-  if (decoder == null)
-      throw new NotSupportedException("Unknown file extension: " + extension);
-  return await decoder.DecodeAsync(content);
-  ```
-* **Nutzen:** Es lässt sich leicht Unterstützung für neue Dateitypen ergänzen, indem eine weitere `IFileDecoder`-Implementierung bereitgestellt wird, ohne bestehenden Code anzupassen.
-
-### State & Command
-* **Status:** In diesem Codebestand sind keine expliziten State- oder Command-Muster umgesetzt.
+```csharp
+var decoder = _decoders.FirstOrDefault(d => d.CanDecode(extension));
+if (decoder == null)
+    throw new NotSupportedException("Unknown file extension: " + extension);
+return await decoder.DecodeAsync(content);
+```
+* **Nutzen:** Es lässt sich leicht Unterstützung für neue Dateitypen ergänzen, indem eine weitere `IFileDecoder`-Implementierung bereitgestellt wird, ohne bestehenden Code anzupassen. Die Implementierungen bleiben voneinander getrennt.
+* **Alternative:** Ein `switch`-Block im Service könnte jede Erweiterung einzeln behandeln. Das würde jedoch schnell unübersichtlich werden und bei neuen Dateitypen Änderungen am bestehenden Code erfordern.
 
 ## Zusammenfassung
-PocketLawyer setzt stark auf Dependency Injection und ein schnittstellenbasiertes Design und orientiert sich an den SOLID- sowie GRASP-Prinzipien. Das Domain Model ist überwiegend anämisch, einfache DTOs repräsentieren die Daten. Strukturelle Muster wie Fassade und Adapter vereinfachen die Interaktion der Subsysteme, während das Strategy-Muster beim Dateidekodieren zum Einsatz kommt. Composite-, State- oder Command-Implementierungen wurden nicht gefunden.
+PocketLawyer setzt stark auf Dependency Injection und ein schnittstellenbasiertes Design und orientiert sich an den SOLID- sowie GRASP-Prinzipien. Das Domain Model ist überwiegend anämisch, einfache DTOs repräsentieren die Daten. Strukturelle Muster wie Fassade und Adapter vereinfachen die Interaktion der Subsysteme, während das Strategy-Muster beim Dateidekodieren zum Einsatz kommt.
