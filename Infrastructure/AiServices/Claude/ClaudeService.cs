@@ -23,7 +23,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
         {
             _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
 
-            SystemMessage systemPrompt = new (@"Du antwortest immer in gültigem JSON Format.
+            SystemMessage systemPrompt = new(@"Du antwortest immer in gültigem JSON Format.
         Verwende keine Markdown-Formatierung, nur reines JSON.");
 
             var messages = new List<Message>
