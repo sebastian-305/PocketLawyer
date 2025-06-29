@@ -98,7 +98,7 @@ Enthält vorbereitete Gesetzestexte als reine Textdateien, z.\u00a0B.:
 
 | Datei | Zweck |
 |-------|-------|
-| `ContractAnalyzerService.cs` | Fassade zur Verarbeitung von Vertragsanfragen (Prompt-Erstellung, KV-Erkennung, KI-Aufruf). |
+| `AnalyzeContractUseCase.cs` | Fassade zur Verarbeitung von Vertragsanfragen (Prompt-Erstellung, KV-Erkennung, KI-Aufruf). |
 | `FileValidatorService.cs` | Pr\u00fcft Dateigr\u00f6\u00dfe/-typ und ruft den FileDecoderService auf. |
 | `KvAiDetectionService.cs` | L\u00e4sst von Claude den passenden Kollektivvertrag erkennen. |
 | `KvFileService.cs` | Liefert verf\u00fcgbare KV-Ordner und deren Dateiinhalte. |

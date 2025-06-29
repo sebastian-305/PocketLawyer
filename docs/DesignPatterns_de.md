@@ -15,11 +15,11 @@ Dieses Dokument identifiziert die im Projekt PocketLawyer verwendeten Design- un
 * **Nutzen:** Fördert lose Kopplung und erfüllt das Dependency-Inversion-Prinzip, da Implementierungen bei Bedarf ausgetauscht oder gemockt werden können.
 
 ### SOLID & DRY
-* **Implementierung:** Das Projekt definiert Schnittstellen (`IAiService`, `IFileDecoder`, `IKvDetectionService` usw.) mit klar abgegrenzten Verantwortlichkeiten. Die Serviceklassen implementieren diese Schnittstellen. Diese Trennung folgt dem Single-Responsibility- und Interface-Segregation-Prinzip. Gemeinsame Logik wie die Dateivalidierung ist in Hilfsmethoden gekapselt (`PreValidate` in `ContractAnalyzerService` und `PocketController`).
+* **Implementierung:** Das Projekt definiert Schnittstellen (`IAiService`, `IFileDecoder`, `IKvDetectionService` usw.) mit klar abgegrenzten Verantwortlichkeiten. Die Serviceklassen implementieren diese Schnittstellen. Diese Trennung folgt dem Single-Responsibility- und Interface-Segregation-Prinzip. Gemeinsame Logik wie die Dateivalidierung ist in Hilfsmethoden des Controllers gekapselt.
 * **Nutzen:** Sauber definierte Schnittstellen vermeiden enge Kopplung und verhindern Wiederholungen bei Dekodierungs- oder Validierungslogik, womit das DRY-Prinzip eingehalten wird.
 
 ### GRASP-Prinzipien
-* **Information Expert & Controller:** Der `ContractAnalyzerService` koordiniert Dateidekodierung, KV-Erkennung und die Kommunikation mit den KI-Diensten. Spezialisierte Aufgaben werden an andere Services delegiert, was den Controller- und Information-Expert-Rollen entspricht.
+* **Information Expert & Controller:** Der `AnalyzeContractUseCase` koordiniert Dateidekodierung, KV-Erkennung und die Kommunikation mit den KI-Diensten. Spezialisierte Aufgaben werden an andere Services delegiert, was den Controller- und Information-Expert-Rollen entspricht.
 * **Low Coupling:** Die Services hängen lediglich von Abstraktionen ab. `PocketController` greift in seinen Operationen nur auf Schnittstellen zurück.
 
 ### YAGNI
@@ -41,7 +41,7 @@ Dieses Dokument identifiziert die im Projekt PocketLawyer verwendeten Design- un
 ## Strukturelle Muster
 
 ### Fassade
-* **Implementierung:** `ContractAnalyzerService` fungiert als Fassade, die die Komplexität von Dateidekodierung, Kollektivvertragserkennung und KI-Aufrufen verbirgt. Verbraucher rufen lediglich `ProcessContractRequest` auf, ohne sich um die zugrunde liegenden Schritte zu kümmern.
+* **Implementierung:** `AnalyzeContractUseCase` fungiert als Fassade, die die Komplexität von Dateidekodierung, Kollektivvertragserkennung und KI-Aufrufen verbirgt. Verbraucher rufen lediglich `ProcessContractRequest` auf, ohne sich um die zugrunde liegenden Schritte zu kümmern.
 * **Nutzen:** Vereinfacht die Logik im Controller und stellt einen einzigen Einstiegspunkt für die Vertragsanalyse bereit. Dadurch kann der Controller schlank bleiben und wiederverwendbarer Code entsteht.
 * **Alternative:** Der Controller könnte jeden Schritt selbst orchestrieren. Das würde jedoch die Wiederverwendbarkeit einschränken und den Code schwerer testbar machen.
 
