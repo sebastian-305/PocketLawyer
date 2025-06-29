@@ -101,6 +101,11 @@ public class GeminiContextManager : IGeminiContextManager
     private async Task<string> ReadLawContentAsync()
     {
         var dir = Path.Combine(_environment.ContentRootPath, DefaultPaths.Context);
+        if (!Directory.Exists(dir))
+        {
+            _logger.LogWarning("Context directory {Dir} does not exist.", dir);
+            return string.Empty;
+        }
         var files = Directory.GetFiles(dir);
         StringBuilder contextBuilder = new StringBuilder();
         int index = 1;
