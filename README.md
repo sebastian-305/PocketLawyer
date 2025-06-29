@@ -50,7 +50,6 @@ Claude:Key            = API-Schlüssel für Claude (optional)
 TesseractDataPath     = Pfad zu den OCR-Sprachdaten
 ResponsesPath         = Ablageort für AI-Antworten
 MaxUploadSizeMB       = Maximale Upload-Größe
-SampleContractPath    = Pfad zum Beispielvertrag
 KVSPath               = Pfad zu den Kollektivvertragsdateien
 ```
 
