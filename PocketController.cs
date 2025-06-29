@@ -5,6 +5,7 @@ using PocketLawyer.Service;
 using System.Text.Json;
 using System.Text;
 using System.Net.WebSockets;
+using PocketLawyer.Infrastructure;
 
 namespace PocketLawyer;
 
