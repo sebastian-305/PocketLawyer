@@ -1,10 +1,12 @@
 import { startAnalysisSocket, requestMockAnalysis, mockPreValidationMessage } from './network.js';
 import { createLoadingElement, renderPreValidation, renderContractResult, displayUploadError, printer } from './render.js';
 
+const DEBUG = false;
+
 async function uploadFile(event) {
     event.preventDefault();
 
-    console.debug('File upload started.');
+    if (DEBUG) console.debug('File upload started.');
 
     const body = document.getElementById('evaluation-body');
     const loading = createLoadingElement();
