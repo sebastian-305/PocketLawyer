@@ -127,18 +127,37 @@ sequenceDiagram
     participant WS as WebSocketAnalysisService
     participant APP as Application
     participant INF as Infrastructure
-    participant EX as External APIs
+    participant EX as External_APIs
 
     FE->>PC: Datei hochladen
     PC->>WS: Upload verarbeiten
     WS->>APP: Analyse starten
     APP->>INF: Datei dekodieren
     INF->>EX: KI-Aufruf
+    APP->>INF: Datei validieren
+    alt Datei ungültig
+        INF-->>APP: Fehler
+        APP-->>WS: Validierungsfehler
+        WS-->>PC: Fehler-JSON
+        PC-->>FE: Fehler anzeigen
+        Note right of PC: return
+    else Datei ok
+        INF->>INF: PDF oder OCR Dekodierung
+    end
+    APP->>INF: KV erkennen
+    alt KV erkannt
+        INF-->>APP: KV-Name
+    else kein KV
+        INF-->>APP: kein KV
+    end
+    APP->>INF: KI-Aufruf
+    INF->>EX: Anfrage
     EX-->>INF: Antwort
     INF-->>APP: Domain DTO
     APP-->>WS: Ergebnis
     WS-->>PC: JSON
     PC-->>FE: JSON
+    Note over EX,INF: Fehlerbehandlung bei API-Problemen
 ```
 
 ## Datenfluss-/Kontextdiagramm
