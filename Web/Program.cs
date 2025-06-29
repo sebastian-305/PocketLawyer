@@ -7,7 +7,6 @@ using PocketLawyer.Options;
 using PocketLawyer.Application.UseCases;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Http;
-using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
