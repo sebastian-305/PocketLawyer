@@ -44,13 +44,13 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 ## Diagramme
 
 ### Architekturübersicht
-![Architekturübersicht](docs/Diagrams/Architecture-Components.png)
+![Architekturkomponenten](docs/Diagrams/Architecture-Components.png)
 
-### Datenfluss
-![Datenfluss](docs/Diagrams/Data-Flow.png)
+### Sequenzdiagramm der Onion-Layer
+![Sequenzdiagramm der Onion-Layer](docs/Diagrams/Sequence.png)
 
-### UML-Services
-![UML-Services](docs/Diagrams/UML.png)
+### UI-Flow
+![UI-Flow](docs/Diagrams/UI-FLow.png)
 
 ## Endpunkte
 
