@@ -20,15 +20,6 @@ public class KvFileService : IKollektivvertragService
         _fileDecoderService = fileDecoderService;
     }
 
-    public async Task<string> GetSampleContractAsync()
-    {
-        _logger.LogDebug("Reading sample contract");
-        string configuredPath = _configuration["SampleContractPath"] ?? "Samples/int.txt";
-        string path = Path.IsPathRooted(configuredPath)
-            ? configuredPath
-            : Path.Combine(_environment.ContentRootPath, configuredPath);
-        return await File.ReadAllTextAsync(path);
-    }
 
     public string[] GetKvsDirectories()
     {
