@@ -166,7 +166,7 @@ graph TD
     CA --> KFS[KvFileService]
     GEM --> RL[ResponseLogger]
     GEM --> GCM[GeminiContextManager]
-    RL --> Files[Responses/]
+    RL --> Files[data/Responses/]
     subgraph External
         GeminiAPI[(Gemini API)]
         ClaudeAPI[(Claude API)]
