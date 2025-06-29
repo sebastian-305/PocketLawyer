@@ -33,14 +33,14 @@ data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
 Alle genannten Ressourcen liegen gebuendelt im Verzeichnis `data/`.
 ## Onion-Architektur
 
-Dieses Projekt folgt einer Onion-Architektur mit vier Schichten:
+Die Lösung ist ringförmig aufgebaut, wobei jede äußere Ebene nur auf die innenliegende zugreifen darf. Dadurch bleibt die Kernlogik isoliert von technischen Details.
 
-1. **Domain** – Enthält die Kernmodelle wie `ContractAnalysisDto` und `ContractValidationDto`.
-2. **Application** – Definiert die Anwendungsfälle (Voranalyse und Hauptanalyse) und orchestriert die Dienste.
-3. **Infrastructure** – Bindet externe Abhängigkeiten wie KI-Services oder Dateisysteme ein.
-4. **Web** – Beinhaltet den `PocketController` und die statische Oberfläche.
+1. **Domain** – Basis aller Schichten. Unter `Domain/` liegen die DTOs, Entitäten und Fehlerklassen, komplett ohne Referenzen auf andere Ebenen.
+2. **Application** – Enthält Use Cases und Schnittstellen. In `Application/Interfaces` sind Verträge wie `IWebSocketAnalysisService` definiert. Diese Ebene nutzt ausschließlich Typen aus der Domain.
+3. **Infrastructure** – Implementiert die Interfaces aus der Application und bindet KI‑Dienste oder Dateisysteme an. Der unter `Infrastructure/` liegende `WebSocketAnalysisService` orchestriert dabei Datei­validierung, KV‑Erkennung und Analyse.
+4. **Web** – ASP.NET‑Host mit Controllern und statischer Oberfläche. Im Ordner `Web/` befindet sich der `PocketController`, der den `WebSocketAnalysisService` aufruft. Diese äußere Schicht darf alle inneren verwenden, jedoch nicht umgekehrt.
 
-Jede Schicht greift nur auf die darunterliegenden zu, sodass die Domain von technischen Details unabhängig bleibt.
+Weitere Diagramme zur Architektur sind im Ordner [docs/Diagrams](docs/Diagrams/) zu finden.
 ## Diagramme
 
 ### Architekturübersicht
