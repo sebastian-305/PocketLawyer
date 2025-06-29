@@ -14,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<RedactingLoggingHandler>();
 builder.Services.AddSingleton<IHttpMessageHandlerBuilderFilter, NoLoggingHttpClientBuilderFilter>();
 builder.Services
+    .AddHttpClient<IGeminiContextManager, GeminiContextManager>()
+    .AddHttpMessageHandler<RedactingLoggingHandler>();
+builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
 builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
@@ -21,6 +24,7 @@ builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
+builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
