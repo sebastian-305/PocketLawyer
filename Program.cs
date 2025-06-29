@@ -37,6 +37,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionTranslatorMiddleware>();
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>

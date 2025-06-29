@@ -104,7 +104,18 @@ public class PocketController : ControllerBase
         var (fileBytes, fileName) = upload.Value;
         IFormFile CreateFormFile() => new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", fileName);
 
-        FileContentDto requestContent = await _fileValidatorService.ValidateAndDecodeAsync(CreateFormFile());
+        FileContentDto requestContent;
+        try
+        {
+            requestContent = await _fileValidatorService.ValidateAndDecodeAsync(CreateFormFile());
+        }
+        catch (FileValidationException ex)
+        {
+            _logger.LogWarning(ex, "File validation failed for {File}", fileName);
+            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, ex.Message, CancellationToken.None);
+            return new EmptyResult();
+        }
 
         string? kvName = await DetectKvAsync(requestContent);
 
@@ -113,9 +124,9 @@ public class PocketController : ControllerBase
         {
             validationDto = await ValidateContractAsync(requestContent, kvName);
         }
-        catch (Exception ex)
+        catch (AnalysisException ex)
         {
-            _logger.LogError(ex, "Pre-validation failed");
+            _logger.LogError(ex, "Pre-validation failed at {Step}", ex.AnalysisStep);
             await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
             await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
             return new EmptyResult();
@@ -134,9 +145,9 @@ public class PocketController : ControllerBase
         {
             analysisDto = await AnalyzeContractAsync(requestContent, kvName);
         }
-        catch (Exception ex)
+        catch (AnalysisException ex)
         {
-            _logger.LogError(ex, "Analysis failed");
+            _logger.LogError(ex, "Analysis failed at {Step}", ex.AnalysisStep);
             await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
             await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
             return new EmptyResult();

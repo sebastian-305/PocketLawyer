@@ -32,14 +32,18 @@ public class FileValidatorService : IFileValidatorService
         if (!_decoderService.AllowedExtensions.Contains(extension))
         {
             _logger.LogWarning("Fileextension not allowed: {FileName}", filename);
-            throw new BadHttpRequestException($"Fileextension not recognised! Recognised extensions are {_decoderService.AllowedExtensionsString}.");
+            throw new FileValidationException(
+                $"Fileextension not recognised! Recognised extensions are {_decoderService.AllowedExtensionsString}.",
+                filename);
         }
 
         long maxUploadSizeMb = _configuration.GetValue<long>("MaxUploadSizeMB");
         long maxBytes = maxUploadSizeMb * 1024 * 1024;
         if (file.Length > maxBytes)
         {
-            throw new BadHttpRequestException($"File too large. Maximum {maxUploadSizeMb} MB allowed.");
+            throw new FileValidationException(
+                $"File too large. Maximum {maxUploadSizeMb} MB allowed.",
+                filename);
         }
 
         await using var stream = file.OpenReadStream();
@@ -52,7 +56,7 @@ public class FileValidatorService : IFileValidatorService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error decoding file {FileName}", filename);
-            throw new BadHttpRequestException(ex.Message);
+            throw new FileValidationException("Error decoding file", filename, ex);
         }
 
         return new FileContentDto(filename, fileContent);
