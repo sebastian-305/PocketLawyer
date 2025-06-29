@@ -96,11 +96,15 @@ Enthält vorbereitete Gesetzestexte als reine Textdateien, z.\u00a0B.:
 | Datei | Zweck |
 |-------|-------|
 | `AnalyzeContractUseCase.cs` | Fassade zur Verarbeitung von Vertragsanfragen (Prompt-Erstellung, KV-Erkennung, KI-Aufruf). |
-| `FileValidatorService.cs` | Pr\u00fcft Dateigr\u00f6\u00dfe/-typ und ruft den FileDecoderService auf. |
-| `KvAiDetectionService.cs` | L\u00e4sst von Claude den passenden Kollektivvertrag erkennen. |
-| `KvFileService.cs` | Liefert verf\u00fcgbare KV-Ordner und deren Dateiinhalte. |
-| `NoLoggingHttpClientBuilderFilter.cs` | Entfernt Logging-Handler aus HttpClient-Pipelines. |
+| `DefaultPaths.cs` | Definiert Standardverzeichnisse. |
+| `ExceptionTranslatorMiddleware.cs` | Übersetzt Domänenfehler in HTTP-Antworten. |
+| `FileValidatorService.cs` | Prüft Dateigröße/-typ und ruft den FileDecoderService auf. |
+| `KvAiDetectionService.cs` | Lässt von Claude den passenden Kollektivvertrag erkennen. |
+| `KvFileService.cs` | Liefert verfügbare KV-Ordner und deren Dateiinhalte. |
+| `NoLoggingHttpClientBuilderFilter.cs` | Deaktiviert ausführliches HttpClient-Logging. |
 | `PromptBuilder.cs` | Hilfsmethoden zur Generierung der Prompts (Analyse, Voranalyse, KV-Erkennung). |
+| `WebSocketAnalysisService.cs` | Kümmert sich um den kompletten WebSocket-Workflow. |
+| `WebSocketHelpers.cs` | Helfermethoden für WebSocket-Antworten. |
 
 ### RawContextFiles
 Dateien befinden sich in `data/RawContextFiles/`.
