@@ -13,7 +13,6 @@ public class PocketController : ControllerBase
 {
     private readonly ILogger<PocketController> _logger;
     private readonly IAiService _geminiService;
-    private readonly IAiService _claudeService;
     private readonly IFileDecoderService _fileDecoderService;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
@@ -23,7 +22,6 @@ public class PocketController : ControllerBase
     public PocketController(ILogger<PocketController> logger,
         [FromKeyedServices("gemini")] IAiService geminiService,
         IFileDecoderService fileDecoderService,
-        [FromKeyedServices("claude")] IAiService claudeService,
         IConfiguration configuration,
         IWebHostEnvironment environment,
         IKollektivvertragService kvService,
@@ -32,7 +30,6 @@ public class PocketController : ControllerBase
         _logger = logger;
         _geminiService = geminiService;
         _fileDecoderService = fileDecoderService;
-        _claudeService = claudeService;
         _configuration = configuration;
         _environment = environment;
         _kvService = kvService;
