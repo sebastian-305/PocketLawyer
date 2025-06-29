@@ -122,42 +122,46 @@ classDiagram
 
 ```mermaid
 sequenceDiagram
-    participant FE as Web
-    participant PC as Controller
+    participant FE as Browser
+    participant PC as PocketController
     participant WS as WebSocketAnalysisService
-    participant APP as Application
-    participant INF as Infrastructure
-    participant EX as External_APIs
+    participant FV as FileValidatorService
+    participant FDS as FileDecoderService
+    participant KD as KvAiDetectionService
+    participant CLA as ClaudeService
+    participant CA as AnalyzeContractUseCase
+    participant GEM as GeminiService
 
-    FE->>PC: Datei hochladen
-    PC->>WS: Upload verarbeiten
-    WS->>APP: Analyse starten
-    APP->>INF: Datei dekodieren
-    INF->>EX: KI-Aufruf
-    APP->>INF: Datei validieren
+    FE->>PC: WebSocket /analysis öffnen
+    FE->>PC: Datei senden
+    PC->>WS: HandleAsync()
+    WS->>FV: ValidateAndDecodeAsync(file)
+    FV->>FDS: GetFileContentAsync()
+    FDS-->>FV: Text
+    FV-->>WS: FileContentDto
+    WS->>KD: DetectAsync(Text)
+    KD->>CLA: SendPrompt()
+    CLA-->>KD: KV-Name
+    KD-->>WS: KvDetectionResult
+    WS->>CA: ProcessContractRequest(PreAnalysis)
+    CA->>GEM: SendPrompt()
+    GEM-->>CA: ContractValidationDto
+    CA-->>WS: ContractValidationDto
+    WS-->>PC: PreAnalysis
     alt Datei ungültig
-        INF-->>APP: Fehler
-        APP-->>WS: Validierungsfehler
-        WS-->>PC: Fehler-JSON
-        PC-->>FE: Fehler anzeigen
-        Note right of PC: return
-    else Datei ok
-        INF->>INF: PDF oder OCR Dekodierung
+        PC-->>FE: PreAnalysis
+        WS-->>PC: Socket schließen
+        PC-->>FE: Verbindung geschlossen
+    else Datei gültig
+        PC-->>FE: PreAnalysis
+        WS->>CA: ProcessContractRequest(Analysis)
+        CA->>GEM: SendPrompt()
+        GEM-->>CA: ContractAnalysisDto
+        CA-->>WS: ContractAnalysisDto
+        WS-->>PC: Analyseergebnis
+        PC-->>FE: Analyseergebnis
     end
-    APP->>INF: KV erkennen
-    alt KV erkannt
-        INF-->>APP: KV-Name
-    else kein KV
-        INF-->>APP: kein KV
-    end
-    APP->>INF: KI-Aufruf
-    INF->>EX: Anfrage
-    EX-->>INF: Antwort
-    INF-->>APP: Domain DTO
-    APP-->>WS: Ergebnis
-    WS-->>PC: JSON
-    PC-->>FE: JSON
-    Note over EX,INF: Fehlerbehandlung bei API-Problemen
+    Note over GEM,WS: Fehlerbehandlung bei API-Problemen
 ```
 
 ## Datenfluss-/Kontextdiagramm
