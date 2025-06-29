@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using PocketLawyer.Application.Interfaces;
 using System.Text.Json;
-using PocketLawyer.Infrastructure;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Options;
 using Microsoft.Extensions.Options;
