@@ -60,7 +60,7 @@ Jede Schicht greift nur auf die darunterliegenden zu, sodass die Domain von tech
 ## Analyse-Workflow
 1. Die Weboberfläche lädt eine Datei per WebSocket auf den Endpunkt `/analysis` hoch.
 2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt. Anschließend erkennt `KvAiDetectionService` gegebenenfalls den passenden Kollektivvertrag.
-3. `ContractAnalyzerService` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`. Ist der Vertrag gültig, folgt der Use Case **Hauptanalyse**, dessen Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
+3. `AnalyzeContractUseCase` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`. Ist der Vertrag gültig, folgt der Use Case **Hauptanalyse**, dessen Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
 
 ## Installation und Ausführung
 

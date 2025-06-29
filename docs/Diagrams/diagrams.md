@@ -10,7 +10,7 @@ graph TD
     end
     subgraph Application
         FVS[FileValidatorService]
-        CA[ContractAnalyzerService]
+        CA[AnalyzeContractUseCase]
         KAD[KvAiDetectionService]
     end
     subgraph Domain
@@ -148,7 +148,7 @@ graph TD
     FV --> FDS[FileDecoderService]
     PC --> KD[KvAiDetectionService]
     KD --> CLA[ClaudeService]
-    PC --> CA[ContractAnalyzerService]
+    PC --> CA[AnalyzeContractUseCase]
     CA --> GEM[GeminiService]
     CA --> KFS[KvFileService]
     GEM --> RL[ResponseLogger]
@@ -232,11 +232,11 @@ classDiagram
     class IContractAnalyzerService {
         +ProcessContractRequest(content, promptBuilder, schema, useAltKey, detectKv, kvName)
     }
-    class ContractAnalyzerService
-    IContractAnalyzerService <|.. ContractAnalyzerService
-    ContractAnalyzerService --> IAiService
-    ContractAnalyzerService --> IKvDetectionService
-    ContractAnalyzerService --> IKollektivvertragService
+    class AnalyzeContractUseCase
+    IContractAnalyzerService <|.. AnalyzeContractUseCase
+    AnalyzeContractUseCase --> IAiService
+    AnalyzeContractUseCase --> IKvDetectionService
+    AnalyzeContractUseCase --> IKollektivvertragService
 
     class PocketController
     PocketController --> IFileValidatorService

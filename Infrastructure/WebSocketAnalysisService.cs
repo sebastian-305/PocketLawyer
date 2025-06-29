@@ -14,18 +14,18 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
     private readonly ILogger<WebSocketAnalysisService> _logger;
     private readonly IFileValidatorService _fileValidatorService;
     private readonly IKvDetectionService _kvDetectionService;
-    private readonly IContractAnalyzerService _contractAnalyzerService;
+    private readonly IContractAnalyzerService _analyzeContractUseCase;
 
     public WebSocketAnalysisService(
         ILogger<WebSocketAnalysisService> logger,
         IFileValidatorService fileValidatorService,
         IKvDetectionService kvDetectionService,
-        IContractAnalyzerService contractAnalyzerService)
+        IContractAnalyzerService analyzeContractUseCase)
     {
         _logger = logger;
         _fileValidatorService = fileValidatorService;
         _kvDetectionService = kvDetectionService;
-        _contractAnalyzerService = contractAnalyzerService;
+        _analyzeContractUseCase = analyzeContractUseCase;
     }
 
     public async Task HandleAsync(HttpContext context)
@@ -114,7 +114,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content, string? kvName)
     {
-        return _contractAnalyzerService.ProcessContractRequest<ContractValidationDto>(
+        return _analyzeContractUseCase.ProcessContractRequest<ContractValidationDto>(
             content,
             PromptBuilder.BuildValidationPrompt,
             GeminiService.PreAnalyzerSchemaDefinition,
@@ -125,7 +125,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
     {
-        return _contractAnalyzerService.ProcessContractRequest<ContractAnalysisDto>(
+        return _analyzeContractUseCase.ProcessContractRequest<ContractAnalysisDto>(
             content,
             PromptBuilder.BuildAnalysisPrompt,
             GeminiService.AnalyzerSchemaDefinition,
