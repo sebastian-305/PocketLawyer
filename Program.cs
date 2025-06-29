@@ -21,6 +21,9 @@ builder.Services
     .AddHttpMessageHandler<RedactingLoggingHandler>();
 builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
 builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
+builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.TextFileDecoder>();
+builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.PdfFileDecoder>();
+builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.ImageFileDecoder>();
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
