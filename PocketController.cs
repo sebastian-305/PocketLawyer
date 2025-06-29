@@ -92,62 +92,57 @@ public class PocketController : ControllerBase
     [HttpGet("/analysis")]
     public async Task<ActionResult> AnalyzeViaWebSocket()
     {
-        if (!HttpContext.WebSockets.IsWebSocketRequest)
+        WebSocket webSocket;
+        try
+        {
+            webSocket = await AcceptWebSocketAsync();
+        }
+        catch (FileReceiveException)
+        {
             return BadRequest();
-
-        using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-
-        var upload = await ReceiveFileAsync(webSocket);
-        if (upload == null)
-            return new EmptyResult();
-
-        var (fileBytes, fileName) = upload.Value;
-        IFormFile CreateFormFile() => new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", fileName);
-
-        FileContentDto requestContent = await _fileValidatorService.ValidateAndDecodeAsync(CreateFormFile());
-
-        string? kvName = await DetectKvAsync(requestContent);
-
-        ContractValidationDto validationDto;
-        try
-        {
-            validationDto = await ValidateContractAsync(requestContent, kvName);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Pre-validation failed");
-            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
-            await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
-            return new EmptyResult();
         }
 
-        await SendStringAsync(webSocket, JsonSerializer.Serialize(validationDto), CancellationToken.None);
-
-        if (!validationDto.IsReadable || !validationDto.IsContract)
+        using (webSocket)
         {
-            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
-            return new EmptyResult();
+            try
+            {
+                var (content, kvName, validation) = await ValidateFileAndPreValidateAsync(webSocket);
+                await SendStringAsync(webSocket, JsonSerializer.Serialize(validation), CancellationToken.None);
+
+                if (!validation.IsReadable || !validation.IsContract)
+                {
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+                    return new EmptyResult();
+                }
+
+                ContractAnalysisDto analysis = await PerformAnalysisAsync(content, kvName);
+                await SendStringAsync(webSocket, JsonSerializer.Serialize(analysis), CancellationToken.None);
+                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+            }
+            catch (FileReceiveException ex)
+            {
+                _logger.LogError(ex, "Failed to receive file");
+                await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+                await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, ex.Message, CancellationToken.None);
+            }
+            catch (PreValidationException ex)
+            {
+                _logger.LogError(ex, "Pre-validation failed");
+                await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+                await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            }
+            catch (ContractAnalysisException ex)
+            {
+                _logger.LogError(ex, "Analysis failed");
+                await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+                await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            }
         }
 
-        ContractAnalysisDto analysisDto;
-        try
-        {
-            analysisDto = await AnalyzeContractAsync(requestContent, kvName);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Analysis failed");
-            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
-            await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
-            return new EmptyResult();
-        }
-
-        await SendStringAsync(webSocket, JsonSerializer.Serialize(analysisDto), CancellationToken.None);
-        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
         return new EmptyResult();
     }
 
-    private async Task<(byte[] fileBytes, string fileName)?> ReceiveFileAsync(WebSocket webSocket)
+    private async Task<(byte[] fileBytes, string fileName)> ReceiveFileAsync(WebSocket webSocket)
     {
         var buffer = new byte[8192];
         using var ms = new MemoryStream();
@@ -159,10 +154,7 @@ public class PocketController : ControllerBase
         } while (!result.EndOfMessage);
 
         if (result.MessageType == WebSocketMessageType.Close)
-        {
-            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-            return null;
-        }
+            throw new FileReceiveException("Connection closed while receiving file");
 
         WebSocketFileDto? upload;
         try
@@ -171,19 +163,64 @@ public class PocketController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to parse websocket request");
-            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
-            return null;
+            throw new FileReceiveException("Failed to parse websocket request", ex);
         }
 
         if (upload == null)
-        {
-            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
-            return null;
-        }
+            throw new FileReceiveException("Invalid websocket payload");
 
         byte[] fileBytes = Convert.FromBase64String(upload.Data);
         return (fileBytes, upload.FileName);
+    }
+
+    private Task<WebSocket> AcceptWebSocketAsync()
+    {
+        if (!HttpContext.WebSockets.IsWebSocketRequest)
+            throw new FileReceiveException("WebSocket request expected");
+
+        return HttpContext.WebSockets.AcceptWebSocketAsync();
+    }
+
+    private async Task<(FileContentDto content, string? kvName, ContractValidationDto validation)> ValidateFileAndPreValidateAsync(WebSocket socket)
+    {
+        var (fileBytes, fileName) = await ReceiveFileAsync(socket);
+        IFormFile form = new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", fileName);
+
+        FileContentDto requestContent;
+        try
+        {
+            requestContent = await _fileValidatorService.ValidateAndDecodeAsync(form);
+        }
+        catch (Exception ex)
+        {
+            throw new PreValidationException("Datei konnte nicht verarbeitet werden", ex);
+        }
+
+        string? kvName = await DetectKvAsync(requestContent);
+
+        ContractValidationDto validation;
+        try
+        {
+            validation = await ValidateContractAsync(requestContent, kvName);
+        }
+        catch (Exception ex)
+        {
+            throw new PreValidationException("Vorvalidierung fehlgeschlagen", ex);
+        }
+
+        return (requestContent, kvName, validation);
+    }
+
+    private async Task<ContractAnalysisDto> PerformAnalysisAsync(FileContentDto content, string? kvName)
+    {
+        try
+        {
+            return await AnalyzeContractAsync(content, kvName);
+        }
+        catch (Exception ex)
+        {
+            throw new ContractAnalysisException("Analyse fehlgeschlagen", ex);
+        }
     }
 
     private async Task<string?> DetectKvAsync(FileContentDto content)
