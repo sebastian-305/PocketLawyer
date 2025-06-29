@@ -1,4 +1,5 @@
 using System.Text;
+using System.Collections.Generic;
 
 // Stellt Methoden bereit, um die Eingabeprompts für die KI zu erstellen.
 
@@ -7,6 +8,16 @@ namespace PocketLawyer.Infrastructure;
 // Hilfsklasse zum Zusammenstellen der Prompt-Strings.
 public static class PromptBuilder
 {
+    public static string AddKvInfo(string prompt, string kvName, IEnumerable<string> kvFiles)
+    {
+        var sbPrompt = new StringBuilder(prompt);
+        sbPrompt.AppendLine();
+        sbPrompt.AppendLine($"Der folgende Text enthält den dazugehörigen Kollektivvertrag \"{kvName}\" und mögliche Anhänge. " +
+            "Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse. Wenn der Vertrag in einem Punkt so etwas schreibt wie \"laut Kollektivvertrag\" soll die entsprechende Regelung" +
+            "aus dem Kollektivvetrag angegeben werden mit dem Zusatz \"(lt. Kollektivvertrag)\"");
+        sbPrompt.AppendLine(string.Join("\n\n", kvFiles));
+        return sbPrompt.ToString();
+    }
     public static string BuildAnalysisPrompt(string filename, string fileContent)
     {
         StringBuilder promptBuilder = new StringBuilder();
