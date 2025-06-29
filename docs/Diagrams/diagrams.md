@@ -118,46 +118,285 @@ classDiagram
     WiderspruechlicheKlausel --> RechtsgrundlageEintrag
 ```
 
-## Sequence Diagram with Layers
+## PlantUML
+
+```plantuml
+@startuml
+interface IAiClient {
+    +Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey)
+}
+
+class GeminiService {
+    -HttpClient _httpClient
+    -GeminiOptions _options
+    -ILogger _logger
+    -bool _writeInFile
+    -IGeminiContextManager _contextManager
+    -IResponseLogger _responseLogger
+    +Task<string> SendPrompt(...)
+}
+
+class ClaudeService {
+    -AnthropicClient _client
+    -ILogger _logger
+    +Task<string> SendPrompt(...)
+}
+
+IAiClient <|.. GeminiService
+IAiClient <|.. ClaudeService
+
+interface IFileDecoder {
+    +bool CanDecode(string ext)
+    +Task<string> DecodeAsync(Stream input)
+}
+
+class TextFileDecoder
+class PdfFileDecoder
+class ImageFileDecoder
+IFileDecoder <|.. TextFileDecoder
+IFileDecoder <|.. PdfFileDecoder
+IFileDecoder <|.. ImageFileDecoder
+
+interface IFileDecoderService {
+    +string[] AllowedExtensions
+    +string AllowedExtensionsString
+    +Task<string> GetFileContentAsync(string filename, Stream content)
+}
+
+class FileDecoderService {
+    -ILogger _logger
+    -IEnumerable<IFileDecoder> _decoders
+    +string[] AllowedExtensions
+    +string AllowedExtensionsString
+    +Task<string> GetFileContentAsync(...)
+}
+IFileDecoderService <|.. FileDecoderService
+FileDecoderService --> IFileDecoder
+
+interface IFileValidatorService {
+    +Task<FileContentDto> ValidateAndDecodeAsync(IFormFile file)
+}
+
+class FileValidatorService {
+    -ILogger _logger
+    -IFileDecoderService _decoderService
+    -UploadOptions _options
+    +Task<FileContentDto> ValidateAndDecodeAsync(...)
+}
+IFileValidatorService <|.. FileValidatorService
+FileValidatorService --> IFileDecoderService
+
+interface IKollektivvertragService {
+    +string[] GetKvsDirectories()
+    +Task<string[]> GetKvFileContentsAsync(string kvName)
+}
+
+class KvFileService {
+    -ILogger _logger
+    -PathOptions _paths
+    -IWebHostEnvironment _environment
+    -IFileDecoderService _fileDecoderService
+    +string[] GetKvsDirectories()
+    +Task<string[]> GetKvFileContentsAsync(string kvName)
+}
+IKollektivvertragService <|.. KvFileService
+KvFileService --> IFileDecoderService
+
+interface IKvDetectionService {
+    +Task<KvDetectionResult> DetectAsync(string contractContent)
+}
+
+class KvAiDetectionService {
+    -ILogger _logger
+    -IKollektivvertragService _kvService
+    -IAiClient _aiService
+    +Task<KvDetectionResult> DetectAsync(string contractContent)
+}
+IKvDetectionService <|.. KvAiDetectionService
+KvAiDetectionService --> IKollektivvertragService
+KvAiDetectionService --> IAiClient
+
+interface IContractAnalyzerService {
+    +Task<T> ProcessContractRequest(FileContentDto content, Func<string,string,string> promptBuilder, object schema, bool useAltKey, bool detectKv = false, string? kvName = null)
+}
+
+class AnalyzeContractUseCase {
+    -ILogger _logger
+    -IAiClient _aiService
+    -IKollektivvertragService _kvService
+    -IKvDetectionService _kvDetectionService
+    +Task<T> ProcessContractRequest(...)
+}
+IContractAnalyzerService <|.. AnalyzeContractUseCase
+AnalyzeContractUseCase --> IAiClient
+AnalyzeContractUseCase --> IKollektivvertragService
+AnalyzeContractUseCase --> IKvDetectionService
+
+interface IWebSocketAnalysisService {
+    +Task HandleAsync(HttpContext context)
+}
+
+class WebSocketAnalysisService {
+    -ILogger _logger
+    -IFileValidatorService _fileValidatorService
+    -IKvDetectionService _kvDetectionService
+    -IContractAnalyzerService _analyzeContractUseCase
+    +Task HandleAsync(HttpContext context)
+}
+IWebSocketAnalysisService <|.. WebSocketAnalysisService
+WebSocketAnalysisService --> IFileValidatorService
+WebSocketAnalysisService --> IKvDetectionService
+WebSocketAnalysisService --> IContractAnalyzerService
+
+class PocketController {
+    -ILogger _logger
+    -IWebHostEnvironment _environment
+    -PathOptions _paths
+    -IWebSocketAnalysisService _socketService
+    +GetMockData()
+    +AnalyzeViaWebSocket()
+}
+PocketController --> IWebSocketAnalysisService
+
+class FileContentDto {
+    +string FileName
+    +string FileContent
+}
+
+class ContractValidationDto {
+    +bool IsReadable
+    +bool IsContract
+    +string Result
+    +string? Kollektivvertrag
+}
+
+class Summary {
+    +Arbeitgeber
+    +Taetigkeit
+    +Beginn
+    +Dauer
+    +GehaltBrutto
+    +Zuschlaege
+    +Arbeitsstunden
+    +Ueberstunden
+    +Probezeit
+}
+
+class RechtsgrundlageEintrag {
+    +Rechtsgrundlage
+    +Wortlaut
+}
+
+class ProblemKlausel {
+    +Titel
+    +Zitat
+    +Problem
+    +RechtsgrundlageEintrag[] Rechtsgrundlage
+}
+
+class WiderspruechlicheKlausel {
+    +Titel
+    +ZitatKlauselA
+    +ZitatKlauselB
+    +Problem
+    +RechtsgrundlageEintrag[] Rechtsgrundlage
+}
+
+class VorteilKlausel {
+    +Titel
+    +Zitat
+    +Vorteil
+}
+
+class ContractAnalysisDto {
+    +Summary Summary
+    +ProblemKlausel[] UnzulaessigeKlauseln
+    +ProblemKlausel[] NachteileKlauseln
+    +WiderspruechlicheKlausel[] WiderspruechlicheKlauseln
+    +VorteilKlausel[] VorteilhafteKlauseln
+    +string Fazit
+    +string? Kollektivvertrag
+}
+
+ContractAnalysisDto --> Summary
+ContractAnalysisDto --> ProblemKlausel
+ContractAnalysisDto --> WiderspruechlicheKlausel
+ContractAnalysisDto --> VorteilKlausel
+ProblemKlausel --> RechtsgrundlageEintrag
+WiderspruechlicheKlausel --> RechtsgrundlageEintrag
+@enduml
+```
+
+## Onion-Layer Sequence Diagram
 
 ```mermaid
 sequenceDiagram
-    participant FE as Web
-    participant PC as Controller
-    participant WS as WebSocketAnalysisService
+    participant FE as Browser
+    participant WEB as Web
     participant APP as Application
     participant INF as Infrastructure
-    participant EX as External_APIs
 
-    FE->>PC: Datei hochladen
-    PC->>WS: Upload verarbeiten
-    WS->>APP: Analyse starten
-    APP->>INF: Datei dekodieren
-    INF->>EX: KI-Aufruf
-    APP->>INF: Datei validieren
-    alt Datei ungültig
-        INF-->>APP: Fehler
-        APP-->>WS: Validierungsfehler
-        WS-->>PC: Fehler-JSON
-        PC-->>FE: Fehler anzeigen
-        Note right of PC: return
-    else Datei ok
-        INF->>INF: PDF oder OCR Dekodierung
-    end
-    APP->>INF: KV erkennen
-    alt KV erkannt
-        INF-->>APP: KV-Name
-    else kein KV
-        INF-->>APP: kein KV
-    end
+    FE->>WEB: Datei hochladen (WebSocket)
+    WEB->>APP: Voranalyse starten
     APP->>INF: KI-Aufruf
-    INF->>EX: Anfrage
-    EX-->>INF: Antwort
-    INF-->>APP: Domain DTO
-    APP-->>WS: Ergebnis
-    WS-->>PC: JSON
-    PC-->>FE: JSON
-    Note over EX,INF: Fehlerbehandlung bei API-Problemen
+    INF-->>APP: ContractValidationDto
+    APP-->>WEB: Voranalyse-Ergebnis
+    WEB-->>FE: Ergebnis zurückgeben
+
+    alt Vertrag gültig
+        WEB->>APP: Hauptanalyse
+        APP->>INF: KI-Aufruf
+        INF-->>APP: ContractAnalysisDto
+        APP-->>WEB: Analyse-Ergebnis
+        WEB-->>FE: Analyse senden
+    else Vertrag ungültig
+        WEB-->>FE: Verbindung schließen
+    end
+```
+
+## Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant FE as Browser
+    participant PC as PocketController
+    participant WS as WebSocketAnalysisService
+    participant FV as FileValidatorService
+    participant FDS as FileDecoderService
+    participant KD as KvAiDetectionService
+    participant CLA as ClaudeService
+    participant CA as AnalyzeContractUseCase
+    participant GEM as GeminiService
+
+    FE->>PC: WebSocket /analysis öffnen
+    FE->>PC: Datei senden
+    PC->>WS: HandleAsync()
+    WS->>FV: ValidateAndDecodeAsync(file)
+    FV->>FDS: GetFileContentAsync()
+    FDS-->>FV: Text
+    FV-->>WS: FileContentDto
+    WS->>KD: DetectAsync(Text)
+    KD->>CLA: SendPrompt()
+    CLA-->>KD: KV-Name
+    KD-->>WS: KvDetectionResult
+    WS->>CA: ProcessContractRequest(PreAnalysis)
+    CA->>GEM: SendPrompt()
+    GEM-->>CA: ContractValidationDto
+    CA-->>WS: ContractValidationDto
+    WS-->>PC: PreAnalysis
+    PC-->>FE: PreAnalysis
+
+    alt Datei ungültig
+        WS-->>PC: Socket schließen
+        PC-->>FE: Verbindung geschlossen
+    else Datei gültig
+        WS->>CA: ProcessContractRequest(Analysis)
+        CA->>GEM: SendPrompt()
+        GEM-->>CA: ContractAnalysisDto
+        CA-->>WS: ContractAnalysisDto
+        WS-->>PC: Analyseergebnis
+        PC-->>FE: Analyseergebnis
+    end
 ```
 
 ## Datenfluss-/Kontextdiagramm
