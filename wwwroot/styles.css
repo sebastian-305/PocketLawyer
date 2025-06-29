@@ -68,28 +68,16 @@ body {
     min-height: calc(100vh - var(--header-height));
 }
 
-.intro-image {
-    flex: 1;
-    overflow: hidden;
-    max-width: calc(100vh - var(--header-height));
-}
-
-.cta-image {
+.intro-image, .cta-image {
     flex: 1;
     overflow: hidden;
 }
 
-.intro-image img {
-    width: 100%;
-    max-height: calc(100vh - var(--header-height));
-    height: auto;
-    object-fit: cover;
-}
-
-.cta-image img {
+.intro-image img, .cta-image img {
     width: 100%;
     max-height: 100vh;
     height: auto;
+    object-fit: cover;
 }
 
 #printbtn {
@@ -431,10 +419,6 @@ body {
 
     .mission-text h2 {
         font-size: 2.25rem;
-    }
-
-    .intro-image {
-        max-width: none;
     }
 
     .intro-image img, .cta-image img {
