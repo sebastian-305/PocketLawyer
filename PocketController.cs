@@ -112,7 +112,7 @@ public class PocketController : ControllerBase
         catch (FileValidationException ex)
         {
             _logger.LogWarning(ex, "File validation failed for {File}", fileName);
-            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await WebSocketHelpers.SendErrorAsync(webSocket, ex.Message, CancellationToken.None);
             await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, ex.Message, CancellationToken.None);
             return new EmptyResult();
         }
@@ -127,12 +127,12 @@ public class PocketController : ControllerBase
         catch (AnalysisException ex)
         {
             _logger.LogError(ex, "Pre-validation failed at {Step}", ex.AnalysisStep);
-            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await WebSocketHelpers.SendErrorAsync(webSocket, ex.Message, CancellationToken.None);
             await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
             return new EmptyResult();
         }
 
-        await SendStringAsync(webSocket, JsonSerializer.Serialize(validationDto), CancellationToken.None);
+        await WebSocketHelpers.SendStringAsync(webSocket, JsonSerializer.Serialize(validationDto), CancellationToken.None);
 
         if (!validationDto.IsReadable || !validationDto.IsContract)
         {
@@ -148,12 +148,12 @@ public class PocketController : ControllerBase
         catch (AnalysisException ex)
         {
             _logger.LogError(ex, "Analysis failed at {Step}", ex.AnalysisStep);
-            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await WebSocketHelpers.SendErrorAsync(webSocket, ex.Message, CancellationToken.None);
             await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
             return new EmptyResult();
         }
 
-        await SendStringAsync(webSocket, JsonSerializer.Serialize(analysisDto), CancellationToken.None);
+        await WebSocketHelpers.SendStringAsync(webSocket, JsonSerializer.Serialize(analysisDto), CancellationToken.None);
         await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
         return new EmptyResult();
     }
@@ -244,12 +244,6 @@ public class PocketController : ControllerBase
             false,
             string.IsNullOrWhiteSpace(kvName),
             kvName);
-    }
-
-    private static Task SendStringAsync(WebSocket socket, string data, CancellationToken token)
-    {
-        var bytes = Encoding.UTF8.GetBytes(data);
-        return socket.SendAsync(bytes, WebSocketMessageType.Text, true, token);
     }
 
 }
