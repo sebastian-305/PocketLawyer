@@ -81,6 +81,7 @@ public class PocketController : ControllerBase
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return BadRequest();
 
+
         await _socketService.HandleAsync(HttpContext);
         return new EmptyResult();
     }
