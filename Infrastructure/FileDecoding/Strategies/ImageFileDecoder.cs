@@ -1,10 +1,13 @@
 using PocketLawyer.Application.Interfaces;
+
+// Decoder für Bilddateien. Nutzt Tesseract, um Text aus Bildern zu lesen.
 using PocketLawyer.Options;
 using Microsoft.Extensions.Options;
 using Tesseract;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
 
+// Liest Bilddateien (JPG/PNG) aus und wandelt sie in Text um.
 public class ImageFileDecoder : IFileDecoder
 {
     private readonly ILogger<ImageFileDecoder> _logger;

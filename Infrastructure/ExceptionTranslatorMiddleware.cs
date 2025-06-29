@@ -5,8 +5,9 @@ using PocketLawyer.Application.Interfaces;
 namespace PocketLawyer.Infrastructure;
 
 /// <summary>
-/// Middleware that converts custom domain exceptions into HTTP responses.
+/// Middleware, die domänenspezifische Exceptions in HTTP-Antworten übersetzt.
 /// </summary>
+// Fängt bekannte Fehler ab und sendet lesbare Fehlermeldungen an den Client.
 public class ExceptionTranslatorMiddleware
 {
     private readonly RequestDelegate _next;

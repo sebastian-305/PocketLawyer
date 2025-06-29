@@ -1,8 +1,11 @@
 import { startAnalysisSocket, requestMockAnalysis, mockPreValidationMessage } from './network.js';
 import { createLoadingElement, renderPreValidation, renderContractResult, displayUploadError, printer } from './render.js';
 
+// Dieses Skript steuert den Dateiupload und die Darstellung der Analyse.
+
 const DEBUG = false;
 
+// Wird beim Abschicken des Upload-Formulars aufgerufen.
 async function uploadFile(event) {
     event.preventDefault();
 
@@ -66,6 +69,7 @@ async function uploadFile(event) {
     }
 }
 
+// Registriert Event-Listener sobald das Dokument geladen ist.
 document.addEventListener('DOMContentLoaded', () => {
     document
         .querySelectorAll('.upload-form')

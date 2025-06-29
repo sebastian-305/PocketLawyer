@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Http;
+
+// Prüft hochgeladene Dateien auf Größe und erlaubte Erweiterungen
+// und gibt den dekodierten Text zurück.
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Interfaces;
@@ -8,6 +11,7 @@ using System.IO;
 
 namespace PocketLawyer.Infrastructure;
 
+// Kombiniert Validierung und Decodierung des Uploads.
 public class FileValidatorService : IFileValidatorService
 {
 

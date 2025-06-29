@@ -1,7 +1,10 @@
 using System.IO;
 
+// Enthält zentrale Standardpfade innerhalb der Anwendung.
+
 namespace PocketLawyer.Infrastructure;
 
+// Bietet Konstanten für Ordnerstrukturen an.
 public static class DefaultPaths
 {
     public const string BaseData = "data";

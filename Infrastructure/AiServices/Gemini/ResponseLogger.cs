@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+
+// Schreibt KI-Antworten optional in Dateien zur Analyse und Fehlerdiagnose.
 using Microsoft.AspNetCore.Hosting;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Options;
@@ -6,6 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// Speichert Antworten der Gemini-API im Dateisystem.
 public class ResponseLogger : IResponseLogger
 {
     private readonly ILogger<ResponseLogger> _logger;

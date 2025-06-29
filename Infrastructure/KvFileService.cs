@@ -1,9 +1,13 @@
 using PocketLawyer.Application.Interfaces;
+
+// Liest Kollektivvertragsdateien aus dem Dateisystem aus.
 using PocketLawyer.Options;
 using Microsoft.Extensions.Options;
 
 namespace PocketLawyer.Infrastructure;
 
+// Stellt Funktionen bereit, um verfügbare KV-Verzeichnisse und deren Inhalte
+// zu laden.
 public class KvFileService : IKollektivvertragService
 {
     private readonly ILogger<KvFileService> _logger;

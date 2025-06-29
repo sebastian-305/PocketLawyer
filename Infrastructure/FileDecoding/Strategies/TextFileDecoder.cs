@@ -1,9 +1,12 @@
 using System.Text;
+
+// Einfacher Decoder für reine Textdateien.
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Interfaces;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
 
+// Liest den Stream Zeile für Zeile und gibt den Text zurück.
 public class TextFileDecoder : IFileDecoder
 {
     private readonly ILogger<TextFileDecoder> _logger;

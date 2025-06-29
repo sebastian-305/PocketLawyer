@@ -1,9 +1,12 @@
 using System.Net.WebSockets;
+
+// Kleine Hilfsfunktionen zum Senden von Nachrichten über WebSockets.
 using System.Text;
 using System.Text.Json;
 
 namespace PocketLawyer.Infrastructure;
 
+// Statische Klasse für wiederverwendbare WebSocket-Operationen.
 public static class WebSocketHelpers
 {
     public static Task SendStringAsync(WebSocket socket, string data, CancellationToken token)

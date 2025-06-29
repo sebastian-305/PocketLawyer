@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+
+// ASP.NET Core Controller für Datei-Upload und Analyse.
 using Microsoft.AspNetCore.Http;
 using PocketLawyer.Application.Interfaces;
 using System.Text.Json;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Options;
 namespace PocketLawyer.Web;
 
 [ApiController]
+// Liefert Mock-Daten oder startet die WebSocket-Analyse.
 public class PocketController : ControllerBase
 {
     private readonly ILogger<PocketController> _logger;
@@ -29,6 +32,7 @@ public class PocketController : ControllerBase
         _socketService = socketService;
     }
 
+    // Gibt zufällige Beispielantworten für Testzwecke zurück.
     [HttpGet("/mockdata")]
     public async Task<ActionResult<ContractAnalysisDto>> GetMockData()
     {
@@ -79,6 +83,7 @@ public class PocketController : ControllerBase
     }
 
 
+    // Startet die Analyse über eine WebSocket-Verbindung.
     [HttpGet("/analysis")]
     public async Task<ActionResult> AnalyzeViaWebSocket()
     {

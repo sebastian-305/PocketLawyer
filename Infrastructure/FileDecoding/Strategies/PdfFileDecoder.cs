@@ -1,4 +1,6 @@
 using System.Text;
+
+// Decoder für PDF-Dateien. Liest alle Seiten aus und liefert den Text.
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Interfaces;
 using UglyToad.PdfPig;
@@ -6,6 +8,7 @@ using UglyToad.PdfPig.Content;
 
 namespace PocketLawyer.Infrastructure.FileDecoding.Strategies;
 
+// Nutzt PdfPig, um Text aus PDF-Dokumenten zu extrahieren.
 public class PdfFileDecoder : IFileDecoder
 {
     private readonly ILogger<PdfFileDecoder> _logger;

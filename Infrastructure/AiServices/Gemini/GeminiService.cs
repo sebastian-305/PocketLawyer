@@ -1,4 +1,6 @@
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
+
+// Implementierung des AI-Clients für die Google Gemini API.
 using PocketLawyer.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,6 +11,7 @@ using System.Text.Json;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// Sendet Prompts an die Gemini-API und verarbeitet die Antworten.
 public class GeminiService : IAiClient
 {
     private readonly HttpClient _httpClient;

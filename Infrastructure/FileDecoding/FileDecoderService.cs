@@ -1,7 +1,11 @@
 using PocketLawyer.Application.Interfaces;
 
+// Wählt anhand der Dateiendung den passenden Decoder aus
+// und liefert den dekodierten Text zurück.
+
 namespace PocketLawyer.Infrastructure.FileDecoding;
 
+// Service der alle Decoder bündelt und die Dateiinhalte liest.
 public class FileDecoderService : IFileDecoderService
 {
     private readonly ILogger<FileDecoderService> _logger;

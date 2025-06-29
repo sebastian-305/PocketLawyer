@@ -1,4 +1,6 @@
 using System.Net.WebSockets;
+
+// Kümmert sich um den Ablauf der Analyse über eine WebSocket-Verbindung.
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +11,8 @@ using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Infrastructure;
 
+// Liest hochgeladene Dateien über WebSockets ein und führt
+// Voranalyse sowie ausführliche Analyse durch.
 public class WebSocketAnalysisService : IWebSocketAnalysisService
 {
     private readonly ILogger<WebSocketAnalysisService> _logger;

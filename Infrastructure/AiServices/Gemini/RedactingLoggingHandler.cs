@@ -1,4 +1,7 @@
 using System;
+
+// HTTP-Handler, der Log-Ausgaben anonymisiert, indem sensible Teile der URL
+// entfernt werden.
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +9,8 @@ using Microsoft.Extensions.Logging;
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+// DelegatingHandler, der Requests und Responses protokolliert,
+// dabei aber private Query-Parameter entfernt.
 public class RedactingLoggingHandler : DelegatingHandler
 {
     private readonly ILogger<RedactingLoggingHandler> _logger;

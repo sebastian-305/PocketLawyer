@@ -1,7 +1,11 @@
 using System.Text.Json.Serialization;
 
+// Enthält das Ergebnis der Vertragsanalyse inklusive Zusammenfassung
+// sowie verschiedener Klausellisten und dem abschließenden Fazit.
+
 namespace PocketLawyer.Domain.Dtos;
 
+// Hauptobjekt der Analyse. Enthält alle ermittelten Daten zum Vertrag.
 public class ContractAnalysisDto
 {
     [JsonPropertyName("summary")]
@@ -26,6 +30,7 @@ public class ContractAnalysisDto
     public string? Kollektivvertrag { get; set; }
 }
 
+// Enthält Basisinformationen des Vertrages.
 public class Summary
 {
     [JsonPropertyName("arbeitgeber")]
@@ -56,6 +61,7 @@ public class Summary
     public string Probezeit { get; set; } = string.Empty;
 }
 
+// Beschreibt einen Paragraphen oder Gesetzestext, der als Grundlage dient.
 public class RechtsgrundlageEintrag
 {
     [JsonPropertyName("rechtsgrundlage")]
@@ -65,6 +71,7 @@ public class RechtsgrundlageEintrag
     public string Wortlaut { get; set; } = string.Empty;
 }
 
+// Repräsentiert eine problematische Klausel im Vertrag.
 public class ProblemKlausel
 {
     [JsonPropertyName("titel")]
@@ -80,6 +87,7 @@ public class ProblemKlausel
     public RechtsgrundlageEintrag[] Rechtsgrundlage { get; set; } = [];
 }
 
+// Speichert zwei widersprüchliche Klauseln und deren Problembeschreibung.
 public class WiderspruechlicheKlausel
 {
     [JsonPropertyName("titel")]
@@ -98,6 +106,7 @@ public class WiderspruechlicheKlausel
     public RechtsgrundlageEintrag[] Rechtsgrundlage { get; set; } = [];
 }
 
+// Beschreibt eine vorteilhafte Klausel des Vertrages.
 public class VorteilKlausel
 {
     [JsonPropertyName("titel")]
