@@ -15,10 +15,11 @@ Eine Datei wird zunächst vorvalidiert. Ist sie lesbar und als Arbeitsvertrag er
 ## Ordnerstruktur
 
 ```
-Dtos/            Enthält die Datenobjekte (DTOs) für Requests und Responses.
-Infrastructure/  Implementierung der Dienste (Gemini, Claude, Dateidecoder, KV-Erkennung etc.).
-Service/         Schnittstellen und gemeinsame Service-Definitionen.
-wwwroot/         Statische Dateien der Weboberfläche (HTML, JS, CSS, Medien).
+Domain/         Enthält DTOs und einfache Entitäten.
+Application/    Use Cases und Interfaces für externe Dienste.
+Infrastructure/ Implementierung der Dienste (Gemini, Claude, Dateidecoder, KV-Erkennung etc.).
+Web/            ASP.NET-Host mit Program.cs und Controllern.
+wwwroot/        Statische Dateien der Weboberfläche (HTML, JS, CSS, Medien).
 data/Responses/  Ablage für gesicherte Antworten der KI.
 data/Samples/    Beispielverträge für Tests.
 docs/Diagrams/   Architektur- und Ablaufdiagramme.

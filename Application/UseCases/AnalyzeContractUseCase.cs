@@ -1,22 +1,22 @@
-using PocketLawyer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Text.Json;
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Domain.Dtos;
 
-namespace PocketLawyer.Infrastructure;
+namespace PocketLawyer.Application.UseCases;
 
-public class ContractAnalyzerService : IContractAnalyzerService
+public class AnalyzeContractUseCase : IContractAnalyzerService
 {
-    private readonly ILogger<ContractAnalyzerService> _logger;
-    private readonly IAiService _aiService;
+    private readonly ILogger<AnalyzeContractUseCase> _logger;
+    private readonly IAiClient _aiService;
     private readonly IKollektivvertragService _kvService;
     private readonly IKvDetectionService _kvDetectionService;
 
-    public ContractAnalyzerService(
-        ILogger<ContractAnalyzerService> logger,
-        [FromKeyedServices("gemini")] IAiService aiService,
+    public AnalyzeContractUseCase(
+        ILogger<AnalyzeContractUseCase> logger,
+        [FromKeyedServices("gemini")] IAiClient aiService,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService)
     {
@@ -98,7 +98,6 @@ public class ContractAnalyzerService : IContractAnalyzerService
             }
         }
 
-        return dto;
+        return dto!;
     }
-
 }

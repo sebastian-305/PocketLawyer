@@ -2,12 +2,13 @@ using System.Text.Json;
 using Anthropic.SDK;
 using Anthropic.SDK.Constants;
 using Anthropic.SDK.Messaging;
-using PocketLawyer.Service;
+using PocketLawyer.Application.Interfaces;
 using Microsoft.Extensions.Options;
+using PocketLawyer.Options;
 
 namespace PocketLawyer.Infrastructure.AiServices.Claude
 {
-    public class ClaudeService : IAiService
+    public class ClaudeService : IAiClient
     {
         private readonly AnthropicClient _client;
         private readonly ILogger<ClaudeService> _logger;

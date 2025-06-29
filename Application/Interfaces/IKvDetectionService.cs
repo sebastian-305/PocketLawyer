@@ -1,6 +1,6 @@
-using PocketLawyer;
+using PocketLawyer.Domain.Dtos;
 
-namespace PocketLawyer.Service;
+namespace PocketLawyer.Application.Interfaces;
 
 public interface IKvDetectionService
 {

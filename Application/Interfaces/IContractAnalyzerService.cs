@@ -1,5 +1,6 @@
-using PocketLawyer;
-namespace PocketLawyer.Service;
+using PocketLawyer.Domain.Dtos;
+
+namespace PocketLawyer.Application.Interfaces;
 
 public interface IContractAnalyzerService
 {

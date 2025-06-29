@@ -1,6 +1,6 @@
-namespace PocketLawyer.Service;
-
 using Microsoft.AspNetCore.Http;
+
+namespace PocketLawyer.Application.Interfaces;
 
 public interface IWebSocketAnalysisService
 {

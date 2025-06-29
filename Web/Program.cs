@@ -2,8 +2,9 @@ using PocketLawyer.Infrastructure.AiServices.Claude;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.FileDecoding;
 using PocketLawyer.Infrastructure;
-using PocketLawyer.Service;
-using PocketLawyer;
+using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Options;
+using PocketLawyer.Application.UseCases;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Http;
 using System.Linq;
@@ -24,8 +25,8 @@ builder.Services
 builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
-builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
-builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
+builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini");
+builder.Services.AddKeyedScoped<IAiClient, ClaudeService>("claude");
 builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.TextFileDecoder>();
 builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.PdfFileDecoder>();
 builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.ImageFileDecoder>();
@@ -34,7 +35,7 @@ builder.Services.AddScoped<IFileValidatorService, FileValidatorService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
 builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
-builder.Services.AddScoped<IContractAnalyzerService, ContractAnalyzerService>();
+builder.Services.AddScoped<IContractAnalyzerService, AnalyzeContractUseCase>();
 builder.Services.AddScoped<IWebSocketAnalysisService, WebSocketAnalysisService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();

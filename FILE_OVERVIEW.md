@@ -6,9 +6,9 @@ This document provides a structured summary of all files and directories in the 
 
 # Inhaltsverzeichnis
 1. [Root-Verzeichnis](#root-verzeichnis)
-2. [Dtos](#dtos)
-3. [Infrastructure](#infrastructure)
-4. [Service](#service)
+2. [Domain](#domain)
+3. [Application](#application)
+4. [Infrastructure](#infrastructure)
 5. [Diagrams](#diagrams)
 6. [Samples](#samples)
 7. [Responses](#responses)
@@ -34,9 +34,9 @@ This document provides a structured summary of all files and directories in the 
 
 ---
 
-## Dtos
+## Domain
 
-Datenübertragungsobjekte für Requests und Responses.
+Enthält die grundlegenden Datenobjekte (DTOs) und einfache Entitäten.
 
 | Datei | Zweck |
 |-------|-------|
@@ -46,6 +46,9 @@ Datenübertragungsobjekte für Requests und Responses.
 | `KvDetectionAnswer.cs` | Antwortformat der KI für Kollektivvertragserkennung (ein String). |
 | `KvDetectionResult.cs` | Ergebnis mehrerer KI-Aufrufe; enthält KV-Namen und Flag, ob alle Antworten gleich waren. |
 | `WebSocketFileDto.cs` | Format einer hochgeladenen Datei über WebSocket (Name + base64-Daten). |
+| `Entities/Contract.cs` | Repräsentiert einen Arbeitsvertrag mit einer Liste von Klauseln. |
+| `Entities/ContractClause.cs` | Einzelne Klausel eines Vertrags. |
+| `Entities/AnalysisResult.cs` | Stark vereinfachtes Ergebnis einer Analyse. |
 
 ---
 
@@ -131,14 +134,14 @@ Tesseract-Sprachmodelle:
 
 ---
 
-## Service
+## Application
 
-Schnittstellendefinitionen und Ausnahmeklasse.
+Beinhaltet die Use Cases und Schnittstellen zu externen Diensten.
 
 | Datei | Zweck |
 |-------|-------|
 | `AiServiceException.cs` | Eigene Exception f\u00fcr Fehler bei KI-Diensten. |
-| `IAiService.cs` | Interface f\u00fcr KI-Dienste (`SendPrompt`). |
+| `IAiClient.cs` | Interface für KI-Dienste (`SendPrompt`). |
 | `IContractAnalyzerService.cs` | Interface f\u00fcr die Vertragsanalyse. |
 | `IFileDecoder.cs` | Basisschnittstelle f\u00fcr einzelne Decoder-Strategien. |
 | `IFileDecoderService.cs` | Abstraktion \u00fcber Dateidekodierung. |
@@ -147,6 +150,8 @@ Schnittstellendefinitionen und Ausnahmeklasse.
 | `IKollektivvertragService.cs` | Bietet Zugriff auf KV-Dateien. |
 | `IKvDetectionService.cs` | Erkennt mittels KI den passenden Kollektivvertrag. |
 | `IResponseLogger.cs` | Logging-Schnittstelle zum Speichern von Antworten. |
+| `UseCases/AnalyzeContractUseCase.cs` | Kern-Use-Case für die Vertragsanalyse. |
+| `UseCases/DetectKvUseCase.cs` | Delegiert die KV-Erkennung an einen externen Dienst. |
 
 ---
 

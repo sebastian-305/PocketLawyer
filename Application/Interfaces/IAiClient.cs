@@ -1,7 +1,6 @@
-namespace PocketLawyer.Service;
+namespace PocketLawyer.Application.Interfaces;
 
-public interface IAiService
+public interface IAiClient
 {
-
     Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey);
 }
