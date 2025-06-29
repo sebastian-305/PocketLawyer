@@ -20,10 +20,13 @@ Infrastructure/  Implementierung der Dienste (Gemini, Claude, Dateidecoder, KV-E
 Service/         Schnittstellen und gemeinsame Service-Definitionen.
 wwwroot/         Statische Dateien der Weboberfläche (HTML, JS, CSS, Medien).
 data/Responses/  Ablage für gesicherte Antworten der KI.
-Samples/         Beispielverträge für Tests.
+data/Samples/    Beispielverträge für Tests.
 docs/Diagrams/   Architektur- und Ablaufdiagramme.
 data/tessdata/   Sprachdaten für Tesseract OCR.
 data/KVS/        Kollektivverträge für die Analyse.
+data/Context/    Vorverarbeitete Kontextdaten für Prompts.
+data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
+
 ```
 
 ## Diagramme
@@ -65,12 +68,12 @@ Benötigte Einstellungen befinden sich in `appsettings.json` bzw. den User-Secre
 ```
 Gemini:Key            = API-Schlüssel für Gemini
 Gemini:Key:Alternative = optionaler Ausweichschlüssel
-Gemini:ModelId        = Modell-ID (standardmäßig "gemini-1.5-flash-002")
+Gemini:ModelId        = Modell-ID (Standard: "gemini-1.5-flash-002")
 Claude:Key            = API-Schlüssel für Claude (optional)
-TesseractDataPath     = Pfad zu den OCR-Sprachdaten
-ResponsesPath         = Ablageort für AI-Antworten
-MaxUploadSizeMB       = Maximale Upload-Größe
-KVSPath               = Pfad zu den Kollektivvertragsdateien
+TesseractDataPath     = Pfad zu den OCR-Sprachdaten (Standard: "data/tessdata")
+ResponsesPath         = Ablageort für AI-Antworten (Standard: "data/Responses")
+MaxUploadSizeMB       = Maximale Upload-Größe (Standard: 20)
+KVSPath               = Pfad zu den Kollektivvertragsdateien (Standard: "data/KVS")
 ```
 
 API-Schlüssel sollten über Umgebungsvariablen oder User-Secrets gesetzt werden und **nicht** im Quellcode liegen.
