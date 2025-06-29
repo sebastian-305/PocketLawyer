@@ -34,14 +34,19 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     public async Task HandleAsync(HttpContext context)
     {
+        // WebSocket akzeptieren.
         using var socket = await context.WebSockets.AcceptWebSocketAsync();
 
         try
         {
+            // Datei empfangen und in ein IFormFile überführen.
             var (bytes, name) = await ReceiveFileAsync(socket);
             IFormFile CreateFile() => new FormFile(new MemoryStream(bytes), 0, bytes.Length, "file", name);
+            // Validate/Decode via FileValidatorService.
             FileContentDto content = await _fileValidatorService.ValidateAndDecodeAsync(CreateFile());
+            // Kollektivvertrag erkennen.
             string? kvName = await DetectKvAsync(content);
+            // Voranalyse senden und Ergebnis verschicken.
             ContractValidationDto validation = await ValidateContractAsync(content, kvName);
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(validation), CancellationToken.None);
             if (!validation.IsReadable || !validation.IsContract)
@@ -49,10 +54,12 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
                 await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
                 return;
             }
+            // Bei positivem Ergebnis Hauptanalyse ausführen.
             ContractAnalysisDto analysis = await AnalyzeContractAsync(content, kvName);
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis), CancellationToken.None);
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
         }
+        // Fehlerbehandlung und Socket schließen.
         catch (FileValidationException ex)
         {
             _logger.LogWarning(ex, "File validation failed");
@@ -69,6 +76,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     private async Task<(byte[] fileBytes, string fileName)> ReceiveFileAsync(WebSocket socket)
     {
+        // Empfang der gesamten Datei vom WebSocket.
         var buffer = new byte[8192];
         using var ms = new MemoryStream();
         WebSocketReceiveResult result;
@@ -101,6 +109,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     private async Task<string?> DetectKvAsync(FileContentDto content)
     {
+        // Versucht den Kollektivvertrag aus dem Text zu ermitteln.
         try
         {
             KvDetectionResult result = await _kvDetectionService.DetectAsync(content.FileContent);
@@ -118,6 +127,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content, string? kvName)
     {
+        // Löst die KI-Voranalyse des Vertrags aus.
         return _analyzeContractUseCase.ProcessContractRequest<ContractValidationDto>(
             content,
             PromptBuilder.BuildValidationPrompt,
@@ -129,6 +139,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
     {
+        // Führt die eigentliche Hauptanalyse durch.
         return _analyzeContractUseCase.ProcessContractRequest<ContractAnalysisDto>(
             content,
             PromptBuilder.BuildAnalysisPrompt,
