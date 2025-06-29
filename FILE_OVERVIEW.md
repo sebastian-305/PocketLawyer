@@ -25,8 +25,8 @@ This document provides a structured summary of all files and directories in the 
 | `PocketLawyer.csproj`                     | Projektdatei für .NET 8 mit Abhängigkeiten (Anthropic.SDK, Google_GenerativeAI, PdfPig, Tesseract, Swashbuckle). |
 | `Program.cs`                              | Einstiegspunkt der Webanwendung, konfiguriert Dependency Injection, Middleware und Endpunkte. |
 | `PocketController.cs`                     | ASP.NET-Controller mit WebSocket-Endpunkt `/analysis` und Mock-API `/mockdata`. Orchestriert Validierung und Analyse. |
-| `DesignPatterns.md`                       | Englische Dokumentation zu verwendeten Entwurfsmustern und Prinzipien. |
-| `DesignPatterns_de.md`                    | Deutsche Version der Entwurfsmuster-Dokumentation. |
+| `docs/DesignPatterns.md`                  | Englische Dokumentation zu verwendeten Entwurfsmustern und Prinzipien. |
+| `docs/DesignPatterns_de.md`               | Deutsche Version der Entwurfsmuster-Dokumentation. |
 | `README.md`                               | Hauptdokumentation des Projekts mit Funktionsübersicht, Installation und Diagrammen. |
 | `appsettings.json`                        | Standardkonfiguration (Logging, Pfade, Modell-ID, etc.). |
 | `appsettings.Development.json`            | Abweichende Einstellungen für Development (z.\u00a0B. LogLevel "Debug"). |
@@ -70,6 +70,7 @@ Implementierungen von Diensten und Hilfsklassen.
 | `Models/GeminiResponse.cs` | Strukturen zum Deserialisieren der Gemini-Antwort. |
 
 ### Context
+Dateien befinden sich in `data/Context/`.
 Enthält vorbereitete Gesetzestexte als reine Textdateien, z.\u00a0B.:
 
 - `ABGB-RIS.txt`
@@ -102,6 +103,7 @@ Enthält vorbereitete Gesetzestexte als reine Textdateien, z.\u00a0B.:
 | `PromptBuilder.cs` | Hilfsmethoden zur Generierung der Prompts (Analyse, Voranalyse, KV-Erkennung). |
 
 ### RawContextFiles
+Dateien befinden sich in `data/RawContextFiles/`.
 
 Enth\u00e4lt urspr\u00fcngliche Fassungen der Gesetzestexte (RTF), Skripte und Gerichtsurteile.
 
@@ -111,6 +113,7 @@ Enth\u00e4lt urspr\u00fcngliche Fassungen der Gesetzestexte (RTF), Skripte und G
 - Unterordner `OHG/` \u2013 diverse RTF-Gerichtsurteile plus `mindestlohn.txt`.
 
 ### KVS
+Dateien befinden sich in `data/KVS/`.
 
 Gro\u00dfe Sammlung an PDFs zu Kollektivvertr\u00e4gen und Gehaltstabellen. Beispiele:
 
@@ -120,6 +123,7 @@ Gro\u00dfe Sammlung an PDFs zu Kollektivvertr\u00e4gen und Gehaltstabellen. Beis
 - Insgesamt 123 PDF-Dateien (Gehaltstabellen, Rahmen- und Zusatz-KVs usw.).
 
 ### tessdata
+Dateien befinden sich in `data/tessdata/`.
 
 Tesseract-Sprachmodelle:
 - `deu.traineddata`, `deu_latf.traineddata`, `eng.traineddata`, `script/Latin.traineddata`
@@ -147,42 +151,45 @@ Schnittstellendefinitionen und Ausnahmeklasse.
 ---
 
 ## Diagrams
+Die Bilder liegen im Ordner `docs/Diagrams/`.
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `Architecture-Compontents.png` | Bild einer Architektur\u00fcbersicht. |
-| `Data-Flow.png` | Veranschaulicht den Datenfluss innerhalb der Anwendung. |
-| `Domainmodell.png` | UML-Diagramm des Dom\u00e4nenmodells. |
-| `Sequence.png` | Sequenzdiagramm des Analyse-Workflows. |
-| `UI-FLow.png` | Flussdiagramm der UI. |
-| `UML.png` | \u00dcbersicht der Service-Klassen als Klassendiagramm. |
-| `diagrams.md` | Markdown-Datei mit allen Diagrammen (Mermaid-Code). |
+| `docs/Diagrams/Architecture-Compontents.png` | Bild einer Architektur\u00fcbersicht. |
+| `docs/Diagrams/Data-Flow.png` | Veranschaulicht den Datenfluss innerhalb der Anwendung. |
+| `docs/Diagrams/Domainmodell.png` | UML-Diagramm des Dom\u00e4nenmodells. |
+| `docs/Diagrams/Sequence.png` | Sequenzdiagramm des Analyse-Workflows. |
+| `docs/Diagrams/UI-FLow.png` | Flussdiagramm der UI. |
+| `docs/Diagrams/UML.png` | \u00dcbersicht der Service-Klassen als Klassendiagramm. |
+| `docs/Diagrams/diagrams.md` | Markdown-Datei mit allen Diagrammen (Mermaid-Code). |
 
 ---
 
 ## Samples
+Die Dateien befinden sich in `data/Samples/`.
 
 Beispieldateien zu Demonstrations- und Testzwecken.
 
 | Datei | Zweck |
 |-------|-------|
-| `contract.txt` | Vollst\u00e4ndiger Musterarbeitsvertrag (deutsch). |
-| `ctr2.txt` | Stark verk\u00fcrzte Vertragspassage. |
-| `ctr3.txt` | Datei mit wenigen Zeilen/Nummern. |
-| `int.txt` | Internationaler/anderer Vertragstext. |
-| `nichtlesbaredatei.pdf` | Defektes/ungeeignetes PDF zur Fehlertestung. |
-| `test.pdf` | Kleines Beispiel-PDF. |
-| `uml_alt.png` | Veraltetes UML-Diagramm. |
+| `data/Samples/contract.txt` | Vollst\u00e4ndiger Musterarbeitsvertrag (deutsch). |
+| `data/Samples/ctr2.txt` | Stark verk\u00fcrzte Vertragspassage. |
+| `data/Samples/ctr3.txt` | Datei mit wenigen Zeilen/Nummern. |
+| `data/Samples/int.txt` | Internationaler/anderer Vertragstext. |
+| `data/Samples/nichtlesbaredatei.pdf` | Defektes/ungeeignetes PDF zur Fehlertestung. |
+| `data/Samples/test.pdf` | Kleines Beispiel-PDF. |
+| `data/Samples/uml_alt.png` | Veraltetes UML-Diagramm. |
 
 ---
 
 ## Responses
+Diese Dateien liegen in `data/Responses/`.
 
 Drei gespeicherte JSON-Dateien (Beispiele f\u00fcr Analyseergebnisse):
 
-- `0.json`
-- `1.json`
-- `2.json`
+- `data/Responses/0.json`
+- `data/Responses/1.json`
+- `data/Responses/2.json`
 
 ---
 
