@@ -75,15 +75,15 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 2
 
 ```bash
-   dotnet restore
+dotnet restore
 ```
 
 3 Anwendung starten:
 4
 
-   ```bash
-   dotnet run
-   ```
+```bash
+dotnet run
+```
 
 5 Die Weboberfläche ist danach unter `http://localhost:5112` erreichbar (vgl. `launchSettings.json`).
 
@@ -103,5 +103,3 @@ KVSPath               = Pfad zu den Kollektivvertragsdateien (Standard: "data/KV
 ```
 
 API-Schlüssel sollten über Umgebungsvariablen oder User-Secrets gesetzt werden und **nicht** im Quellcode liegen.
-
-Weitere Details zu den eingesetzten Entwurfsmustern findest du in [DesignPatterns_de.md](docs/DesignPatterns_de.md).
