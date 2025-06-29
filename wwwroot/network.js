@@ -1,3 +1,5 @@
+const DEBUG = false;
+
 export function startAnalysisSocket(file, onMessage) {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const socket = new WebSocket(`${protocol}://${window.location.host}/analysis`);
@@ -14,7 +16,7 @@ export function startAnalysisSocket(file, onMessage) {
         try {
             onMessage(JSON.parse(e.data));
         } catch (err) {
-            console.error('Ungültige Serverantwort', e.data);
+            if (DEBUG) console.error('Ungültige Serverantwort', e.data);
         }
     });
     return socket;
