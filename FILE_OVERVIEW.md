@@ -23,13 +23,14 @@ This document provides a structured summary of all files and directories in the 
 |-------------------------------------------|--------------|
 | `PocketLawyer.sln`                        | Visual-Studio-Lösung, verweist auf das Hauptprojekt. |
 | `PocketLawyer.csproj`                     | Projektdatei für .NET 8 mit Abhängigkeiten (Anthropic.SDK, Google_GenerativeAI, PdfPig, Tesseract, Swashbuckle). |
-| `Program.cs`                              | Einstiegspunkt der Webanwendung, konfiguriert Dependency Injection, Middleware und Endpunkte. |
-| `PocketController.cs`                     | ASP.NET-Controller mit WebSocket-Endpunkt `/analysis` und Mock-API `/mockdata`. Orchestriert Validierung und Analyse. |
-| `docs/DesignPatterns.md`                  | Englische Dokumentation zu verwendeten Entwurfsmustern und Prinzipien. |
+| `Web/Program.cs`                          | Einstiegspunkt der Webanwendung, konfiguriert Dependency Injection, Middleware und Endpunkte. |
+| `Web/PocketController.cs`                 | ASP.NET-Controller mit WebSocket-Endpunkt `/analysis` und Mock-API `/mockdata`. Orchestriert Validierung und Analyse. |
 | `docs/DesignPatterns_de.md`               | Deutsche Version der Entwurfsmuster-Dokumentation. |
 | `README.md`                               | Hauptdokumentation des Projekts mit Funktionsübersicht, Installation und Diagrammen. |
+| `FILE_OVERVIEW.md`                        | Übersicht aller Dateien im Repository. |
+| `Options/*.cs`                            | Konfigurationsobjekte für Pfade, Upload und API-Schlüssel. |
 | `appsettings.json`                        | Standardkonfiguration (Logging, Pfade, Modell-ID, etc.). |
-| `appsettings.Development.json`            | Abweichende Einstellungen für Development (z.\u00a0B. LogLevel "Debug"). |
+| `appsettings.Development.json`            | Abweichende Einstellungen für Development (z. B. LogLevel "Debug"). |
 | `Properties/launchSettings.json`          | Profildefinitionen zum Starten der Anwendung (http/https). |
 
 ---
@@ -56,7 +57,7 @@ Implementierungen von Diensten und Hilfsklassen.
 ### AiServices/Claude
 | Datei | Zweck |
 |-------|-------|
-| `ClaudeService.cs` | Bindung an die Claude\u2011API via Anthropic SDK; sendet Prompt und gibt JSON-String zurück. |
+| `ClaudeService.cs` | Bindung an die Claude‑API via Anthropic SDK; sendet Prompt und gibt JSON-String zurück. |
 
 ### AiServices/Gemini
 | Datei | Zweck |
@@ -71,7 +72,7 @@ Implementierungen von Diensten und Hilfsklassen.
 
 ### Context
 Dateien befinden sich in `data/Context/`.
-Enthält vorbereitete Gesetzestexte als reine Textdateien, z.\u00a0B.:
+Enthält vorbereitete Gesetzestexte als reine Textdateien, z. B.:
 
 - `ABGB-RIS.txt`
 - `ARG_Arbeitsruhegesetz-RIS.txt`
@@ -80,16 +81,16 @@ Enthält vorbereitete Gesetzestexte als reine Textdateien, z.\u00a0B.:
 - `AZG_Arbeitszeitgesetz-RIS.txt`
 - `AngG_Angestelltengesetz-RIS.txt`
 - `ArbVG_Arbeitsverfassungsgesetz-RIS.txt`
-- `A\u00dcG_Arbeitskr\u00e4fte\u00fcberlassungsgesetz-RIS.txt`
+- `AÜG_Arbeitskräfteüberlassungsgesetz-RIS.txt`
 
 ### FileDecoding
 
 | Datei/Ordner | Zweck |
 |--------------|-------|
-| `FileDecoderService.cs` | Verwaltet verf\u00fcgbare Decoder-Strategien, liest Inhalt anhand der Dateiendung. |
-| `Strategies/TextFileDecoder.cs` | Liest Textdateien als UTF\u2011\u00a8 ein. |
+| `FileDecoderService.cs` | Verwaltet verfügbare Decoder-Strategien, liest Inhalt anhand der Dateiendung. |
+| `Strategies/TextFileDecoder.cs` | Liest Textdateien als UTF‑¨ ein. |
 | `Strategies/PdfFileDecoder.cs` | Verwendet PdfPig zum Extrahieren des Textes aus PDF-Dateien. |
-| `Strategies/ImageFileDecoder.cs` | Nutzt Tesseract f\u00fcr OCR auf JPG/JPEG/PNG-Bildern. |
+| `Strategies/ImageFileDecoder.cs` | Nutzt Tesseract für OCR auf JPG/JPEG/PNG-Bildern. |
 
 ### Weitere Services
 
@@ -109,21 +110,21 @@ Enthält vorbereitete Gesetzestexte als reine Textdateien, z.\u00a0B.:
 ### RawContextFiles
 Dateien befinden sich in `data/RawContextFiles/`.
 
-Enth\u00e4lt urspr\u00fcngliche Fassungen der Gesetzestexte (RTF), Skripte und Gerichtsurteile.
+Enthält ursprüngliche Fassungen der Gesetzestexte (RTF), Skripte und Gerichtsurteile.
 
 - RTF-Dateien wie `ABGB-RIS.rtf`, `ARG_Arbeitsruhegesetz-RIS.rtf` usw.
-- Unterordner `Context/` \u2013 gleiche Gesetzestexte als `.txt`.
-- Unterordner `KV/` \u2013 Python-Skripte `import_kv.py` (l\u00e4dt KV-PDFs von vida.at) und `rename.py` (benennt Ordner um).
-- Unterordner `OHG/` \u2013 diverse RTF-Gerichtsurteile plus `mindestlohn.txt`.
+- Unterordner `Context/` – gleiche Gesetzestexte als `.txt`.
+- Unterordner `KV/` – Python-Skripte `import_kv.py` (lädt KV-PDFs von vida.at) und `rename.py` (benennt Ordner um).
+- Unterordner `OHG/` – diverse RTF-Gerichtsurteile plus `mindestlohn.txt`.
 
 ### KVS
 Dateien befinden sich in `data/KVS/`.
 
-Gro\u00dfe Sammlung an PDFs zu Kollektivvertr\u00e4gen und Gehaltstabellen. Beispiele:
+Große Sammlung an PDFs zu Kollektivverträgen und Gehaltstabellen. Beispiele:
 
 - `kollektivvertrag_aua/KV-Luftfahrt-AUA-Bordpersonal-ab-2018.pdf`
 - `kollektivvertrag_flughafenarbeiter_innen/KV-Luftfahrt-Flughafen-Arbeiter-2025.pdf`
-- `lohntabellen_eisenbahn/Lohntabelle-Eisenbahn-\u00d6BB-KV-EU.pdf`
+- `lohntabellen_eisenbahn/Lohntabelle-Eisenbahn-ÖBB-KV-EU.pdf`
 - Insgesamt 123 PDF-Dateien (Gehaltstabellen, Rahmen- und Zusatz-KVs usw.).
 
 ### tessdata
@@ -131,7 +132,7 @@ Dateien befinden sich in `data/tessdata/`.
 
 Tesseract-Sprachmodelle:
 - `deu.traineddata`, `deu_latf.traineddata`, `eng.traineddata`, `script/Latin.traineddata`
-- `README.md` enth\u00e4lt Hinweise zur Nutzung der *tessdata_fast*-Modelle.
+- `README.md` enthält Hinweise zur Nutzung der *tessdata_fast*-Modelle.
 
 ---
 
@@ -141,13 +142,13 @@ Beinhaltet die Use Cases und Schnittstellen zu externen Diensten.
 
 | Datei | Zweck |
 |-------|-------|
-| `AiServiceException.cs` | Eigene Exception f\u00fcr Fehler bei KI-Diensten. |
+| `AiServiceException.cs` | Eigene Exception für Fehler bei KI-Diensten. |
 | `IAiClient.cs` | Interface für KI-Dienste (`SendPrompt`). |
-| `IContractAnalyzerService.cs` | Interface f\u00fcr die Vertragsanalyse. |
-| `IFileDecoder.cs` | Basisschnittstelle f\u00fcr einzelne Decoder-Strategien. |
-| `IFileDecoderService.cs` | Abstraktion \u00fcber Dateidekodierung. |
+| `IContractAnalyzerService.cs` | Interface für die Vertragsanalyse. |
+| `IFileDecoder.cs` | Basisschnittstelle für einzelne Decoder-Strategien. |
+| `IFileDecoderService.cs` | Abstraktion über Dateidekodierung. |
 | `IFileValidatorService.cs` | Validiert und dekodiert hochgeladene Dateien. |
-| `IGeminiContextManager.cs` | Liefert Context Keys f\u00fcr Gemini. |
+| `IGeminiContextManager.cs` | Liefert Context Keys für Gemini. |
 | `IKollektivvertragService.cs` | Bietet Zugriff auf KV-Dateien. |
 | `IKvDetectionService.cs` | Erkennt mittels KI den passenden Kollektivvertrag. |
 | `IResponseLogger.cs` | Logging-Schnittstelle zum Speichern von Antworten. |
@@ -161,13 +162,16 @@ Die Bilder liegen im Ordner `docs/Diagrams/`.
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `docs/Diagrams/Architecture-Components.png` | Bild einer Architektur\u00fcbersicht. |
+| `docs/Diagrams/Architecture-Components.png` | Bild einer Architekturübersicht. |
 | `docs/Diagrams/Data-Flow.png` | Veranschaulicht den Datenfluss innerhalb der Anwendung. |
-| `docs/Diagrams/Domainmodell.png` | UML-Diagramm des Dom\u00e4nenmodells. |
-| `docs/Diagrams/Sequence.png` | Sequenzdiagramm des Analyse-Workflows. |
+| `docs/Diagrams/Domainmodell.png` | UML-Diagramm des Domänenmodells. |
+| `docs/Diagrams/SequenceOnionLayer.png` | Sequenzdiagramm der Onion-Architektur. |
+| `docs/Diagrams/SequenceFull.png` | Vollständiges Sequenzdiagramm. |
 | `docs/Diagrams/UI-FLow.png` | Flussdiagramm der UI. |
-| `docs/Diagrams/UML.png` | \u00dcbersicht der Service-Klassen als Klassendiagramm. |
+| `docs/Diagrams/Plant_UML.png` | Beispiel für ein PlantUML-Diagramm. |
+| `docs/Diagrams/UML.png` | Übersicht der Service-Klassen als Klassendiagramm. |
 | `docs/Diagrams/diagrams.md` | Markdown-Datei mit allen Diagrammen (Mermaid-Code). |
+| `docs/Diagrams/diagrams_images.md` | Variante mit gerenderten Bildern. |
 
 ---
 
@@ -178,8 +182,8 @@ Beispieldateien zu Demonstrations- und Testzwecken.
 
 | Datei | Zweck |
 |-------|-------|
-| `data/Samples/contract.txt` | Vollst\u00e4ndiger Musterarbeitsvertrag (deutsch). |
-| `data/Samples/ctr2.txt` | Stark verk\u00fcrzte Vertragspassage. |
+| `data/Samples/contract.txt` | Vollständiger Musterarbeitsvertrag (deutsch). |
+| `data/Samples/ctr2.txt` | Stark verkürzte Vertragspassage. |
 | `data/Samples/ctr3.txt` | Datei mit wenigen Zeilen/Nummern. |
 | `data/Samples/int.txt` | Internationaler/anderer Vertragstext. |
 | `data/Samples/nichtlesbaredatei.pdf` | Defektes/ungeeignetes PDF zur Fehlertestung. |
@@ -191,7 +195,7 @@ Beispieldateien zu Demonstrations- und Testzwecken.
 ## Responses
 Diese Dateien liegen in `data/Responses/`.
 
-Drei gespeicherte JSON-Dateien (Beispiele f\u00fcr Analyseergebnisse):
+Drei gespeicherte JSON-Dateien (Beispiele für Analyseergebnisse):
 
 - `data/Responses/0.json`
 - `data/Responses/1.json`
@@ -201,12 +205,12 @@ Drei gespeicherte JSON-Dateien (Beispiele f\u00fcr Analyseergebnisse):
 
 ## wwwroot
 
-Statische Dateien f\u00fcr die Weboberfl\u00e4che.
+Statische Dateien für die Weboberfläche.
 
 ### Media
 Bilder, die in der Startseite verwendet werden:
 - `Frau_am_Laptop.jpg`
-- `Frau_mit_Vertr\u00e4gen.jpg`
+- `Frau_mit_Verträgen.jpg`
 - `Mann_mit_Notizbuch.jpg`
 - `klara.png`
 - `klara_full.png`
@@ -214,20 +218,20 @@ Bilder, die in der Startseite verwendet werden:
 ### Weitere Dateien
 | Datei | Zweck |
 |-------|-------|
-| `index.html` | HTML-Seite der Benutzeroberfl\u00e4che (Formular f\u00fcr Upload, Modal zur Ergebnisanzeige usw.). |
-| `main.js` | Event-Handler f\u00fcr Dateiupload und Kommunikation mit dem Backend. |
+| `index.html` | HTML-Seite der Benutzeroberfläche (Formular für Upload, Modal zur Ergebnisanzeige usw.). |
+| `main.js` | Event-Handler für Dateiupload und Kommunikation mit dem Backend. |
 | `network.js` | Stellt WebSocket-Verbindung her, sendet Datei und verarbeitet Antworten. |
-| `render.js` | Rendert Voranalyse/Analyse in DOM, enth\u00e4lt Druckfunktion. |
+| `render.js` | Rendert Voranalyse/Analyse in DOM, enthält Druckfunktion. |
 | `styles.css` | Layout- und Design-Definitionen. |
-| `print.css` | Spezielle Styles f\u00fcr die Druckansicht. |
+| `print.css` | Spezielle Styles für die Druckansicht. |
 
 ---
 
 ## Weitere Dateien
 
-Im Repository befinden sich zus\u00e4tzlich Git-bezogene Dateien wie `.gitignore`, `.gitattributes` und der `.git`-Ordner, die Standardinformationen f\u00fcr Versionskontrolle enthalten.
+Im Repository befinden sich zusätzlich Git-bezogene Dateien wie `.gitignore`, `.gitattributes` und der `.git`-Ordner, die Standardinformationen für Versionskontrolle enthalten.
 
 ---
 
-Diese Aufstellung deckt alle Dateien (insgesamt ca. 277) ab. PDFs und Bilder wurden lediglich aufgelistet, da sie nicht im Klartext vorliegen. Damit bietet die Markdown-Datei einen umfassenden \u00dcberblick \u00fcber s\u00e4mtliche Inhalte und ihre Funktionen im Projekt PocketLawyer.
+Diese Aufstellung deckt alle Dateien (insgesamt ca. 261) ab. PDFs und Bilder wurden lediglich aufgelistet, da sie nicht im Klartext vorliegen. Damit bietet die Markdown-Datei einen umfassenden Überblick über sämtliche Inhalte und ihre Funktionen im Projekt PocketLawyer.
 
