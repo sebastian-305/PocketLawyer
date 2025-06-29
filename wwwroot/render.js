@@ -27,6 +27,7 @@ export function printer() {
     doc.body.appendChild(content);
 }
 
+// Erzeugt die HTML-Struktur für eine einzelne Klauselzeile
 function renderClause({ title, textLabel, textValue, extraFields = [] }) {
     const container = document.createElement("div");
     container.classList.add("item");
@@ -165,7 +166,7 @@ export function renderContractResult(message, body) {
     container.focus();
 }
 
-// Zeigt eine Fehlermeldung innerhalb des Modals an.
+// Zeigt eine Fehlermeldung im Modal und entfernt ggf. den Spinner
 export function displayUploadError(ex, body, loading, preAnalysisShown) {
     if (DEBUG) console.error(ex);
     if (body.contains(loading)) {
@@ -221,7 +222,7 @@ function generatePreAnalysis(message) {
     return container;
 }
 
-// Baut alle Abschnitte der finalen Analyse auf.
+// Erstellt das komplette Accordion und fügt alle Analyseabschnitte hinzu.
 function generateAnalysis(message) {
     const container = document.createElement("div");
     container.classList.add("analysis-container");
@@ -236,7 +237,9 @@ function generateAnalysis(message) {
     container.appendChild(hdr);
 
 
+    // Index für eindeutige IDs der Accordion-Elemente
     let idx = 0;
+    // Erster Abschnitt: Überblick über die wichtigsten Vertragsdaten
     container.appendChild(
         createAccordionItem(
             "Zusammenfassung",
@@ -255,6 +258,7 @@ function generateAnalysis(message) {
         message.unzulaessige_klauseln.forEach((e) =>
             wrap.appendChild(generateClauses(e)),
         );
+        // Liste aller vom System als unzulässig erkannten Klauseln
         container.appendChild(
             createAccordionItem(
                 "❗ Unzulässige Klauseln",
@@ -274,6 +278,7 @@ function generateAnalysis(message) {
         message.nachteile_klauseln.forEach((e) =>
             wrap.appendChild(generateClauses(e)),
         );
+        // Klauseln, die für Arbeitnehmer nachteilig sind
         container.appendChild(
             createAccordionItem(
                 "⚠️ Nachteilige Klauseln",
@@ -293,6 +298,7 @@ function generateAnalysis(message) {
         message.widerspruechliche_klauseln.forEach((e) =>
             wrap.appendChild(generateConflictClauses(e)),
         );
+        // Gegensätzliche oder sich ausschließende Klauseln
         container.appendChild(
             createAccordionItem(
                 "🟠 Widersprüchliche Klauseln",
@@ -312,6 +318,7 @@ function generateAnalysis(message) {
         message.vorteilhafte_klauseln.forEach((e) =>
             wrap.appendChild(generateGoodClauses(e)),
         );
+        // Positiv hervorgehobene Klauseln
         container.appendChild(
             createAccordionItem(
                 "✅ Vorteilhafte Klauseln",
