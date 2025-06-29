@@ -110,7 +110,7 @@ public class GeminiContextManager : IGeminiContextManager
             contextBuilder.AppendLine();
             contextBuilder.Append(await File.ReadAllTextAsync(file));
             contextBuilder.AppendLine();
-            contextBuilder.AppendLine();            
+            contextBuilder.AppendLine();
         }
         return contextBuilder.ToString();
     }
