@@ -7,40 +7,38 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Http;
 using System.Linq;
 
-// Aufbau des ASP.NET-Core-Hosts (inklusive Konfiguration und DI-Container)
 var builder = WebApplication.CreateBuilder(args);
 
-// ------------------------------------------------------------
-// Registrierung der Anwendungsdienste, die per Dependency Injection
-// in den Controllern und Services verwendet werden.
-// ------------------------------------------------------------
+// Add services to the container.
 
 builder.Services.AddTransient<RedactingLoggingHandler>();
 builder.Services.AddSingleton<IHttpMessageHandlerBuilderFilter, NoLoggingHttpClientBuilderFilter>();
 builder.Services
+    .AddHttpClient<IGeminiContextManager, GeminiContextManager>()
+    .AddHttpMessageHandler<RedactingLoggingHandler>();
+builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
 builder.Services.AddKeyedScoped<IAiService, GeminiService>("gemini");
-// Alternativer KI-Dienst, der mit dem Key "claude" aufgelöst wird
 builder.Services.AddKeyedScoped<IAiService, ClaudeService>("claude");
+builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.TextFileDecoder>();
+builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.PdfFileDecoder>();
+builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.ImageFileDecoder>();
 builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
-builder.Services.AddScoped<IKollektivvertragService, KollektivvertragService>();
-builder.Services.AddScoped<IKvDetectionService, KvDetectionService>();
+builder.Services.AddScoped<IFileValidatorService, FileValidatorService>();
+builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
+builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
+builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
+builder.Services.AddScoped<IContractAnalyzerService, ContractAnalyzerService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Anwendung mit den konfigurierten Diensten erstellen
 var app = builder.Build();
 
-// ------------------------------------------------------------
-// Konfiguration der Middleware-Pipeline, die eingehende HTTP-Requests
-// verarbeitet und Antworten erzeugt.
-// ------------------------------------------------------------
+// Configure the HTTP request pipeline.
 app.UseExceptionHandler(errorApp =>
 {
-    // Eigener Handler, der unerwartete Exceptions protokolliert und dem
-    // Client ein einfaches JSON-Fehlerobjekt zurückgibt.
     errorApp.Run(async context =>
     {
         var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
@@ -51,12 +49,10 @@ app.UseExceptionHandler(errorApp =>
         await context.Response.WriteAsJsonAsync(new { error = "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut." });
     });
 });
-// Gibt bei HTTP-Fehlercodes einfachen Text zurück, damit das Frontend
-// ein einheitliches Antwortformat erhält.
 app.UseStatusCodePages();
 
-// Erzwingt HTTPS, um übertragene Daten zu schützen
 app.UseHttpsRedirection();
+app.UseWebSockets();
 
 if (app.Environment.IsDevelopment())
 {
@@ -65,9 +61,6 @@ if (app.Environment.IsDevelopment())
 }
 
 
-// Aktiviert die Controller mit Attributrouting
 app.MapControllers();
-// Stellt die Dateien im Ordner wwwroot bereit
 app.UseStaticFiles();
-// Startet den Webserver
 app.Run();

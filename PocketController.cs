@@ -4,99 +4,41 @@ using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Service;
 using System.Text.Json;
 using System.Text;
+using System.Net.WebSockets;
+using PocketLawyer.Infrastructure;
 
 namespace PocketLawyer;
 
-// Controller, der die vom Frontend genutzte HTTP-API bereitstellt.
-// Er empfängt hochgeladene Vertragsdateien, führt Vorprüfungen durch
-// und übergibt die eigentliche Analyse an die KI-Dienste.
 [ApiController]
 public class PocketController : ControllerBase
 {
-    // Gibt detaillierte Laufzeitinformationen aus
     private readonly ILogger<PocketController> _logger;
-    // KI-Dienst basierend auf Googles Gemini API
-    private readonly IAiService _geminiService;
-    // Alternativer KI-Dienst, der auf Claudes API basiert
-    private readonly IAiService _claudeService;
-    // Wandelt hochgeladene Dateien in reinen Text um
-    private readonly IFileDecoderService _fileDecoderService;
-    // Zugriff auf die Anwendungskonfiguration
+    private readonly IContractAnalyzerService _contractAnalyzerService;
+    private readonly IFileValidatorService _fileValidatorService;
     private readonly IConfiguration _configuration;
-    // Liefert den Pfad zum Content-Root für Dateizugriffe
     private readonly IWebHostEnvironment _environment;
-    // Dienst zum Laden der Kollektivverträge von der Festplatte
     private readonly IKollektivvertragService _kvService;
-    // Dienst, der versucht, den passenden Kollektivvertrag zu erkennen
     private readonly IKvDetectionService _kvDetectionService;
 
-    /// <summary>
-    /// Alle Abhängigkeiten werden vom Framework aus dem Service-Container
-    /// aufgelöst und diesem Konstruktor übergeben.
-    /// </summary>
     public PocketController(ILogger<PocketController> logger,
-        [FromKeyedServices("gemini")] IAiService geminiService,
-        IFileDecoderService fileDecoderService,
-        [FromKeyedServices("claude")] IAiService claudeService,
+
+        IFileValidatorService fileValidatorService,
         IConfiguration configuration,
         IWebHostEnvironment environment,
         IKollektivvertragService kvService,
-        IKvDetectionService kvDetectionService)
+        IKvDetectionService kvDetectionService,
+        IContractAnalyzerService contractAnalyzerService)
     {
         _logger = logger;
-        _geminiService = geminiService;
-        _fileDecoderService = fileDecoderService;
-        _claudeService = claudeService;
+
+        _fileValidatorService = fileValidatorService;
         _configuration = configuration;
         _environment = environment;
         _kvService = kvService;
         _kvDetectionService = kvDetectionService;
+        _contractAnalyzerService = contractAnalyzerService;
     }
 
-    // Einfacher Endpunkt, um während der Entwicklung die KV-Erkennung zu testen
-    [HttpGet("/test")]
-    public async Task<ActionResult<KvDetectionTestResultDto>> Test()
-    {
-        _logger.LogDebug("Entering {Method}", nameof(Test));
-
-        string contractContent;
-        try
-        {
-            contractContent = await _kvService.GetSampleContractAsync();
-            _logger.LogDebug("Loaded sample contract");
-        }
-        catch (IOException ex)
-        {
-            _logger.LogError(ex, "Failed to load samples");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei oder der Kollektivverträge.");
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            _logger.LogError(ex, "No permission to access samples");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldatei oder der Kollektivverträge.");
-        }
-
-        KvDetectionResult detection;
-        try
-        {
-            detection = await _kvDetectionService.DetectAsync(contractContent);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "AI service failed while processing the prompt");
-            return StatusCode(StatusCodes.Status502BadGateway, "Fehler bei der Anfrage an den KI-Dienst.");
-        }
-
-        var resultDto = new KvDetectionTestResultDto
-        {
-            AllEqual = detection.AllEqual
-        };
-
-        return Ok(resultDto);
-    }
-
-    // Liefert ein zufälliges Analyseergebnis aus dem Responses-Ordner.
-    // Nützlich, wenn keine Verbindung zur KI besteht oder für UI-Tests.
     [HttpGet("/mockdata")]
     public async Task<ActionResult<ContractAnalysisDto>> GetMockData()
     {
@@ -147,244 +89,156 @@ public class PocketController : ControllerBase
     }
 
 
-    // Erster Schritt nach dem Upload: Der Vertrag wird validiert und bei Bedarf
-    // per OCR ausgelesen. Zudem wird versucht, den passenden Kollektivvertrag zu ermitteln.
-    [HttpPost("/preanalysis")]
-    public async Task<ActionResult<ContractValidationDto>> ValidateBinaryContract([FromForm] FileUploadDto request)
+    [HttpGet("/analysis")]
+    public async Task<ActionResult> AnalyzeViaWebSocket()
     {
-        _logger.LogDebug("Entering {Method}", nameof(ValidateBinaryContract));
+        if (!HttpContext.WebSockets.IsWebSocketRequest)
+            return BadRequest();
 
-        string? kvName = null;
+        using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+
+        var upload = await ReceiveFileAsync(webSocket);
+        if (upload == null)
+            return new EmptyResult();
+
+        var (fileBytes, fileName) = upload.Value;
+        IFormFile CreateFormFile() => new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", fileName);
+
+        FileContentDto requestContent = await _fileValidatorService.ValidateAndDecodeAsync(CreateFormFile());
+
+        string? kvName = await DetectKvAsync(requestContent);
+
+        ContractValidationDto validationDto;
         try
         {
-            var requestContent = await PreValidate(request.UploadedFile!);
-            KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
+            validationDto = await ValidateContractAsync(requestContent, kvName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Pre-validation failed");
+            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            return new EmptyResult();
+        }
+
+        await SendStringAsync(webSocket, JsonSerializer.Serialize(validationDto), CancellationToken.None);
+
+        if (!validationDto.IsReadable || !validationDto.IsContract)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+            return new EmptyResult();
+        }
+
+        ContractAnalysisDto analysisDto;
+        try
+        {
+            analysisDto = await AnalyzeContractAsync(requestContent, kvName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Analysis failed");
+            await SendStringAsync(webSocket, JsonSerializer.Serialize(new { error = ex.Message }), CancellationToken.None);
+            await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            return new EmptyResult();
+        }
+
+        await SendStringAsync(webSocket, JsonSerializer.Serialize(analysisDto), CancellationToken.None);
+        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+        return new EmptyResult();
+    }
+
+    private async Task<(byte[] fileBytes, string fileName)?> ReceiveFileAsync(WebSocket webSocket)
+    {
+        var buffer = new byte[8192];
+        using var ms = new MemoryStream();
+        WebSocketReceiveResult result;
+        do
+        {
+            result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
+            ms.Write(buffer, 0, result.Count);
+        } while (!result.EndOfMessage);
+
+        if (result.MessageType == WebSocketMessageType.Close)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            return null;
+        }
+
+        WebSocketFileDto? upload;
+        try
+        {
+            upload = JsonSerializer.Deserialize<WebSocketFileDto>(Encoding.UTF8.GetString(ms.ToArray()));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to parse websocket request");
+            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
+            return null;
+        }
+
+        if (upload == null)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "invalid", CancellationToken.None);
+            return null;
+        }
+
+        byte[] fileBytes = Convert.FromBase64String(upload.Data);
+        return (fileBytes, upload.FileName);
+    }
+
+    private async Task<string?> DetectKvAsync(FileContentDto content)
+    {
+        try
+        {
+            KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(content.FileContent);
             if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
             {
-                kvName = kvResult.KvName;
+                return kvResult.KvName;
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "KV detection failed during validation");
         }
+        return null;
+    }
 
-        ContractValidationDto resultDto;
-        try
-        {
-            resultDto = await ProcessContractRequest<ContractValidationDto>(
-                request.UploadedFile!,
-                BuildValidationPrompt,
-                GeminiService.PreAnalyzerSchemaDefinition,
-                true);
-        }
-        catch (BadHttpRequestException ex)
-        {
-            _logger.LogError(ex, "Pre-validation failed");
-            return BadRequest(new ContractValidationDto
-            {
-                IsReadable = false,
-                IsContract = false,
-                Result = ex.Message
-            });
-        }
-        catch (AiServiceException ex)
-        {
-            _logger.LogError(ex, "AI service failed while processing the prompt");
-            return StatusCode(StatusCodes.Status502BadGateway,
-                "Fehler bei der Anfrage an den KI-Dienst.");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+    private async Task<ContractValidationDto> ValidateContractAsync(FileContentDto content, string? kvName)
+    {
+        var dto = await _contractAnalyzerService.ProcessContractRequest<ContractValidationDto>(
+            content,
+            PromptBuilder.BuildValidationPrompt,
+            GeminiService.PreAnalyzerSchemaDefinition,
+            true);
 
-        resultDto.Kollektivvertrag = kvName;
+        dto.Kollektivvertrag = kvName;
         if (!string.IsNullOrWhiteSpace(kvName))
         {
-            resultDto.Result = string.Concat(
-                resultDto.Result.TrimEnd(),
+            dto.Result = string.Concat(
+                dto.Result.TrimEnd(),
                 " Es wurde der Kollektivvertrag \"",
                 kvName,
                 "\" erkannt.");
         }
 
-        _logger.LogDebug("Result: {result}", resultDto.Result);
-
-        return Ok(resultDto);
-    }
-
-    // Führt die vollständige Vertragsanalyse durch, indem der vorbereitete Text
-    // an den Gemini-Dienst gesendet wird. Optional kann ein Kollektivvertrag
-    // mitgegeben werden, um die Analyse zu verbessern.
-    [HttpPost("/mainanalysis")]
-    public async Task<ActionResult<ContractAnalysisDto>> PostBinaryContract([FromForm] FileUploadDto request)
-    {
-        _logger.LogDebug("Entering {Method}", nameof(PostBinaryContract));
-
-        string? kvName = request.Kollektivvertrag;
-        ContractAnalysisDto dto;
-        try
-        {
-            dto = await ProcessContractRequest<ContractAnalysisDto>(
-                request.UploadedFile!,
-                _geminiService.PromptBuilder,
-                GeminiService.AnalyzerSchemaDefinition,
-                false,
-                string.IsNullOrWhiteSpace(kvName),
-                kvName);
-        }
-        catch (BadHttpRequestException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (AiServiceException ex)
-        {
-            _logger.LogError(ex, "AI service failed while processing the prompt");
-            return StatusCode(StatusCodes.Status502BadGateway,
-                "Fehler bei der Anfrage an den KI-Dienst.");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-
-        return Ok(dto);
-    }
-
-    // Erstellt das Prompt für die Vorvalidierung. Die KI soll prüfen,
-    // ob der Text lesbar ist und ob es sich um einen Arbeitsvertrag handelt.
-    private static string BuildValidationPrompt(string filename, string fileContent)
-    {
-        var sb = new StringBuilder();
-        sb.Append("Ich sende dir eine Datei. Analysiere, ob der Inhalt der Datei lesbar ist. Schreibe das Ergebnis in die boolean Variable \"isReadable\".");
-        sb.Append("Wenn der Text lesbar ist, analysiere ob es sich dabei um einen Arbeitsvertrag handelt. Unabhängig von der Sprache der Datei soll seine Antwort auf deutsch sein!");
-        sb.Append("Schreibe das Ergebnis in die bool Variable \"isContract\". ");
-        sb.Append("Gib eine Begründung deiner Ergebnisse und falls es sich um einen Arbeitsvertrag handelt, eine überblicksmäßige Zusammenfassung vom Vertrag in die Variable \"result\". ");
-        sb.Append("Verwende keine Markdown-Formatierungen! Formatiere die Antwort in HTML! Hier die Datei:\n\n Dateiname: \n");
-        sb.Append(filename);
-        sb.Append("\nDateiinhalt: ");
-        sb.Append(fileContent);
-        return sb.ToString();
-    }
-
-    /// <summary>
-    /// Gemeinsame Hilfsmethode, die das Prompt erstellt, es optional mit
-    /// Kollektivvertragsdaten anreichert und anschließend an den KI-Dienst sendet.
-    /// </summary>
-    private async Task<T> ProcessContractRequest<T>(IFormFile file,
-        Func<string, string, string> promptBuilder,
-        object schema,
-        bool useAltKey,
-        bool detectKv = false,
-        string? kvName = null)
-    {
-        FileContentDto requestContent = await PreValidate(file);
-
-        string prompt = promptBuilder(requestContent.FileName, requestContent.FileContent);
-
-        if (!string.IsNullOrWhiteSpace(kvName) || detectKv)
-        {
-            try
-            {
-
-                if (detectKv && string.IsNullOrWhiteSpace(kvName))
-                {
-                    KvDetectionResult kvResult = await _kvDetectionService.DetectAsync(requestContent.FileContent);
-                    _logger.LogInformation("KV detection result: {Result}", kvResult.KvName);
-
-                    if (kvResult.AllEqual && kvResult.KvName != "Keiner" && kvResult.KvName != "Multiple")
-                    {
-                        kvName = kvResult.KvName;
-                    }
-                }
-
-                if (!string.IsNullOrWhiteSpace(kvName))
-                {
-                    string[] kvFiles = await _kvService.GetKvFileContentsAsync(kvName);
-                    var sbPrompt = new StringBuilder(prompt);
-                    sbPrompt.AppendLine();
-
-                    sbPrompt.AppendLine($"Der folgende Text enthält den dazugehörigen Kollektivvertrag \"{kvName}\" und mögliche Anhänge. " +
-                        $"Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse. Wenn der Vertrag in einem Punkt so etwas schreibt wie \"laut Kollektivvertrag\" soll die entsprechende Regelung" +
-                        $"aus dem Kollektivvetrag angegeben werden mit dem Zusatz \"(lt. Kollektivvertrag)\"");
-                    sbPrompt.AppendLine(string.Join("\n\n", kvFiles));
-                    prompt = sbPrompt.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Kollektivvertrag detection failed");
-            }
-        }
-        string answer = await _geminiService.SendPrompt(prompt, schema, useAltKey);
-
-        T? dto;
-        try
-        {
-            dto = JsonSerializer.Deserialize<T>(answer);
-        }
-        catch (JsonException ex)
-        {
-            string truncated = answer.Length > 200 ? answer[..200] + "..." : answer;
-            _logger.LogError(ex, "Failed to parse AI response: {Snippet}", truncated);
-            throw new InvalidOperationException($"Fehler beim Interpretieren der KI-Antwort: {truncated}", ex);
-        }
-        if (dto == null)
-            throw new InvalidOperationException("Invalid AI response");
-
-        if (!string.IsNullOrWhiteSpace(kvName))
-        {
-            switch (dto)
-            {
-                case ContractValidationDto v:
-                    v.Kollektivvertrag = kvName;
-                    break;
-                case ContractAnalysisDto a:
-                    a.Kollektivvertrag = kvName;
-                    break;
-            }
-        }
-
         return dto;
     }
 
-    // Liest die hochgeladene Datei ein und prüft Größe sowie Dateiendung,
-    // bevor der Inhalt an den KI-Dienst weitergegeben wird.
-    private async Task<FileContentDto> PreValidate(IFormFile file)
+    private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
     {
-        _logger.LogDebug("Entering {Method}", nameof(PreValidate));
+        return _contractAnalyzerService.ProcessContractRequest<ContractAnalysisDto>(
+            content,
+            PromptBuilder.BuildAnalysisPrompt,
+            GeminiService.AnalyzerSchemaDefinition,
+            false,
+            string.IsNullOrWhiteSpace(kvName),
+            kvName);
+    }
 
-        string filename = file.FileName;
-        string fileContent;
-
-        var extension = Path.GetExtension(filename).TrimStart('.').ToLowerInvariant();
-        if (!_fileDecoderService.AllowedExtensions.Contains(extension))
-        {
-            _logger.LogWarning("Fileextension not allowed: {FileName}", filename);
-            throw new BadHttpRequestException($"Fileextension not recognised! Recognised extensions are {_fileDecoderService.AllowedExtensionsString}.");
-        }
-
-        long maxUploadSizeMb = _configuration.GetValue<long>("MaxUploadSizeMB");
-        long maxBytes = maxUploadSizeMb * 1024 * 1024;
-        if (file.Length > maxBytes)
-        {
-            throw new BadHttpRequestException($"File too large. Maximum {maxUploadSizeMb} MB allowed.");
-        }
-
-        await using var stream = file.OpenReadStream();
-
-        try
-        {
-            fileContent = await _fileDecoderService.GetFileContentAsync(filename, stream);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error decoding file {FileName}", filename);
-            throw new BadHttpRequestException(ex.Message);
-        }
-
-        return new FileContentDto(filename, fileContent);
+    private static Task SendStringAsync(WebSocket socket, string data, CancellationToken token)
+    {
+        var bytes = Encoding.UTF8.GetBytes(data);
+        return socket.SendAsync(bytes, WebSocketMessageType.Text, true, token);
     }
 
 }
