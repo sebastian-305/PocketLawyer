@@ -2,7 +2,7 @@
 
 PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, welche Arbeitsverträge analysiert. PDF-Dateien werden dabei mit **UglyToad.PdfPig** ausgelesen, während Bilddateien per **Tesseract OCR** verarbeitet werden. Die extrahierten Texte werden an verschiedene KI‑Dienste gesendet und die Ergebnisse übersichtlich dargestellt.
 
-Im Ordner `Diagrams` liegen mehrere Ablauf‑ und Architekturdiagramme. Eine Übersicht der im Projekt verwendeten Entwurfsmuster findet sich in [DesignPatterns_de.md](./DesignPatterns_de.md).
+Im Ordner `docs/Diagrams` liegen mehrere Ablauf‑ und Architekturdiagramme. Eine Übersicht der im Projekt verwendeten Entwurfsmuster findet sich in [DesignPatterns_de.md](docs/DesignPatterns_de.md).
 
 ## Funktionsweise
 * **Gemini API**: Hauptdienst für die Analyse von Verträgen.
@@ -21,7 +21,7 @@ Service/         Schnittstellen und gemeinsame Service-Definitionen.
 wwwroot/         Statische Dateien der Weboberfläche (HTML, JS, CSS, Medien).
 Responses/       Ablage für gesicherte Antworten der KI.
 Samples/         Beispielverträge für Tests.
-Diagrams/        Architektur- und Ablaufdiagramme.
+docs/Diagrams/   Architektur- und Ablaufdiagramme.
 Infrastructure/tessdata/  Sprachdaten für Tesseract OCR.
 Infrastructure/KVS/       Kollektivverträge für die Analyse.
 ```
@@ -29,13 +29,13 @@ Infrastructure/KVS/       Kollektivverträge für die Analyse.
 ## Diagramme
 
 ### Architekturübersicht
-![Architekturübersicht](Diagrams/Architecture-Compontents.png)
+![Architekturübersicht](docs/Diagrams/Architecture-Compontents.png)
 
 ### Datenfluss
-![Datenfluss](Diagrams/Data-Flow.png)
+![Datenfluss](docs/Diagrams/Data-Flow.png)
 
 ### UML-Services
-![UML-Services](Diagrams/UML.png)
+![UML-Services](docs/Diagrams/UML.png)
 
 ## Endpunkte
 
@@ -76,6 +76,6 @@ KVSPath               = Pfad zu den Kollektivvertragsdateien
 API-Schlüssel sollten über Umgebungsvariablen oder User-Secrets gesetzt werden und **nicht** im Quellcode liegen.
 
 ## Lizenz & Beitrag
-Dieses Projekt steht ohne konkrete Lizenzangabe bereit. Beiträge sind willkommen. Weitere Informationen und Diagramme befinden sich im Ordner `Diagrams`.
-Weitere Details zu den eingesetzten Entwurfsmustern findest du in [DesignPatterns_de.md](./DesignPatterns_de.md).
+Dieses Projekt steht ohne konkrete Lizenzangabe bereit. Beiträge sind willkommen. Weitere Informationen und Diagramme befinden sich im Ordner `docs/Diagrams`.
+Weitere Details zu den eingesetzten Entwurfsmustern findest du in [DesignPatterns_de.md](docs/DesignPatterns_de.md).
 
