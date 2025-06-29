@@ -29,80 +29,6 @@ public class GeminiService : IAiService
     }
 
     #region public_methods
-    public async Task<string> SendContext()
-    {
-        _logger.LogDebug("Entering {Method}", nameof(SendContext));
-
-        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
-
-        var contentAsString = await ReadLawContentAsync();
-
-        _logger.LogDebug("The length of the normal Context is {Length}", contentAsString.Length);
-
-        var contentAs64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(contentAsString));
-
-        _logger.LogDebug("The length of the 64 Context is {Length}", contentAs64.Length);
-
-        try
-        {
-            var context = new
-            {
-                model = $"models/{_modelId}",
-                contents = new[]
-                {
-            new
-            {
-                parts = new object[]
-                {
-                    new
-                    {
-                        inline_data = new
-                        {
-                            mime_type = "text/plain",
-                            data = contentAs64
-                        }
-                    }
-                },
-                role = "user"
-            }
-        },
-                systemInstruction = new
-                {
-                    parts = new object[]
-                {
-                    new
-                    {
-                        text = "Du bist ein juristischer Experte, der Arbeitsverträge auf Basis des österreichischen Arbeitsrechts analysieren kann. " +
-                        "Im Kontext befinden sich die relevanten Gesetzestexte auf die du dich beziehst. " +
-                        "\n\"Bitte verwende keine Markdownformatierung, * oder #\" " +
-                        "\n\"Formatiere deine Antwort in HTML\""
-                    }
-                }
-                },
-                ttl = "600s"
-            };
-
-            var jsonContent = JsonSerializer.Serialize(context);
-
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(requestUri, content);
-            response.EnsureSuccessStatusCode();
-            var responseString = await response.Content.ReadAsStringAsync();
-            _logger.LogDebug("Context API response: {Response}", responseString);
-            return responseString ?? "";
-        }
-        catch (HttpRequestException ex)
-        {
-            _logger.LogError(ex, "HTTP Request Error, Status Code: {StatusCode}", ex.StatusCode);
-
-            return "Something went wrong with the API request.";
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while sending context");
-            return "Something went wrong";
-        }
-    }
     public string PromptBuilder(string filename, string fileContent)
     {
         StringBuilder promptBuilder = new StringBuilder();
@@ -193,6 +119,82 @@ public class GeminiService : IAiService
     #endregion
 
     #region private_methods
+
+    private async Task<string> SendContext()
+    {
+        _logger.LogDebug("Entering {Method}", nameof(SendContext));
+
+        var requestUri = $"https://generativelanguage.googleapis.com/v1beta/cachedContents?key={_apiKey}";
+
+        var contentAsString = await ReadLawContentAsync();
+
+        _logger.LogDebug("The length of the normal Context is {Length}", contentAsString.Length);
+
+        var contentAs64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(contentAsString));
+
+        _logger.LogDebug("The length of the 64 Context is {Length}", contentAs64.Length);
+
+        try
+        {
+            var context = new
+            {
+                model = $"models/{_modelId}",
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new object[]
+                        {
+                            new
+                            {
+                                inline_data = new
+                                {
+                                    mime_type = "text/plain",
+                                    data = contentAs64
+                                }
+                            }
+                        },
+                        role = "user"
+                    }
+                },
+                systemInstruction = new
+                {
+                    parts = new object[]
+                    {
+                        new
+                        {
+                            text = "Du bist ein juristischer Experte, der Arbeitsverträge auf Basis des österreichischen Arbeitsrechts analysieren kann. " +
+                                   "Im Kontext befinden sich die relevanten Gesetzestexte auf die du dich beziehst. " +
+                                   "\n\"Bitte verwende keine Markdownformatierung, * oder #\" " +
+                                   "\n\"Formatiere deine Antwort in HTML\""
+                        }
+                    }
+                },
+                ttl = "600s"
+            };
+
+            var jsonContent = JsonSerializer.Serialize(context);
+
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(requestUri, content);
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            _logger.LogDebug("Context API response: {Response}", responseString);
+            return responseString ?? "";
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "HTTP Request Error, Status Code: {StatusCode}", ex.StatusCode);
+
+            return "Something went wrong with the API request.";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while sending context");
+            return "Something went wrong";
+        }
+    }
+
     private static async Task<string> ReadLawContentAsync()
     {
         var dir = Path.Combine(Directory.GetCurrentDirectory(), "Infrastructure", "Context");

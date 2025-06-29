@@ -22,10 +22,6 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
             throw new NotImplementedException();
         }
 
-        public Task<string> SendContext()
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
         {
