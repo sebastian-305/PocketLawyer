@@ -19,11 +19,11 @@ Dtos/            Enthält die Datenobjekte (DTOs) für Requests und Responses.
 Infrastructure/  Implementierung der Dienste (Gemini, Claude, Dateidecoder, KV-Erkennung etc.).
 Service/         Schnittstellen und gemeinsame Service-Definitionen.
 wwwroot/         Statische Dateien der Weboberfläche (HTML, JS, CSS, Medien).
-Responses/       Ablage für gesicherte Antworten der KI.
+data/Responses/  Ablage für gesicherte Antworten der KI.
 Samples/         Beispielverträge für Tests.
 docs/Diagrams/   Architektur- und Ablaufdiagramme.
-Infrastructure/tessdata/  Sprachdaten für Tesseract OCR.
-Infrastructure/KVS/       Kollektivverträge für die Analyse.
+data/tessdata/   Sprachdaten für Tesseract OCR.
+data/KVS/        Kollektivverträge für die Analyse.
 ```
 
 ## Diagramme
@@ -40,7 +40,7 @@ Infrastructure/KVS/       Kollektivverträge für die Analyse.
 ## Endpunkte
 
 * `GET  /analysis` – WebSocket-Endpunkt, der nach dem Senden einer Datei zuerst die Voranalyse und danach die Hauptanalyse überträgt.
-* `GET  /mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `Responses`-Ordner.
+* `GET  /mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `data/Responses`-Ordner.
 
 ## Analyse-Workflow
 1. Die Weboberfläche lädt eine Datei per WebSocket auf den Endpunkt `/analysis` hoch.

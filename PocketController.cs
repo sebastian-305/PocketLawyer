@@ -46,7 +46,7 @@ public class PocketController : ControllerBase
 
         string responsesPath = Path.Combine(
             _environment.ContentRootPath,
-            _configuration["ResponsesPath"] ?? "Responses");
+            _configuration["ResponsesPath"] ?? Path.Combine("data", "Responses"));
 
         Directory.CreateDirectory(responsesPath);
 
