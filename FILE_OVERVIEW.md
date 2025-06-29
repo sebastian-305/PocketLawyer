@@ -23,11 +23,13 @@ This document provides a structured summary of all files and directories in the 
 |-------------------------------------------|--------------|
 | `PocketLawyer.sln`                        | Visual-Studio-Lösung, verweist auf das Hauptprojekt. |
 | `PocketLawyer.csproj`                     | Projektdatei für .NET 8 mit Abhängigkeiten (Anthropic.SDK, Google_GenerativeAI, PdfPig, Tesseract, Swashbuckle). |
-| `Program.cs`                              | Einstiegspunkt der Webanwendung, konfiguriert Dependency Injection, Middleware und Endpunkte. |
-| `PocketController.cs`                     | ASP.NET-Controller mit WebSocket-Endpunkt `/analysis` und Mock-API `/mockdata`. Orchestriert Validierung und Analyse. |
-| `docs/DesignPatterns.md`                  | Englische Dokumentation zu verwendeten Entwurfsmustern und Prinzipien. |
+| `Web/Program.cs`                          | Einstiegspunkt der Webanwendung, konfiguriert Dependency Injection, Middleware und Endpunkte. |
+| `Web/PocketController.cs`                 | ASP.NET-Controller mit WebSocket-Endpunkt `/analysis` und Mock-API `/mockdata`. Orchestriert Validierung und Analyse. |
+| *(entfällt)*                               | *früher `docs/DesignPatterns.md`, existiert nicht mehr.* |
 | `docs/DesignPatterns_de.md`               | Deutsche Version der Entwurfsmuster-Dokumentation. |
 | `README.md`                               | Hauptdokumentation des Projekts mit Funktionsübersicht, Installation und Diagrammen. |
+| `FILE_OVERVIEW.md`                        | Übersicht aller Dateien im Repository. |
+| `Options/*.cs`                            | Konfigurationsobjekte für Pfade, Upload und API-Schlüssel. |
 | `appsettings.json`                        | Standardkonfiguration (Logging, Pfade, Modell-ID, etc.). |
 | `appsettings.Development.json`            | Abweichende Einstellungen für Development (z.\u00a0B. LogLevel "Debug"). |
 | `Properties/launchSettings.json`          | Profildefinitionen zum Starten der Anwendung (http/https). |
@@ -164,10 +166,13 @@ Die Bilder liegen im Ordner `docs/Diagrams/`.
 | `docs/Diagrams/Architecture-Components.png` | Bild einer Architektur\u00fcbersicht. |
 | `docs/Diagrams/Data-Flow.png` | Veranschaulicht den Datenfluss innerhalb der Anwendung. |
 | `docs/Diagrams/Domainmodell.png` | UML-Diagramm des Dom\u00e4nenmodells. |
-| `docs/Diagrams/Sequence.png` | Sequenzdiagramm des Analyse-Workflows. |
+| `docs/Diagrams/SequenceOnionLayer.png` | Sequenzdiagramm der Onion-Architektur. |
+| `docs/Diagrams/SequenceFull.png` | Vollst\u00e4ndiges Sequenzdiagramm. |
 | `docs/Diagrams/UI-FLow.png` | Flussdiagramm der UI. |
+| `docs/Diagrams/Plant_UML.png` | Beispiel f\u00fcr ein PlantUML-Diagramm. |
 | `docs/Diagrams/UML.png` | \u00dcbersicht der Service-Klassen als Klassendiagramm. |
 | `docs/Diagrams/diagrams.md` | Markdown-Datei mit allen Diagrammen (Mermaid-Code). |
+| `docs/Diagrams/diagrams_images.md` | Variante mit gerenderten Bildern. |
 
 ---
 
@@ -229,5 +234,5 @@ Im Repository befinden sich zus\u00e4tzlich Git-bezogene Dateien wie `.gitignore
 
 ---
 
-Diese Aufstellung deckt alle Dateien (insgesamt ca. 277) ab. PDFs und Bilder wurden lediglich aufgelistet, da sie nicht im Klartext vorliegen. Damit bietet die Markdown-Datei einen umfassenden \u00dcberblick \u00fcber s\u00e4mtliche Inhalte und ihre Funktionen im Projekt PocketLawyer.
+Diese Aufstellung deckt alle Dateien (insgesamt ca. 261) ab. PDFs und Bilder wurden lediglich aufgelistet, da sie nicht im Klartext vorliegen. Damit bietet die Markdown-Datei einen umfassenden \u00dcberblick \u00fcber s\u00e4mtliche Inhalte und ihre Funktionen im Projekt PocketLawyer.
 
