@@ -2,6 +2,7 @@ using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Text;
 using System.Text.Json;
@@ -15,12 +16,14 @@ public class GeminiContextManager : IGeminiContextManager
     private readonly HttpClient _httpClient;
     private readonly GeminiOptions _options;
     private readonly ILogger<GeminiContextManager> _logger;
+    private readonly IWebHostEnvironment _environment;
 
-    public GeminiContextManager(HttpClient httpClient, IOptions<GeminiOptions> options, ILogger<GeminiContextManager> logger)
+    public GeminiContextManager(HttpClient httpClient, IOptions<GeminiOptions> options, ILogger<GeminiContextManager> logger, IWebHostEnvironment environment)
     {
         _httpClient = httpClient;
         _options = options.Value;
         _logger = logger;
+        _environment = environment;
     }
 
     public async Task<string?> GetContextKeyAsync()
@@ -95,9 +98,9 @@ public class GeminiContextManager : IGeminiContextManager
         return responseString ?? "";
     }
 
-    private static async Task<string> ReadLawContentAsync()
+    private async Task<string> ReadLawContentAsync()
     {
-        var dir = Path.Combine(Directory.GetCurrentDirectory(), DefaultPaths.Context);
+        var dir = Path.Combine(_environment.ContentRootPath, DefaultPaths.Context);
         var files = Directory.GetFiles(dir);
         StringBuilder contextBuilder = new StringBuilder();
         int index = 1;

@@ -21,7 +21,7 @@ builder.Services.AddTransient<RedactingLoggingHandler>();
 builder.Services.AddSingleton<IHttpMessageHandlerBuilderFilter, NoLoggingHttpClientBuilderFilter>();
 builder.Services
     .AddHttpClient<IGeminiContextManager, GeminiContextManager>()
-    .AddHttpMessageHandler<RedactingLoggingHandler>();
+    .AddHttpMessageHandler<RedactingLoggingHandler>(); // IWebHostEnvironment injected
 builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
