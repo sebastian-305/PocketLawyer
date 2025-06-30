@@ -4,6 +4,7 @@ namespace PocketLawyer.Infrastructure.FileDecoding;
 
 public class FileDecoderService : IFileDecoderService
 {
+    private static readonly string[] _allowedExtensions = ["txt", "pdf", "jpg", "jpeg", "png"];
     private readonly ILogger<FileDecoderService> _logger;
     private readonly IEnumerable<IFileDecoder> _decoders;
 
@@ -15,7 +16,7 @@ public class FileDecoderService : IFileDecoderService
         _decoders = decoders;
     }
 
-    public string[] AllowedExtensions => ["txt", "pdf", "jpg", "jpeg", "png"];
+    public string[] AllowedExtensions => _allowedExtensions;
     public string AllowedExtensionsString => string.Join(", ", AllowedExtensions);
 
     public async Task<string> GetFileContentAsync(string filename, Stream content)
