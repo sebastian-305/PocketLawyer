@@ -68,8 +68,10 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 ## Analyse-Workflow
 
 1. Die Weboberfläche lädt eine Datei per WebSocket auf den Endpunkt `/analysis` hoch.
-2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt. Anschließend erkennt `KvAiDetectionService` gegebenenfalls den passenden Kollektivvertrag.
-3. `AnalyzeContractUseCase` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`. Ist der Vertrag gültig, folgt der Use Case **Hauptanalyse**, dessen Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
+2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt.
+3. `AnalyzeContractUseCase` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`.
+4. Steht fest, dass es sich um einen Arbeitsvertrag handelt, sucht `KvAiDetectionService` nach dem passenden Kollektivvertrag.
+5. Anschließend startet die **Hauptanalyse**, deren Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
 
 ## Installation und Ausführung
 

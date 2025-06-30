@@ -37,14 +37,15 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             var (bytes, name) = await ReceiveFileAsync(socket);
             IFormFile CreateFile() => new FormFile(new MemoryStream(bytes), 0, bytes.Length, "file", name);
             FileContentDto content = await _fileValidatorService.ValidateAndDecodeAsync(CreateFile());
-            string? kvName = await DetectKvAsync(content);
-            ContractValidationDto validation = await ValidateContractAsync(content, kvName);
+            ContractValidationDto validation = await ValidateContractAsync(content, null);
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(validation), CancellationToken.None);
             if (!validation.IsReadable || !validation.IsContract)
             {
                 await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
                 return;
             }
+
+            string? kvName = await DetectKvAsync(content);
             ContractAnalysisDto analysis = await AnalyzeContractAsync(content, kvName);
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis), CancellationToken.None);
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
@@ -107,7 +108,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "KV detection failed during validation");
+            _logger.LogError(ex, "KV detection failed");
         }
         return null;
     }
