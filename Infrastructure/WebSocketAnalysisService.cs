@@ -32,6 +32,13 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
         _analyzeContractUseCase = analyzeContractUseCase;
     }
 
+    // Ablauf siehe README:
+    // 1. WebSocket akzeptieren.
+    // 2. Datei empfangen und über den FileValidatorService prüfen.
+    // 3. Voranalyse per AnalyzeContractUseCase ausführen und Ergebnis senden.
+    // 4. Erkennt die Voranalyse einen Vertrag, ermittelt KvAiDetectionService den
+    //    passenden KV und startet die Hauptanalyse.
+    // 5. Beide Resultate werden als JSON über den WebSocket zurückgesendet.
     public async Task HandleAsync(HttpContext context)
     {
         // WebSocket akzeptieren.
