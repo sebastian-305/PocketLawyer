@@ -57,7 +57,7 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 
 ### UI-Flow
 
-<img src="docs/Diagrams/UI-Flow.png" width="400">
+<img src="docs/Diagrams/UI-Flow.png" width="300">
 
 ## Endpunkte
 
