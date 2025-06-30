@@ -44,8 +44,6 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             IFormFile CreateFile() => new FormFile(new MemoryStream(bytes), 0, bytes.Length, "file", name);
             // Validate/Decode via FileValidatorService.
             FileContentDto content = await _fileValidatorService.ValidateAndDecodeAsync(CreateFile());
-            // Kollektivvertrag erkennen.
-            string? kvName = await DetectKvAsync(content);
             // Voranalyse senden und Ergebnis verschicken.
             ContractValidationDto validation = await ValidateContractAsync(content);
 
@@ -57,6 +55,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             }
 
             // Bei positivem Ergebnis Hauptanalyse ausführen.
+            // Passenden Kollektivvertrag suchen.
             string? kvName = await DetectKvAsync(content);
 
             ContractAnalysisDto analysis = await AnalyzeContractAsync(content, kvName);
@@ -131,7 +130,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content)
     {
-        // Löst die KI-Voranalyse des Vertrags aus.
+        // Voranalyse: Lesbarkeit und Vertragsstatus ermitteln.
         return _analyzeContractUseCase.ProcessContractRequest<ContractValidationDto>(
             content,
             PromptBuilder.BuildValidationPrompt,
