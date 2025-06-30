@@ -95,9 +95,9 @@ Benötigte Einstellungen befinden sich in `appsettings.json` bzw. den User-Secre
 
 ``` Text
 Gemini:Key            = API-Schlüssel für Gemini
-Gemini:Key:Alternative = optionaler Ausweichschlüssel
+Gemini:AltKey         = zusätzlicher API-Schlüssel für Gemini
 Gemini:ModelId        = Modell-ID (Standard: "gemini-1.5-flash-002")
-Claude:Key            = API-Schlüssel für Claude (optional)
+Claude:Key            = API-Schlüssel für Claude
 TesseractDataPath     = Pfad zu den OCR-Sprachdaten (Standard: "data/tessdata")
 ResponsesPath         = Ablageort für AI-Antworten (Standard: "data/Responses")
 MaxUploadSizeMB       = Maximale Upload-Größe (Standard: 20)
