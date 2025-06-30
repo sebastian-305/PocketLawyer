@@ -53,7 +53,7 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 
 ### Sequenzdiagramm der Onion-Layer
 
-<img src="docs/Diagrams/SequenceOnionLayer.png" width="600">
+<img src="docs/Diagrams/SequenceOnionLayer.png" width="500">
 
 ### UI-Flow
 
