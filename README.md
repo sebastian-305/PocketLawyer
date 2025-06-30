@@ -49,15 +49,15 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 
 ### Architekturübersicht
 
-<img src="docs/Diagrams/Architecture-Components.png" width="700">
+<img src="docs/Diagrams/Architecture-Components.png" width="600">
 
 ### Sequenzdiagramm der Onion-Layer
 
-<img src="docs/Diagrams/SequenceOnionLayer.png" width="700">
+<img src="docs/Diagrams/SequenceOnionLayer.png" width="600">
 
 ### UI-Flow
 
-<img src="docs/Diagrams/UI-Flow.png" width="500">
+<img src="docs/Diagrams/UI-Flow.png" width="400">
 
 ## Endpunkte
 
