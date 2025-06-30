@@ -37,7 +37,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             var (bytes, name) = await ReceiveFileAsync(socket);
             IFormFile CreateFile() => new FormFile(new MemoryStream(bytes), 0, bytes.Length, "file", name);
             FileContentDto content = await _fileValidatorService.ValidateAndDecodeAsync(CreateFile());
-            ContractValidationDto validation = await ValidateContractAsync(content, null);
+            ContractValidationDto validation = await ValidateContractAsync(content);
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(validation), CancellationToken.None);
             if (!validation.IsReadable || !validation.IsContract)
             {
@@ -113,15 +113,14 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
         return null;
     }
 
-    private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content, string? kvName)
+    private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content)
     {
         return _analyzeContractUseCase.ProcessContractRequest<ContractValidationDto>(
             content,
             PromptBuilder.BuildValidationPrompt,
             GeminiService.PreAnalyzerSchemaDefinition,
             true,
-            false,
-            kvName);
+            false);
     }
 
     private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
@@ -131,7 +130,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             PromptBuilder.BuildAnalysisPrompt,
             GeminiService.AnalyzerSchemaDefinition,
             false,
-            string.IsNullOrWhiteSpace(kvName),
+            false,
             kvName);
     }
 
