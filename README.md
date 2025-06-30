@@ -58,7 +58,7 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 
 ### UI-Flow
 
-<img src="docs/Diagrams/UI-FLow.png" width="500">
+<img src="docs/Diagrams/UI-Flow.png" width="500">
 
 ## Endpunkte
 
@@ -68,8 +68,10 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 ## Analyse-Workflow
 
 1. Die Weboberfläche lädt eine Datei per WebSocket auf den Endpunkt `/analysis` hoch.
-2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt. Anschließend erkennt `KvAiDetectionService` gegebenenfalls den passenden Kollektivvertrag.
-3. `AnalyzeContractUseCase` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`. Ist der Vertrag gültig, folgt der Use Case **Hauptanalyse**, dessen Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
+2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt.
+3. `AnalyzeContractUseCase` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`.
+4. Steht fest, dass es sich um einen Arbeitsvertrag handelt, sucht `KvAiDetectionService` nach dem passenden Kollektivvertrag.
+5. Anschließend startet die **Hauptanalyse**, deren Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
 
 ## Installation und Ausführung
 
@@ -93,9 +95,9 @@ Benötigte Einstellungen befinden sich in `appsettings.json` bzw. den User-Secre
 
 ``` Text
 Gemini:Key            = API-Schlüssel für Gemini
-Gemini:Key:Alternative = optionaler Ausweichschlüssel
+Gemini:AltKey         = zusätzlicher API-Schlüssel für Gemini
 Gemini:ModelId        = Modell-ID (Standard: "gemini-1.5-flash-002")
-Claude:Key            = API-Schlüssel für Claude (optional)
+Claude:Key            = API-Schlüssel für Claude
 TesseractDataPath     = Pfad zu den OCR-Sprachdaten (Standard: "data/tessdata")
 ResponsesPath         = Ablageort für AI-Antworten (Standard: "data/Responses")
 MaxUploadSizeMB       = Maximale Upload-Größe (Standard: 20)

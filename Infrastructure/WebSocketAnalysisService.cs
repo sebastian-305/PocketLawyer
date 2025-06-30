@@ -47,14 +47,18 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             // Kollektivvertrag erkennen.
             string? kvName = await DetectKvAsync(content);
             // Voranalyse senden und Ergebnis verschicken.
-            ContractValidationDto validation = await ValidateContractAsync(content, kvName);
+            ContractValidationDto validation = await ValidateContractAsync(content);
+
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(validation), CancellationToken.None);
             if (!validation.IsReadable || !validation.IsContract)
             {
                 await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
                 return;
             }
+
             // Bei positivem Ergebnis Hauptanalyse ausführen.
+            string? kvName = await DetectKvAsync(content);
+
             ContractAnalysisDto analysis = await AnalyzeContractAsync(content, kvName);
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis), CancellationToken.None);
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
@@ -120,12 +124,12 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "KV detection failed during validation");
+            _logger.LogError(ex, "KV detection failed");
         }
         return null;
     }
 
-    private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content, string? kvName)
+    private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content)
     {
         // Löst die KI-Voranalyse des Vertrags aus.
         return _analyzeContractUseCase.ProcessContractRequest<ContractValidationDto>(
@@ -133,8 +137,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             PromptBuilder.BuildValidationPrompt,
             GeminiService.PreAnalyzerSchemaDefinition,
             true,
-            false,
-            kvName);
+            false);
     }
 
     private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
@@ -145,7 +148,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             PromptBuilder.BuildAnalysisPrompt,
             GeminiService.AnalyzerSchemaDefinition,
             false,
-            string.IsNullOrWhiteSpace(kvName),
+            false,
             kvName);
     }
 

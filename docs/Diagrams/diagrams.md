@@ -375,10 +375,6 @@ sequenceDiagram
     FV->>FDS: GetFileContentAsync()
     FDS-->>FV: Text
     FV-->>WS: FileContentDto
-    WS->>KD: DetectAsync(Text)
-    KD->>CLA: SendPrompt()
-    CLA-->>KD: KV-Name
-    KD-->>WS: KvDetectionResult
     WS->>CA: ProcessContractRequest(PreAnalysis)
     CA->>GEM: SendPrompt()
     GEM-->>CA: ContractValidationDto
@@ -386,10 +382,14 @@ sequenceDiagram
     WS-->>PC: PreAnalysis
     PC-->>FE: PreAnalysis
 
-    alt Datei ungültig
+    alt Vertrag ungültig
         WS-->>PC: Socket schließen
         PC-->>FE: Verbindung geschlossen
-    else Datei gültig
+    else Vertrag gültig
+        WS->>KD: DetectAsync(Text)
+        KD->>CLA: SendPrompt()
+        CLA-->>KD: KV-Name
+        KD-->>WS: KvDetectionResult
         WS->>CA: ProcessContractRequest(Analysis)
         CA->>GEM: SendPrompt()
         GEM-->>CA: ContractAnalysisDto
@@ -409,12 +409,12 @@ graph TD
     N -- WebSocket --> PC[WebSocket /analysis]
     PC --> WSAS[WebSocketAnalysisService]
     WSAS --> FV[FileValidatorService]
-    FV --> FDS[FileDecoderService]
-    WSAS --> KD[KvAiDetectionService]
-    KD --> CLA[ClaudeService]
+    FV --> FDS[FileDecoderService]   
     WSAS --> CA[AnalyzeContractUseCase]
     CA --> GEM[GeminiService]
     CA --> KFS[KvFileService]
+    WSAS --> KD[KvAiDetectionService]
+    KD --> CLA[ClaudeService]
     GEM --> RL[ResponseLogger]
     GEM --> GCM[GeminiContextManager]
     RL --> Files[data/Responses/]
