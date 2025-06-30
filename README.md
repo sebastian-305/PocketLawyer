@@ -30,7 +30,6 @@ data/tessdata/   Sprachdaten für Tesseract OCR.
 data/KVS/        Kollektivverträge für die Analyse.
 data/Context/    Vorverarbeitete Kontextdaten für Prompts.
 data/RawContextFiles/ Ursprungsdateien für den Kontextaufbau.
-
 ```
 
 Alle genannten Ressourcen liegen gebündelt im Verzeichnis `data/`.
@@ -50,11 +49,11 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 
 ### Architekturübersicht
 
-<img src="docs/Diagrams/Architecture-Components.png" width="800">
+<img src="docs/Diagrams/Architecture-Components.png" width="700">
 
 ### Sequenzdiagramm der Onion-Layer
 
-<img src="docs/Diagrams/SequenceOnionLayer.png" width="800">
+<img src="docs/Diagrams/SequenceOnionLayer.png" width="700">
 
 ### UI-Flow
 
