@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --blue-bg: #2d3669;
     --paper-bg: #dbd2c1;
     --highlight: #e9ba30;
@@ -88,7 +88,7 @@ body {
 
 .cta-image img {
     width: 100%;
-    max-height: 100vh;
+/*    max-height: 100vh;*/
     height: auto;
 }
 
