@@ -72,22 +72,6 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 4. Steht fest, dass es sich um einen Arbeitsvertrag handelt, sucht `KvAiDetectionService` nach dem passenden Kollektivvertrag.
 5. Anschließend startet die **Hauptanalyse**, deren Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
 
-## Installation und Ausführung
-
-1. Abhängigkeiten wiederherstellen:
-
-   ```bash
-   dotnet restore
-   ```
-
-2. Anwendung starten:
-
-   ```bash
-   dotnet run
-   ```
-
-3. Die Weboberfläche ist danach unter `http://localhost:5112` erreichbar (vgl. `launchSettings.json`).
-
 ## Konfiguration
 
 Benötigte Einstellungen befinden sich in `appsettings.json` bzw. den User-Secrets:
