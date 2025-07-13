@@ -20,8 +20,8 @@ graph TD
     subgraph Infrastructure
         FDS[FileDecoderService]
         GEM[GeminiService]
-        CLA[ClaudeService]
         KFS[KvFileService]
+        CLA[ClaudeService]
         RL[ResponseLogger]
         GCM[GeminiContextManager]
     end

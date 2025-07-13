@@ -86,7 +86,7 @@ public class GeminiContextManager : IGeminiContextManager
                     }
                 }
             },
-            ttl = "600s"
+            ttl = "300s"
         };
 
         var jsonContent = JsonSerializer.Serialize(context);
