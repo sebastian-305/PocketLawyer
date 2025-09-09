@@ -1,4 +1,5 @@
-namespace PocketLawyer.Application.Interfaces;
+530-
+    öäöänamespace PocketLawyer.Application.Interfaces;
 
 public interface IResponseLogger
 {
