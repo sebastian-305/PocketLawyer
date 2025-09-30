@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using PocketLawyer.Options;
 using System.Text.Json;
+using PocketLawyer.Application.Exceptions;
 
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
@@ -36,10 +37,13 @@ public class GeminiService : IAiClient
 
     #region public_methods
 
-    public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
+    public async Task<string> SendPrompt(string prompt, object? outputSchema)
     {
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
+        bool useAltKey = outputSchema?.ToString().Equals("PreAnalyzerSchema") ?? false;
         string apiKey = useAltKey ? _options.AltKey : _options.Key;
+
+        _logger.LogDebug("Using Schema: {schema}", outputSchema?.ToString());
 
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_options.ModelId}:generateContent?key={apiKey}";
 
@@ -75,7 +79,8 @@ public class GeminiService : IAiClient
         _logger.LogInformation("Sending prompt to Gemini API");
         try
         {
-            var response = await _httpClient.PostAsync(requestUri, content);
+            var response = await _httpClient
+                .PostAsync(requestUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("Prompt response: {Response}", responseString);
             response.EnsureSuccessStatusCode();

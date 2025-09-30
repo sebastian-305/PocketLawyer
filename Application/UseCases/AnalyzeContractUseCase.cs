@@ -1,4 +1,5 @@
 using System.Text.Json;
+using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Infrastructure;
@@ -28,7 +29,6 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
         FileContentDto content,
         Func<string, string, string> promptBuilder,
         object schema,
-        bool useAltKey,
         bool detectKv = false,
         string? kvName = null)
     {
@@ -61,7 +61,7 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
             }
         }
 
-        string answer = await _aiService.SendPrompt(prompt, schema, useAltKey);
+        string answer = await _aiService.SendPrompt(prompt, schema);
 
         T? dto;
         try

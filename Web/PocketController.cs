@@ -5,6 +5,8 @@ using System.Text.Json;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Options;
 using Microsoft.Extensions.Options;
+using PocketLawyer.Application.UseCases;
+using PocketLawyer.Infrastructure;
 
 namespace PocketLawyer.Web;
 
@@ -16,17 +18,19 @@ public class PocketController : ControllerBase
     private readonly IWebHostEnvironment _environment;
     private readonly PathOptions _paths;
     private readonly IWebSocketAnalysisService _socketService;
-
+    private readonly IContractAnalyzerService _analyzeContractUseCase;
     public PocketController(
         ILogger<PocketController> logger,
         IOptions<PathOptions> pathOptions,
         IWebHostEnvironment environment,
-        IWebSocketAnalysisService socketService)
+        IWebSocketAnalysisService socketService,
+        IContractAnalyzerService analyzeContractUseCase)
     {
         _logger = logger;
         _paths = pathOptions.Value;
         _environment = environment;
         _socketService = socketService;
+        _analyzeContractUseCase = analyzeContractUseCase;
     }
 
     [HttpGet("/mockdata")]
@@ -87,6 +91,15 @@ public class PocketController : ControllerBase
 
 
         await _socketService.HandleAsync(HttpContext);
+        return new EmptyResult();
+    }
+
+    [HttpPost("/lease")]
+    public async Task<ActionResult> AnalyseLease()
+    {
+        await _analyzeContractUseCase.ProcessContractRequest<FileContentDto>(new FileContentDto("Test.txt", "Das ist ein Test"), PromptBuilder.BuildAnalysisPrompt, null);
+
+
         return new EmptyResult();
     }
 

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Application.Exceptions;
 
 namespace PocketLawyer.Infrastructure;
 
@@ -119,8 +120,8 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             content,
             PromptBuilder.BuildValidationPrompt,
             GeminiService.PreAnalyzerSchemaDefinition,
-            true,
-            false);
+            true
+            );
     }
 
     private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
@@ -129,7 +130,6 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             content,
             PromptBuilder.BuildAnalysisPrompt,
             GeminiService.AnalyzerSchemaDefinition,
-            false,
             false,
             kvName);
     }
