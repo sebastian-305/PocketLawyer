@@ -14,7 +14,7 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
 
     public AnalyzeContractUseCase(
         ILogger<AnalyzeContractUseCase> logger,
-        [FromKeyedServices("gemini")] IAiClient aiService,
+        [FromKeyedServices("nebius")] IAiClient aiService,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService)
     {
