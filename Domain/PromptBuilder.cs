@@ -1,7 +1,7 @@
 using System.Text;
 using System.Collections.Generic;
 
-namespace PocketLawyer.Infrastructure;
+namespace PocketLawyer.Domain;
 
 public static class PromptBuilder
 {

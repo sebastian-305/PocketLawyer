@@ -36,10 +36,11 @@ public class GeminiService : IAiClient
 
     #region public_methods
 
-    public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
+    public async Task<string> SendPrompt(string prompt, object? outputSchema)
     {
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
-        string apiKey = useAltKey ? _options.AltKey : _options.Key;
+        bool useAltKey = outputSchema is PreAnalyzerSchema;
+        string apiKey =  useAltKey ? _options.AltKey : _options.Key;
 
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_options.ModelId}:generateContent?key={apiKey}";
 

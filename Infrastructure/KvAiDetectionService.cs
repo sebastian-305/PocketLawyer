@@ -4,6 +4,7 @@ using System.Linq;
 using PocketLawyer.Application.Interfaces;
 using System.Text.Json;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain;
 
 namespace PocketLawyer.Infrastructure;
 
@@ -33,7 +34,7 @@ public class KvAiDetectionService : IKvDetectionService
 
         var tasks = Enumerable
             .Range(0, 3)
-            .Select(_ => _aiService.SendPrompt(prompt, null, false))
+            .Select(_ => _aiService.SendPrompt(prompt, null))
             .ToArray();
 
         string[] answers = await Task.WhenAll(tasks);

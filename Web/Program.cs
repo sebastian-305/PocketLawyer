@@ -4,6 +4,7 @@ using Microsoft.Extensions.Http;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.UseCases;
 using PocketLawyer.Infrastructure;
+using PocketLawyer.Infrastructure.AiServices;
 using PocketLawyer.Infrastructure.AiServices.Claude;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.AiServices.Nebius;
@@ -55,9 +56,32 @@ builder.Services
 builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
-builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini");
-builder.Services.AddKeyedScoped<IAiClient, ClaudeService>("claude");
-builder.Services.AddKeyedScoped<IAiClient, NebiusService>("nebius");
+// inner (echte Implementierung)
+builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini:inner");
+
+// outer (Decorator) – Factory hat (sp, key)!
+builder.Services.AddKeyedScoped<IAiClient>("gemini", (sp, key) =>
+    new TimedAiClient(
+        sp.GetRequiredKeyedService<IAiClient>("gemini:inner"),
+        sp.GetRequiredService<ILogger<TimedAiClient>>()));
+
+// inner (echte Implementierung)
+builder.Services.AddKeyedScoped<IAiClient, ClaudeService>("claude:inner");
+
+// outer (Decorator) – Factory hat (sp, key)!
+builder.Services.AddKeyedScoped<IAiClient>("claude", (sp, key) =>
+    new TimedAiClient(
+        sp.GetRequiredKeyedService<IAiClient>("claude:inner"),
+        sp.GetRequiredService<ILogger<TimedAiClient>>()));
+
+// inner (echte Implementierung)
+builder.Services.AddKeyedScoped<IAiClient, NebiusService>("nebius:inner");
+
+// outer (Decorator) – Factory hat (sp, key)!
+builder.Services.AddKeyedScoped<IAiClient>("nebius", (sp, key) =>
+    new TimedAiClient(
+        sp.GetRequiredKeyedService<IAiClient>("nebius:inner"),
+        sp.GetRequiredService<ILogger<TimedAiClient>>()));
 
 builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.TextFileDecoder>();
 builder.Services.AddScoped<IFileDecoder, PocketLawyer.Infrastructure.FileDecoding.Strategies.PdfFileDecoder>();

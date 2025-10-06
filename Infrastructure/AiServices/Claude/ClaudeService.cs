@@ -21,7 +21,7 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
 
 
 
-        public async Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey = false)
+        public async Task<string> SendPrompt(string prompt, object? outputSchema)
         {
             _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
 
