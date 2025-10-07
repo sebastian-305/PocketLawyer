@@ -36,6 +36,7 @@ body p {
     top: 0;
     z-index: 1030;
     backdrop-filter: saturate(140%) blur(6px);
+    background-color: var(--blue-bg);
     background: color-mix(in oklab, var(--blue-bg) 92%, #000 8%);
     border-bottom: 1px solid rgba(233, 230, 224, 0.25);
 }
@@ -209,6 +210,7 @@ section img {
 /* Footer */
 .footer {
     border-top: 1px solid rgba(233, 230, 224, 0.25);
+    background-color: var(--blue-bg);
     background: color-mix(in oklab, var(--blue-bg) 94%, #000 6%);
 }
 .link-plain {
