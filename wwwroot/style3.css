@@ -143,6 +143,10 @@ header h1 {
 
 .why-section > div {
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .why-section h2 {
@@ -156,7 +160,7 @@ header h1 {
     gap: 1rem;
     padding: 1rem;
     color: var(--blue-bg);
-    height: 100%;
+    height: fit-content;
 }
 
 .why-section .why-cards > * {
@@ -165,7 +169,10 @@ header h1 {
     padding: 1.5rem;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
     flex-basis: 33%;
-    height: 60%;
+    /* height: 60%; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .why-section .why-cards > * > h3 {
