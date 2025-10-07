@@ -4,7 +4,6 @@
     --highlight: #e9ba30;
     --neutral-bg: #e9e6e0;
     --font-primary: "Agrandir", sans-serif;
-    --font-secondary: "Crimson Text", serif;
     --header-height: 5rem;
 }
 
@@ -64,11 +63,14 @@ body p {
 .section-invert {
     background-color: var(--neutral-bg);
     color: var(--blue-bg);
+    height: 100vh;
 }
 .section-invert h2,
 .section-invert h3,
 .section-invert p {
     color: var(--blue-bg);
+    font-weight: 800;
+    font-size: 3rem;
 }
 
 /* Fullscreen sections on desktop */
@@ -100,14 +102,21 @@ body p {
 }
 
 /* Intro section */
+.intro-section {
+    padding-top: 0.5%;
+}
+section img {
+    max-height: 100vh;
+}
+
 .intro-section h2 {
     font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
     font-weight: 800;
 }
 .intro-section h3 {
-    font-family: var(--font-secondary);
     font-weight: 600;
     opacity: 0.95;
+    font-size: 1.5rem;
 }
 
 /* CTA button */
@@ -169,11 +178,18 @@ body p {
 .summary-box {
     background-color: var(--neutral-bg);
 }
-
+#features h3 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+#features p {
+    font-size: 1rem;
+}
 .modal-footer .btn-upload {
     background-color: var(--blue-bg);
     color: var(--neutral-bg);
 }
+
 .modal-footer .btn-upload:hover {
     background-color: #1a1f4d;
 }
@@ -217,4 +233,146 @@ body p {
 /* Utility */
 .object-fit-cover {
     object-fit: cover;
+}
+
+/* =======================
+   📱 RESPONSIVE DESIGN
+   ======================= */
+
+/* --- Tablet (bis 991px) --- */
+@media (max-width: 991.98px) {
+    /* Header */
+    .header {
+        backdrop-filter: none;
+        background: var(--blue-bg);
+    }
+
+    .site-title {
+        font-size: 1.5rem;
+    }
+
+    .header .brand-link img {
+        height: 38px;
+    }
+
+    /* Section layout: stacked instead of side-by-side */
+
+    .intro-section .row,
+    .cta-section .row {
+        flex-direction: column !important;
+    }
+
+    .intro-section .intro-image,
+    .cta-section .cta-image {
+        order: -1;
+        margin-bottom: 1.5rem;
+    }
+
+    .screen-section {
+        min-block-size: auto;
+        padding-block: 3rem;
+    }
+
+    /* Typography */
+    h1,
+    h2,
+    h3 {
+        text-align: center;
+    }
+
+    .intro-text,
+    .cta-text {
+        text-align: center !important;
+        padding-inline: 1.5rem;
+    }
+
+    /* Buttons */
+    .btn-cta {
+        width: 100%;
+        font-size: 1.1rem;
+        padding-block: 1rem;
+    }
+
+    /* Images */
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 1rem;
+    }
+}
+
+/* --- Smartphone (bis 767px) --- */
+@media (max-width: 767.98px) {
+    /* Global spacing */
+    .section-padded {
+        padding-block: 2.5rem;
+    }
+
+    /* Header title smaller */
+    .site-title {
+        font-size: 1.25rem;
+    }
+
+    /* Adjust text sizes */
+    h1 {
+        font-size: 1.8rem;
+        line-height: 1.3;
+    }
+    h2 {
+        font-size: 1.3rem;
+        line-height: 1.4;
+    }
+    p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    /* Hide non-essential large elements if any */
+    .intro-image,
+    .cta-image {
+        border-radius: 0.5rem;
+    }
+
+    /* Modal */
+    .modal-dialog {
+        width: 95%;
+        margin: 0 auto;
+    }
+
+    /* Footer layout */
+    .footer .container {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+
+    /* Footer links */
+    .link-plain {
+        padding-bottom: 0;
+    }
+}
+
+/* --- Very small screens (≤480px) --- */
+@media (max-width: 480px) {
+    .site-title {
+        font-size: 1.1rem;
+    }
+
+    .btn-cta {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .intro-section h2 {
+        font-size: 1.4rem;
+    }
+
+    .intro-section h3 {
+        font-size: 1.1rem;
+    }
+
+    .modal-content {
+        padding: 1rem;
+        border-radius: 0.75rem;
+    }
 }
