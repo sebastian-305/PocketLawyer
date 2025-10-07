@@ -1,0 +1,220 @@
+:root {
+    --blue-bg: #2d3669;
+    --paper-bg: #dbd2c1;
+    --highlight: #e9ba30;
+    --neutral-bg: #e9e6e0;
+    --font-primary: "Agrandir", sans-serif;
+    --font-secondary: "Crimson Text", serif;
+    --header-height: 5rem;
+}
+
+/* Base */
+* {
+    box-sizing: border-box;
+}
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: var(--font-primary);
+    background-color: var(--blue-bg);
+    color: var(--neutral-bg);
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+body h1,
+body h2,
+body h3,
+body p {
+    color: var(--neutral-bg);
+}
+
+/* Header */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    backdrop-filter: saturate(140%) blur(6px);
+    background: color-mix(in oklab, var(--blue-bg) 92%, #000 8%);
+    border-bottom: 1px solid rgba(233, 230, 224, 0.25);
+}
+.site-title {
+    font-size: clamp(1.25rem, 1.2rem + 1.2vw, 2rem);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin: 0;
+}
+.brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: inherit;
+    text-decoration: none;
+}
+.brand-link:hover {
+    opacity: 0.9;
+}
+
+/* Layout helpers */
+.section-padded {
+    padding-block: clamp(2rem, 4vw, 4rem);
+}
+.section-invert {
+    background-color: var(--neutral-bg);
+    color: var(--blue-bg);
+}
+.section-invert h2,
+.section-invert h3,
+.section-invert p {
+    color: var(--blue-bg);
+}
+
+/* Fullscreen sections on desktop */
+.screen-section {
+    min-block-size: calc(100svh - var(--header-height));
+    display: flex;
+    align-items: center;
+}
+@media (max-width: 991.98px) {
+    .screen-section {
+        min-block-size: auto;
+    }
+}
+
+/* Rounded image helpers */
+.rounded-start-md {
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+}
+.rounded-end-md {
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+@media (max-width: 767.98px) {
+    .rounded-start-md,
+    .rounded-end-md {
+        border-radius: 0.75rem;
+    }
+}
+
+/* Intro section */
+.intro-section h2 {
+    font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    font-weight: 800;
+}
+.intro-section h3 {
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    opacity: 0.95;
+}
+
+/* CTA button */
+.btn-cta {
+    --_bg: var(--highlight);
+    --_fg: var(--blue-bg);
+    background-color: var(--_bg);
+    color: var(--_fg);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    border-radius: 0.875rem;
+    padding: 0.9rem 1.25rem;
+    border: 0;
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.15);
+    transition: transform 0.12s ease, box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+.btn-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.22);
+    background-color: #e6b800;
+}
+.btn-cta:active {
+    transform: translateY(0);
+}
+
+/* Modal / Analysis */
+.surface {
+    background: var(--neutral-bg);
+}
+.modal-content {
+    background-color: var(--neutral-bg);
+    border-radius: 1rem;
+}
+.modal-dialog h2,
+.modal-dialog h3,
+.modal-dialog li,
+.modal-dialog ul,
+.modal-dialog strong,
+.modal-dialog p {
+    color: #111;
+}
+.modal-dialog h2 {
+    font-weight: 800;
+}
+.summary.section {
+    background: none;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--highlight);
+    cursor: pointer;
+}
+
+.summary-box {
+    background-color: var(--neutral-bg);
+}
+
+.modal-footer .btn-upload {
+    background-color: var(--blue-bg);
+    color: var(--neutral-bg);
+}
+.modal-footer .btn-upload:hover {
+    background-color: #1a1f4d;
+}
+.modal-footer .btn-close-secondary {
+    background-color: var(--highlight);
+    color: var(--neutral-bg);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Errors */
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Footer */
+.footer {
+    border-top: 1px solid rgba(233, 230, 224, 0.25);
+    background: color-mix(in oklab, var(--blue-bg) 94%, #000 6%);
+}
+.link-plain {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.15s ease;
+}
+.link-plain:hover {
+    border-color: currentColor;
+}
+
+/* Scroll snap */
+.main-page {
+    scroll-snap-type: y proximity;
+}
+.screen-section {
+    scroll-snap-align: start;
+}
+
+/* Utility */
+.object-fit-cover {
+    object-fit: cover;
+}

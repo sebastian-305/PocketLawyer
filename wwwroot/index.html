@@ -1,199 +1,245 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KLAUSEL KLARA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>KlauselKlara – KI-Vertragsanalyse</title>
+        <meta name="theme-color" content="#2d3669" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            defer
+        ></script>
+        <link rel="icon" type="image/x-icon" href="/Media/favicon.ico" />
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-N9YF8LRZEL"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+            gtag("config", "G-N9YF8LRZEL");
+        </script>
+        <link rel="stylesheet" href="new-styles.css" />
+        <!-- Custom styles -->
+        <script type="module" src="dev.js"></script>
+    </head>
+    <body>
+        <header class="header shadow-sm sticky-top">
+            <div
+                class="container d-flex justify-content-between align-items-center py-3"
+            >
+                <a href="/" class="brand-link">
+                    <img
+                        src="./Media/KK_Logo_White.png"
+                        alt="KlauselKlara Logo"
+                        height="44"
+                        width="auto"
+                        decoding="async"
+                    />
+                </a>
 
-    <link rel="stylesheet" href="styles.css" />
-    <!-- Custom styles -->
-    <script type="module" src="main.js"></script>
-</head>
-<body>
-    <header class="header text-white d-flex justify-content-between align-items-center p-4">
-        <h1 class="display-4">KLAUSEL KLARA</h1>
-        <!--<div>
-        <button class="btn btn-warning me-2">Anmelden</button>
-        <button class="btn btn-light">Registrieren</button>
-    </div>-->
-      
-    </header>
-
-    <main class="main-page">
-
-        <section class="intro-section d-flex justify-content-center align-items-center text-center ">
-
-            <div class="intro-image col-md-6 p-0">
-                <img src="Media/Frau_mit_Verträgen.jpg"
-                     class="img-fluid h-100 w-100 object-fit-cover"
-                     alt="Frau mit Verträgen" />
+                <h1 class="site-title m-0">
+                    <a href="/" class="brand-link">KLAUSEL KLARA</a>
+                </h1>
             </div>
-            <div class="intro-text col-md-6 text-center p-4">
-                <h2>KOMM KLAR MIT KLAUSEL KLARA</h2>
-                <h3>Analysiere deinen Arbeitsvertrag mit KI</h3>
-                <p>
-                    Versteckte Klauseln? Undurchsichtige Formulierungen?
-                    Unsere KI wurde speziell auf österreichisches
-                    Arbeitsrecht trainiert. Sie erkennt nicht nur
-                    juristische Feinheiten, sondern erklärt sie dir in
-                    einfachen Worten – damit du weißt, worauf du dich
-                    einlässt, bevor du unterschreibst.
-                </p>
-                <form class="upload-form">
-                    <div class="form-group">
-                        <label for="file-intro" class="visually-hidden">Vertragsdatei auswählen</label>
-                        <input type="file"
-                               id="file-intro"
-                               class="file-upload "
-                               name="myfile"
-                               accept=".txt,.pdf,.jpg,.jpeg,.png" />
-                        <input type="submit"
-                               class="cta-button "
-                               value="VERTRAG ANALYSIEREN"
-                               data-bs-toggle="modal"
-                               data-bs-target="#evaluation" />
+        </header>
+        <main class="main-page">
+            <section class="intro-section section-padded screen-section">
+                <div class="container g-0 row align-items-center">
+                    <div class="intro-image col-md-6 p-0 order-md-2">
+                        <img
+                            src="Media/Frau_mit_Verträgen.jpg"
+                            class="img-fluid h-100 w-100 object-fit-cover rounded-start-md"
+                            alt="Frau mit Verträgen"
+                            fetchpriority="high"
+                        />
                     </div>
-
-                </form>
-            </div>
-        </section>
-
-        <section class="mission-section d-flex justify-content-center align-items-center text-center">
-            <div class="mission-text px-4">
-                <h2>
-                    KLARA macht Recht für alle zugänglich.
-                    <br />
-                    Sie räumt juristische Hürden aus dem Weg und verwandelt
-                    komplexe Klauseln in klares, verständliches Wissen.
-                </h2>
-            </div>
-        </section>
-
-        <section class="cta-section d-flex flex-column flex-md-row align-items-center justify-content-between">
-            <div class="cta-text col-md-6 text-center p-4">
-                <div class="feature mb-4">
-                    <h3>
-                        ⚡ DEIN ARBEITSVERTRAG SEKUNDENSCHNELL ANALYSIEREN
-                    </h3>
-                    <p>
-                        Lade deinen Vertrag hoch und erhalte in wenigen
-                        Sekunden eine verständliche Auswertung.
-                    </p>
-                </div>
-                <div class="feature mb-4">
-                    <h3>
-                        ✅ PROBLEMSTELLEN UND RED FLAGS AUF EINEN BLICK
-                        ERKENNEN
-                    </h3>
-                    <p>
-                        Unsere KI hebt kritische Formulierungen und
-                        potenziell nachteilige Klauseln für dich hervor.
-                    </p>
-                </div>
-                <div class="feature mb-4">
-                    <h3>💬 MIT KLARA ÜBER DEINEN VERTRAG CHATTEN</h3>
-                    <p>
-                        Stell deinem persönlichen KI-Chatbot Fragen –
-                        einfach, intuitiv und auf Augenhöhe.
-                    </p>
-                </div>
-
-                <form class="upload-form mb-3">
-                    <div class="form-group d-flex flex-column gap-3">
-                        <label for="file-cta" class="visually-hidden">Vertragsdatei auswählen</label>
-                        <input type="file"
-                               id="file-cta"
-                               class="file-upload"
-                               name="myfile"
-                               accept=".txt,.pdf,.jpg,.jpeg,.png" />
-                        <input type="submit"
-                               class="cta-button"
-                               value="VERTRAG ANALYSIEREN"
-                               data-bs-toggle="modal"
-                               data-bs-target="#evaluation" />
+                    <div
+                        class="intro-text col-md-6 text-center text-md-start p-4 order-md-1"
+                    >
+                        <h2>KOMM KLAR MIT KLAUSEL KLARA</h2>
+                        <h3>Analysiere deinen Arbeitsvertrag mit KI</h3>
+                        <p>
+                            Versteckte Klauseln? Undurchsichtige Formulierungen?
+                            Unsere KI wurde speziell auf österreichisches
+                            Arbeitsrecht trainiert. Sie erkennt nicht nur
+                            juristische Feinheiten, sondern erklärt sie dir in
+                            einfachen Worten – damit du weißt, worauf du dich
+                            einlässt, bevor du unterschreibst.
+                        </p>
+                        <form class="upload-form" onsubmit="return false;">
+                            <div class="form-group">
+                                <button
+                                    type="button"
+                                    class="btn btn-cta btn-lg w-100 w-md-auto"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#evaluation"
+                                >
+                                    VERTRAG ANALYSIEREN
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <p class="privacy-hint">
-                        🔒 100 % datenschutzkonform – deine Daten bleiben
-                        bei dir.
-                    </p>
-                </form>
-            </div>
-            <div class="cta-image col-md-6 p-0">
-                <img src="Media/Frau_am_Laptop.jpg"
-                     class="img-fluid h-100 w-100 object-fit-cover"
-                     alt="Frau mit Laptop" />
-            </div>
-        </section>
-        <div class="modal fade"
-             id="evaluation"
-             tabindex="-1"
-             role="dialog"
-             aria-labelledby="evaluationLabel"
-             aria-describedby="evaluationDesc"
-             aria-modal="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header nprint">
-                        <h2 id="evaluationLabel">DEINE VERTRAGSANALYSE</h2>
-                        <!--<div class="score">
-                            <span class="label">SCORE:</span>
-                            <span class="value">
-                                <strong>6.5</strong>
-                                <span>/10</span>
-                            </span>
-                        </div>-->
-                        <button id="closex"
+                </div>
+            </section>
+
+            <section
+                class="mission-section section-invert section-padded screen-section"
+            >
+                <div class="container">
+                    <div class="mission-text px-2 px-md-4 text-center">
+                        <h2>
+                            KLARA macht Recht für alle zugänglich.
+                            <br />
+                            Sie räumt juristische Hürden aus dem Weg und
+                            verwandelt komplexe Klauseln in klares,
+                            verständliches Wissen.
+                        </h2>
+                    </div>
+                </div>
+            </section>
+            <section class="cta-section section-padded screen-section">
+                <div class="container g-0 row align-items-center">
+                    <div
+                        class="cta-text col-md-6 text-center text-md-start p-4"
+                    >
+                        <div class="feature mb-4">
+                            <h3>
+                                ⚡ DEIN ARBEITSVERTRAG SEKUNDENSCHNELL
+                                ANALYSIEREN
+                            </h3>
+                            <p>
+                                Lade deinen Vertrag hoch und erhalte in wenigen
+                                Sekunden eine verständliche Auswertung.
+                            </p>
+                        </div>
+                        <div class="feature mb-4">
+                            <h3>
+                                ✅ PROBLEMSTELLEN UND RED FLAGS AUF EINEN BLICK
+                                ERKENNEN
+                            </h3>
+                            <p>
+                                Unsere KI hebt kritische Formulierungen und
+                                potenziell nachteilige Klauseln für dich hervor.
+                            </p>
+                        </div>
+
+                        <form class="upload-form mb-3" onsubmit="return false;">
+                            <div class="form-group d-flex flex-column gap-3">
+                                <button
+                                    type="button"
+                                    class="btn btn-cta btn-lg w-100 w-md-auto"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#evaluation"
+                                >
+                                    VERTRAG ANALYSIEREN
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="cta-image col-md-6 p-0">
+                        <img
+                            src="Media/Frau_am_Laptop.jpg"
+                            class="img-fluid h-100 w-100 object-fit-cover rounded-end-md"
+                            alt="Frau mit Laptop"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                    </div>
+                </div>
+            </section>
+            <div
+                class="modal fade"
+                id="evaluation"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="evaluationLabel"
+                aria-describedby="evaluationDesc"
+                aria-modal="true"
+            >
+                <div
+                    class="modal-dialog modal-xl modal-dialog-centered"
+                    role="document"
+                >
+                    <div class="modal-content surface">
+                        <div class="modal-header nprint">
+                            <h2 id="evaluationLabel">DEINE VERTRAGSANALYSE</h2>
+
+                            <button
+                                id="closex"
                                 type="button"
                                 class="close-btn"
                                 data-bs-dismiss="modal"
-                                aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div id="evaluation-body" class="modal-body accordion" aria-label="Analyse" aria-describedby="evaluationDesc">
-                        <span id="evaluationDesc" class="visually-hidden">Auswertungsergebnisse</span>
-
-                    </div>
-                    <div class="modal-footer nprint">
-                        <button type="button" id="printbtn" class="btn btn-upload nprint" onclick="printer()">
-                            Analyse drucken
-                        </button>
-                        <button type="button"
+                                aria-label="Close"
+                            >
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div
+                            id="evaluation-body"
+                            class="modal-body accordion"
+                            aria-label="Analyse"
+                            aria-describedby="evaluationDesc"
+                        >
+                            <span id="evaluationDesc" class="visually-hidden"
+                                >Auswertungsergebnisse</span
+                            >
+                        </div>
+                        <div class="modal-footer nprint">
+                            <button
+                                type="button"
+                                id="printbtn"
+                                class="btn btn-upload nprint"
+                                onclick="printer()"
+                            >
+                                Analyse drucken
+                            </button>
+                            <button
+                                type="button"
                                 id="closebtn"
                                 class="btn btn-close-secondary nprint"
-                                data-bs-dismiss="modal">
-                            Schließen
-                        </button>
+                                data-bs-dismiss="modal"
+                            >
+                                Schließen
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <section id="result"></section>
+            <section id="result"></section>
+        </main>
 
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="restoreToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-body">                 
-                    <button type="button" id="restoreBtn" class="btn btn-link btn-sm">Analyse wiederherstellen</button>
-                </div>
+        <footer class="footer">
+            <div
+                class="container d-flex justify-content-between align-items-center py-4"
+            >
+                <span>&copy; 2025 KLAUSEL KLARA</span>
+                <nav>
+                    <ul class="list-unstyled d-flex gap-3 mb-0">
+                        <li>
+                            <a class="link-plain" href="impressum.html"
+                                >Impressum</a
+                            >
+                        </li>
+                        <li>
+                            <a class="link-plain" href="datenschutz.html"
+                                >Datenschutz</a
+                            >
+                        </li>
+                        <!--<li>AGB</li>-->
+                    </ul>
+                </nav>
             </div>
-        </div>
-
-    </main>
-
-    <footer class="footer p-4 d-flex justify-content-between align-items-center">
-        <span>&copy; 2025 KLAUSEL KLARA</span>
-        <nav>
-            <ul class="list-unstyled d-flex gap-3 mb-0">
-                <!--<li>Impressum</li>
-                <li>Datenschutz</li>
-                <li>AGB</li>-->
-            </ul>
-        </nav>
-    </footer>
-</body>
+        </footer>
+    </body>
 </html>
