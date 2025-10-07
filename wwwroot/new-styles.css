@@ -69,8 +69,33 @@ body p {
 .section-invert h3,
 .section-invert p {
     color: var(--blue-bg);
+}
+
+.section-invert h2 {
+    font-size: clamp(2.5rem, 2.1rem + 1vw, 3rem);
     font-weight: 800;
-    font-size: 3rem;
+}
+
+.section-invert h3 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.section-invert p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.mission-section .mission-text {
+    max-width: 60ch;
+    margin-inline: auto;
+}
+
+.mission-section h2 {
+    line-height: 1.4;
+    margin: 0 auto;
+    max-width: 48ch;
 }
 
 /* Fullscreen sections on desktop */
@@ -273,6 +298,32 @@ section img {
         padding-block: 3rem;
     }
 
+    .section-invert h2 {
+        font-size: 2.4rem;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .section-invert h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .section-invert p {
+        font-size: 1.05rem;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .mission-section .mission-text {
+        padding-inline: 1.25rem;
+    }
+
+    .mission-section h2 {
+        max-width: 44ch;
+    }
+
     /* Typography */
     h1,
     h2,
@@ -325,6 +376,32 @@ section img {
     p {
         font-size: 1rem;
         line-height: 1.6;
+    }
+
+    .section-invert h2 {
+        font-size: 1.85rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .section-invert h3 {
+        font-size: 1.35rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .section-invert p {
+        font-size: 0.98rem;
+        font-weight: 500;
+        line-height: 1.65;
+    }
+
+    .mission-section .mission-text {
+        padding-inline: 1.5rem;
+    }
+
+    .mission-section h2 {
+        max-width: 40ch;
     }
 
     /* Hide non-essential large elements if any */
