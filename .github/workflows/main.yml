@@ -1,4 +1,7 @@
-on: push
+on: 
+  push:
+    branches:
+       - front-end 
 name: Deploy website on push
 jobs:
   web-deploy:
