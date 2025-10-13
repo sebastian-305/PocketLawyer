@@ -36,7 +36,7 @@ public class PocketController : ControllerBase
     [HttpGet("/mockdata")]
     public async Task<ActionResult<ContractAnalysisDto>> GetMockData()
     {
-        _logger.LogDebug("Entering {Method}", nameof(GetMockData));
+        _logger.LogInformation("Entering {Method}", nameof(GetMockData));
 
         string responsesPath = Path.Combine(
             _environment.ContentRootPath,
@@ -86,6 +86,7 @@ public class PocketController : ControllerBase
     [HttpGet("/analysis")]
     public async Task<ActionResult> AnalyzeViaWebSocket()
     {
+        _logger.LogInformation("Request via {address}", Request.Host);
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return BadRequest();
 

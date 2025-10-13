@@ -1,0 +1,457 @@
+:root {
+    --blue-bg: #2d3669;
+    --paper-bg: #dbd2c1;
+    --highlight: #e9ba30;
+    --neutral-bg: #e9e6e0;
+    --font-primary: "Agrandir", sans-serif;
+    --header-height: 5rem;
+}
+
+/* Base */
+* {
+    box-sizing: border-box;
+}
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: var(--font-primary);
+    background-color: var(--blue-bg);
+    color: var(--neutral-bg);
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+body h1,
+body h2,
+body h3,
+body p {
+    color: var(--neutral-bg);
+}
+
+/* Header */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    backdrop-filter: saturate(140%) blur(6px);
+    background-color: var(--blue-bg);
+    background: color-mix(in oklab, var(--blue-bg) 92%, #000 8%);
+    border-bottom: 1px solid rgba(233, 230, 224, 0.25);
+}
+.site-title {
+    font-size: clamp(1.25rem, 1.2rem + 1.2vw, 2rem);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin: 0;
+}
+.brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: inherit;
+    text-decoration: none;
+}
+.brand-link:hover {
+    opacity: 0.9;
+}
+
+/* Layout helpers */
+.section-padded {
+    padding-block: clamp(2rem, 4vw, 4rem);
+}
+.section-invert {
+    background-color: var(--neutral-bg);
+    color: var(--blue-bg);
+    height: 100vh;
+}
+.section-invert h2,
+.section-invert h3,
+.section-invert p {
+    color: var(--blue-bg);
+}
+
+.section-invert h2 {
+    font-size: clamp(2.5rem, 2.1rem + 1vw, 3rem);
+    font-weight: 800;
+}
+
+.section-invert h3 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.section-invert p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.mission-section .mission-text {
+    max-width: 60ch;
+    margin-inline: auto;
+}
+
+.mission-section h2 {
+    line-height: 1.4;
+    margin: 0 auto;
+    max-width: 48ch;
+}
+
+/* Fullscreen sections on desktop */
+.screen-section {
+    min-block-size: calc(100svh - var(--header-height));
+    display: flex;
+    align-items: center;
+}
+@media (max-width: 991.98px) {
+    .screen-section {
+        min-block-size: auto;
+    }
+}
+
+/* Rounded image helpers */
+.rounded-start-md {
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+}
+.rounded-end-md {
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+@media (max-width: 767.98px) {
+    .rounded-start-md,
+    .rounded-end-md {
+        border-radius: 0.75rem;
+    }
+}
+
+/* Intro section */
+.intro-section {
+    padding-top: 0.5%;
+}
+section img {
+    max-height: 100vh;
+}
+
+.intro-section h2 {
+    font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    font-weight: 800;
+}
+.intro-section h3 {
+    font-weight: 600;
+    opacity: 0.95;
+    font-size: 1.5rem;
+}
+
+/* CTA button */
+.btn-cta {
+    --_bg: var(--highlight);
+    --_fg: var(--blue-bg);
+    background-color: var(--_bg);
+    color: var(--_fg);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    border-radius: 0.875rem;
+    padding: 0.9rem 1.25rem;
+    border: 0;
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.15);
+    transition: transform 0.12s ease, box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+.btn-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.22);
+    background-color: #e6b800;
+}
+.btn-cta:active {
+    transform: translateY(0);
+}
+
+/* Modal / Analysis */
+.surface {
+    background: var(--neutral-bg);
+}
+.modal-content {
+    background-color: var(--neutral-bg);
+    border-radius: 1rem;
+}
+.modal-dialog h2,
+.modal-dialog h3,
+.modal-dialog li,
+.modal-dialog ul,
+.modal-dialog strong,
+.modal-dialog p {
+    color: #111;
+}
+.modal-dialog h2 {
+    font-weight: 800;
+}
+.summary.section {
+    background: none;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--highlight);
+    cursor: pointer;
+}
+
+.summary-box {
+    background-color: var(--neutral-bg);
+}
+#features h3 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+#features p {
+    font-size: 1rem;
+}
+.modal-footer .btn-upload {
+    background-color: var(--blue-bg);
+    color: var(--neutral-bg);
+}
+
+.modal-footer .btn-upload:hover {
+    background-color: #1a1f4d;
+}
+.modal-footer .btn-close-secondary {
+    background-color: var(--highlight);
+    color: var(--neutral-bg);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Errors */
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Footer */
+.footer {
+    border-top: 1px solid rgba(233, 230, 224, 0.25);
+    background-color: var(--blue-bg);
+    background: color-mix(in oklab, var(--blue-bg) 94%, #000 6%);
+}
+.link-plain {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.15s ease;
+}
+.link-plain:hover {
+    border-color: currentColor;
+}
+
+/* Scroll snap */
+.main-page {
+    scroll-snap-type: y proximity;
+}
+.screen-section {
+    scroll-snap-align: start;
+}
+
+/* Utility */
+.object-fit-cover {
+    object-fit: cover;
+}
+
+/* =======================
+   📱 RESPONSIVE DESIGN
+   ======================= */
+
+/* --- Tablet (bis 991px) --- */
+@media (max-width: 991.98px) {
+    /* Header */
+    .header {
+        backdrop-filter: none;
+        background: var(--blue-bg);
+    }
+
+    .site-title {
+        font-size: 1.5rem;
+    }
+
+    .header .brand-link img {
+        height: 38px;
+    }
+
+    /* Section layout: stacked instead of side-by-side */
+
+    .intro-section .row,
+    .cta-section .row {
+        flex-direction: column !important;
+    }
+
+    .intro-section .intro-image,
+    .cta-section .cta-image {
+        order: -1;
+        margin-bottom: 1.5rem;
+    }
+
+    .screen-section {
+        min-block-size: auto;
+        padding-block: 3rem;
+    }
+
+    .section-invert h2 {
+        font-size: 2.4rem;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .section-invert h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .section-invert p {
+        font-size: 1.05rem;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .mission-section .mission-text {
+        padding-inline: 1.25rem;
+    }
+
+    .mission-section h2 {
+        max-width: 44ch;
+    }
+
+    /* Typography */
+    h1,
+    h2,
+    h3 {
+        text-align: center;
+    }
+
+    .intro-text,
+    .cta-text {
+        text-align: center !important;
+        padding-inline: 1.5rem;
+    }
+
+    /* Buttons */
+    .btn-cta {
+        width: 100%;
+        font-size: 1.1rem;
+        padding-block: 1rem;
+    }
+
+    /* Images */
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 1rem;
+    }
+}
+
+/* --- Smartphone (bis 767px) --- */
+@media (max-width: 767.98px) {
+    /* Global spacing */
+    .section-padded {
+        padding-block: 2.5rem;
+    }
+
+    /* Header title smaller */
+    .site-title {
+        font-size: 1.25rem;
+    }
+
+    /* Adjust text sizes */
+    h1 {
+        font-size: 1.8rem;
+        line-height: 1.3;
+    }
+    h2 {
+        font-size: 1.3rem;
+        line-height: 1.4;
+    }
+    p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .section-invert h2 {
+        font-size: 1.85rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .section-invert h3 {
+        font-size: 1.35rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .section-invert p {
+        font-size: 0.98rem;
+        font-weight: 500;
+        line-height: 1.65;
+    }
+
+    .mission-section .mission-text {
+        padding-inline: 1.5rem;
+    }
+
+    .mission-section h2 {
+        max-width: 40ch;
+    }
+
+    /* Hide non-essential large elements if any */
+    .intro-image,
+    .cta-image {
+        border-radius: 0.5rem;
+    }
+
+    /* Modal */
+    .modal-dialog {
+        width: 95%;
+        margin: 0 auto;
+    }
+
+    /* Footer layout */
+    .footer .container {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+
+    /* Footer links */
+    .link-plain {
+        padding-bottom: 0;
+    }
+}
+
+/* --- Very small screens (≤480px) --- */
+@media (max-width: 480px) {
+    .site-title {
+        font-size: 1.1rem;
+    }
+
+    .btn-cta {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .intro-section h2 {
+        font-size: 1.4rem;
+    }
+
+    .intro-section h3 {
+        font-size: 1.1rem;
+    }
+
+    .modal-content {
+        padding: 1rem;
+        border-radius: 0.75rem;
+    }
+}

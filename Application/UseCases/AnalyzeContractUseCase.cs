@@ -1,8 +1,8 @@
 using System.Text.Json;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;
-using PocketLawyer.Infrastructure;
 
 namespace PocketLawyer.Application.UseCases;
 
@@ -15,7 +15,7 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
 
     public AnalyzeContractUseCase(
         ILogger<AnalyzeContractUseCase> logger,
-        [FromKeyedServices("gemini")] IAiClient aiService,
+        [FromKeyedServices("nebius")] IAiClient aiService,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService)
     {

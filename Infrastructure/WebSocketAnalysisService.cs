@@ -1,12 +1,10 @@
+using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Domain;
+using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Infrastructure.AiServices.Nebius;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Infrastructure.AiServices.Gemini;
-using PocketLawyer.Domain.Dtos;
-using PocketLawyer.Application.Exceptions;
 
 namespace PocketLawyer.Infrastructure;
 
@@ -31,6 +29,7 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     public async Task HandleAsync(HttpContext context)
     {
+        _logger.LogDebug("Entering {Method}", nameof(HandleAsync));
         using var socket = await context.WebSockets.AcceptWebSocketAsync();
 
         try
@@ -49,7 +48,9 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             string? kvName = await DetectKvAsync(content);
             ContractAnalysisDto analysis = await AnalyzeContractAsync(content, kvName);
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis), CancellationToken.None);
+
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+            _logger.LogInformation("Connection closed gracefully");
         }
         catch (FileValidationException ex)
         {
@@ -63,10 +64,19 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             await WebSocketHelpers.SendErrorAsync(socket, ex.Message, CancellationToken.None);
             await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError("Unknown Exception {ex}", ex.Message);
+            await WebSocketHelpers.SendErrorAsync(socket, ex.Message, CancellationToken.None);
+            await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+
+        }
     }
 
     private async Task<(byte[] fileBytes, string fileName)> ReceiveFileAsync(WebSocket socket)
     {
+        _logger.LogDebug("Entering {Method}", nameof(ReceiveFileAsync));
+
         var buffer = new byte[8192];
         using var ms = new MemoryStream();
         WebSocketReceiveResult result;
@@ -116,20 +126,23 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
 
     private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content)
     {
+        _logger.LogDebug("Entering {Method}", nameof(ValidateContractAsync));
         return _analyzeContractUseCase.ProcessContractRequest<ContractValidationDto>(
             content,
             PromptBuilder.BuildValidationPrompt,
-            GeminiService.PreAnalyzerSchemaDefinition,
+            NebiusService.PreAnalyzerSchemaDefinition,
             true
             );
     }
 
     private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
     {
+        _logger.LogDebug("Entering {Method}", nameof(AnalyzeContractAsync));
+
         return _analyzeContractUseCase.ProcessContractRequest<ContractAnalysisDto>(
             content,
             PromptBuilder.BuildAnalysisPrompt,
-            GeminiService.AnalyzerSchemaDefinition,
+            NebiusService.AnalyzerSchemaDefinition,
             false,
             kvName);
     }

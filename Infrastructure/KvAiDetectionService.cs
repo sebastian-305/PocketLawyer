@@ -4,6 +4,7 @@ using System.Linq;
 using PocketLawyer.Application.Interfaces;
 using System.Text.Json;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain;
 
 namespace PocketLawyer.Infrastructure;
 
