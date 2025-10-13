@@ -37,33 +37,35 @@ jobs:
         run: dotnet tool install --global dotnet-project-licenses
 
       # ---- Lizenzprüfung (Whitelist anpassen) ----
-      - name: Check allowed licenses
-        env:
-          PATH: $HOME/.dotnet/tools:$PATH
+      - name: Install license scanner (global tool)
         run: |
-          ALLOWED="MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;Unicode-3.0"
-          TARGET="${SOLUTION:-$PROJECT}"
-          # Report erzeugen (JSON + NOTICE)
-          dotnet-project-licenses \
+            dotnet tool install --global dotnet-project-licenses --ignore-failed-sources
+            echo "PATH before: $PATH"
+            echo "Listing ~/.dotnet/tools:"
+            ls -la "$HOME/.dotnet/tools" || true
+
+      - name: Check allowed licenses
+        run: |
+            ALLOWED="MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;Unicode-3.0"
+            TARGET="${SOLUTION:-$PROJECT}"
+
+            TOOL="$HOME/.dotnet/tools/dotnet-project-licenses"
+
+            # Report erzeugen (JSON + NOTICE)
+            "$TOOL" \
             --project "$TARGET" \
             --include-transitive \
             --output "license-report" \
             --json "license-report/licenses.json" \
             --third-party-notices "license-report/THIRD-PARTY-NOTICES.txt"
 
-          # Gate: fail, wenn nicht erlaubte Lizenzen vorkommen
-          # Das Tool unterstützt den Rückgabecode bei „unapproved“:
-          dotnet-project-licenses \
+            # Gate: Fail bei nicht erlaubten Lizenzen
+            "$TOOL" \
             --project "$TARGET" \
             --include-transitive \
             --allowed-licenses "$ALLOWED" \
             --validate-licenses
 
-      - name: Upload license report
-        uses: actions/upload-artifact@v4
-        with:
-          name: license-report
-          path: license-report/
 
   web-deploy:
     name: Deploy
