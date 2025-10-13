@@ -39,38 +39,65 @@ jobs:
             echo "Kein .sln oder .csproj gefunden." && exit 1
           fi
 
-      - name: Install license scanner (global tool)
-        run: dotnet tool install --global dotnet-project-licenses
 
       # ---- Lizenzprüfung (Whitelist anpassen) ----
       - name: Install license scanner (global tool)
         run: |
             dotnet tool install --global dotnet-project-licenses --ignore-failed-sources
-            echo "PATH before: $PATH"
-            echo "Listing ~/.dotnet/tools:"
             ls -la "$HOME/.dotnet/tools" || true
 
-      - name: Check allowed licenses
+      - name: Generate license report (JSON + Text)
         run: |
-            ALLOWED="MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;Unicode-3.0"
             TARGET="${SOLUTION:-$PROJECT}"
-
             TOOL="$HOME/.dotnet/tools/dotnet-project-licenses"
 
-            # Report erzeugen (JSON + NOTICE)
-            "$TOOL" \
-            --project "$TARGET" \
-            --include-transitive \
-            --output "license-report" \
-            --json "license-report/licenses.json" \
-            --third-party-notices "license-report/THIRD-PARTY-NOTICES.txt"
+            mkdir -p license-report
 
-            # Gate: Fail bei nicht erlaubten Lizenzen
+            # JSON-Report schreiben (inkl. transitiver Abhängigkeiten)
             "$TOOL" \
-            --project "$TARGET" \
+            --input "$TARGET" \
             --include-transitive \
-            --allowed-licenses "$ALLOWED" \
-            --validate-licenses
+            --json \
+            --outfile "license-report/licenses.json"
+
+            # Zusätzlich eine Textübersicht (optional)
+            "$TOOL" \
+            --input "$TARGET" \
+            --include-transitive \
+            --output \
+            --output-directory "license-report"
+
+      - name: Enforce allowed licenses (fail on violation)
+        run: |
+            # Erlaubte Lizenzen (SPDX-IDs) – Policy hier pflegen:
+            ALLOWED='["MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause","ISC","Unicode-3.0"]'
+
+            # jq kann auf ubuntu-latest fehlen -> sicherheitshalber installieren
+            if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y jq
+            fi
+
+            # Finde alle Pakete, deren LicenseType NICHT in der Allowed-Liste ist
+            jq --argjson allowed "$ALLOWED" '
+            map(select(.LicenseType as $lt | ($allowed | index($lt)) | not))
+            ' license-report/licenses.json > license-report/disallowed.json
+
+            COUNT=$(jq 'length' license-report/disallowed.json)
+
+            if [ "$COUNT" -gt 0 ]; then
+            echo "❌ Nicht erlaubte Lizenzen gefunden ($COUNT):"
+            jq -r '.[] | "\(.Id) \(.Version) – License: \(.LicenseType)"' license-report/disallowed.json
+            exit 1
+            else
+            echo "✅ Alle Lizenzen sind erlaubt."
+            fi
+
+      - name: Upload license report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+            name: license-report
+            path: license-report/
 
 
   web-deploy:
