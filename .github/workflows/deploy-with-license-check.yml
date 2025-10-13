@@ -13,10 +13,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Setup .NET (SDK 8 + 7)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+            dotnet-version: |
+              8.0.x
+              7.0.x          # <- nötig für das Tool
+
 
       - name: Restore
         run: |
