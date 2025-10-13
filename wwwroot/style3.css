@@ -146,6 +146,7 @@ header h1 {
 .why-section {
     height: 100vh;
     padding: 3rem;
+    background: color-mix(in oklab, var(--blue-bg) 92%, #000 8%);
 }
 
 .why-section > div {
@@ -200,6 +201,7 @@ header h1 {
 .cta-section {
     display: flex;
     height: 85vh;
+    border-top: 1px solid rgba(233, 230, 224, 0.25);
 }
 
 .cta-section > div {
