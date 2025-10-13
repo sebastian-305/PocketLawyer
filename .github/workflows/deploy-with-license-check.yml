@@ -1,0 +1,83 @@
+on:
+  push:
+    branches:
+      - front-end
+
+name: Deploy website on push
+
+jobs:
+  license-audit:
+    name: License compliance check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: |
+          # Lösung/Projekt automatisch finden – falls ihr mehrere habt, könnt ihr das fix setzen
+          SOLUTION=$(git ls-files '*.sln' | head -n 1 || true)
+          PROJECT=$(git ls-files '*/*.csproj' | head -n 1 || true)
+          echo "SOLUTION=$SOLUTION" >> $GITHUB_ENV
+          echo "PROJECT=$PROJECT" >> $GITHUB_ENV
+          if [ -n "$SOLUTION" ]; then
+            dotnet restore "$SOLUTION"
+          elif [ -n "$PROJECT" ]; then
+            dotnet restore "$PROJECT"
+          else
+            echo "Kein .sln oder .csproj gefunden." && exit 1
+          fi
+
+      - name: Install license scanner (global tool)
+        run: dotnet tool install --global dotnet-project-licenses
+
+      # ---- Lizenzprüfung (Whitelist anpassen) ----
+      - name: Check allowed licenses
+        env:
+          PATH: $HOME/.dotnet/tools:$PATH
+        run: |
+          ALLOWED="MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;Unicode-3.0"
+          TARGET="${SOLUTION:-$PROJECT}"
+          # Report erzeugen (JSON + NOTICE)
+          dotnet-project-licenses \
+            --project "$TARGET" \
+            --include-transitive \
+            --output "license-report" \
+            --json "license-report/licenses.json" \
+            --third-party-notices "license-report/THIRD-PARTY-NOTICES.txt"
+
+          # Gate: fail, wenn nicht erlaubte Lizenzen vorkommen
+          # Das Tool unterstützt den Rückgabecode bei „unapproved“:
+          dotnet-project-licenses \
+            --project "$TARGET" \
+            --include-transitive \
+            --allowed-licenses "$ALLOWED" \
+            --validate-licenses
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: license-report/
+
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: license-audit   # Deploy nur bei bestandenem Lizenz-Check
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v4
+
+      - name: Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: www383.your-server.de
+          protocol: ftps
+          username: sebastpt_3
+          password: ${{ secrets.FTP_PW_KK }}
+          local-dir: ./wwwroot/

@@ -1,7 +1,8 @@
-on: 
-  push:
-    branches:
-       - front-end 
+# on:
+#   push:
+#     branches:
+#        - front-end
+on: workflow_dispatch  # Nur manuell starten
 name: Deploy website on push
 jobs:
   web-deploy:
@@ -10,7 +11,7 @@ jobs:
     steps:
     - name: Get latest code
       uses: actions/checkout@v4
-    
+
     - name: Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
@@ -19,5 +20,3 @@ jobs:
         username: sebastpt_3
         password: ${{secrets.FTP_PW_KK}}
         local-dir: ./wwwroot/
-      
-        
