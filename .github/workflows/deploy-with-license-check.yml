@@ -13,20 +13,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # SDKs getrennt installieren (Projekt auf 8, Tool braucht 7)
       - name: Setup .NET 8 (Projekt)
         uses: actions/setup-dotnet@v4
         with:
-            dotnet-version: '8.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Setup .NET 7 (für Lizenztool)
         uses: actions/setup-dotnet@v4
         with:
-            dotnet-version: '7.0.x'
+          dotnet-version: '7.0.x'
 
+      # NuGet-Cache beschleunigt Restore und Lizenz-Scan deutlich
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.sln', '**/*.csproj', '**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
       - name: Restore
         run: |
-          # Lösung/Projekt automatisch finden – falls ihr mehrere habt, könnt ihr das fix setzen
+          # Lösung/Projekt automatisch finden – bei mehreren besser explizit setzen
           SOLUTION=$(git ls-files '*.sln' | head -n 1 || true)
           PROJECT=$(git ls-files '*/*.csproj' | head -n 1 || true)
           echo "SOLUTION=$SOLUTION" >> $GITHUB_ENV
@@ -39,66 +48,77 @@ jobs:
             echo "Kein .sln oder .csproj gefunden." && exit 1
           fi
 
-
-      # ---- Lizenzprüfung (Whitelist anpassen) ----
+      # ---- Lizenzprüfung (Whitelist/Filter anpassen) ----
       - name: Install license scanner (global tool)
         run: |
-            dotnet tool install --global dotnet-project-licenses --ignore-failed-sources
-            ls -la "$HOME/.dotnet/tools" || true
+          dotnet tool install --global dotnet-project-licenses --ignore-failed-sources
+          ls -la "$HOME/.dotnet/tools" || true
 
-      - name: Generate license report (JSON + Text)
+      - name: Prepare filters
         run: |
-            TARGET="${SOLUTION:-$PROJECT}"
-            TOOL="$HOME/.dotnet/tools/dotnet-project-licenses"
+          mkdir -p license-report
+          # Pakete überspringen, die nur Rauschen erzeugen (Regex erlaubt)
+          cat > license-report/packages-skip.json <<'JSON'
+          ["/^System\\./", "/^Microsoft\\.NETCore\\./", "NETStandard.Library"]
+          JSON
 
-            mkdir -p license-report
+      - name: Generate license report (JSON + Text, schnell)
+        timeout-minutes: 10
+        run: |
+          TARGET="${SOLUTION:-$PROJECT}"
+          TOOL="$HOME/.dotnet/tools/dotnet-project-licenses"
 
-            # JSON-Report schreiben (inkl. transitiver Abhängigkeiten)
-            "$TOOL" \
+          # JSON-Report (inkl. transitiver Abhängigkeiten, nutzt project.assets.json)
+          "$TOOL" \
             --input "$TARGET" \
-            --include-transitive \
+            -t \
+            --use-project-assets-json \
+            --packages-filter license-report/packages-skip.json \
             --json \
-            --outfile "license-report/licenses.json"
+            --outfile "license-report/licenses.json" \
+            -l Warning \
+            --timeout 10
 
-            # Zusätzlich eine Textübersicht (optional)
-            "$TOOL" \
+          # Optionale Textübersicht
+          "$TOOL" \
             --input "$TARGET" \
-            --include-transitive \
+            -t \
+            --use-project-assets-json \
+            --packages-filter license-report/packages-skip.json \
             --output \
-            --output-directory "license-report"
+            --output-directory "license-report" \
+            -l Warning
 
       - name: Enforce allowed licenses (fail on violation)
         run: |
-            # Erlaubte Lizenzen (SPDX-IDs) – Policy hier pflegen:
-            ALLOWED='["MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause","ISC","Unicode-3.0"]'
+          # Erlaubte Lizenzen (SPDX-IDs) – Policy hier pflegen:
+          ALLOWED='["MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause","ISC","Unicode-3.0"]'
 
-            # jq kann auf ubuntu-latest fehlen -> sicherheitshalber installieren
-            if ! command -v jq >/dev/null 2>&1; then
+          # jq ggf. installieren
+          if ! command -v jq >/dev/null 2>&1; then
             sudo apt-get update && sudo apt-get install -y jq
-            fi
+          fi
 
-            # Finde alle Pakete, deren LicenseType NICHT in der Allowed-Liste ist
-            jq --argjson allowed "$ALLOWED" '
+          # Pakete mit nicht erlaubten Lizenzen extrahieren
+          jq --argjson allowed "$ALLOWED" '
             map(select(.LicenseType as $lt | ($allowed | index($lt)) | not))
-            ' license-report/licenses.json > license-report/disallowed.json
+          ' license-report/licenses.json > license-report/disallowed.json
 
-            COUNT=$(jq 'length' license-report/disallowed.json)
-
-            if [ "$COUNT" -gt 0 ]; then
+          COUNT=$(jq 'length' license-report/disallowed.json)
+          if [ "$COUNT" -gt 0 ]; then
             echo "❌ Nicht erlaubte Lizenzen gefunden ($COUNT):"
             jq -r '.[] | "\(.Id) \(.Version) – License: \(.LicenseType)"' license-report/disallowed.json
             exit 1
-            else
+          else
             echo "✅ Alle Lizenzen sind erlaubt."
-            fi
+          fi
 
       - name: Upload license report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-            name: license-report
-            path: license-report/
-
+          name: license-report
+          path: license-report/
 
   web-deploy:
     name: Deploy
