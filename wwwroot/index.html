@@ -9,6 +9,35 @@
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
         />
+        <script
+            id="Cookiebot"
+            src="https://consent.cookiebot.com/uc.js"
+            data-cbid="2eeb2af3-ef99-4098-bed9-e7727f336fba"
+            data-blockingmode="auto"
+            type="text/javascript"
+        ></script>
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-C1MV7YPRGL"
+        ></script>
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    "gtm.start": new Date().getTime(),
+                    event: "gtm.js",
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != "dataLayer" ? "&l=" + l : "";
+                j.async = true;
+                j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, "script", "dataLayer", "GTM-WBL2F34W");
+        </script>
+        <!-- End Google Tag Manager -->
 
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -30,15 +59,15 @@
         </script>
         <meta
             name="description"
-            content="KlauselKlara hilft dir, Arbeitsverträge automatisch auf problematische Klauseln zu prüfen."
+            content="KlauselKlara hilft dir, Mietverträge automatisch auf problematische Klauseln zu prüfen."
         />
         <meta
             name="keywords"
-            content="KlauselKlara, Vertragsanalyse, KI, Arbeitsvertrag, FH Vorarlberg, Studentenprojekt"
+            content="KlauselKlara, Vertragsanalyse, KI, Mietverträge, FH Vorarlberg, Studentenprojekt"
         />
         <meta name="author" content="KlauselKlara Projektteam" />
         <meta name="robots" content="index, follow" />
-        <meta property="og:title" content="KlauselKlara – KI-Vertragsanalyse" />
+        <meta property="og:title" content="KlauselKlara – Vertragsanalyse" />
         <meta
             property="og:description"
             content="Analysiere Verträge automatisch auf problematische Klauseln. Ein FH-Vorarlberg-Projekt."
@@ -67,6 +96,16 @@
         <script type="module" src="dev.js"></script>
     </head>
     <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript
+            ><iframe
+                src="https://www.googletagmanager.com/ns.html?id=GTM-WBL2F34W"
+                height="0"
+                width="0"
+                style="display: none; visibility: hidden"
+            ></iframe
+        ></noscript>
+        <!-- End Google Tag Manager (noscript) -->
         <header>
             <div>
                 <a href="/" class="brand-link">
@@ -96,20 +135,20 @@
                 </div>
                 <div class="hero-content">
                     <h2>Komm klar mit Klausel Klara</h2>
-                    <h3>Analysiere deinen Arbeitsvertrag mit KI</h3>
+                    <h3>Analysiere deinen Mietvertrag mit KI</h3>
                     <p>
                         Versteckte Klauseln? Undurchsichtige Formulierungen?
-                        Unsere KI wurde speziell auf österreichisches
-                        Arbeitsrecht trainiert. Sie erkennt nicht nur
-                        juristische Feinheiten, sondern erklärt sie dir in
-                        einfachen Worten – damit du weißt, worauf du dich
-                        einlässt, bevor du unterschreibst.
+                        Unsere KI wurde speziell auf österreichisches Mietrecht
+                        trainiert. Sie erkennt nicht nur juristische Feinheiten,
+                        sondern erklärt sie dir in einfachen Worten – damit du
+                        weißt, worauf du dich einlässt, bevor du unterschreibst.
                     </p>
                     <form class="upload-form" onsubmit="return false;">
                         <div class="form-group">
                             <button
                                 type="button"
                                 class="cta-button"
+                                id="cta-top"
                                 data-bs-toggle="modal"
                                 data-bs-target="#evaluation"
                             >
@@ -136,15 +175,17 @@
                         <!-- Spezialisierung -->
                         <div>
                             <h3>
-                                Spezialisiert auf österreichisches Arbeitsrecht
+                                Spezialisiert auf österreichisches Mietrecht
                             </h3>
                             <p>
                                 Allgemeine KI-Modelle wie ChatGPT sind auf
                                 globale, breit gefächerte Inhalte trainiert.
                                 <strong>Klausel Klara</strong> hingegen ist
                                 speziell auf die Feinheiten des österreichischen
-                                Arbeitsrechts abgestimmt – inklusive
-                                Kollektivverträge, ABGB, AngG und mehr.
+                                Mietrechts abgestimmt – inklusive
+                                Mietrechtsgesetz, ABGB, Heiz- und
+                                Kältekostenabrechnungsgesetz (HeizKG) und viel
+                                mehr.
                             </p>
                             <p>→ Ergebnis: Relevante, treffsichere Analysen.</p>
                         </div>
@@ -154,9 +195,10 @@
                             <h3>Red-Flag-Erkennung & Bewertung</h3>
                             <p>
                                 Klausel Klara erkennt kritische, unzulässige
-                                oder nachteilige Klauseln (z. B. „All-In“,
-                                Kündigungsfristen, Vertragsstrafen) und markiert
-                                sie direkt – mit Begründung und Rechtsgrundlage.
+                                oder nachteilige Klauseln (z. B.
+                                Kündigungsverzicht, Staffelmiete,
+                                Betriebskosten) und markiert sie direkt – mit
+                                Begründung und Rechtsgrundlage.
                             </p>
                             <p>
                                 → Ergebnis: Du erkennst sofort, was
@@ -184,9 +226,7 @@
             <section class="cta-section">
                 <div class="cta-content">
                     <div>
-                        <h3>
-                            Deinen Arbeitsvertrag Sekundenschnell analysieren
-                        </h3>
+                        <h3>Deinen Mietvertrag Sekundenschnell analysieren</h3>
                         <p>
                             Lade deinen Vertrag hoch und erhalte in wenigen
                             Sekunden eine verständliche Auswertung.
@@ -213,6 +253,7 @@
                             <button
                                 type="button"
                                 class="cta-button"
+                                id="cta-bottom"
                                 data-bs-toggle="modal"
                                 data-bs-target="#evaluation"
                             >
