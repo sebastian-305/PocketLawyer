@@ -24,17 +24,17 @@ public class NebiusService : IAiClient
         )
     {
         _logger = logger;
-         _client = new(
-             //model: "deepseek-ai/DeepSeek-V3-0324-fast",
-             //model: "Qwen/Qwen3-235B-A22B-Thinking-2507",
-             //model: "Qwen/Qwen3-32B-fast",
-             model: options.Value.ModelId ?? "",
-             credential: new ApiKeyCredential(options.Value.Key ?? ""),
-             options: new OpenAIClientOptions()
-             {
-                 Endpoint = new Uri("https://api.studio.nebius.com/v1/")
-             }
-         );
+        _client = new(
+            //model: "deepseek-ai/DeepSeek-V3-0324-fast",
+            //model: "Qwen/Qwen3-235B-A22B-Thinking-2507",
+            //model: "Qwen/Qwen3-32B-fast",
+            model: options.Value.ModelId ?? "",
+            credential: new ApiKeyCredential(options.Value.Key ?? ""),
+            options: new OpenAIClientOptions()
+            {
+                Endpoint = new Uri("https://api.studio.nebius.com/v1/")
+            }
+        );
 
     }
 
@@ -45,7 +45,7 @@ public class NebiusService : IAiClient
     public async Task<string> SendPrompt(string prompt, object? outputSchema)
     {
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
-    
+
         List<ChatMessage> messages =
         [
             new UserChatMessage(prompt),
@@ -57,9 +57,9 @@ public class NebiusService : IAiClient
                 jsonSchemaFormatName: "Vertragsanalyse",
                 jsonSchema: outputSchema as BinaryData,
                 jsonSchemaIsStrict: true),
-            Temperature= 0.1f,
+            Temperature = 0.0f,
 
-            };
+        };
         ChatCompletion completion;
         try
         {
@@ -71,6 +71,7 @@ public class NebiusService : IAiClient
             return "Error";
         }
 
+        _logger.LogDebug("Nebius answer:  {answ}", completion.Content[0].Text);
         return completion.Content[0].Text ?? "Error";
     }
 
@@ -81,10 +82,12 @@ public class NebiusService : IAiClient
                   "type": "object",
                   "properties": {
                     "fazit": {
-                      "type": "string"
+                      "type": "string",
+                       "description": "Ein Fazit, dass die Analyse zusammenfasst und eine Aussage darüber macht, ob der Mietvertrag von einem Rechstgutachter angesehen werden sollte. Das Fazit besteht aus Maximal 100 Wörtern"
                     },
                     "nachteile_klauseln": {
                       "type": "array",
+                       "description": "Klauseln zum Nachteil des Mieters bzw. der Mieterin",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -100,10 +103,7 @@ public class NebiusService : IAiClient
                                   "type": "string"
                                 },
                                 "wortlaut": {
-                                  "type": "string",
-                                  "enum": [
-                                    ""
-                                  ]
+                                  "type": "string"                               
                                 }
                               },
                               "required": [
@@ -129,46 +129,62 @@ public class NebiusService : IAiClient
                     },
                     "summary": {
                       "type": "object",
+                      "descritpion": "In der Zusammenfassung werden einzelne Punkte kurz und übersichtlich dargestellt, damit Schlüsselkomponenten des Mietvertrags leicht zu identifizieren sind.",
                       "properties": {
-                        "arbeitgeber": {
-                          "type": "string"
-                        },
-                        "arbeitsstunden": {
-                          "type": "string"
-                        },
+                        "vermieter": {
+                          "type": "string",
+                           "description": "Name des Vermiters"
+                        },"mieter": {
+                          "type": "string",
+                            "description": "Name des Mieters"
+                        },                       
                         "beginn": {
-                          "type": "string"
+                          "type": "string",
+                          "description" : "Beginn der Miete"
                         },
                         "dauer": {
+                          "type": "string",
+                           "description": "Vereinbarte Dauer des Mietvertrages"
+                        },
+                        "mindestdauer": {
+                          "type": "string",
+                           "description": "Mindestdauer des Mietvertrages"
+                        },
+                        "kuendigungsfrist": {
                           "type": "string"
                         },
-                        "gehalt_brutto": {
-                          "type": "string"
+                        "miete_kalt": {
+                          "type": "string",
+                          "description": "Kaltmiete in Euro"
                         },
-                        "probezeit": {
-                          "type": "string"
-                        },
-                        "taetigkeit": {
-                          "type": "string"
-                        },
-                        "ueberstunden": {
-                          "type": "string"
-                        },
-                        "zuschlaege": {
+                        "betriebskosten": {
                           "type": "string"
                         }
+                        ,
+                        "quadratmeter": {
+                          "type": "string"
+                        },
+                        "zimmer": {
+                          "type": "number"
+                        },
+                        "im_mietgegenstand_enthalten": {
+                          "type": "string",
+                           "description": "Bechreibung, was im Mietobjekt enthalten ist, bspw. Küche, Garage, Balkon etc."
+                        }                
                       },
-                      "required": [
-                        "arbeitgeber",
-                        "arbeitsstunden",
-                        "beginn",
-                        "dauer",
-                        "gehalt_brutto",
-                        "probezeit",
-                        "taetigkeit",
-                        "ueberstunden",
-                        "zuschlaege"
-                      ]
+                    "required": [
+                    "vermieter",
+                    "mieter",
+                    "beginn",
+                    "dauer",
+                    "mindestdauer",
+                    "kuendigungsfrist",
+                    "miete_kalt",
+                    "betriebskosten",
+                    "quadratmeter",
+                    "zimmer",
+                    "im_mietgegenstand_enthalten"
+                    ]
                     },
                     "unzulaessige_klauseln": {
                       "type": "array",
@@ -187,10 +203,7 @@ public class NebiusService : IAiClient
                                   "type": "string"
                                 },
                                 "wortlaut": {
-                                  "type": "string",
-                                  "enum": [
-                                    ""
-                                  ]
+                                  "type": "string"
                                 }
                               },
                               "required": [

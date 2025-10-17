@@ -91,7 +91,7 @@ builder.Services.AddScoped<IFileValidatorService, FileValidatorService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
 builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
-builder.Services.AddScoped<IContractAnalyzerService, AnalyzeContractUseCase>();
+builder.Services.AddScoped<IContractAnalyzerService, AnalyzeRentUseCase>();
 builder.Services.AddScoped<IWebSocketAnalysisService, WebSocketAnalysisService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();

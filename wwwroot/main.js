@@ -45,6 +45,7 @@ async function uploadFile(event) {
                         body.appendChild(loading);
                     }
                 } else {
+                    console.log(msg);
                     body.removeChild(loading);
                     renderContractResult(msg, body);
                     sessionStorage.setItem(

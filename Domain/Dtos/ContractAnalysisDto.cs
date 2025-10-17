@@ -25,14 +25,13 @@ public class ContractAnalysisDto
     [JsonPropertyName("kollektivvertrag")]
     public string? Kollektivvertrag { get; set; }
 }
-
 public class Summary
 {
-    [JsonPropertyName("arbeitgeber")]
-    public string Arbeitgeber { get; set; } = string.Empty;
+    [JsonPropertyName("vermieter")]
+    public string Vermieter { get; set; } = string.Empty;
 
-    [JsonPropertyName("taetigkeit")]
-    public string Taetigkeit { get; set; } = string.Empty;
+    [JsonPropertyName("mieter")]
+    public string Mieter { get; set; } = string.Empty;
 
     [JsonPropertyName("beginn")]
     public string Beginn { get; set; } = string.Empty;
@@ -40,20 +39,26 @@ public class Summary
     [JsonPropertyName("dauer")]
     public string Dauer { get; set; } = string.Empty;
 
-    [JsonPropertyName("gehalt_brutto")]
-    public string GehaltBrutto { get; set; } = string.Empty;
+    [JsonPropertyName("mindestdauer")]
+    public string Mindestdauer { get; set; } = string.Empty;
 
-    [JsonPropertyName("zuschlaege")]
-    public string Zuschlaege { get; set; } = string.Empty;
+    [JsonPropertyName("kuendigungsfrist")]
+    public string Kuendigungsfrist { get; set; } = string.Empty;
 
-    [JsonPropertyName("arbeitsstunden")]
-    public string Arbeitsstunden { get; set; } = string.Empty;
+    [JsonPropertyName("miete_kalt")]
+    public string MieteKalt { get; set; } = string.Empty;
 
-    [JsonPropertyName("ueberstunden")]
-    public string Ueberstunden { get; set; } = string.Empty;
+    [JsonPropertyName("betriebskosten")]
+    public string Betriebskosten { get; set; } = string.Empty;
 
-    [JsonPropertyName("probezeit")]
-    public string Probezeit { get; set; } = string.Empty;
+    [JsonPropertyName("quadratmeter")]
+    public string Quadratmeter { get; set; } = string.Empty;
+
+    [JsonPropertyName("zimmer")]
+    public int Zimmer { get; set; }
+
+    [JsonPropertyName("im_mietgegenstand_enthalten")]
+    public string ImMietgegenstandEnthalten { get; set; } = string.Empty;
 }
 
 public class RechtsgrundlageEintrag

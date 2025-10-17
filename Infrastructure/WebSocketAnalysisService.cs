@@ -45,8 +45,8 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
                 return;
             }
 
-            string? kvName = await DetectKvAsync(content);
-            ContractAnalysisDto analysis = await AnalyzeContractAsync(content, kvName);
+          
+            ContractAnalysisDto analysis = await AnalyzeContractAsync(content, null);
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis), CancellationToken.None);
 
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
@@ -105,23 +105,6 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             throw new FileValidationException("Invalid upload payload");
 
         return (Convert.FromBase64String(upload.Data), upload.FileName);
-    }
-
-    private async Task<string?> DetectKvAsync(FileContentDto content)
-    {
-        try
-        {
-            KvDetectionResult result = await _kvDetectionService.DetectAsync(content.FileContent);
-            if (result.AllEqual && result.KvName != "Keiner" && result.KvName != "Multiple")
-            {
-                return result.KvName;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "KV detection failed");
-        }
-        return null;
     }
 
     private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content)

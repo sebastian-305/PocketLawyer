@@ -336,28 +336,34 @@ function generateAnalysis(message) {
 
         container.appendChild(list);
         const keys = [
-            "Arbeitgeber",
-            "Tätigkeit",
+            "Vermieter",
+            "Mieter",
             "Beginn",
             "Dauer",
-            "Gehalt (Brutto)",
-            "Zuschläge",
-            "Arbeitsstunden",
-            "Überstunden",
-            "Probezeit",
-        ];
-        const values = [
-            summaryObj.arbeitgeber,
-            summaryObj.taetigkeit,
-            summaryObj.beginn,
-            summaryObj.dauer,
-            summaryObj.gehalt_brutto,
-            summaryObj.zuschlaege,
-            summaryObj.arbeitsstunden,
-            summaryObj.ueberstunden,
-            summaryObj.probezeit,
+            "Mindestdauer",
+            "Kündigungsfrist",
+            "Miete (kalt)",
+            "Betriebskosten",
+            "Quadratmeter",
+            "Zimmer",
+            "Im Mietgegenstand enthalten",
         ];
 
+        console.log(summaryObj);
+
+        const values = [
+            summaryObj.vermieter,
+            summaryObj.mieter,
+            summaryObj.beginn,
+            summaryObj.dauer,
+            summaryObj.mindestdauer,
+            summaryObj.kuendigungsfrist,
+            summaryObj.miete_kalt,
+            summaryObj.betriebskosten,
+            summaryObj.quadratmeter,
+            summaryObj.zimmer,
+            summaryObj.im_mietgegenstand_enthalten,
+        ];
         for (let i = 0; i < keys.length; ++i) {
             let elemWrapper = document.createElement("li");
             let elemKey = document.createElement("strong");
