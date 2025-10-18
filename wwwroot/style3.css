@@ -314,6 +314,11 @@ footer nav ul {
     text-transform: uppercase;
 }
 
+.disclaimer {
+    font-size: 0.7rem;
+    width: 50%;
+}
+
 @media (max-width: 900px) {
     main * {
         flex-direction: column;
