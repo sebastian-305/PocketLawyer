@@ -71,7 +71,11 @@ public class NebiusService : IAiClient
             return "Error";
         }
 
-        _logger.LogDebug("Nebius answer:  {answ}", completion.Content[0].Text);
+        _logger.LogDebug("Nebius input Token:  {answ}", completion.Usage.InputTokenCount);
+        _logger.LogDebug("Nebius output Token:  {answ}", completion.Usage.OutputTokenCount);
+
+        _logger.LogDebug("Nebius total Token:  {answ}", completion.Usage.TotalTokenCount);
+
         return completion.Content[0].Text ?? "Error";
     }
 

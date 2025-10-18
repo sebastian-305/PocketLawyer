@@ -57,6 +57,10 @@ builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
 // inner (echte Implementierung)
+builder.Services
+    .AddHttpClient<WebSocketAnalysisService>()
+    .AddHttpMessageHandler<RedactingLoggingHandler>();
+// inner (echte Implementierung)
 builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini:inner");
 
 // outer (Decorator) – Factory hat (sp, key)!
