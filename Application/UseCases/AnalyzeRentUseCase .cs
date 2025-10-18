@@ -39,12 +39,16 @@ public class AnalyzeRentUseCase : IContractAnalyzerService
     {
         string prompt = promptBuilder(content.FileName, content.FileContent);
 
-        if (typeof(T) == typeof(ContractAnalysisDto)) { 
+        if (typeof(T) == typeof(ContractAnalysisDto))
+        {
             prompt += "Beachte folgende Gesetzte: \n";
-        prompt += await ReadLawContentAsync();
-        _logger.LogDebug("Prompt length: {f}", prompt.Length);
+            prompt += await ReadLawContentAsync();
+            _logger.LogDebug("Prompt length: {f}", prompt.Length);
         }
         string answer = await _aiService.SendPrompt(prompt, schema);
+
+        if (answer.Equals("Error"))
+            throw new Exception("There was a Problem with the Ai Requet");
 
         T? dto;
         try
@@ -59,7 +63,7 @@ public class AnalyzeRentUseCase : IContractAnalyzerService
         }
         if (dto == null)
             throw new AnalysisException("Invalid AI response", "deserialization");
-        
+
 
         return dto!;
     }

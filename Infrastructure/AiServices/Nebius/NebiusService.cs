@@ -65,9 +65,18 @@ public class NebiusService : IAiClient
         {
             completion = await _client.CompleteChatAsync(messages, options);
         }
+        catch (ClientResultException ex)
+        {
+            var raw = ex.GetRawResponse(); // enthält Status, Headers, Content
+            string body = raw?.Content?.ToString() ?? "(no body)";
+            _logger.LogError(ex, "OpenAI 400: {Message}\nResponse body: {Body}\nHeaders: {Headers}",
+                ex.Message, body, raw?.Headers);
+            throw; // oder sinnvoll behandeln
+        }
         catch (Exception ex)
         {
             _logger.LogError("Error in Nebius Request: {er}", ex.Message);
+            _logger.LogError("Content of completion: {comp}", ex.ToString());
             return "Error";
         }
 
