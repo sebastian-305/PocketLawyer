@@ -2,9 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace PocketLawyer.Domain.Dtos;
 
-public class ContractAnalysisDto
+public class RentContractAnalysisDto : IAnalysisDto
 {
-    [JsonPropertyName("summary")]
+    [JsonPropertyName("keypoints")]
     public Summary Summary { get; set; } = new();
 
     [JsonPropertyName("unzulaessige_klauseln")]
@@ -24,6 +24,10 @@ public class ContractAnalysisDto
 
     [JsonPropertyName("kollektivvertrag")]
     public string? Kollektivvertrag { get; set; }
+
+
+
+
 }
 public class Summary
 {

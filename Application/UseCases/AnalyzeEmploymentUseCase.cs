@@ -2,18 +2,19 @@ using System.Text.Json;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Web;
 
 namespace PocketLawyer.Application.UseCases;
 
-public class AnalyzeContractUseCase : IContractAnalyzerService
+public class AnalyzeEmploymentUseCase : IContractAnalyzerService
 {
-    private readonly ILogger<AnalyzeContractUseCase> _logger;
+    private readonly ILogger<AnalyzeEmploymentUseCase> _logger;
     private readonly IAiClient _aiService;
     private readonly IKollektivvertragService _kvService;
     private readonly IKvDetectionService _kvDetectionService;
 
-    public AnalyzeContractUseCase(
-        ILogger<AnalyzeContractUseCase> logger,
+    public AnalyzeEmploymentUseCase(
+        ILogger<AnalyzeEmploymentUseCase> logger,
         [FromKeyedServices("nebius")] IAiClient aiService,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService)
@@ -26,12 +27,12 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
 
     public async Task<T> ProcessContractRequest<T>(
         FileContentDto content,
-        Func<string, string, string> promptBuilder,
+        Func<AnalysisType, string, string, string> promptBuilder,
         object schema,
         bool detectKv = false,
         string? kvName = null)
     {
-        string prompt = promptBuilder(content.FileName, content.FileContent);
+        string prompt = promptBuilder(AnalysisType.Employment, content.FileName, content.FileContent);
 
         if (!string.IsNullOrWhiteSpace(kvName) || detectKv)
         {
@@ -83,7 +84,7 @@ public class AnalyzeContractUseCase : IContractAnalyzerService
                 case ContractValidationDto v:
                     v.Kollektivvertrag = kvName;
                     break;
-                case ContractAnalysisDto a:
+                case EmploymentContractAnalysisDto a:
                     a.Kollektivvertrag = kvName;
                     break;
             }

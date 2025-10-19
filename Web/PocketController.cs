@@ -29,8 +29,8 @@ public class PocketController : ControllerBase
         _socketService = socketService;
     }
 
-    [HttpGet("/mockdata")]
-    public async Task<ActionResult<ContractAnalysisDto>> GetMockData()
+    [HttpGet("/employment-mockdata")]
+    public async Task<ActionResult<RentContractAnalysisDto>> GetMockData()
     {
         _logger.LogInformation("Entering {Method}", nameof(GetMockData));
 
@@ -61,10 +61,10 @@ public class PocketController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldaten.");
         }
 
-        ContractAnalysisDto? dto;
+        RentContractAnalysisDto? dto;
         try
         {
-            dto = JsonSerializer.Deserialize<ContractAnalysisDto>(mockContent);
+            dto = JsonSerializer.Deserialize<RentContractAnalysisDto>(mockContent);
         }
         catch (JsonException ex)
         {
@@ -78,18 +78,33 @@ public class PocketController : ControllerBase
         return Ok(dto);
     }
 
-
-    [HttpGet("/analysis")]
-    public async Task<ActionResult> AnalyzeViaWebSocket()
+    [HttpGet("/employment-analysis")]
+    public async Task<ActionResult> AnalyzeEmploymentViaWebSocket()
     {
         _logger.LogInformation("Request via {address}", Request.Host);
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return BadRequest();
 
 
-        await _socketService.HandleAsync(HttpContext);
+        await _socketService.HandleAsync(HttpContext, AnalysisType.Employment);
         return new EmptyResult();
     }
 
+    [HttpGet("/rent-analysis")]
+    public async Task<ActionResult> AnalyzeRentViaWebSocket()
+    {
+        _logger.LogInformation("Request via {address}", Request.Host);
+        if (!HttpContext.WebSockets.IsWebSocketRequest)
+            return BadRequest();
 
+
+        await _socketService.HandleAsync(HttpContext, AnalysisType.Rent);
+        return new EmptyResult();
+    }
+}
+
+public enum AnalysisType
+{
+    Employment,
+    Rent
 }

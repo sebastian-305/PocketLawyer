@@ -1,3 +1,9 @@
+using System.ClientModel;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
+using System.Net.Http;
+using System.Runtime.ConstrainedExecution;
+using System.Text.Json;
 using Anthropic.SDK.Messaging;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Options;
@@ -7,9 +13,6 @@ using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Options;
-using System.ClientModel;
-using System.Net.Http;
-using System.Text.Json;
 
 namespace PocketLawyer.Infrastructure.AiServices.Nebius;
 
@@ -32,7 +35,9 @@ public class NebiusService : IAiClient
             credential: new ApiKeyCredential(options.Value.Key ?? ""),
             options: new OpenAIClientOptions()
             {
-                Endpoint = new Uri("https://api.studio.nebius.com/v1/")
+                Endpoint = new Uri("https://api.studio.nebius.com/v1/"),
+                NetworkTimeout = TimeSpan.FromMinutes(10),
+
             }
         );
 
@@ -48,6 +53,11 @@ public class NebiusService : IAiClient
 
         List<ChatMessage> messages =
         [
+            ChatMessage.CreateSystemMessage(
+                "Du bist ein erfahrener Rechtsanwalt, der sich auf das österreichische Mietrecht spezialisiert hat."+
+    "Antworte NUR als gültiges JSON nach Schema. Deutsch. " +   
+    "Keine Wiederholungen über Abschnitte; " +
+    "Längenlimits strikt einhalten."),
             new UserChatMessage(prompt),
          ];
 
@@ -58,12 +68,15 @@ public class NebiusService : IAiClient
                 jsonSchema: outputSchema as BinaryData,
                 jsonSchemaIsStrict: true),
             Temperature = 0.0f,
+            MaxOutputTokenCount = 700,
+            TopP = 0.1f
 
         };
         ChatCompletion completion;
         try
         {
-            completion = await _client.CompleteChatAsync(messages, options);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(4));
+            completion = await _client.CompleteChatAsync(messages, options, cts.Token);
         }
         catch (ClientResultException ex)
         {
@@ -71,7 +84,7 @@ public class NebiusService : IAiClient
             string body = raw?.Content?.ToString() ?? "(no body)";
             _logger.LogError(ex, "OpenAI 400: {Message}\nResponse body: {Body}\nHeaders: {Headers}",
                 ex.Message, body, raw?.Headers);
-            throw; // oder sinnvoll behandeln
+            return "Error";
         }
         catch (Exception ex)
         {
@@ -80,10 +93,10 @@ public class NebiusService : IAiClient
             return "Error";
         }
 
-        _logger.LogDebug("Nebius input Token:  {answ}", completion.Usage.InputTokenCount);
-        _logger.LogDebug("Nebius output Token:  {answ}", completion.Usage.OutputTokenCount);
-
-        _logger.LogDebug("Nebius total Token:  {answ}", completion.Usage.TotalTokenCount);
+        _logger.LogInformation("Nebius input Token:  {answ}", completion.Usage.InputTokenCount);
+        _logger.LogInformation("Nebius output Token: {answ}", completion.Usage.OutputTokenCount);
+        _logger.LogInformation("Nebius total Token:  {answ}", completion.Usage.TotalTokenCount);
+        _logger.LogDebug(completion.Content[0].Text);
 
         return completion.Content[0].Text ?? "Error";
     }
@@ -96,7 +109,8 @@ public class NebiusService : IAiClient
                   "properties": {
                     "fazit": {
                       "type": "string",
-                       "description": "Ein Fazit, dass die Analyse zusammenfasst und eine Aussage darüber macht, ob der Mietvertrag von einem Rechstgutachter angesehen werden sollte. Das Fazit besteht aus Maximal 100 Wörtern"
+                        "maxLength":1500,
+                       "description": "Zusammenfassung der Analyse und ob der Mietvertrag von einem Rechstgutachter angesehen werden sollte."
                     },
                     "nachteile_klauseln": {
                       "type": "array",
@@ -140,9 +154,9 @@ public class NebiusService : IAiClient
                         ]
                       }
                     },
-                    "summary": {
+                    "keypoints": {
                       "type": "object",
-                      "descritpion": "In der Zusammenfassung werden einzelne Punkte kurz und übersichtlich dargestellt, damit Schlüsselkomponenten des Mietvertrags leicht zu identifizieren sind.",
+                      "descritpion": "Stichworte, keine kanzen Sätze.",
                       "properties": {
                         "vermieter": {
                           "type": "string",
@@ -153,10 +167,12 @@ public class NebiusService : IAiClient
                         },                       
                         "beginn": {
                           "type": "string",
+                          "examples": ["01.01.2025, Anfang nächsten Monats"],
                           "description" : "Beginn der Miete"
                         },
                         "dauer": {
                           "type": "string",
+                           "examples": ["3 Jahre, unbegrenzt"],
                            "description": "Vereinbarte Dauer des Mietvertrages"
                         },
                         "mindestdauer": {
@@ -164,18 +180,23 @@ public class NebiusService : IAiClient
                            "description": "Mindestdauer des Mietvertrages"
                         },
                         "kuendigungsfrist": {
-                          "type": "string"
+                          "type": "string",
+                        "examples": ["3 Monate, 1 Monat"]
+
                         },
                         "miete_kalt": {
                           "type": "string",
+                            "examples": ["500 Euro, 1.200 Euro"],
                           "description": "Kaltmiete in Euro"
                         },
                         "betriebskosten": {
-                          "type": "string"
+                          "type": "string",
+                            "examples": ["500 Euro, 1.200 Euro"]
                         }
                         ,
                         "quadratmeter": {
-                          "type": "string"
+                          "type": "string",
+                           "examples": ["50m², 120m²"]                           
                         },
                         "zimmer": {
                           "type": "number"

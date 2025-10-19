@@ -2,6 +2,7 @@ using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Infrastructure;
+using PocketLawyer.Web;
 using System.Text;
 using System.Text.Json;
 
@@ -9,7 +10,7 @@ namespace PocketLawyer.Application.UseCases;
 
 public class AnalyzeRentUseCase : IContractAnalyzerService
 {
-    private readonly ILogger<AnalyzeContractUseCase> _logger;
+    private readonly ILogger<AnalyzeRentUseCase> _logger;
     private readonly IAiClient _aiService;
     private readonly IKollektivvertragService _kvService;
     private readonly IKvDetectionService _kvDetectionService;
@@ -17,7 +18,7 @@ public class AnalyzeRentUseCase : IContractAnalyzerService
 
 
     public AnalyzeRentUseCase(
-        ILogger<AnalyzeContractUseCase> logger,
+        ILogger<AnalyzeRentUseCase> logger,
         [FromKeyedServices("nebius")] IAiClient aiService,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService,
@@ -32,14 +33,20 @@ public class AnalyzeRentUseCase : IContractAnalyzerService
 
     public async Task<T> ProcessContractRequest<T>(
         FileContentDto content,
-        Func<string, string, string> promptBuilder,
+        Func<AnalysisType, string, string, string> promptBuilder,
         object schema,
         bool detectKv = false,
         string? kvName = null)
     {
-        string prompt = promptBuilder(content.FileName, content.FileContent);
+        _logger.LogDebug("Entering {Method}", nameof(ProcessContractRequest));
 
-        if (typeof(T) == typeof(ContractAnalysisDto))
+        string prompt = promptBuilder(AnalysisType.Rent, content.FileName, content.FileContent);
+
+
+
+        _logger.LogDebug(typeof(T).ToString());
+
+        if (typeof(IAnalysisDto).IsAssignableFrom(typeof(T)))
         {
             prompt += "Beachte folgende Gesetzte: \n";
             prompt += await ReadLawContentAsync();
@@ -54,6 +61,8 @@ public class AnalyzeRentUseCase : IContractAnalyzerService
         try
         {
             dto = JsonSerializer.Deserialize<T>(answer);
+            _logger.LogDebug(dto?.ToString() ?? "Empty");
+
         }
         catch (JsonException ex)
         {
@@ -70,6 +79,7 @@ public class AnalyzeRentUseCase : IContractAnalyzerService
 
     private async Task<string> ReadLawContentAsync()
     {
+        _logger.LogDebug("Entering {Method}", nameof(ReadLawContentAsync));
         var dir = Path.Combine(_environment.ContentRootPath, DefaultPaths.Context);
         _logger.LogDebug("Directory: {dir}", dir);
         if (!Directory.Exists(dir))
