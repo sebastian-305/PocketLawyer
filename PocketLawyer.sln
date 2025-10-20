@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocketLawyer", "PocketLawyer.csproj", "{C58BC54A-EC55-46F0-9241-5E677946C4BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocketLawyer.Tests", "PocketLawyer.Tests\PocketLawyer.Tests.csproj", "{AAFCABAE-B1E1-4C44-ABBE-197457BCE7CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C58BC54A-EC55-46F0-9241-5E677946C4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C58BC54A-EC55-46F0-9241-5E677946C4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C58BC54A-EC55-46F0-9241-5E677946C4BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAFCABAE-B1E1-4C44-ABBE-197457BCE7CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAFCABAE-B1E1-4C44-ABBE-197457BCE7CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAFCABAE-B1E1-4C44-ABBE-197457BCE7CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAFCABAE-B1E1-4C44-ABBE-197457BCE7CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
