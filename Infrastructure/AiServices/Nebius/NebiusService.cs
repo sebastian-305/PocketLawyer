@@ -20,6 +20,7 @@ public class NebiusService : IAiClient
 {
     ILogger<NebiusService> _logger;
     ChatClient _client;
+    private readonly string _model;
 
     public NebiusService(
         IOptions<NebiusOptions> options,
@@ -27,11 +28,12 @@ public class NebiusService : IAiClient
         )
     {
         _logger = logger;
+        _model = options.Value.ModelId ?? "";
         _client = new(
             //model: "deepseek-ai/DeepSeek-V3-0324-fast",
             //model: "Qwen/Qwen3-235B-A22B-Thinking-2507",
             //model: "Qwen/Qwen3-32B-fast",
-            model: options.Value.ModelId ?? "",
+            model: _model,
             credential: new ApiKeyCredential(options.Value.Key ?? ""),
             options: new OpenAIClientOptions()
             {
@@ -50,6 +52,7 @@ public class NebiusService : IAiClient
     public async Task<string> SendPrompt(string prompt, object? outputSchema)
     {
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
+        _logger.LogDebug("Model: {model}",_model);
 
         List<ChatMessage> messages =
         [
