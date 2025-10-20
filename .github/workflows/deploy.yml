@@ -2,7 +2,7 @@ name: Deploy KlauselKlara
 
 on:
   push:
-    branches: [ "main" ]   # anpassen
+    branches: [ "deploy-rent" ]   # anpassen
   workflow_dispatch: {}     # manueller Start
 
 concurrency:
