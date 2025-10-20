@@ -21,4 +21,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="PocketLawyer.Tests/**/*.cs" />
+    <EmbeddedResource Remove="PocketLawyer.Tests/**/*.resx" />
+    <None Remove="PocketLawyer.Tests/**/*.cs" />
+  </ItemGroup>
+
 </Project>
