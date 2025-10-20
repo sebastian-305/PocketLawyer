@@ -69,5 +69,6 @@ jobs:
             mkdir -p "$REL"
             tar -xzf "/tmp/release-${{ env.TS }}.tgz" -C "$REL"
             ln -sfn "$REL" "${{ env.RELEASES_DIR }}/current"
-            sudo systemctl restart "${{ env.APP_SERVICE }}"
+            sudo -n systemctl restart "${{ env.APP_SERVICE }}"
+            sudo -n systemctl --no-pager -l status "${{ env.APP_SERVICE }}"
 
