@@ -43,23 +43,26 @@ jobs:
           echo "TS=$ts" >> $GITHUB_ENV
           tar -C publish -czf release-$ts.tgz .
 
-      - name: Copy to server (rsync/ssh)
+      - name: Copy to server (scp)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}   # <— hinzufügen
           source: "release-${{ env.TS }}.tgz"
           target: "/tmp/"
+          timeout: 600s
 
-      - name: Activate release (symlink + restart)
+      - name: Activate release (ssh)
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}   # <— hinzufügen
           script: |
             set -euo pipefail
             REL="${{ env.RELEASES_DIR }}/${{ env.TS }}"
@@ -67,4 +70,4 @@ jobs:
             tar -xzf "/tmp/release-${{ env.TS }}.tgz" -C "$REL"
             ln -sfn "$REL" "${{ env.RELEASES_DIR }}/current"
             sudo systemctl restart "${{ env.APP_SERVICE }}"
-            sudo systemctl --no-pager -l status "${{ env.APP_SERVICE }}"
+
