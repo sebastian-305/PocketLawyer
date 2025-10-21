@@ -101,14 +101,14 @@ public class AnalyzerSchema
     public AnalyzerSchemaProperties properties { get; set; } = new();
     public string[] required { get; set; } = new[]
     {
-        "summary", "unzulaessige_klauseln", "nachteile_klauseln",
+        "keypoints", "unzulaessige_klauseln", "nachteile_klauseln",
         "widerspruechliche_klauseln", "vorteilhafte_klauseln", "fazit"
     };
 }
 
 public class AnalyzerSchemaProperties
 {
-    public SummarySchema summary { get; set; } = new();
+    public SummarySchema keypoints { get; set; } = new();
     public ArraySchema<ClauseInfo> unzulaessige_klauseln { get; set; } = new();
     public ArraySchema<ClauseInfo> nachteile_klauseln { get; set; } = new();
     public ArraySchema<ConflictingClauseInfo> widerspruechliche_klauseln { get; set; } = new();

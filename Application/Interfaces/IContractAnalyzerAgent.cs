@@ -3,7 +3,7 @@ using PocketLawyer.Web;
 
 namespace PocketLawyer.Application.Interfaces;
 
-public interface IContractAnalyzerService
+public interface IContractAnalyzerAgent
 {
     Task<T> ProcessContractRequest<T> (
         FileContentDto content,

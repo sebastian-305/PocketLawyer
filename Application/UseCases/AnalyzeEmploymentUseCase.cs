@@ -6,7 +6,7 @@ using PocketLawyer.Web;
 
 namespace PocketLawyer.Application.UseCases;
 
-public class AnalyzeEmploymentUseCase : IContractAnalyzerService
+public class AnalyzeEmploymentUseCase : IContractAnalyzerAgent
 {
     private readonly ILogger<AnalyzeEmploymentUseCase> _logger;
     private readonly IAiClient _aiService;

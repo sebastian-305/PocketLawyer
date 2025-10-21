@@ -15,16 +15,16 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
     private readonly ILogger<WebSocketAnalysisService> _logger;
     private readonly IFileValidatorService _fileValidatorService;
     private readonly IKvDetectionService _kvDetectionService;
-    private readonly IContractAnalyzerService _analyzeEmployment;
-    private readonly IContractAnalyzerService _analyzeRent;
-    private IContractAnalyzerService _usedUseCase = null;
+    private readonly IContractAnalyzerAgent _analyzeEmployment;
+    private readonly IContractAnalyzerAgent _analyzeRent;
+    private IContractAnalyzerAgent _usedUseCase = null;
 
     public WebSocketAnalysisService(
         ILogger<WebSocketAnalysisService> logger,
         IFileValidatorService fileValidatorService,
         IKvDetectionService kvDetectionService,
-        [FromKeyedServices("employment")] IContractAnalyzerService analyzeEmploymentUseCase,
-        [FromKeyedServices("rent")] IContractAnalyzerService analyzeRentUseCase
+        [FromKeyedServices("employment")] IContractAnalyzerAgent analyzeEmploymentUseCase,
+        [FromKeyedServices("rent")] IContractAnalyzerAgent analyzeRentUseCase
         )
     {
         _logger = logger;

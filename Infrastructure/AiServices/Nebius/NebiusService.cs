@@ -334,7 +334,7 @@ public class NebiusService : IAiClient
                   },
                   "required": [
                     "fazit",
-                    "summary"
+                    "keypoints"
                   ]
                 }
             """u8.ToArray());

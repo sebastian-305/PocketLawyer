@@ -5,7 +5,7 @@ namespace PocketLawyer.Domain.Dtos;
 public class EmploymentContractAnalysisDto : IAnalysisDto
 {
     [JsonPropertyName("keypoints")]
-    public SummaryClass Summary { get; set; } = new();
+    public SummaryClass Keypoints { get; set; } = new();
 
     [JsonPropertyName("unzulaessige_klauseln")]
     public ProblemKlausel[] UnzulaessigeKlauseln { get; set; } = [];

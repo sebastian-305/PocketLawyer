@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace PocketLawyer.Application.UseCases;
 
-public class AnalyzeRentUseCase : IContractAnalyzerService
+public class AnalyzeRentUseCase : IContractAnalyzerAgent
 {
     private readonly ILogger<AnalyzeRentUseCase> _logger;
     private readonly IAiClient _aiService;
