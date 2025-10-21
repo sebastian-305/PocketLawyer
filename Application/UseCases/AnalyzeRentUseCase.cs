@@ -1,3 +1,4 @@
+using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;

@@ -18,13 +18,13 @@ public class PocketController : ControllerBase
     private readonly IWebHostEnvironment _environment;
     private readonly PathOptions _paths;
     private readonly IWebSocketAnalysisService _socketService;
-    private readonly IContractAnalyzerService _analyzeContractUseCase;
+    private readonly IContractAnalyzerAgent _analyzeContractUseCase;
     public PocketController(
         ILogger<PocketController> logger,
         IOptions<PathOptions> pathOptions,
         IWebHostEnvironment environment,
         IWebSocketAnalysisService socketService,
-        IContractAnalyzerService analyzeContractUseCase)
+        IContractAnalyzerAgent analyzeContractUseCase)
     {
         _logger = logger;
         _paths = pathOptions.Value;

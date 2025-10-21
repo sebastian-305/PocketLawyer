@@ -144,7 +144,7 @@ Beinhaltet die Use Cases und Schnittstellen zu externen Diensten.
 |-------|-------|
 | `AiServiceException.cs` | Eigene Exception für Fehler bei KI-Diensten. |
 | `IAiClient.cs` | Interface für KI-Dienste (`SendPrompt`). |
-| `IContractAnalyzerService.cs` | Interface für die Vertragsanalyse. |
+| `IContractAnalyzerAgent.cs` | Interface für die Vertragsanalyse. |
 | `IFileDecoder.cs` | Basisschnittstelle für einzelne Decoder-Strategien. |
 | `IFileDecoderService.cs` | Abstraktion über Dateidekodierung. |
 | `IFileValidatorService.cs` | Validiert und dekodiert hochgeladene Dateien. |

@@ -216,7 +216,7 @@ IKvDetectionService <|.. KvAiDetectionService
 KvAiDetectionService --> IKollektivvertragService
 KvAiDetectionService --> IAiClient
 
-interface IContractAnalyzerService {
+interface IContractAnalyzerAgent {
     +Task<T> ProcessContractRequest(FileContentDto content, Func<string,string,string> promptBuilder, object schema, bool useAltKey, bool detectKv = false, string? kvName = null)
 }
 
@@ -227,7 +227,7 @@ class AnalyzeContractUseCase {
     -IKvDetectionService _kvDetectionService
     +Task<T> ProcessContractRequest(...)
 }
-IContractAnalyzerService <|.. AnalyzeContractUseCase
+IContractAnalyzerAgent <|.. AnalyzeContractUseCase
 AnalyzeContractUseCase --> IAiClient
 AnalyzeContractUseCase --> IKollektivvertragService
 AnalyzeContractUseCase --> IKvDetectionService
@@ -240,13 +240,13 @@ class WebSocketAnalysisService {
     -ILogger _logger
     -IFileValidatorService _fileValidatorService
     -IKvDetectionService _kvDetectionService
-    -IContractAnalyzerService _analyzeContractUseCase
+    -IContractAnalyzerAgent _analyzeContractUseCase
     +Task HandleAsync(HttpContext context)
 }
 IWebSocketAnalysisService <|.. WebSocketAnalysisService
 WebSocketAnalysisService --> IFileValidatorService
 WebSocketAnalysisService --> IKvDetectionService
-WebSocketAnalysisService --> IContractAnalyzerService
+WebSocketAnalysisService --> IContractAnalyzerAgent
 
 class PocketController {
     -ILogger _logger
@@ -493,11 +493,11 @@ classDiagram
     class KvFileService
     IKollektivvertragService <|.. KvFileService
 
-    class IContractAnalyzerService {
+    class IContractAnalyzerAgent {
         +ProcessContractRequest(content, promptBuilder, schema, useAltKey, detectKv, kvName)
     }
     class AnalyzeContractUseCase
-    IContractAnalyzerService <|.. AnalyzeContractUseCase
+    IContractAnalyzerAgent <|.. AnalyzeContractUseCase
     AnalyzeContractUseCase --> IAiService
     AnalyzeContractUseCase --> IKvDetectionService
     AnalyzeContractUseCase --> IKollektivvertragService
@@ -509,7 +509,7 @@ classDiagram
     IWebSocketAnalysisService <|.. WebSocketAnalysisService
     WebSocketAnalysisService --> IFileValidatorService
     WebSocketAnalysisService --> IKvDetectionService
-    WebSocketAnalysisService --> IContractAnalyzerService
+    WebSocketAnalysisService --> IContractAnalyzerAgent
 
     class PocketController
     PocketController --> IWebSocketAnalysisService
