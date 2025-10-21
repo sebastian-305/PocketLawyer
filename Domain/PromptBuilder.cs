@@ -16,7 +16,7 @@ public static class PromptBuilder
         sbPrompt.AppendLine(string.Join("\n\n", kvFiles));
         return sbPrompt.ToString();
     }
-    public static string BuildEmploymentAnalysisPrompt(AnalysisType type, string filename, string fileContent)
+    public static string BuildEmploymentAnalysisPrompt(AgentType type, string filename, string fileContent)
     {
         StringBuilder promptBuilder = new StringBuilder();
         promptBuilder.AppendLine("Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. M\u00f6glicherweise erh\u00e4ltst du auch den Kollektivvertrag dazu. Der Kollektivvertrag ist die wichtigste Grundlage der Analyse.");
@@ -45,7 +45,7 @@ public static class PromptBuilder
     }
 
 
-    public static string BuildRentAnalysisPrompt(AnalysisType type, string filename, string fileContent)
+    public static string BuildRentAnalysisPrompt(AgentType type, string filename, string fileContent)
     {
         StringBuilder promptBuilder = new StringBuilder();
         promptBuilder.AppendLine("Du bist ein erfahrener Rechtsanwalt, der sich auf das österreichische Mietrecht spezialisiert hat, insbesondere auf die Prüfung von Mietverträgen aus Sicht des Mieters.");
@@ -74,16 +74,16 @@ public static class PromptBuilder
         return promptBuilder.ToString();
     }
 
-    public static string BuildValidationPrompt(AnalysisType type, string filename, string fileContent)
+    public static string BuildValidationPrompt(AgentType type, string filename, string fileContent)
     {
         string typename = String.Empty;
 
         switch (type)
         {
-            case AnalysisType.Employment:
+            case AgentType.Employment:
                 typename = "Arbeitsvertrag";
                 break;
-            case AnalysisType.Rent:
+            case AgentType.Rent:
                 typename = "Mietvertrag";
                 break;
             default:

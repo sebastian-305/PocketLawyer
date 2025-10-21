@@ -33,14 +33,14 @@ public class AnalyzeRentUseCase : IContractAnalyzerService
 
     public async Task<T> ProcessContractRequest<T>(
         FileContentDto content,
-        Func<AnalysisType, string, string, string> promptBuilder,
+        Func<AgentType, string, string, string> promptBuilder,
         object schema,
         bool detectKv = false,
         string? kvName = null)
     {
         _logger.LogDebug("Entering {Method}", nameof(ProcessContractRequest));
 
-        string prompt = promptBuilder(AnalysisType.Rent, content.FileName, content.FileContent);
+        string prompt = promptBuilder(AgentType.Rent, content.FileName, content.FileContent);
 
 
 

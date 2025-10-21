@@ -34,17 +34,17 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
         _analyzeRent = analyzeRentUseCase;
     }
 
-    public async Task HandleAsync(HttpContext context, AnalysisType type)
+    public async Task HandleAsync(HttpContext context, AgentType type)
     {
         _logger.LogDebug("Entering {Method}", nameof(HandleAsync));
         using var socket = await context.WebSockets.AcceptWebSocketAsync();
 
         switch (type)
         {
-            case AnalysisType.Employment:
+            case AgentType.Employment:
                 _usedUseCase = _analyzeEmployment;
                 break;
-            case AnalysisType.Rent:
+            case AgentType.Rent:
                 _usedUseCase = _analyzeRent;
                 break;
             default:
@@ -137,21 +137,21 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             );
     }
 
-    private async Task<IAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName, AnalysisType type)
+    private async Task<IAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName, AgentType type)
     {
         _logger.LogDebug("Entering {Method}", nameof(AnalyzeContractAsync));
 
 
         return type switch
         {
-            AnalysisType.Employment => await _usedUseCase.ProcessContractRequest<EmploymentContractAnalysisDto>(
+            AgentType.Employment => await _usedUseCase.ProcessContractRequest<EmploymentContractAnalysisDto>(
                 content,
                 PromptBuilder.BuildEmploymentAnalysisPrompt,
                 NebiusService.AnalyzerSchemaDefinition,
                 false,
                 kvName),
 
-            AnalysisType.Rent => await _usedUseCase.ProcessContractRequest<RentContractAnalysisDto>(
+            AgentType.Rent => await _usedUseCase.ProcessContractRequest<RentContractAnalysisDto>(
                 content,
                 PromptBuilder.BuildRentAnalysisPrompt,
                 NebiusService.AnalyzerSchemaDefinition,

@@ -86,7 +86,7 @@ public class PocketController : ControllerBase
             return BadRequest();
 
 
-        await _socketService.HandleAsync(HttpContext, AnalysisType.Employment);
+        await _socketService.HandleAsync(HttpContext, AgentType.Employment);
         return new EmptyResult();
     }
 
@@ -98,12 +98,12 @@ public class PocketController : ControllerBase
             return BadRequest();
 
 
-        await _socketService.HandleAsync(HttpContext, AnalysisType.Rent);
+        await _socketService.HandleAsync(HttpContext, AgentType.Rent);
         return new EmptyResult();
     }
 }
 
-public enum AnalysisType
+public enum AgentType
 {
     Employment,
     Rent

@@ -27,12 +27,12 @@ public class AnalyzeEmploymentUseCase : IContractAnalyzerService
 
     public async Task<T> ProcessContractRequest<T>(
         FileContentDto content,
-        Func<AnalysisType, string, string, string> promptBuilder,
+        Func<AgentType, string, string, string> promptBuilder,
         object schema,
         bool detectKv = false,
         string? kvName = null)
     {
-        string prompt = promptBuilder(AnalysisType.Employment, content.FileName, content.FileContent);
+        string prompt = promptBuilder(AgentType.Employment, content.FileName, content.FileContent);
 
         if (!string.IsNullOrWhiteSpace(kvName) || detectKv)
         {

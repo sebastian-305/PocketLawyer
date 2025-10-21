@@ -5,5 +5,5 @@ namespace PocketLawyer.Application.Interfaces;
 
 public interface IWebSocketAnalysisService
 {
-    Task HandleAsync(HttpContext context, AnalysisType type);
+    Task HandleAsync(HttpContext context, AgentType type);
 }
