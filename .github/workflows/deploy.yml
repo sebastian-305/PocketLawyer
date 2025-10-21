@@ -1,0 +1,74 @@
+name: Deploy KlauselKlara
+
+on:
+  push:
+   branches: [ "develope-rent" ]   # anpassen
+  workflow_dispatch: {}     # manueller Start
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+env:
+  DOTNET_VERSION: "8.0.x"
+  APP_DLL: "PocketLawyer.dll"
+  APP_SERVICE: ${{ secrets.APP_SERVICE || 'klauselklara' }}
+  RELEASES_DIR: ${{ secrets.RELEASES_DIR || '/var/www/releases' }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Publish (linux-x64, framework-dependent)
+        run: |
+          dotnet publish -c Release -r linux-x64 --self-contained false -o publish
+          ls -la publish
+          test -f publish/${{ env.APP_DLL }} && test -f publish/*.runtimeconfig.json
+
+      - name: Create release archive
+        run: |
+          ts=$(date +'%Y%m%d-%H%M%S')
+          echo "TS=$ts" >> $GITHUB_ENV
+          tar -C publish -czf release-$ts.tgz .
+
+      - name: Copy to server (scp)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}   # <— hinzufügen
+          source: "release-${{ env.TS }}.tgz"
+          target: "/tmp/"
+          timeout: 600s
+
+      - name: Activate release (ssh)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}   # <— hinzufügen
+          script: |
+            set -euo pipefail
+            REL="${{ env.RELEASES_DIR }}/${{ env.TS }}"
+            mkdir -p "$REL"
+            tar -xzf "/tmp/release-${{ env.TS }}.tgz" -C "$REL"
+            ln -sfn "$REL" "${{ env.RELEASES_DIR }}/current"
+            sudo -n systemctl restart "${{ env.APP_SERVICE }}"
+            sudo -n systemctl --no-pager -l status "${{ env.APP_SERVICE }}"
+

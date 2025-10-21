@@ -6,19 +6,19 @@ namespace PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 public class GeminiResponse
 {
     [JsonPropertyName("candidates")]
-    public Candidates[] Candidates { get; set; }
+    public Candidates[]? Candidates { get; set; }
     [JsonPropertyName("usageMetadata")]
-    public UsageMetadata UsageMetadata { get; set; }
+    public UsageMetadata? UsageMetadata { get; set; }
     [JsonPropertyName("modelVersion")]
-    public string ModelVersion { get; set; }
+    public string? ModelVersion { get; set; }
 }
 
 public class Candidates
 {
     [JsonPropertyName("content")]
-    public Content Content { get; set; }
+    public Content? Content { get; set; }
     [JsonPropertyName("finishReason")]
-    public string FinishReason { get; set; }
+    public string? FinishReason { get; set; }
     [JsonPropertyName("avgLogprobs")]
     public double AvgLogprobs { get; set; }
 }
@@ -26,15 +26,15 @@ public class Candidates
 public class Content
 {
     [JsonPropertyName("parts")]
-    public Parts[] Parts { get; set; }
+    public Parts[]? Parts { get; set; }
     [JsonPropertyName("role")]
-    public string Role { get; set; }
+    public string? Role { get; set; }
 }
 
 public class Parts
 {
     [JsonPropertyName("text")]
-    public string Text { get; set; }
+    public string? Text { get; set; }
 }
 
 public class UsageMetadata
@@ -46,15 +46,15 @@ public class UsageMetadata
     [JsonPropertyName("totalTokenCount")]
     public int TotalTokenCount { get; set; }
     [JsonPropertyName("promptTokensDetails")]
-    public PromptTokensDetails[] PromptTokensDetails { get; set; }
+    public PromptTokensDetails[]? PromptTokensDetails { get; set; }
     [JsonPropertyName("candidatesTokensDetails")]
-    public CandidatesTokensDetails[] CandidatesTokensDetails { get; set; }
+    public CandidatesTokensDetails[]? CandidatesTokensDetails { get; set; }
 }
 
 public class PromptTokensDetails
 {
     [JsonPropertyName("modality")]
-    public string Modality { get; set; }
+    public string? Modality { get; set; }
     [JsonPropertyName("tokenCount")]
     public int TokenCount { get; set; }
 }
@@ -62,7 +62,7 @@ public class PromptTokensDetails
 public class CandidatesTokensDetails
 {
     [JsonPropertyName("modality")]
-    public string Modality { get; set; }
+    public string? Modality { get; set; }
     [JsonPropertyName("tokenCount")]
     public int TokenCount { get; set; }
 }

@@ -1,8 +1,8 @@
 const DEBUG = false;
 
-export function startAnalysisSocket(file, onMessage) {
+export function startAnalysisSocket(file, contractType, onMessage) {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const socket = new WebSocket(`${protocol}://${window.location.host}/analysis`);
+    const socket = new WebSocket(`${protocol}://${window.location.host}/${contractType}`);
     socket.addEventListener('open', async () => {
         const buffer = await file.arrayBuffer();
         socket.send(
@@ -14,6 +14,7 @@ export function startAnalysisSocket(file, onMessage) {
     });
     socket.addEventListener('message', (e) => {
         try {
+            if (DEBUG) console.log(e.data);
             onMessage(JSON.parse(e.data));
         } catch (err) {
             if (DEBUG) console.error('Ungültige Serverantwort', e.data);
@@ -32,7 +33,7 @@ function bufferToBase64(buffer) {
 }
 
 export async function requestMockAnalysis() {
-    const response = await fetch('/mockdata', { method: 'GET' });
+    const response = await fetch('/employment-mockdata', { method: 'GET' });
     const text = await response.text();
     try {
         return JSON.parse(text);

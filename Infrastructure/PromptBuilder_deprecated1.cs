@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PocketLawyer.Infrastructure;
 
-public static class PromptBuilder
+public static class PromptBuilder_Deprecated
 {
     public static string AddKvInfo(string prompt, string kvName, IEnumerable<string> kvFiles)
     {

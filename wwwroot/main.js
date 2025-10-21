@@ -1,7 +1,9 @@
 import { startAnalysisSocket, requestMockAnalysis, mockPreValidationMessage } from './network.js';
-import { createLoadingElement, renderPreValidation, renderContractResult, displayUploadError, printer } from './render.js';
+import { renderPreValidation as rentPre, renderContractResult as rentRes } from './render-rent.js'; 
+import { renderPreValidation as emploPre, renderContractResult as emploRes } from './render-employment.js';
+import { createLoadingElement, displayUploadError, printer } from './render.js';
 
-const DEBUG = false;
+const DEBUG = true;
 
 async function uploadFile(event) {
     event.preventDefault();
@@ -13,6 +15,7 @@ async function uploadFile(event) {
     body.replaceChildren(loading);
 
     const input = event.target.myfile;
+    const analysisType = event.target.contractType.value;
     let preAnalysisShown = false;
     let preMessage = null;
 
@@ -20,12 +23,12 @@ async function uploadFile(event) {
         if (input.files.length === 0) {
             preMessage = mockPreValidationMessage();
             body.replaceChildren();
-            renderPreValidation(preMessage, body);
+            emploPre(preMessage, body);
             preAnalysisShown = true;
             body.appendChild(loading);
             const analysisMessage = await requestMockAnalysis();
             body.removeChild(loading);
-            renderContractResult(analysisMessage, body);
+            emploRes(analysisMessage, body);
             sessionStorage.setItem(
                 'analysisResult',
                 JSON.stringify({ validation: preMessage, analysis: analysisMessage }),
@@ -33,11 +36,18 @@ async function uploadFile(event) {
             document.getElementById('printbtn').style.visibility = 'visible';
         } else {
             const file = input.files[0];
-            const socket = startAnalysisSocket(file, (msg) => {
+            const socket = startAnalysisSocket(file, event.target.contractType.value, (msg) => {
                 if (!preAnalysisShown) {
                     preMessage = msg;
                     body.replaceChildren();
-                    renderPreValidation(msg, body);
+                    switch (analysisType) {
+                        case "rent-analysis":
+                            rentPre(preMessage, body);
+                            break;
+                        case "employment-analysis":
+                            emploPre(preMessage, body);
+                            break;
+                    }
                     preAnalysisShown = true;
                     if (!msg.isReadable || !msg.isContract) {
                         socket.close();
@@ -45,8 +55,16 @@ async function uploadFile(event) {
                         body.appendChild(loading);
                     }
                 } else {
+                    if(DEBUG) console.log(msg);
                     body.removeChild(loading);
-                    renderContractResult(msg, body);
+                    switch (analysisType) {
+                        case "rent-analysis":
+                            rentRes(msg, body);
+                            break;
+                        case "employment-analysis":
+                            emploRes(msg, body);
+                            break;
+                    }
                     sessionStorage.setItem(
                         'analysisResult',
                         JSON.stringify({ validation: preMessage, analysis: msg }),

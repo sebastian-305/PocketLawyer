@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace PocketLawyer.Domain.Dtos;
 
-public class ContractValidationDto
+public class ContractValidationDto :IValidationDto
 {
     [JsonPropertyName("isReadable")]
     public bool IsReadable { get; set; }

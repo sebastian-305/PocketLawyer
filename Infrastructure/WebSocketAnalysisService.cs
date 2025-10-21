@@ -1,3 +1,9 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Domain;
+using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Infrastructure.AiServices.Nebius;
+using PocketLawyer.Web;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -15,23 +21,41 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
     private readonly ILogger<WebSocketAnalysisService> _logger;
     private readonly IFileValidatorService _fileValidatorService;
     private readonly IKvDetectionService _kvDetectionService;
-    private readonly IContractAnalyzerService _analyzeContractUseCase;
+    private readonly IContractAnalyzerAgent _analyzeEmployment;
+    private readonly IContractAnalyzerAgent _analyzeRent;
+    private IContractAnalyzerAgent _usedUseCase = null;
 
     public WebSocketAnalysisService(
         ILogger<WebSocketAnalysisService> logger,
         IFileValidatorService fileValidatorService,
         IKvDetectionService kvDetectionService,
-        IContractAnalyzerService analyzeContractUseCase)
+        [FromKeyedServices("employment")] IContractAnalyzerAgent analyzeEmploymentUseCase,
+        [FromKeyedServices("rent")] IContractAnalyzerAgent analyzeRentUseCase
+        )
     {
         _logger = logger;
         _fileValidatorService = fileValidatorService;
         _kvDetectionService = kvDetectionService;
-        _analyzeContractUseCase = analyzeContractUseCase;
+        _analyzeEmployment = analyzeEmploymentUseCase;
+        _analyzeRent = analyzeRentUseCase;
     }
 
-    public async Task HandleAsync(HttpContext context)
+    public async Task HandleAsync(HttpContext context, AgentType type)
     {
+        _logger.LogDebug("Entering {Method}", nameof(HandleAsync));
         using var socket = await context.WebSockets.AcceptWebSocketAsync();
+
+        switch (type)
+        {
+            case AgentType.Employment:
+                _usedUseCase = _analyzeEmployment;
+                break;
+            case AgentType.Rent:
+                _usedUseCase = _analyzeRent;
+                break;
+            default:
+                throw new NotImplementedException(type.ToString());
+        }
 
         try
         {
@@ -46,10 +70,12 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
                 return;
             }
 
-            string? kvName = await DetectKvAsync(content);
-            ContractAnalysisDto analysis = await AnalyzeContractAsync(content, kvName);
-            await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis), CancellationToken.None);
+
+            var analysis = await AnalyzeContractAsync(content, null, type);
+            await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis, analysis.GetType()), CancellationToken.None);
+
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+            _logger.LogInformation("Connection closed gracefully");
         }
         catch (FileValidationException ex)
         {
@@ -63,10 +89,19 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
             await WebSocketHelpers.SendErrorAsync(socket, ex.Message, CancellationToken.None);
             await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError("Unknown Exception {ex}", ex.Message);
+            await WebSocketHelpers.SendErrorAsync(socket, ex.Message, CancellationToken.None);
+            await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+
+        }
     }
 
     private async Task<(byte[] fileBytes, string fileName)> ReceiveFileAsync(WebSocket socket)
     {
+        _logger.LogDebug("Entering {Method}", nameof(ReceiveFileAsync));
+
         var buffer = new byte[8192];
         using var ms = new MemoryStream();
         WebSocketReceiveResult result;
@@ -97,41 +132,41 @@ public class WebSocketAnalysisService : IWebSocketAnalysisService
         return (Convert.FromBase64String(upload.Data), upload.FileName);
     }
 
-    private async Task<string?> DetectKvAsync(FileContentDto content)
+    private async Task<ContractValidationDto> ValidateContractAsync(FileContentDto content)
     {
-        try
-        {
-            KvDetectionResult result = await _kvDetectionService.DetectAsync(content.FileContent);
-            if (result.AllEqual && result.KvName != "Keiner" && result.KvName != "Multiple")
-            {
-                return result.KvName;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "KV detection failed");
-        }
-        return null;
-    }
-
-    private Task<ContractValidationDto> ValidateContractAsync(FileContentDto content)
-    {
-        return _analyzeContractUseCase.ProcessContractRequest<ContractValidationDto>(
+        _logger.LogDebug("Entering {Method}", nameof(ValidateContractAsync));
+        return await _usedUseCase.ProcessContractRequest<ContractValidationDto>(
             content,
             PromptBuilder.BuildValidationPrompt,
-            GeminiService.PreAnalyzerSchemaDefinition,
+            NebiusService.PreAnalyzerSchemaDefinition,
             true
             );
     }
 
-    private Task<ContractAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName)
+    private async Task<IAnalysisDto> AnalyzeContractAsync(FileContentDto content, string? kvName, AgentType type)
     {
-        return _analyzeContractUseCase.ProcessContractRequest<ContractAnalysisDto>(
-            content,
-            PromptBuilder.BuildAnalysisPrompt,
-            GeminiService.AnalyzerSchemaDefinition,
-            false,
-            kvName);
+        _logger.LogDebug("Entering {Method}", nameof(AnalyzeContractAsync));
+
+
+        return type switch
+        {
+            AgentType.Employment => await _usedUseCase.ProcessContractRequest<EmploymentContractAnalysisDto>(
+                content,
+                PromptBuilder.BuildEmploymentAnalysisPrompt,
+                NebiusService.AnalyzerSchemaDefinition,
+                false,
+                kvName),
+
+            AgentType.Rent => await _usedUseCase.ProcessContractRequest<RentContractAnalysisDto>(
+                content,
+                PromptBuilder.BuildRentAnalysisPrompt,
+                NebiusService.AnalyzerSchemaDefinition,
+                false,
+                kvName),
+
+            _ => throw new NotImplementedException(type.ToString())
+        };
+
     }
 
 }

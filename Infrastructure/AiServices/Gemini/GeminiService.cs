@@ -40,8 +40,8 @@ public class GeminiService : IAiClient
     public async Task<string> SendPrompt(string prompt, object? outputSchema)
     {
         _logger.LogDebug("Entering {Method}", nameof(SendPrompt));
-        bool useAltKey = outputSchema?.ToString().Equals("PreAnalyzerSchema") ?? false;
-        string apiKey = useAltKey ? _options.AltKey : _options.Key;
+        bool useAltKey = outputSchema is PreAnalyzerSchema;
+        string apiKey =  useAltKey ? _options.AltKey : _options.Key;
 
         _logger.LogDebug("Using Schema: {schema}", outputSchema?.ToString());
 
