@@ -159,7 +159,7 @@ public class NebiusService : IAiClient
                     },
                     "keypoints": {
                       "type": "object",
-                      "descritpion": "Stichworte, keine kanzen Sätze.",
+                      "descritpion": "Stichworte, keine ganzen Sätze.",
                       "properties": {
                         "vermieter": {
                           "type": "string",
