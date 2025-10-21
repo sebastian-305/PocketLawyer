@@ -1,4 +1,4 @@
-namespace PocketLawyer.Application.Interfaces;
+namespace PocketLawyer.Application.Exceptions;
 
 /// <summary>
 /// Exception that represents errors returned from an AI service.

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using PocketLawyer.Options;
 using System.Text.Json;
+using PocketLawyer.Application.Exceptions;
 
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;

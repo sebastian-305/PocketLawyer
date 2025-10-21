@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Application.Exceptions;
 
 namespace PocketLawyer.Infrastructure;
 

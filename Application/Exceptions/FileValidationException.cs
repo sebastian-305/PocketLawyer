@@ -1,4 +1,4 @@
-namespace PocketLawyer.Application.Interfaces;
+namespace PocketLawyer.Application.Exceptions;
 
 /// <summary>
 /// Exception thrown when validation or decoding of an uploaded file fails.

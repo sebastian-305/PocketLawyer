@@ -33,7 +33,7 @@ public class KvAiDetectionService : IKvDetectionService
         string prompt = PromptBuilder.BuildKvDetectionPrompt(contractContent, kvsFolders);
 
         var tasks = Enumerable
-            .Range(0, 3)
+            .Range(0, 2)
             .Select(_ => _aiService.SendPrompt(prompt, null))
             .ToArray();
 

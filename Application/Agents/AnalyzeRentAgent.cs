@@ -1,57 +1,62 @@
+using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Infrastructure;
+using PocketLawyer.Infrastructure.AiServices.Nebius;
 using PocketLawyer.Web;
 using System.Text;
 using System.Text.Json;
 
-namespace PocketLawyer.Application.UseCases;
+namespace PocketLawyer.Application.Agents;
 
-public class AnalyzeRentUseCase : IContractAnalyzerAgent
+public class AnalyzeRentAgent : IContractAnalyzerAgent
 {
-    private readonly ILogger<AnalyzeRentUseCase> _logger;
+    private readonly ILogger<AnalyzeRentAgent> _logger;
     private readonly IAiClient _aiService;
-    private readonly IKollektivvertragService _kvService;
-    private readonly IKvDetectionService _kvDetectionService;
     private readonly IWebHostEnvironment _environment;
 
 
-    public AnalyzeRentUseCase(
-        ILogger<AnalyzeRentUseCase> logger,
+    public AnalyzeRentAgent(
+        ILogger<AnalyzeRentAgent> logger,
         [FromKeyedServices("nebius")] IAiClient aiService,
-        IKollektivvertragService kvService,
-        IKvDetectionService kvDetectionService,
         IWebHostEnvironment environment)
     {
         _logger = logger;
         _aiService = aiService;
-        _kvService = kvService;
-        _kvDetectionService = kvDetectionService;
         _environment = environment;
     }
 
-    public async Task<T> ProcessContractRequest<T>(
-        FileContentDto content,
-        Func<AgentType, string, string, string> promptBuilder,
-        object schema,
-        bool detectKv = false,
-        string? kvName = null)
+    public async Task<T> ProcessContractRequest<T>(FileContentDto content, AgentAction action, object? data = null)
     {
+        Func<AgentType, string, string, string> promptBuilder;
+        object schema;
+
         _logger.LogDebug("Entering {Method}", nameof(ProcessContractRequest));
+
+        switch (action)
+        {
+            case AgentAction.Validate:
+                promptBuilder = PromptBuilder.BuildValidationPrompt;
+                schema = NebiusService.PreAnalyzerSchemaDefinition;
+                break;
+            case AgentAction.Analyze:
+                promptBuilder = PromptBuilder.BuildRentAnalysisPrompt;
+                schema = NebiusService.AnalyzerSchemaDefinition;
+                break;
+            default:
+                throw new Exception("Action unknown not valid");
+        }
 
         string prompt = promptBuilder(AgentType.Rent, content.FileName, content.FileContent);
 
-
-
-        _logger.LogDebug(typeof(T).ToString());
-
-        if (typeof(IAnalysisDto).IsAssignableFrom(typeof(T)))
+        if (action == AgentAction.Analyze)
         {
             prompt += "Beachte folgende Gesetzte: \n";
             prompt += await ReadLawContentAsync();
-            _logger.LogDebug("Prompt length: {f}", prompt.Length);
+            _logger.LogDebug("Prompt length: {f} chars", prompt.Length);
         }
+
         string answer = await _aiService.SendPrompt(prompt, schema);
 
         if (answer.Equals("Error"))
@@ -80,7 +85,7 @@ public class AnalyzeRentUseCase : IContractAnalyzerAgent
     private async Task<string> ReadLawContentAsync()
     {
         _logger.LogDebug("Entering {Method}", nameof(ReadLawContentAsync));
-        var dir = Path.Combine(_environment.ContentRootPath, DefaultPaths.Context);
+        var dir = Path.Combine(_environment.ContentRootPath, DefaultPaths.RentContext);
         _logger.LogDebug("Directory: {dir}", dir);
         if (!Directory.Exists(dir))
         {
