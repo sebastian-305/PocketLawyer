@@ -1,0 +1,71 @@
+name: SonarCloud (.NET)
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-and-analyze:
+    name: Build & Sonar analyze
+    runs-on: windows-latest
+
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORG:   sebastian-305
+      SONAR_KEY:   sebastian-305_PocketLawyer
+      SONAR_HOST_URL: https://sonarcloud.io
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Setup JDK 17 (required by Sonar)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dotnet-sonarscanner
+        run: dotnet tool install --global dotnet-sonarscanner
+      - name: Add dotnet tools to PATH
+        shell: bash
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      # --- Sonar Begin (Repo-ROOT als working-directory!) ---
+      - name: Sonar Begin
+        working-directory: .
+        run: >
+          dotnet-sonarscanner begin
+          /k:"${{ env.SONAR_KEY }}"
+          /o:"${{ env.SONAR_ORG }}"
+          /d:sonar.host.url="${{ env.SONAR_HOST_URL }}"
+          /d:sonar.token="${{ env.SONAR_TOKEN }}"
+          /d:sonar.cs.vscoveragexml.reportsPaths=**/coverage*.xml
+
+      - name: Restore (Solution)
+        working-directory: .
+        run: dotnet restore ./PocketLawyer.sln
+
+      - name: Build (Solution, Release, no restore)
+        working-directory: .
+        run: dotnet build ./PocketLawyer.sln -c Release --no-restore
+
+      # Optional: Tests + Coverage (falls vorhanden)
+      # - name: Test
+      #   working-directory: .
+      #   run: dotnet test ./PocketLawyer.sln -c Release --no-build --collect:"XPlat Code Coverage" --results-directory ./TestResults
+
+      - name: Sonar End
+        working-directory: .
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet-sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
