@@ -62,10 +62,22 @@ public class AnalyzeRentAgent : IContractAnalyzerAgent
         if (answer.Equals("Error"))
             throw new Exception("There was a Problem with the Ai Requet");
 
-        T? dto;
+        object? dto;
         try
         {
-            dto = JsonSerializer.Deserialize<T>(answer);
+            switch (action)
+            {
+                case AgentAction.Validate:
+                    dto = JsonSerializer.Deserialize<T>(answer);
+                    break;
+                case AgentAction.Analyze:
+                    dto = JsonSerializer.Deserialize<RentContractAnalysisDto>(answer);
+                    break;
+                default:
+                    throw new Exception("Action unknown not valid");
+            }
+
+           
             _logger.LogDebug(dto?.ToString() ?? "Empty");
 
         }
@@ -79,7 +91,7 @@ public class AnalyzeRentAgent : IContractAnalyzerAgent
             throw new AnalysisException("Invalid AI response", "deserialization");
 
 
-        return dto!;
+        return (T)dto!;
     }
 
     private async Task<string> ReadLawContentAsync()

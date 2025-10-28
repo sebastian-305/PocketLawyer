@@ -384,7 +384,7 @@ public class NebiusService : IAiClient
                         ]
                       }
                     },
-                    "summary": {
+                    "keypoints": {
                       "type": "object",
                       "properties": {
                         "arbeitgeber": {
@@ -541,7 +541,7 @@ public class NebiusService : IAiClient
                   },
                   "required": [
                     "fazit",
-                    "summary"
+                    "keypoints"
                   ]
                 }
             """u8.ToArray());

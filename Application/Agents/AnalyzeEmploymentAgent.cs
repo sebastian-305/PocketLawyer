@@ -82,10 +82,22 @@ public class AnalyzeEmploymentAgent : IContractAnalyzerAgent
 
         string answer = await _aiService.SendPrompt(prompt, schema);
 
-        T? dto;
+      object? dto;
         try
         {
-            dto = JsonSerializer.Deserialize<T>(answer);
+            switch (action)
+            {
+                case AgentAction.Validate:
+                    dto = JsonSerializer.Deserialize<T>(answer);
+                    break;
+                case AgentAction.Analyze:
+                    dto = JsonSerializer.Deserialize<EmploymentContractAnalysisDto>(answer);
+                    break;
+                default:
+                    throw new Exception("Action unknown not valid");
+            }
+
+
         }
         catch (JsonException ex)
         {
@@ -109,6 +121,6 @@ public class AnalyzeEmploymentAgent : IContractAnalyzerAgent
             }
         }
 
-        return dto!;
+        return (T)dto!;
     }
 }

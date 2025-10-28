@@ -34,10 +34,12 @@ public class WebSocketAgentAnalysisService : IWebSocketAnalysisService
 
         try
         {
+            //Receive File
             var (bytes, name) = await ReceiveFileAsync(socket);
             IFormFile CreateFile() => new FormFile(new MemoryStream(bytes), 0, bytes.Length, "file", name);
             FileContentDto content = await _fileValidatorService.ValidateAndDecodeAsync(CreateFile());
 
+            //Pre-Analysis
             ContractValidationDto validation = await agent.ProcessContractRequest<ContractValidationDto>(
             content,
             AgentAction.Validate
@@ -49,12 +51,17 @@ public class WebSocketAgentAnalysisService : IWebSocketAnalysisService
                 return;
             }
 
+
+            //Analysis
             var analysis = await agent.ProcessContractRequest<IAnalysisDto>(content, AgentAction.Analyze, validation);
 
             await WebSocketHelpers.SendStringAsync(socket, JsonSerializer.Serialize(analysis, analysis.GetType()), CancellationToken.None);
 
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
             _logger.LogInformation("Connection closed gracefully");
+
+
+
         }
         catch (FileValidationException ex)
         {
