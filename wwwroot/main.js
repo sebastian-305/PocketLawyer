@@ -31,7 +31,11 @@ async function uploadFile(event) {
             emploRes(analysisMessage, body);
             sessionStorage.setItem(
                 'analysisResult',
-                JSON.stringify({ validation: preMessage, analysis: analysisMessage }),
+                JSON.stringify({
+                    analysisType,
+                    validation: preMessage,
+                    analysis: analysisMessage,
+                }),
             );
             document.getElementById('printbtn').style.visibility = 'visible';
         } else {
@@ -67,7 +71,11 @@ async function uploadFile(event) {
                     }
                     sessionStorage.setItem(
                         'analysisResult',
-                        JSON.stringify({ validation: preMessage, analysis: msg }),
+                        JSON.stringify({
+                            analysisType,
+                            validation: preMessage,
+                            analysis: msg,
+                        }),
                     );
                     document.getElementById('printbtn').style.visibility = 'visible';
                     socket.close();
@@ -109,11 +117,20 @@ document.addEventListener('DOMContentLoaded', () => {
         .addEventListener('click', () => {
             const stored = sessionStorage.getItem('analysisResult');
             if (stored) {
-                const { validation, analysis } = JSON.parse(stored);
+                const { validation, analysis, analysisType } = JSON.parse(stored);
                 const body = document.getElementById('evaluation-body');
                 body.replaceChildren();
-                renderPreValidation(validation, body);
-                renderContractResult(analysis, body);
+                switch (analysisType) {
+                    case 'rent-analysis':
+                        rentPre(validation, body);
+                        rentRes(analysis, body);
+                        break;
+                    case 'employment-analysis':
+                    default:
+                        emploPre(validation, body);
+                        emploRes(analysis, body);
+                        break;
+                }
                 document.getElementById('printbtn').style.visibility = 'visible';
                 const modal = bootstrap.Modal.getOrCreateInstance(
                     evaluationModalEl,
