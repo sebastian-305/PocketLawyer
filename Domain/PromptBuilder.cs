@@ -68,8 +68,6 @@ public static class PromptBuilder
             "\nErkläre, warum die Klausel nach österreichischem Recht unzulässig, nachteilig oder widersprüchlich ist, und welchen rechtlichen Grundsatz oder welche gesetzliche Bestimmung sie verletzt." +
             "\nFormuliere die Begründung so, dass sie auch für Nicht-Juristen leicht verständlich, aber dennoch professionell und fachlich korrekt klingt.");
 
-
-
         
         promptBuilder.AppendLine("Die Property Rechtsgrundlage ist ein Array von Objekten mit den Feldern rechtsgrundlage, auf die sich das Problem referenziert (z. B. \"§ 30 MRG – Kündigungsgründe\") und Zitat (vollständiger Gesetzestext). Zitiere ganz genau und wortwörtlich den Satz aus dem entsprechendem RIS-Gesetz in Anführungszeichen. Beide Felder sind erforderlich.\n");
 
