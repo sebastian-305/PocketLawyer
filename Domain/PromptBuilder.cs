@@ -56,10 +56,10 @@ public static class PromptBuilder
         promptBuilder.AppendLine("Bitte beachte:Durchschnittlich finden sich in jedem Mietvertrag ca. 14 Verstöße gegen Bestimmungen des MRG/WGG, ca. 17 Verstöße gegen Bestimmungen des ABGB sowie ca. 19 Verstöße gegen KSchG-Bestimmungen.\n");
         promptBuilder.AppendLine("Untersuche den Vertrag auf unzulässige, nachteilige, widersprüchliche oder vorteilhafte Klauseln.");
 
-        promptBuilder.AppendLine("Unzulässige Klauseln sind Vertragsbestimmungen, die gegen zwingende gesetzliche Vorschriften verstoßen und daher rechtlich unwirksam sind.");
-        promptBuilder.AppendLine("Nachteilige Klauseln sind nicht nur gesetzwidrig, sondern benachteiligen regelmäßig den Mieter, da sie von den gesetzlichen Vorschriften zu dessen Ungunsten – und damit zugunsten des Vermieters – abweichen.");
-        promptBuilder.AppendLine("Unzulässige Klauseln sind Vertragsbestimmungen, die gegen zwingende gesetzliche Vorschriften verstoßen und daher rechtlich unwirksam sind.");
-        promptBuilder.AppendLine("Vorteilhafte Klauseln gilt dann als vorteilhaft, wenn sie über das gesetzlich Übliche oder Marktübliche hinausgeht und ein Entgegenkommen des Vermieters darstellt. Sie verschaffen dem Vermieter Vorteile, auf die er rechtlich keinen Anspruch hat.");
+        promptBuilder.AppendLine("Finde alle unzulässige Klauseln. Unzulässige Klauseln sind die Vertragsbestimmungen, die gegen zwingende gesetzliche Vorschriften verstoßen und daher rechtlich unwirksam sind.");
+        promptBuilder.AppendLine("Finde alle nachteilige Klauseln. Nachteilige Klauseln sind nicht nur gesetzwidrig, sondern benachteiligen regelmäßig den Mieter, da sie von den gesetzlichen Vorschriften zu dessen Ungunsten – und damit zugunsten des Vermieters – abweichen.");
+        promptBuilder.AppendLine("Finde alle widersprüchliche Klauseln. Widersprüchliche Klauseln sind Formulierungen in dem Vertrag, die sich gegenseitig ausschließen oder nicht miteinander übereinstimmen.");
+        promptBuilder.AppendLine("Finde alle vorteilhafte Klauseln. Vorteilhafte Klauseln gelten dann als vorteilhaft, wenn sie über das gesetzlich Übliche oder Marktübliche hinausgeht und ein Entgegenkommen des Vermieters darstellt. Sie verschaffen dem Vermieter Vorteile, auf die er rechtlich keinen Anspruch hat.");
         //      promptBuilder.AppendLine("Intransparente Klauseln sind dermaßen unklar und/oder unverständlich abgefasst, dass sie im\nRahmen der Vertragsprüfungen als intransparent im Sinne des § 6 Abs 3\nKSchG beurteilt werden mussten und aus diesem Grund auch rechtsunwirksam\nsind. ");
 
         promptBuilder.AppendLine("Für jede unzulässige, nachteilige, widersprüchliche oder einseitig vorteilhafte Klausel zitiere den exakten Wortlaut aus dem Vertrag wortwörtlich." +
