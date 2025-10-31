@@ -35,16 +35,17 @@ body h3 {
     text-transform: uppercase;
 }
 h1 {
-    font-weight: 800;
+    font-weight: 1000;
 }
 
 h2 {
-    font-weight: 700;
+    font-weight: 900;
 }
 
 h3 {
-    font-weight: 600;
+    font-weight: 700;
 }
+
 
 a {
     all: unset;
@@ -99,6 +100,7 @@ header h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
     gap: 1rem;
 }
 
@@ -108,15 +110,15 @@ header h1 {
 .hero-section > .hero-content > h3 {
     text-transform: none;
     font-size: 1.4rem;
+    
 }
 .hero-section > .hero-content > p {
-    font-size: 0.95rem;
+    font-size: 1rem;
     max-width: 80%;
-    text-align: center;
 }
 
 .cta-button {
-    font-size: 1em;
+    font-size: 1.1em;
     background-color: var(--highlight);
     color: var(--blue-bg);
     border-radius: 10px;
@@ -124,7 +126,7 @@ header h1 {
     padding: 0.4rem 1rem;
     width: 100%;
     max-width: 28.125rem;
-    font-weight: 700;
+    font-weight: 900;
 }
 
 .mission-section {
@@ -133,6 +135,7 @@ header h1 {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    padding: 2rem;
 }
 
 .mission-section h2 {
@@ -177,10 +180,9 @@ header h1 {
     padding: 1.5rem;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
     flex-basis: 33%;
-    /* height: 60%; */
+    height: 60%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .why-section .why-cards > * > h3 {
@@ -220,16 +222,16 @@ header h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    gap: 3rem;
     padding: 2rem;
 }
 
 .cta-section > .cta-content h3 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     text-align: center;
 }
 .cta-section > .cta-content p {
-    font-size: 0.95rem;
+    font-size: 1.2rem;
     text-align: center;
 }
 
