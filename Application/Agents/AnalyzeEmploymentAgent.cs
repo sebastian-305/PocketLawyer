@@ -3,19 +3,22 @@ using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Infrastructure.AiServices.Nebius;
 using PocketLawyer.Web;
+using System;
+using System.Text.Json;
 
-namespace PocketLawyer.Application.UseCases;
+namespace PocketLawyer.Application.Agents;
 
-public class AnalyzeEmploymentUseCase : IContractAnalyzerAgent
+public class AnalyzeEmploymentAgent : IContractAnalyzerAgent
 {
-    private readonly ILogger<AnalyzeEmploymentUseCase> _logger;
+    private readonly ILogger<AnalyzeEmploymentAgent> _logger;
     private readonly IAiClient _aiService;
     private readonly IKollektivvertragService _kvService;
     private readonly IKvDetectionService _kvDetectionService;
 
-    public AnalyzeEmploymentUseCase(
-        ILogger<AnalyzeEmploymentUseCase> logger,
+    public AnalyzeEmploymentAgent(
+        ILogger<AnalyzeEmploymentAgent> logger,
         [FromKeyedServices("nebius")] IAiClient aiService,
         IKollektivvertragService kvService,
         IKvDetectionService kvDetectionService)
@@ -26,13 +29,29 @@ public class AnalyzeEmploymentUseCase : IContractAnalyzerAgent
         _kvDetectionService = kvDetectionService;
     }
 
-    public async Task<T> ProcessContractRequest<T>(
-        FileContentDto content,
-        Func<AgentType, string, string, string> promptBuilder,
-        object schema,
-        bool detectKv = false,
-        string? kvName = null)
+    public async Task<T> ProcessContractRequest<T>(FileContentDto content, AgentAction action, object? data = null)
     {
+        Func<AgentType, string, string, string> promptBuilder;
+        object schema;
+        bool detectKv = false;
+        string? kvName = ((ContractValidationDto?)data)?.Kollektivvertrag;
+
+        _logger.LogDebug("Entering {Method}", nameof(ProcessContractRequest));
+
+        switch (action)
+        {
+            case AgentAction.Validate:
+                promptBuilder = PromptBuilder.BuildValidationPrompt;
+                schema = NebiusService.PreAnalyzerSchemaDefinition;
+                break;
+            case AgentAction.Analyze:
+                promptBuilder = PromptBuilder.BuildEmploymentAnalysisPrompt;
+                schema = NebiusService.EmploymentAnalyzerSchemaDefinition;
+                break;
+            default:
+                throw new Exception("Action unknown not valid");
+        }
+
         string prompt = promptBuilder(AgentType.Employment, content.FileName, content.FileContent);
 
         if (!string.IsNullOrWhiteSpace(kvName) || detectKv)
@@ -64,10 +83,22 @@ public class AnalyzeEmploymentUseCase : IContractAnalyzerAgent
 
         string answer = await _aiService.SendPrompt(prompt, schema);
 
-        T? dto;
+      object? dto;
         try
         {
-            dto = JsonSerializer.Deserialize<T>(answer);
+            switch (action)
+            {
+                case AgentAction.Validate:
+                    dto = JsonSerializer.Deserialize<T>(answer);
+                    break;
+                case AgentAction.Analyze:
+                    dto = JsonSerializer.Deserialize<EmploymentContractAnalysisDto>(answer);
+                    break;
+                default:
+                    throw new Exception("Action unknown not valid");
+            }
+
+
         }
         catch (JsonException ex)
         {
@@ -91,6 +122,6 @@ public class AnalyzeEmploymentUseCase : IContractAnalyzerAgent
             }
         }
 
-        return dto!;
+        return (T)dto!;
     }
 }

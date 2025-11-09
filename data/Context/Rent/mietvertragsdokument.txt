@@ -1,0 +1,1055 @@
+Gesetzwidrige Vertragsbestimmungen 
+in Wohnungsmietverträgen 
+Juristische Analyse von Mietvertragsformularen  
+Walter Reichholf 
+Walter Rosifka  
+verfasst im Auftrag der AK Wien 
+ 2 
+INHALTSVERZEICHNIS: 
+ 
+ 
+1. Gutachtensauftrag...............................................................................................................3 
+1.1. Ausgangsbasis............................................................................................................3 
+1.2. Aufgabenstellung.......................................................................................................3 
+2. Für das Verständnis dieser Studie notwendige, rechtliche Grundlagen.............................3 
+2.1. Bestandrechtliche Bestimmungen des Allgemeinen Bürgerlichen Gesetzbuches  
+(ABGB)..................................................................................................................................4 
+2.2. Mietrechtsgesetz (MRG)............................................................................................5 
+2.3. Wohnungsgemeinnützigkeitsgesetz (WGG)..............................................................5 
+2.4. Konsumentenschutzgesetz (KSchG)..........................................................................5 
+2.5. Transparenzgebot gemäß § 6 Abs 3 KSchG..............................................................6 
+2.6. Inhaltskontrolle gemäß § 879 Abs 3 ABGB..............................................................6 
+2.7. § 28 KSchG als Maßstab für die Klauselprüfung......................................................8 
+3. Gesamtergebnis und Würdigung........................................................................................8 
+3.1. Anzahl und Art der unzulässigen Klauseln................................................................8 
+3.2. Kritische Würdigung des Gesamtergebnisses............................................................9 
+3.3. Auswirkungen und mögliche Abhilfe......................................................................11 
+4. Detailergebnisse – häufige und typische Verstöße..........................................................12 
+5. Anhang: Rechtswidrige Klauseln in den einzelnen Verträgen.............................................26 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Autoren 
+Dr Walter Reichholf (Rechtsanwalt in Wien) 
+Mag Walter Rosifka (Arbeiterkammer Wien) 
+ 
+ 
+ 
+Impressum 
+Eigentümer, Herausgeber und Verleger:  
+Kammer für Arbeiter und Angestellte für Wien, 1041 Wien, Prinz-Eugen-Straße 20-22 
+Hersteller: 
+Verlags- und Herstellungsort Wien 
+© 2004 bei AK-Wien 
+ISBN: 3-7063-0254-3 
+Bei Verwendung von Textteilen wird um Quellenangabe und Zusendung eines 
+Belegexemplars an die AK Wien, Abteilung Konsumentenpolitik, ersucht.   
+1. 
+Gutachtensauftrag 
+1.1. 
+1.2. 
+2. 
+Ausgangsbasis 
+Grundlage dieser Studie sind 20 aktuelle Mietvertragsformulare/Formularmietverträge 
+für Wohnungsmiete ausschließlich professioneller Vermieter. Darunter befinden sich 
+zwei Musterverträge von Vermieterverbänden. 
+Bei sämtlichen, geprüften Formularen/Formularverträgen handelt es sich um Vertrags
+formblätter
+ (bzw. um Verträge, die unter Verwendung von Vertragsformblättern 
+erstellt wurden
+ ) im Sinne des § 28 Abs 1 Konsumentenschutzgesetz (KSchG) sowie 
+§ 879 Abs 3 Allgemeines Bürgerliches Gesetzbuch (ABGB). 
+Bei sämtlichen, untersuchten Verträgen stehen sich ein Vermieter als Unternehmer 
+und ein Mieter als Verbraucher i.S.d. § 1 Abs 1 Konsumentenschutzgesetz gegenüber, 
+sodass die Verträge in den Geltungsbereich des Konsumentenschutzgesetzes fallen. 
+Von den insgesamt 20 Vertragsformularen/Formularverträgen fallen 13 in den 
+Vollanwendungsbereich des Mietrechtsgesetzes (MRG), weitere 5 in den 
+Geltungsbereich des Wohnungsgemeinnützigkeitsgesetzes (WGG) (und damit gemäß 
+§ 1 Abs 3 MRG – abgesehen von den sich aus § 20 WGG ergebenden Modifikationen – ebenfalls in den Vollanwendungsbereich des MRG), 2 Verträge fallen in den 
+Teilanwendungsbereich des MRG, wie er sich aus § 1 Abs 4 MRG ergibt. 
+Aufgabenstellung 
+Aufgabenstellung bei der Erstellung dieser Studie war es, die vorliegenden 
+Formularverträge einer systematischen, juristischen Überprüfung zu unterziehen, ob 
+und welche gesetzwidrigen Vertragsklauseln sie enthalten, diese Klauseln zu erfassen, 
+sie mit einer kurzen Begründung der Art der Rechtswidrigkeit zu versehen und das 
+Gesamtergebnis darzustellen und auszuwerten. 
+Für das Verständnis dieser Studie notwendige, rechtliche Grundlagen 
+Ausgehend von den bereits in Punkt 1.1. genannten, gemeinsamen Spezifika der untersuchten 
+Verträge finden auf diese die (im Regelfall) dispositiven Vorschriften für den Miet- und 
+Pachtvertrag der §§ 1091-1122 ABGB, die zwingenden Bestimmungen des MRG (teilweise 
+mit den Modifikationen des WGG), und weiters die zwingenden Bestimmungen des KSchG 
+Anwendung. 
+Bedeutsam ist auch noch die Anwendbarkeit des § 879 Abs 3 ABGB, der die Inhaltskontrolle
+ für in Allgemeinen Geschäftsbedingungen oder Vertragsformblättern enthaltene Vertrags
+klauseln regelt (näheres dazu in Punkt 2.6.). 
+Darüber hinaus unterliegen Allgemeine Geschäftsbedingungen oder Vertragsformblätter auch 
+der Geltungskontrolle
+ gemäß § 864a ABGB, wonach Bestimmungen ungewöhnlichen Inhalts 
+(sogenannte „überraschende Klauseln“) nicht Vertragsbestandteil werden, wenn sie dem 
+anderen Vertragsteil nachteilig sind und er mit ihnen auch nach den Umständen, vor allem 
+nach dem äußeren Erscheinungsbild der Urkunde, nicht zu rechnen brauchte; es sei denn, der 
+3 
+eine Vertragsteil hat den anderen besonders darauf hingewiesen. Von einer Überprüfung im 
+Sinne der Geltungskontrolle gemäß § 864a ABGB wurde im Rahmen dieser Studie 
+abgesehen, da für die Beurteilung der Frage, ob eine Bestimmung „überraschend“ ist, alle 
+Umstände des Einzelfalls
+ zu berücksichtigen sind. Die Umstände des Einzelfalls erschließen 
+sich aber aus einem Formular bzw. der Vertragsurkunde allein nicht restlos, sodass eine 
+umfassende und zuverlässige Beurteilung, ob einzelne Klauseln im Rahmen der 
+Inhaltskontrolle gemäß § 864a ABGB nicht Vertragsbestandteil geworden sind, auf der 
+Grundlage des für die Erarbeitung der Studie zur Verfügung gestellten Materials nicht 
+möglich war. Im Ergebnis bedeutet das, dass keineswegs auszuschließen ist, dass die 
+überprüften Verträge auch „überraschende Klauseln“ i.S.d. § 864a ABGB enthalten. 
+Nachfolgend wird auf die rechtlichen Grundlagen der Studie näher eingegangen: 
+2.1. 
+Bestandrechtliche Bestimmungen des Allgemeinen Bürgerlichen Gesetzbuches 
+(ABGB) 
+Die Bestimmungen der §§ 1091-1121 ABGB enthalten (bis auf eine bzw. zwei 
+Ausnahmen) nachgiebiges (=durch Parteienvereinbarung abänderbares) Recht, das im 
+Anwendungsbereich des MRG von dessen ausnahmslos zwingenden 
+Rechtsvorschriften überlagert wird. Die Bestimmungen des ABGB sind also im 
+Anwendungsbereich des MRG durch dessen zwingende Bestimmungen nicht außer 
+Kraft gesetzt worden, gelten aber nur mehr subsidiär. 
+Von Bedeutung und für diese Studie relevant sind vor allem die Bestimmungen der 
+§§ 1096, 1097 und 1109 ABGB. 
+§ 1096 Abs 1 ABGB statuiert die Verpflichtung des Vermieters, den Mietgegenstand 
+auf eigene Kosten in brauchbarem Zustand zu übergeben und zu erhalten 
+(=Erhaltungspflicht des Vermieters
+ ) und den Mieter im bedungenen Gebrauch nicht zu 
+stören. 
+Weiters räumt § 1096 Abs 1 Satz 2 ABGB dem Mieter einen Mietzinsminderungs
+anspruch
+ für den Fall ein, dass der Mietgegenstand ganz oder teilweise unbrauchbar ist 
+bzw. wird. Dieser Mietzinsminderungsanspruch ist aufgrund ausdrücklicher, 
+gesetzlicher Anordnung durch § 1096 Abs 1 3. Satz insofern zwingend gestellt, als der 
+Mieter (einer unbeweglichen Sache) auf die Mietzinsminderung im voraus nicht 
+verzichten kann. 
+§ 1097 ABGB normiert den Anspruch des Mieters auf Ersatz von Aufwendungen, die 
+dieser zur Erhaltung oder Verbesserung des Mietgegenstandes getätigt hat. Dieser 
+Anspruch des Mieters auf Aufwandsersatz
+ kann als nachgiebiges Recht durch 
+Vereinbarung ausgeschlossen werden. 
+Jedoch kann der Mieter auf den Ersatz von Aufwendungen für notwendige
+ Erhaltungsarbeiten, die gemäß (der zwingenden Bestimmung des) § 3 MRG den 
+Vermieter treffen, nicht rechtswirksam verzichten (MietSlg 41.098, 42.199). 
+Hinsichtlich der notwendigen Erhaltungsarbeiten, die der Mieter anstelle des dazu 
+gemäß § 3 MRG zwingend verpflichteten Vermieters durchgeführt hat, ist somit der 
+Aufwandsersatzanspruch gemäß § 1097 ABGB im Umweg über § 3 MRG zwingend 
+gestellt. 
+4 
+§ 1109 ABGB regelt schließlich die Zurückstellung des Mietgegenstandes
+ nach 
+Beendigung des Mietvertrages, wobei der Mieter nach dieser Bestimmung bzw. der 
+dazu ergangenen Judikatur nur für die übermäßige Abnützung und den Missbrauch des 
+Bestandobjektes haftet (MietSlg 28.154). Der Mieter hat für die normale Abnützung 
+des Bestandgegenstandes durch dessen vertragsmäßigen Gebrauch jedoch nicht 
+aufzukommen (MietSlg 32.186; 39.114). 
+2.2. 
+2.3. 
+2.4. 
+Mietrechtsgesetz (MRG) 
+Die Bestimmungen des Mietrechtsgesetzes sind als Mieterschutzbestimmungen 
+ausnahmslos zwingendes Recht. 
+Im Teilanwendungsbereich
+ gemäß § 1 Abs 4 MRG gelten nur die Bestimmungen über 
+den Bestandschutz gemäß §§ 29-36 MRG (Vorschriften über die Befristung bzw 
+Kündigungsschutz bei unbefristeten Verträgen), § 14 MRG (Mietrechtsnachfolge im 
+Todesfall) und die (im Zusammenhang mit dieser Studie nicht bedeutsamen) 
+Bestimmungen der §§ 45, 46 und 49 MRG. 
+Im Vollanwendungsbereich
+ enthält das MRG darüber hinaus eine Reihe von 
+detaillierten Regelungen betreffend die wechselseitigen Rechte und Pflichten von 
+Vermieter und Mieter ab Begründung des Mietverhältnisses bis zu seiner Auflösung. 
+Auf diese Bestimmungen wird, soweit sie im Rahmen dieser Studie von Bedeutung 
+sind, nachfolgend noch eingegangen. 
+Wohnungsgemeinnützigkeitsgesetz (WGG) 
+Für die in den Anwendungsbereich des WGG fallenden Mietverträge gelten gemäß § 1 
+Abs 3 MRG die Bestimmungen des MRG (=Vollanwendungsbereich), mit den für den 
+Untersuchungsgegenstand dieser Studie nicht relevanten Modifikationen gemäß § 20 
+WGG, sodass auf die Besonderheiten des WGG im Folgenden nicht näher 
+eingegangen werden muss. 
+Konsumentenschutzgesetz (KSchG) 
+Gemäß § 1 Abs 1 KSchG gilt für Rechtsgeschäfte, an denen einerseits jemand, für den 
+das Geschäft zum Betrieb seines Unternehmens gehört (= Unternehmer), und 
+andererseits jemand, für den dies nicht zutrifft (= Verbraucher), beteiligt sind, das 
+erste Hauptstück (§§ 1-27a) des KSchG. Maßgeblich für die Unternehmereigenschaft 
+ist eine auf Dauer angelegte Organisation selbständiger wirtschaftlicher Tätigkeit. Die 
+Judikatur (5 Ob 570/80 ua) geht bei Vermietung von mehr als fünf Wohnungen durch 
+einen Vermieter
+ vom Erfordernis einer derartigen Organisation aus, wobei aber stets 
+die Umstände des Einzelfalles maßgeblich sind. 
+Soweit die Anmietung der Wohnung für eigene Wohnzwecke des Mieters (das ist der 
+Regelfall) erfolgt, ist der Mieter immer auch Verbraucher im Sinne des § 1 Abs 1 
+KSchG, da das Rechtsgeschäft nicht zum Betrieb eines Unternehmens gehört. 
+5 
+Da es sich bei sämtlichen in dieser Studie geprüften Mietverträgen um 
+Verbrauchergeschäfte i.S.d. § 1 Abs 1 KSchG handelt, waren die Verträge somit auch 
+hinsichtlich allfälliger Verstöße gegen die ausnahmslos zwingenden Bestimmungen 
+des KSchG zu überprüfen.  
+Wichtig sind in diesem Zusammenhang die im „Katalog“ des § 6 KSchG angeführten, 
+unzulässigen Vertragsbestandteile, die Bestimmungen über die Gewährleistung in §§ 8 
+und 9 KSchG sowie die Regelung über den Umfang der Vertretungsmacht und die 
+Wirksamkeit mündlicher Zusagen in § 10 KSchG. Diese Bestimmungen werden 
+nachfolgend noch detailliert behandelt. 
+2.5. 
+2.6. 
+Transparenzgebot gemäß § 6 Abs 3 KSchG 
+Eine besondere Erwähnung verdient § 6 Abs 3 KSchG, wonach eine in allgemeinen 
+Geschäftsbedingungen oder Vertragsformblättern enthaltene Vertragsbestimmung
+ unwirksam ist, wenn sie unklar
+ oder unverständlich abgefasst
+ ist (zur Definition der 
+Begriffe „allgemeine Geschäftsbedingungen“ und „Vertragsformblätter“ siehe Punkt 
+2.6.). Die Bestimmung, die auf der Grundlage der EU-Richtlinie des Rates über 
+missbräuchliche Klauseln in Verbraucherverträgen mit der KSchG-Novelle 1996 in 
+das Konsumentenschutzgesetz aufgenommen wurde, enthält das Gebot der 
+transparenten Vertragsgestaltung; als Konsequenz einer intransparenten Klausel sieht 
+sie ausdrücklich deren (gänzliche!) Unwirksamkeit vor, sodass eine 
+geltungserhaltende Reduktion der unklaren Klausel kraft gesetzlicher Anordnung nicht 
+stattzufinden hat. 
+Inhaltskontrolle gemäß § 879 Abs 3 ABGB 
+Gemäß § 879 Abs 3 ABGB ist eine in Allgemeinen Geschäftsbedingungen (AGB) 
+oder Vertragsformblättern enthaltene Vertragsbestimmung, die nicht eine der 
+beiderseitigen Hauptleistungen festlegt, jedenfalls nichtig, wenn sie unter 
+Berücksichtigung aller Umstände des Falles einen Teil gröblich benachteiligt. 
+Die Bestimmung des § 879 Abs 3 ABGB wurde durch das Konsumentenschutzgesetz 
+eingeführt, jedoch als Bestimmung mit allgemein vertragsrechtlichem Charakter in das 
+ABGB eingefügt. § 879 Abs 3 ABGB gilt somit nicht nur für Verbraucherverträge, 
+sondern für alle Verträge, die unter Verwendung von Vertragsformblättern oder unter 
+Zugrundelegung allgemeiner Geschäftsbedingungen eines Vertragspartners errichtet 
+werden. 
+Da eine gesetzliche Definition dieser Begriffe im österreichischen Recht fehlt, wird 
+auch für den österreichischen Rechtsbereich auf die im deutschen AGBG enthaltene 
+Definition von allgemeinen Geschäftsbedingungen (AGB) als „alle für eine Vielzahl 
+von Verträgen vorformulierte Vertragsbedingungen, die eine Vertragspartei 
+(Verwender) der anderen Vertragspartei bei Abschluss eines Vertrages stellt. 
+Gleichgültig ist, ob die Bestimmungen einen äußerlich gesonderten Bestandteil des 
+Vertrages bilden oder in die Vertragsurkunde selbst aufgenommen werden, welchen 
+Umfang sie haben, in welcher Schriftart sie verfasst sind und welche Form der Vertrag 
+hat“– zurückgegriffen. Laut dieser Definition geht der Begriff der 
+„Vertragsformblätter“ im umfassenderen Begriff der AGB auf; eine Differenzierung 
+6 
+der Begriffe erscheint angesichts der engen Verbindung überflüssig (Krejci, KSchG 
+Rz 27 zu § 864a ABGB). Laut dieser Definition liegen AGB auch vor, wenn derselbe 
+(vorformulierte) Vertragstext im jeweiligen Einzelfall gesondert geschrieben wird 
+(Krejci, KSchG Rz 28 zu § 864a ABGB) oder wenn er mit EDV-Textverarbeitung 
+unter Rückgriff auf vorformulierte Textbausteine, wenn auch gegebenenfalls in 
+unterschiedlicher Kombination, erstellt wird. Auch eine EDV-mäßige 
+„Individualisierung“ ändert nichts am AGB-Charakter des vorformulierten Textes 
+(Kosesnik-Wehrle – Lehofer – Mayer, KSchG Rz 10 zu § 864a ABGB). Was die 
+Verwendung im Rahmen einer Vielzahl von Fällen angeht, so reicht die beabsichtigte 
+Verwendung für mehr als bloß einen Vertrag aus, eine tatsächliche Verwendung ist 
+nicht nachzuweisen (OGH 22.09.1994 ecolex 1995, 26 = KRES 1h/12). Ausgehend 
+von dieser Definition handelt es sich bei sämtlichen im Rahmen dieser Studie 
+geprüften Verträge um Allgemeine Geschäftsbedingungen/Vertragsformblätter im 
+Sinne des § 879 Abs 3 ABGB, die somit der Inhaltskontrolle gemäß § 879 Abs 3 
+ABGB unterliegen.
+ Ausgangspunkt des § 879 Abs 3 ABGB ist die „verdünnte“ Willensfreiheit, die 
+typischerweise bei jenem Vertragspartner vorliegt, der einen Vertrag auf der 
+Grundlage eines Vertragsformblattes oder Allgemeiner Geschäftsbedingungen, die 
+ihm der andere Vertragsteil vorlegt, abschließt. Dieser „verdünnten“ Willensfreiheit 
+soll dadurch Rechnung getragen werden, dass „unfaire Klauseln“, die in den 
+Vertragsformblättern/AGB enthalten sind und die Rechtslage unangemessen zu seinen 
+Ungunsten verschieben, für nichtig erklärt werden. Durch den generellen Ausschluss 
+der Wirksamkeit derartiger „unfairer Klauseln“ schränkt der Gesetzgeber die 
+Möglichkeiten des Verwenders von Vertragsformblättern/AGB, die Rechtslage zu 
+seinen Gunsten zu verändern, erheblich ein. 
+Bereits die Regierungsvorlage (RV 744 BlgNR 14 GP 8) nennt als Beispiel für eine 
+derartige, unangemessene Verschiebung der Rechtslage die Abweichung von einer 
+(dispositiven) gesetzlichen Bestimmung, ohne dass diese Abweichung durch die Natur 
+des Geschäftes gerechtfertigt oder durch andere derartige Vertragsbestimmungen 
+ausgeglichen wird. 
+Die Inhaltskontrolle von Allgemeinen Geschäftsbedingungen/Vertragsformblättern hat 
+sich somit am dispositiven Recht als dem Leitbild eines ausgewogenen und gerechten 
+Interessensausgleichs zu orientieren
+ und Abweichungen von dieser dispositiven 
+Rechtslage dahingehend zu untersuchen, ob es für sie eine sachliche Rechtfertigung 
+gibt oder ob die Benachteiligung durch andere Vertragsbestimmungen ausgeglichen 
+wird. Endet die Angemessenheitsprüfung mit einem negativen Ergebnis, so darf davon 
+ausgegangen werden, dass die Regelung, die vom dispositiven Recht zum Nachteil des 
+anderen Vertragspartners abweicht, auch gröblich benachteiligend i.S.d. § 879 Abs 3 
+ABGB ist. 
+Im Individualfall tritt die Nichtigkeit der gröblich nachteiligen Vertragbestimmung 
+jedoch nur insoweit ein, als die Gröblichkeit ihrer Nachteiligkeit reicht; es ist also eine 
+geltungserhaltende Reduktion
+ der Klausel auf ihren gesetzmäßigen Kern vorzunehmen 
+(falls sie einen solchen hat). Anderes gilt hingegen im Rahmen der Klauselprüfung 
+ausgehend von § 28 Abs 1 KSchG (siehe dazu den nachfolgenden Punkt 2.7.). 
+7 
+2.7. 
+§ 28 KSchG als Maßstab für die Klauselprüfung 
+Für die Beurteilung, ob eine Klausel gesetzwidrig ist, wurde in dieser Studie der 
+Maßstab des § 28 Abs 1 KSchG und der dazu ergangenen, höchstgerichtlichen 
+Judikatur herangezogen. 
+Danach ist der Entscheidung die kundenfeindlichste, objektive Auslegung der 
+geprüften Klausel zu Grunde zu legen und keine geltungserhaltende Reduktion einer 
+Klausel auf einen allenfalls gesetzmäßigen Kern vorzunehmen (OGH 25.04.1995, 
+4 Ob 522/95; u.v.a.). 
+Es wurde daher bei der Prüfung der einzelnen Klauseln darauf abgestellt, ob die 
+Klausel bei kundenfeindlichster Auslegung durch ihren Regelungsinhalt gegen ein 
+gesetzliches Verbot verstößt bzw. gesetzwidrig ist, ohne dass jedoch darauf 
+eingegangen wurde, ob die Regelung in vollem Umfang oder nur teilweise mit 
+Gesetzwidrigkeit behaftet ist. Es hat auch keine Auseinandersetzung damit 
+stattgefunden, ob und wie man eine gesetzwidrige Klausel allenfalls im Wege der 
+geltungserhaltenden Reduktion auf ihren gesetzmäßigen Kern einschränken könnte. 
+Dies entspricht der Vorgangsweise laut der ständigen Judikatur (so etwa OGH vom 
+21.01.2003, 4 Ob 288/02k) im Verbandsklagsverfahren gemäß § 28ff KSchG. Danach 
+ist es die Aufgabe des Verwenders von Allgemeinen Geschäftsbedingungen/Vertrags
+formblättern, diese selbst gesetzeskonform zu gestalten und diese Aufgabe nicht auf 
+den Richter zu überwälzen. 
+Soweit daher im Rahmen dieser Studie eine Klausel als gesetzwidrig qualifiziert wird, 
+bedeutet dies, dass die Klausel ausgehend von einer verbraucherfeindlichen/mieter
+feindlichen, objektiven Auslegung zumindest in einem Teilaspekt ihrer Regelung 
+gesetzwidrig ist. Aufgabe der Autoren war es nicht, darüber hinaus Vorschläge zu 
+einer Umformulierung oder teleologischen Reduktion von gesetzwidrigen Klauseln zu 
+machen. 
+3. 
+3.1. 
+Gesamtergebnis und Würdigung 
+Entsprechend dem Gutachtensauftrag wurden die in den  20 Mietverträgen enthaltenen 
+Regelungen im Sinne einer Klauselkontrolle gemäß § 28 KSchG überprüft, alle 
+gesetzwidrigen Klauseln erfasst, die einzelnen Klauseln - gesondert nach Verträgen 
+und fortlaufend in der Reihenfolge, wie sie sich in den Verträgen finden - aufgelistet 
+und bei jeder einzelnen Klausel die verletzten Rechtsvorschriften samt einer kurzen 
+Begründung angemerkt. Diese schriftlichen Auswertungen sind Teil dieser Studie und 
+finden sich im Anhang (siehe Punkt 5.). 
+Anzahl und Art der unzulässigen Klauseln 
+Die überprüften 20 Mietverträge enthalten insgesamt 565 gesetzwidrige Klauseln, 
+unterschiedlicher Schwere und Bedeutung. Im Durchschnitt finden sich also je 
+Mietvertrag ca. 28 gesetzwidrige Klauseln
+ . Diese Klauseln verstoßen oft nicht nur 
+gegen eine, sondern gegen zwei oder mehrere Gesetzesvorschriften. In Summe 
+mussten insgesamt 953 Verstöße gegen gesetzliche Bestimmungen festgestellt werden, 
+8 
+sodass im Durchschnitt die Bestimmungen eines einzelnen Mietvertrages in 47 
+Punkten gegen gesetzliche Vorschriften verstoßen
+ . 
+Von den insgesamt 953 Verstößen gegen gesetzliche Bestimmungen entfallen - - - 
+auf die Bestimmungen des MRG/WGG 
+auf die Bestimmungen des ABGB 
+auf die Bestimmungen des KSchG 
+275 Verstöße 
+330 Verstöße 
+348 Verstöße 
+Durchschnittlich finden sich also in jedem Mietvertrag ca. 14 Verstöße gegen 
+Bestimmungen des MRG/WGG, ca. 17 Verstöße gegen Bestimmungen des ABGB 
+sowie ca. 19 Verstöße gegen KSchG-Bestimmungen. 
+Von den 331 Verstößen gegen ABGB-Bestimmungen liegen in 143 Fällen Verstöße 
+gegen bestandrechtliche Bestimmungen des ABGB vor, rechnet man diese den 
+Verstößen gegen Bestimmungen des MRG/WGG (274) hinzu, so ergibt dies in 
+Summe 417 Verstöße gegen bestand- bzw mietrechtliche Rechtsvorschriften. 
+Bei 676 Verstößen handelt es sich um die Verletzung zwingender Rechtsvorschriften 
+[des MRG/WGG, KSchG sowie (teilweise) ABGB], in den restlichen 277 Fällen 
+handelt es sich um gesetzwidrige Klauseln, die im Rahmen der Inhaltskontrolle gemäß 
+§ 879 Abs 3 ABGB v.a. deshalb als gröblich benachteiligend und damit nichtig 
+qualifiziert wurden, weil sie ohne sachliche Rechtfertigung zum Nachteil des Mieters 
+von dispositiven Bestimmungen des ABGB abweichende Regelungen enthalten. 
+3.2. 
+Kritische Würdigung des Gesamtergebnisses 
+Vorauszuschicken ist, dass aufgrund Art und Anzahl der überprüften Verträge die 
+Ergebnisse der Studie, was die Anzahl und die in Wohnungsmietverträgen 
+typischerweise vorkommenden, gesetzwidrigen Klauseln angeht, als repräsentativ 
+angesehen werden können. Der weitaus überwiegende Teil der Mietverträge in 
+Österreich wird unter Verwendung von Vertragsschablonen erstellt, der individuell 
+ausgehandelte und aufgesetzte Vertrag ist in diesem Rechtsbereich eine Ausnahme. In 
+der Regel greifen Vermieter auf die gleichen, gängigen Musterverträge bzw 
+Formulierungen zurück. Die Aussagen dieser Studie haben somit für die in der Praxis 
+anzutreffenden Mietvertragsgestaltungen in ganz Österreich Gültigkeit.  
+3.2.1. Ungefähr 70% der festgestellten Gesetzesverstöße betreffen zwingendes Recht, was 
+die Klauseln in dem Umfang, in dem sie von der Gesetzwidrigkeit betroffen sind, 
+jedenfalls unwirksam macht. Zirka die Hälfte davon (321 Verstöße) betreffen 
+zwingende, bestandrechtliche Bestimmungen
+ , die andere Hälfte (348 Verstöße) 
+betreffen die (ausnahmslos zwingenden) Bestimmungen des KSchG
+ . 
+Durchschnittlich weichen somit die Bestimmungen jedes einzelnen Mietvertrages in 
+33 Punkten von den zwingenden Vorgaben des österreichischen Rechtes ab. 
+Dazu kommen weitere 277 Regelungen die zwar nicht gegen zwingendes Recht 
+verstoßen, von der dispositiven Rechtslage aber so erheblich zum Nachteil des Mieters 
+9 
+abweichen, dass sie als gröblich benachteiligend i.S.d. § 879 Abs 3 ABGB und aus 
+diesem Grunde ebenfalls als rechtsunwirksam zu qualifizieren sind. 
+Ausgehend von den durch Vertragsprüfungen im Laufe der letzten 10 Jahre 
+gewonnenen Erfahrungswerten der Studienautoren weisen die überprüften 
+Mietverträge eine wesentlich höhere Anzahl an unzulässigen Klauseln auf, als dies im 
+Durchschnitt in anderen Verbraucherverträgen bzw. allgemeinen 
+Geschäftsbedingungen, die Verbraucherverträgen zugrunde gelegt werden, der Fall ist. 
+3.2.2. Die auffallend hohe Anzahl gesetzwidriger Regelungen in den überprüften 
+Mietverträgen ist für die Mieter aus folgenden Gründen problematisch
+ : - - - - - 
+Die aufgefundenen, gesetzwidrigen Regelungen sind nicht bloß gesetzwidrig, 
+sondern regelmäßig auch für den Mieter nachteilig; sie weichen also in einer 
+für den Mieter ungünstigen – und damit für den Vermieter vorteilhaften – 
+Weise von den gesetzlichen Vorschriften ab. 
+Die Gesetzwidrigkeit einzelner Bestimmungen ist für den Mieter mangels 
+Gesetzeskenntnis in der Regel nicht erkennbar.  
+Selbst bei vorhandener Gesetzeskenntnis gelangt man des Öfteren bei der 
+Beurteilung der Gesetzmäßigkeit einer Regelung zu keinem eindeutigen 
+Ergebnis, da ein Wertungsspielraum besteht; dies betrifft v.a. auch die 
+Inhaltskontrolle gemäß § 879 Abs 3 ABGB, da bei der Beurteilung der Frage, 
+ob eine Klausel für den Mieter gröblich benachteiligend ist, ein gewisser 
+Wertungs- bzw. Auslegungsspielraum besteht. 
+Jene Bestimmungen, die gröblich benachteiligend im Sinne des § 879 Abs 3 
+ABGB sind, bergen zusätzlich das Problem, dass bei derartigen Klauseln im 
+Rahmen der einzelvertraglichen Beurteilung eine geltungserhaltende 
+Reduktion der Klausel auf einen allenfalls gesetzmäßigen Kern vorzunehmen 
+ist. Für eine derartige Beurteilung bedarf es wiederum fundierter, juristischer 
+Kenntnisse, über die ein Mieter üblicherweise nicht verfügt. 
+Immerhin 115 Bestimmungen, das sind im Durchschnitt 6 Bestimmungen pro 
+Vertrag, sind dermaßen unklar und/oder unverständlich abgefasst, dass sie im 
+Rahmen der Vertragsprüfungen als intransparent im Sinne des § 6 Abs 3 
+KSchG beurteilt werden mussten und aus diesem Grund auch rechtsunwirksam 
+sind. Für eine derartige Beurteilung bedarf es aber profunder juristischer 
+Kenntnisse. Der durchschnittliche Mieter wird diese Bestimmungen einfach 
+nicht verstehen, was Rechtsunsicherheit erzeugt und regelmäßig zum Nachteil 
+des Mieters ausschlägt.  
+Bedenkt man nun, dass ausgehend von einer Durchschnittsbetrachtung jeder 
+Mietvertrag 47 problematische Punkte enthält, für deren Erkennen es fundierte, 
+juristische Kenntnisse braucht, wobei es in vielen Fällen sogar noch darüber hinaus 
+einer intensiven, j
+ uristischen Auseinandersetzung bedarf, um etwa gröblich 
+benachteiligende Klauseln im Rahmen einer geltungserhaltenden Reduktion auf ihren 
+gesetzmäßigen Kern zurückzuführen, so wird klar, dass der Mietvertrag den Zweck, 
+dem er eigentlich dienen soll, nicht erfüllt. Sinn und Zweck eines Vertrages ist es 
+10 
+eigentlich, die wechselseitigen Rechte und Pflichten der Vertragspartner zu regeln und 
+dadurch Rechtssicherheit
+ zu schaffen. Diesen Zweck kann ein Vertrag nicht erfüllen, 
+der eine Unzahl von unzulässigen (und damit unwirksamen) bzw. problematischen 
+Bestimmungen aufweist, wie dies bei den überprüften Mietverträgen der Fall ist. 
+Bei der überwiegenden Mehrzahl der geprüften Mietverträge kommt man somit zum 
+Ergebnis, dass sie ihren Zweck, nämlich mehr Rechtssicherheit zwischen Vermieter 
+und Mieter zu schaffen, klar verfehlen. Im Gegenteil verschleiern diese Verträge dem 
+Mieter seine gesetzlich normierten Rechte bzw die gesetzlichen Verpflichtungen des 
+Vermieters und erzeugen enorme Rechtsunsicherheit, die in aller Regel zu Lasten des 
+Mieters geht.
+ 3.3. 
+Auswirkungen und mögliche Abhilfe 
+3.3.1. Individualfall
+ Der einzelne Mieter
+ hat erfahrungsgemäß wenig Möglichkeiten, auf die 
+Gesetzmäßigkeit des ihm vorgelegten Mietvertragsformulars vor Vertragsabschluss 
+einzuwirken. Er wird sich daher darauf beschränken müssen, im Streitfall die 
+Unwirksamkeit einzelner Bestimmungen im Nachhinein geltend zu machen. 
+Aus dem Blickwinkel des Vermieters
+ erscheint die Aufnahme von für ihn 
+vorteilhaften, gesetzwidrigen Klauseln aus zwei Gründen lohnend. 
+Erstens darf er damit rechnen, dass der Mieter die Gesetzwidrigkeit nicht erkennt und 
+die Bestimmung als verbindlich akzeptiert, wodurch sich die dem Vertragsverhältnis 
+zugrunde gelegte Rechtslage im Sinne einer stärkeren Berücksichtigung der 
+Vermieterinteressen verändert. Dies führt im Ergebnis dazu, dass der Vermieter 
+wirtschaftliche Vorteile erlangt, auf die er gar keinen Anspruch hat.  
+Zweitens darf der Vermieter damit rechnen, dass der Mieter selbst dann, wenn er die 
+Gesetzwidrigkeit der Klausel erkennt, einen Rechtsstreit gegen den sich auf die 
+Vertragsbestimmungen berufenden Vermieter aus Kostengründen scheut, sodass der 
+Vermieter wiederum einen Vorteil aus der von ihm verwendeten, unzulässigen Klausel 
+zieht. 
+Im Ergebnis zeigt sich somit, dass die Verwendung gesetzwidriger Klauseln durch den 
+Vermieter vom einzelnen Mieter als seinem Vertragspartner im Regelfall nicht 
+verhindert werden kann und dass die Verwendung derartiger Klauseln für den 
+Vermieter auch dann lohnend ist, wenn diese Klauseln gesetzwidrig sind und 
+eigentlich im individuellen Vertragsverhältnis gar nicht gelten. Dieser Umstand 
+verleitet zur Verwendung gesetzwidriger Klauseln durch die Vermieterseite, die 
+dadurch eine Rechtsscheinwirkung zu ihren Gunsten erzeugt, ohne dass im Einzelfall 
+auf Mieterseite ein geeignetes, rechtliches Instrumentarium vorhanden wäre, gegen die 
+Aufnahme derartiger Bestimmungen in den Mietvertrag in einer Weise vorzugehen, 
+die im Ergebnis dazu führen könnte, dass die Vorteile, die die Vermieterseite daraus 
+zieht, zunichte gemacht werden. 
+3.3.2. Abmahnung und Verbandsklage gemäß §§ 28 f KSchG
+ 11 
+Ein systematisches
+ und auch präventives
+ Vorgehen gegen den Einsatz unfairer 
+Klauseln durch die Unternehmerseite im Verbrauchervertrag ermöglichen die 
+Bestimmungen der §§ 28f KSchG. 
+Gemäß § 28 Abs 1 KSchG kann der Unternehmer
+ , der im geschäftlichen Verkehr in 
+allgemeinen Geschäftsbedingungen und/oder Vertragsformblättern Bedingungen 
+vorsieht, die gegen ein gesetzliches Verbot oder die guten Sitten verstoßen, auf 
+Unterlassung geklagt werden. Die Unterlassungsverpflichtung erstreckt sich sowohl 
+auf die weitere Verwendung
+ derartiger Bedingungen beim Neuabschluss von 
+Verträgen als auch auf das sich Berufen
+ auf derartige Bedingungen im Rahmen bereits 
+abgeschlossener Verträge.  
+Zur Geltendmachung des Unterlassungsanspruchs mittels Verbandsklage
+ sind die 
+gemäß § 29 KSchG klagsberechtigten Verbände (Wirtschaftskammer Österreich, 
+Bundeskammer für Arbeiter und Angestellte, Österreichische Landarbeiterkammertag, 
+Präsidentenkonferenz der Landwirtschaftskammern Österreichs, Österreichischer 
+Gewerkschaftsbund und Verein für Konsumenteninformation) berechtigt.  
+Einer derartigen Verbandsklage nach § 28 Abs 1 KSchG kann (muss aber nicht) eine 
+außergerichtliche, schriftliche Abmahnung 
+im Sinne des § 28 Abs 2 KSchG 
+vorgeschaltet werden, mit der der Unternehmer von einem gemäß § 29 KSchG 
+klagsberechtigten Verband aufgefordert wird, binnen angemessener Frist eine mit 
+angemessener Konventionalstrafe besicherte Unterlassungserklärung abzugeben; 
+durch die Abgabe einer derartigen Unterlassungserklärung kann der Unternehmer die 
+andernfalls drohende Verbandsklage vermeiden.  
+Abmahnung und Verbandsklage sind ein geeignetes Instrument, um nicht bloß im 
+Einzelfall, sondern in Bezug auf einen bestimmten Vermieter, und vor allem nicht erst 
+im Nachhinein, sondern für sämtliche von diesem Vermieter bereits abgeschlossenen, 
+ebenso wie für alle erst in Zukunft abzuschließende Verträge abzuklären, ob einzelne, 
+von ihm verwendete Vertragsklauseln gesetzwidrig sind und ihn darüber hinaus dazu 
+zu verhalten, diese Klauseln nicht mehr zu verwenden und sich auch im Rahmen 
+bereits bestehender Verträge, die diese Klauseln enthalten, gegenüber dem Mieter 
+nicht auf solche Klauseln zu berufen. 
+Darüber hinaus kann nicht nur der Unternehmer, der unzulässige Klauseln verwendet, 
+sondern auch derjenige abgemahnt und auf Unterlassung geklagt werden, der 
+gesetzwidrige Bedingungen nicht selbst im geschäftlichen Verkehr mit Verbrauchern 
+verwendet, sondern derartige Bedingungen für den geschäftlichen Verkehr empfiehlt 
+(= 
+Empfehler
+ ). Diese Bestimmung erfasst sowohl die von diversen 
+Interessenvertretungen empfohlenen Musterbedingungen bzw. -verträge 
+(Verbandsempfehlungen) als auch die von verschiedenen Verfassern/Autoren 
+herausgegebenen Formularbücher oder Musterformulare/Vertragsformblätter.  
+4. 
+Detailergebnisse – häufige und typische Verstöße  
+Nachfolgend die häufigsten und typischen Verstöße, gegliedert nach den betroffenen 
+Gesetzesbestimmungen zuerst des MRG (Punkt 4.1.-4.13.), nachfolgend des ABGB (Punkt 
+4.14.-4.19) und schließlich des KSchG (Punkt 4.20.-4.27.): 
+12 
+4.1. 
+4.2. 
+Gemäß § 3 MRG (§ 14a WGG) trifft den Vermieter die Verpflichtung zur Erhaltung 
+der allgemeinen Teile des Hauses und (eingeschränkt) der Mietgegenstände. In den 
+Mietgegenständen des Hauses trifft ihn die Erhaltungspflicht (nach Übergabe des 
+Mietgegenstandes an den Mieter) nur dann, wenn es sich um Behebung von ernsten 
+Schäden des Hauses handelt. 
+Gegen diese Bestimmung verstoßen insgesamt 52 Vertragsklauseln; Verstöße gegen 
+§ 3 MRG (§ 14a WGG) waren in allen untersuchten Verträgen zu finden. 
+Häufig sind dabei Klauseln, die eine Verpflichtung des Mieters zur Behebung von 
+Schäden im Mietobjekt unabhängig davon vorsehen, ob es sich um ernste Schäden des 
+Hauses handelt oder nicht; so etwa die Klausel: 
+Wasserleitungshähne sind stets dicht zu halten, zerbrochene Glasscheiben 
+sofort zu ersetzen und alle anderen Beschädigungen auf eigene Kosten 
+sogleich zu beheben. 
+oder: 
+Der Mieter verpflichtet sich, den Mietgegenstand auf eigene Kosten zu 
+erhalten und in demselben Zustand zurückzustellen, sowie allfällige 
+Beschädigungen unverzüglich zu beheben. 
+Oft finden sich derartige Verstöße auch in Bestimmungen, die nur die Zurückstellung 
+des Mietobjektes nach Beendigung des Mietvertrages durch den Mieter regeln und 
+implizit vorsehen, dass der Mieter vor Zurückstellung des Mietobjektes auch 
+aufgetretene, ernste Schäden des Hauses zu beheben hat; so etwa folgende 
+Bestimmung: 
+Die Mieterseite hat das Objekt im Zeitpunkt der Beendigung des 
+Mietverhältnisses an die Vermieterseite in ordentlichem und brauchbarem 
+Zustand zurückzustellen.  
+Gemäß § 4 Abs 4 MRG bedarf die Durchführung von nützliche Verbesserungen im 
+Inneren eines Mietgegenstandes durch den Vermieter der Zustimmung des betroffenen 
+Hauptmieters. 
+Damit will der Gesetzgeber sicherstellen, dass vor der Durchführung von nützlichen 
+Verbesserungsarbeiten im Mietobjekt (zum Unterschied von den notwendigen
+ Erhaltungsarbeiten) die Zustimmung des Hauptmieters eingeholt werden muss. 
+Insgesamt 7 Mietverträge, somit gut ein Drittel, enthalten in diesem Zusammenhang 
+folgende Klausel: 
+Die Mieterseite erteilt gemäß § 4 Abs 4 MRG ihre Zustimmung zur 
+Vornahme nützlicher Verbesserungen im Inneren des Mietobjektes 
+insbesondere zu Maßnahmen, die eine Verbesserung des Standards 
+herbeiführen. 
+13 
+Eine derartige, vorweg und pauschal erklärte Zustimmung des Mieters zur 
+Durchführung von nützlichen Verbesserungen innerhalb des Mietgegenstandes 
+widerspricht aber dem Schutzzweck des § 4 Abs 4 MRG und ist deshalb unzulässig 
+und rechtsunwirksam. 
+4.3. 
+4.4. 
+4.5. 
+§ 8 Abs 2 MRG regelt abschließend, inwieweit der Hauptmieter Eingriffe in sein 
+Mietrecht durch den Vermieter zu dulden hat. So hat der Hauptmieter einerseits das 
+Betreten des Mietgegenstandes durch den Vermieter
+ oder die von diesem beauftragten 
+Personen nur aus wichtigen Gründen zu gestatten. Weiters hat er unter genau 
+geregelten Voraussetzungen die vorübergehende Benützung und die Veränderung 
+seines Mietgegenstandes
+ zur Durchführung von Erhaltungs
+ oder 
+Verbesserungsarbeiten an allgemeinen Teilen des Hauses oder zur Behebung ernster 
+Schäden des Hauses in seinem oder in einem anderen Mietgegenstand zuzulassen, 
+soweit ein solcher Eingriff notwendig oder zweckmäßig ist. Die Inanspruchnahme 
+seines Mietgegenstandes zur Durchführung von Verbesserungsarbeiten an allgemeinen 
+Teilen des Hauses hat der Mieter nur zuzulassen, soweit ihm der dadurch entstehende 
+Eingriff in sein Mietrecht zumutbar ist. 
+Insgesamt 29 Klauseln (und nahezu alle Verträge) versuchen, das Recht des 
+Vermieters, sich zum Mietobjekt Zutritt zu verschaffen oder den Mietgegenstand zur 
+Durchführung von Verbesserungsarbeiten zu benützen, über das gemäß § 8 Abs 2 
+MRG zulässige Ausmaß hinaus auszudehnen. Typisch sind etwa folgende Klauseln: 
+Dem Vermieter oder seinen Beauftragten sind die Mieträume zur 
+angemessenen Tageszeit zugänglich zu machen. 
+oder: 
+Der Vermieter oder ein von ihm Beauftragter ist im angemessenen Ausmaß 
+nach vorheriger Anmeldung zum Betreten der Mieträumlichkeiten 
+berechtigt, um die Einhaltung der Vertragspflichten des Mieters 
+überwachen oder notwendige Hausreparaturen durchführen zu können. 
+§ 8 Abs 3 MRG sieht einen Anspruch des Mieters auf eine angemessene 
+Entschädigung des Mieters
+ für den Fall wesentlicher Beeinträchtigungen in seinem 
+Mietrecht durch Erhaltungs-, Verbesserungs-, Änderungs- und Errichtungsarbeiten 
+vor; dies unabhängig von einem Verschulden des Vermieters. Dieses Recht wird in 
+6 Fällen ausgeschlossen oder eingeschränkt, so etwa durch Klauseln wie die Folgende: 
+Der Mieter ist verpflichtet, die vorübergehende Benützung und 
+Veränderung des Mietgegenstandes ohne Ersatzanspruch zu dulden, wenn 
+dies zur Beseitigung ernster Schäden des Hauses oder zur Durchführung 
+von Erhaltungs- und Verbesserungsarbeiten am Haus notwendig oder 
+zweckmäßig ist. 
+Gemäß § 9 Abs 1 MRG hat der Hauptmieter eine
+ Veränderung des Mietgegenstandes
+ von ihm beabsichtigte wesentliche 
+ dem Vermieter anzuzeigen
+ . Lehnt der Vermieter 
+14 
+nicht innerhalb von zwei Monaten nach Zugang der Anzeige die beabsichtigte 
+Veränderung ab, so gilt seine Zustimmung als erteilt. 
+Insgesamt 41 Klauseln (alle Verträge, auf die § 9 MRG anwendbar ist) versuchen, 
+diese Bestimmung zu Lasten des Mieters zu verschärfen: 
+a) Unwesentliche Veränderungen
+ nicht
+ des Mietgegenstandes sind gemäß § 9 Abs 1 MRG 
+ anzeigepflichtig, dagegen verstößt etwa folgende Klausel: 
+Der Mieter verpflichtet sich, beabsichtigte Veränderungen am 
+Mietgegenstand dem Vermieter rechtzeitig anzuzeigen. 
+weiters auch folgende Klausel: 
+Es ist dem Mieter nicht gestattet, Fliesen, Türen und Möbel anzubohren, 
+oder mit Aufklebern zu versehen. 
+b) Da eine ausdrückliche Zustimmung
+ des Vermieters nach § 9 Abs 1 MRG nicht
+ vorgesehen ist, ist auch folgende Klausel unzulässig: 
+Ohne vorangehende Zustimmung des Vermieters dürfen am gesamten 
+Bestandobjekt und am Inventar keine Veränderungen, welcher Art auch 
+immer, vorgenommen werden. 
+4.6. 
+4.7. 
+Gemäß § 9 Abs 3 MRG kann der Vermieter seine Zustimmung zu einer vom 
+Hauptmieter beabsichtigten wesentlichen Veränderung des Mietgegenstandes nur dann 
+von der Verpflichtung des Hauptmieters zur Wiederherstellung des früheren Zustandes 
+bei der Zurückstellung des Mietgegenstandes abhängig machen, wenn es sich um 
+wesentliche Veränderungen des Mietgegenstandes handelt, die nicht zu den 
+privilegierten Arbeiten im Sinne des § 9 Abs 2 MRG gehören.  
+In 14 Fällen – somit in der Mehrzahl der Verträge – versucht die Vermieterseite, sich 
+über das gemäß § 9 Abs 3 MRG zulässige Ausmaß hinaus das Recht vorzubehalten, 
+bei Beendigung des Mietvertrages die Wiederherstellung des früheren Zustandes 
+durch den Mieter zu verlangen.  
+So etwa mit folgender Klausel: 
+Die Vermieter behält sich das Recht vor, auch im Fall der Zustimmung zu 
+baulichen Änderungen bei Beendigung des Mietverhältnisses die 
+Wiederherstellung des ursprünglichen Zustandes zu begehren. 
+Derartige Klauseln zielen nicht zuletzt darauf ab, den Anspruch des Mieters auf 
+Investitionsersatz zu vereiteln, der ja nicht zu leisten ist, wenn der Mieter die 
+Veränderung rückgängig machen muss. 
+§ 10 MRG und praktisch gleichlautend § 20 Abs 5 WGG regeln zwingend Art und 
+Umfang des dem Mieter zustehenden Aufwandersatzes
+ bei Beendigung des 
+Mietverhältnisses. 
+15 
+Die insgesamt 14 Klauseln, die den in § 10 MRG vorgesehenen 
+Aufwandsersatzanspruch ausschließen, sind somit gesetzwidrig. Ein krasses Beispiel 
+ist etwa folgende Klausel: 
+Investitionen des Mieters, die ohne Beschädigung der Substanz nicht 
+entfernt werden können, gehen bei Beendigung des Mietverhältnisses ohne 
+gesonderte Entschädigung ins Eigentum der Vermieterin über. 
+4.8. 
+4.9. 
+Gemäß § 11 MRG kann sich der Vermieter auf ein vertragliches Verbot der 
+Untervermietung
+ nur berufen, wenn ein wichtiger Grund gegen die Untervermietung 
+vorliegt. Als wichtige Gründe nennt § 11 MRG insbesondere die Fälle der gänzlichen 
+Untervermietung, der Untervermietung gegen ein unverhältnismäßig hohes 
+Untermietentgelt, des Überbelages und der Störung des Hausfriedens durch den 
+Untervermieter. Eine nur teilweise Untervermietung gegen ein nicht 
+unverhältnismäßig hohes Entgelt kann dem Hauptmieter also nicht wirksam verboten 
+werden. 
+Gegen diese Bestimmung verstoßen daher Klauseln, die das Recht zur 
+Untervermietung gänzlich ausschließen, wie etwa folgende: 
+Der Mieter ist nicht berechtigt, den Bestandgegenstand ganz oder teilweise 
+unterzuvermieten.... 
+oder an die Zustimmung des Vermieters binden: 
+Jede gänzliche oder teilweise, entgeltliche oder unentgeltliche Weitergabe 
+des Mietgegenstandes bedarf der vorherigen schriftlichen Genehmigung der 
+Vermieterin. 
+Derartige Klauseln finden sich in den meisten Verträgen, insgesamt wurden 17 
+Verstöße festgestellt.  
+Ein Hauptmieter hat das Recht, seine Hauptmietrechte unter bestimmten 
+Voraussetzungen an nahe Verwandte abzutreten (§ 12 MRG). Dagegen verstößt etwa 
+folgende Klausel: 
+Ohne.......... Zustimmung des Vermieters darf das Mietobjekt weder 
+entgeltlich noch unentgeltlich, ganz oder teilweise, dritten Personen 
+überlassen werden, auf welche Weise und in welcher rechtlichen Form auch 
+immer. 
+In den untersuchten Verträgen sind 11 derartige Bestimmungen mit § 12 MRG 
+unvereinbar. 
+4.10. Relativ selten, nämlich nur in 3 Fällen, wurden Verstöße gegen § 16 MRG 
+festgestellt, der zwingend die Mietzinsbildung (Vereinbarungen über die Höhe des 
+Hauptmietzinses) regelt. Zwei dieser Klauseln lauten gleichlautend wie folgt: 
+16 
+Wird die Wohnung auch nur teilweise vertragswidrig verwendet, so erhöht 
+sich der Hauptmietzins unbeschadet des Unterlassungsanspruches des 
+Vermieters für diesen Zeitraum um 25%. 
+Die geringe Anzahl der aufgefundenen Klauseln, die gegen § 16 MRG verstoßen, 
+bietet jedoch keine Anhaltspunkte dafür, ob die Mietzinsbildungsvorschriften des § 16 
+MRG im Rahmen der überprüften Verträge eingehalten wurden. Die Zulässigkeit der 
+Höhe des im Mietvertrag vereinbarten Mietzinses hängt nämlich im Regelfall nicht 
+von vertraglichen Regelungen, sondern von Art, Lage und Beschaffenheit des 
+Mietobjektes und des Hauses, in dem es sich befindet
+ , ab, sodass sich ein Verstoß 
+gegen § 16 MRG nicht aus der Formulierung einer vertraglichen Regelung ergibt, 
+sondern aus den tatsächlichen Verhältnissen, aufgrund der ein vereinbarter Mietzins 
+überhöht sein kann oder nicht. Die aufgefundenen Verstöße gegen § 16 MRG lassen 
+aus diesem Grund keine Rückschlüsse auf die Häufigkeit der Vereinbarung 
+gesetzwidrig überhöhter Mietzinse zu. 
+4.11. § 21 MRG regelt die Betriebskosten, die der Vermieter den Mietern weiterverrechnen 
+darf.  
+Die angemessene Versicherung des Hauses gegen Glasbruch und Sturmschäden 
+dürfen nur dann als Betriebskosten verrechnet werden, wenn und soweit die Mehrzahl 
+der Hauptmieter des Hauses dem Abschluss, der Erneuerung oder der Änderung des 
+Versicherungsvertrags zugestimmt haben. 
+In insgesamt 18 Fällen findet sich in den Verträgen eine pauschale 
+Zustimmungserklärung des Mieters, die etwa so lautet: 
+Der Mieter erklärt ausdrücklich, der jeweiligen Glasbruch- und 
+Sturmschadenversicherung beizutreten und verpflichtet sich zur 
+Entrichtung des auf ihn entfallenden Anteiles an den Prämien der 
+Versicherungssummen. 
+oder auch: 
+Der Mieter stimmt zu, dass die Liegenschaft gegen die Risken Glasbruch 
+und Sturmschaden versichert wird und die darauf entfallenden Prämien als 
+Betriebskosten weiterverrechnet werden. 
+Mit derartigen Klauseln wird versucht, die gemäß § 21 Abs 1 Z 6 notwendige 
+Zustimmung des Mieters bereits bei Abschluss des Mietvertrages zu fixieren. Eine 
+derartige Blankozustimmung eines Mieters bei Mietvertragsabschluss ist aber 
+rechtsunwirksam (vergleiche dazu die Judikatur zu § 4 Abs 3 Z 2 MRG – der ebenfalls 
+eine Zustimmung der Mehrheit der Hauptmieter fordert: MietSlg 47.202 = 5 Ob 6/95, 
+wobl 1995/58). Eine Blankozustimmung eines Mieters beim Mietvertragsabschluss – 
+ohne dass bekannt ist, wie groß die Anzahl der zustimmenden Mieter zu einem 
+unbestimmten, späteren Zeitpunkt sein wird und ohne dass abgeschätzt werden kann, 
+wie groß dann die den einzelnen Mietern treffende Belastung sein wird – stellt keine 
+wirksame Zustimmungserklärung, die den Mieter bindet, dar. 
+17 
+4.12. § 27 MRG enthält einen Katalog an verbotenen Vereinbarungen. Gemäß § 27 Abs 1 
+Z 1 MRG sind Vereinbarungen ungültig und verboten, wonach der neue Mieter ohne 
+gleichwertige Gegenleistung dem Vermieter, dem früheren Mieter oder einem anderen 
+etwas zu leisten hat. Dazu gehören etwa auch die Kosten der Errichtung (nicht auch 
+der Vergebührung) des Mietvertrages, die vom Vermieter zu tragen sind (wenn er die 
+Mietvertragserrichtung beauftragt) und die er nicht auf den Mieter überwälzen darf. 
+In fast allen Verträgen (15 Verstöße) finden sich Klauseln, die mit diesem Verbot 
+unvereinbar sind und etwa wie folgt lauten: 
+Die Kosten der Errichtung dieses Vertrages trägt zur Gänze der Mieter. 
+4.13. Die §§ 29 und 30 MRG regeln die Auflösung/Kündigung des Mietverhältnisses, 
+wobei es dem Wesen dieser Kündigungsschutzbestimmungen zugunsten des Mieters 
+entspricht, dass diese Auflösungsgründe/Kündigungsgründe nicht durch Vereinbarung 
+beliebig erweitert werden dürfen. 
+Eine Erweiterung der mietrechtsgesetzlich anerkannten Auflösungsgründe gemäß 
+§ 29 Abs 1 MRG ist nach ständiger Judikatur jedenfalls rechtsunwirksam, dagegen 
+verstößt etwa folgende Klausel: 
+Der Vermieter ist berechtigt, unbeschadet eventueller ihm darüber hinaus 
+gesetzlich eingeräumter Möglichkeiten, diesen Vertrag mit sofortiger 
+Wirkung, somit ohne Einhaltung einer Frist und ohne Beachtung eines 
+bestimmten Termins jederzeit auch während der Bestanddauer durch 
+einseitige Erklärung aufzulösen, wenn: 
+........................... 
+........................... 
+der Mieter gegen Bestimmungen dieses Vertrages, insbesondere gegen § 7 
+dieses Vertrages verstößt. 
+§ 7 des Vertrages lautet: 
+Ohne vorangehende schriftliche Zustimmung des Vermieters darf das Mietobjekt weder 
+entgeltlich noch unentgeltlich, ganz oder teilweise, dritten Personen überlassen werden, auf 
+welche Weise und in welcher rechtlichen Form auch immer. 
+Außerdem dürfen gemäß § 30 Abs 2 Z 13 MRG nur solche Umstände als 
+Kündigungsgrund vereinbart werden, die in Bezug auf die Kündigung oder die 
+Auflösung des Mietverhältnis für den Vermieter
+ , seine nahen Angehörigen oder für 
+das Unternehmen, für das der Vermieter vertretungsbefugt ist, als wichtig und 
+bedeutsam
+ anzusehen sind. Außerdem muss ein derart vereinbarter Kündigungsgrund 
+den schon im Gesetz aufgezählten Kündigungsgründen (in seiner Schwere und 
+Bedeutung) nahe kommen. Dies trifft etwa auf folgende Klausel nicht zu: 
+Jede widmungswidrige Verwendung des Mietgegenstandes wird 
+ausdrücklich als Kündigungsgrund im Sinne des § 30 Abs 2 Z 13 MRG 
+vereinbart. 
+18 
+Insgesamt wurden 27 Verstöße gegen §§ 29 und 30 MRG festgestellt, fast alle 
+Verträge waren davon betroffen. 
+4.14. Gemäß § 1096 Abs 1 zweiter Satz ABGB ist der Mieter zur Minderung des 
+Mietzinses
+ berechtigt, wenn der Mietgegenstand ohne sein Verschulden bereits bei 
+Übergabe oder auch erst in weiterer Folge Mängel aufweist, die ihn ganz oder 
+teilweise unbrauchbar machen. Auf diesen Mietzinsminderungsanspruch kann der 
+Mieter gemäß § 1096 Abs 1 dritter Satz ABGB im voraus nicht verzichten
+ . 
+In den überprüften Verträgen finden sich insgesamt 32 Klauseln, die diesen 
+zwingenden Mietzinsminderungsanspruch des Mieters einschränken oder gar 
+ausschließen wollen; fast alle Verträge sind davon betroffen. 
+Typisch sind etwa folgende Klauseln: 
+Behebt der Vermieter diese Mängel binnen angemessener Frist, ist der 
+Mieter nicht berechtigt, weitere Ansprüche zu stellen oder daraus 
+Rechtsfolgen abzuleiten. 
+oder: 
+Der Mieter erklärt, aus den zeitweiligen Störungen oder Absperrungen der 
+Wasserzufuhr, Gebrechen an den Gas-, L
+ icht-, Kraft- und 
+Kanalisierungsleistungen und dergleichen keinerlei Rechtsfolgen abzuleiten. 
+oder auch: 
+Soweit der Mieter die Arbeit dulden muss, kann er weder den Mietzins 
+mindern noch ein Zurückbehaltungsrecht ausüben, noch Schadenersatz 
+verlangen. 
+4.15. Der in § 1097 ABGB vorgesehene Anspruch des Mieters auf Ersatz für die von ihm 
+im Mietobjekt getätigten notwendigen oder nützlichen Aufwendungen stellt 
+nachgiebiges Recht dar und kann grundsätzlich durch Einzelvereinbarung 
+ausgeschlossen werden. Dies trifft jedoch keinesfalls auf den Ersatz von 
+Aufwendungen für notwendige Erhaltungsarbeiten
+ zu, die der Mieter durchführen hat 
+lassen, obwohl diese gemäß § 3 MRG
+ zwingend den Vermieter treffen. Auf den Ersatz 
+für derartige Aufwendungen kann der Mieter nicht rechtswirksam verzichten (MietSlg 
+41.098, 42.199). 
+Mit dieser Bestimmung sind 15 Regelungen nicht vereinbar, die meisten der geprüften 
+Verträge sind davon betroffen. Aufgefunden wurden etwa folgende Regelungen: 
+Hinsichtlich der Investitionen verzichtet der Mieter auf alle über § 10 MRG 
+hinausgehenden Ansprüche. 
+4.16. Gemäß § 879 Abs 3 ABGB gröblich benachteiligend und rechtsunwirksam sind 
+Vertragsbestimmungen, die die Erhaltungspflicht des Vermieters gemäß § 1096 Abs 1 
+erster Satz ABGB ohne sachliche Rechtfertigung ausschließen und/oder auf den 
+19 
+Mieter überwälzen. Derartige Klauseln verstoßen zumeist auch gegen § 3 MRG, 
+indem sogar versucht wird, jene Erhaltungsarbeiten, die gemäß § 3 MRG zwingend 
+den Vermieter treffen, auf den Mieter zu überwälzen.  
+(Nur) gegen § 879 Abs 3 ABGB in Verbindung mit § 1096 ABGB verstößt etwa 
+folgende Klausel:  
+Der Mieter hat den Mietgegenstand und die für den Mietgegenstand 
+bestimmten Einrichtungen und Geräte wie im besonderen die 
+Elektroleitungs-, Gasleitungs-, Wasserleitungs-, Beheizungs- und sanitären 
+Anlagen sowie Gas- und Elektrogeräte und Öfen wo zu warten sowie 
+insoweit instand zu halten und zu erneuern (insbesondere auch die 
+Erneuerung von Warmwasser-/Heizgeräten u.dgl.), als es sich nicht um 
+ernste Schäden d
+ es Hauses handelt. Die Wartungs- und 
+Instandhaltungspflicht erstreckt sich auch auf vorhandene 
+Antennenanlagen. 
+auch
+ gegen § 3 MRG verstoßen etwa folgende Klauseln: 
+Die Kosten für Reparaturen, die während der Mietzeit anfallen, trägt der 
+Mieter. 
+aber auch folgende Klausel: 
+Ferner verzichtet die Mieterseite auf das Recht gemäß § 1096 ABGB die 
+Instandhaltung im Inneren des Bestandobjektes von der Vermieterseite zu 
+fordern und verpflichtet sich die Mieterseite allfällige solche 
+Instandhaltungsarbeiten allein zu tragen. Kommt die Mieterseite diesen 
+Verpflichtungen nicht nach, so ist die Vermieterseite berechtigt sämtliche 
+Wartungs-, Instandhaltungs- und Erneuerungsarbeiten auf Kosten der 
+Mieterseite durchführen zu lassen und ist die Mieterseite verpflichtet die 
+Vermieterseite hinsichtlich dieser Kosten vollkommen schad- und klaglos 
+zu halten. 
+Bis auf einen einzigen Vertrag finden sich in allen Verträgen derartigen Klauseln, 
+insgesamt wurden 55 Verstöße aufgefunden. 
+4.17. Gröblich benachteiligend gemäß § 879 Abs 3 ABGB sind weiters Klauseln, die den 
+Anspruch des Mieters auf Aufwandsersatz gemäß § 1097 ABGB ohne sachliche 
+Rechtfertigung ausschließen. Derartige Klauseln verstoßen oft auch gegen die 
+zwingend Bestimmung des § 10 MRG. 
+(Nur) gegen § 879 Abs 3 ABGB in Verbindung mit § 1096 ABGB verstößt folgende 
+Klausel: 
+Hinsichtlich der Investitionen verzichtet der Mieter auf alle über § 10 MRG 
+hinausgehenden Ansprüche. 
+auch
+ gegen § 10 MRG verstößt folgende Klausel: 
+20 
+Der Mieter erklärt, bei Beendigung des Mitverhältnisses, aus welchem 
+Grund auch immer, vom Vermieter keine Leistungen zu fordern, die mit 
+der Aufgabe des Mietobjektes im Zusammenhang stehen, insbesondere 
+keine Beistellung von Ersatzräumlichkeiten, Zahlung einer Ablöse oder 
+sonstigen Vergütungen für einen allenfalls getätigten Aufwand, sowie keine 
+wie immer gearteten Rückforderungsansprüche, aus welchem Titel auch 
+immer, zu erheben. 
+Derartige Verstöße finden sich in fast jedem Vertrag, insgesamt wurden 25 gezählt. 
+4.18.  Der Vermieter hat die übliche Abnützung der Wohnung selbst zu tragen. Gröblich 
+benachteiligend gemäß § 879 Abs 3 ABGB sind daher auch Bestimmungen, die dem 
+Mieter ohne sachliche Rechtfertigung entgegen der Bestimmung des § 1109 ABGB 
+die Verpflichtung auferlegen, bei Beendigung des Mietverhältnisses für die 
+Abnützung des Bestandgegenstandes aufzukommen, die durch dessen 
+vertragsgemäßen Gebrauch bewirkt wurde.  
+Derartige Klauseln finden sich in den meisten Verträgen, insgesamt wurden 16 
+festgestellt. 
+Typisch sind etwa folgende Klauseln: 
+Der Mietgegenstand ist bei Beendigung des Mietverhältnisses, aus welchem 
+Grund auch immer, in ordnungsgemäßem Zustand, d.h. wie bei Mietbeginn 
+übernommen, jedenfalls neu ausgemalt, zurückzustellen. 
+Mit Vertragsformulierungen ähnlich der oben dargestellten müsste der Mieter neben 
+den Mietzinszahlungen – mit denen er den ihm gewährten Gebrauch und die damit im 
+Zusammenhang stehende normale Abnützung ja schon bezahlt – zusätzlich auch noch 
+die Beseitigung der normalen Abnützung auf seine Kosten besorgen.  
+4.19. Abgesehen von jenen Fällen, in welchen die gröbliche Benachteiligung aus einem 
+sachlich nicht gerechtfertigten Abgehen von bestandrechtlichen Bestimmungen des 
+ABGB resultiert (insgesamt 96 Klauseln; siehe dazu die Ausführungen in den 
+vorangegangenen Punkten) wurden 182 weitere im Sinne des § 879 Abs 3 ABGB 
+gröblich benachteiligende Klauseln festgestellt. Im Durchschnitt enthält also jeder 
+Vertrag 9 derartige Klauseln, durch die versucht wird, die Position des Vermieters 
+gegenüber dem Mieter durch ein Abgehen von der dispositiven Rechtslage oder sonst 
+ohne sachliche Rechtfertigung zu verbessern. 
+So werden etwa verschuldensunabhängige Haftungen
+ des Mieters statuiert: 
+Der Mieter/Die Mieterin ist der Vermieterin für jede Beschädigung des 
+Mietgegenstandes oder des Hauses sowie sämtlicher zum Haus oder zum 
+Mietgegenstand gehöriger Anlagen bei vollem Kostenersatz verantwortlich, 
+soweit der Schaden von ihm/ihr selbst, seinen/ihren Angehörigen, 
+Mitbewohnern, Besuchern oder Lieferanten verursacht worden ist. 
+21 
+tragen: 
+Der Mieter soll ohne die Beschränkungen des § 1333 Abs 3 ABGB Mahn- und 
+Inkassokosten 
+Bei verspäteter Zahlung ist der Vermieter berechtigt, etwaige Mehrkosten 
+wie Mahnspesen, Prozess- und Anwaltskosten... einzuheben. 
+Auch werden die Schuldtilgungsregeln
+ Rechtfertigung wie folgt abgeändert:  
+ der §§ 1415f ABGB ohne sachliche 
+Im Falle einer nicht vollständigen Entrichtung des Mietzinses obliegt die 
+Widmung des Zahlungseinganges dem Vermieter. 
+Oder es wird dem Mieter jegliche
+ Wohnzwecken untersagt: 
+Verwendung des Mietgegenstandes außer zu den 
+Der Mietgegenstand darf nur zu Wohnzwecken verwendet werden. 
+Auch jegliche
+ Tierhaltung soll dem Mieter untersagt sein: 
+Die Tierhaltung ist ohne gesonderte schriftliche Vereinbarung der 
+Vertragsteile unzulässig. 
+4.20. Gemäß § 6 Abs 1 Z 3 KSchG sind Vertragsbestimmungen nichtig, wonach eine für 
+den Verbraucher rechtlich bedeutsame Erklärung des Unternehmers als zugegangen 
+gilt, obwohl sie dem Verbraucher nicht zugegangen ist. Eine Ausnahme besteht nur 
+dann, wenn die Zustellung an die zuletzt bekannt gegebene Anschrift des 
+Verbrauchers erfolgt ist und der Verbraucher entgegen vertraglicher Verpflichtung 
+dem Unternehmer eine Änderung seiner Anschrift nicht bekannt gegeben hat. Sieht 
+der Vertrag eine derartige Verpflichtung zur Bekanntgabe einer Änderung der 
+Anschrift nicht vor, verstößt die Klausel gegen § 6 Abs 1 Z 3 KSchG.  
+Der Großteil der überprüften Verträge enthält derartige Bestimmungen, insgesamt 
+wurden 16 Verstöße festgestellt. 
+Beispiel:
+ Alle Erklärungen der GBV können rechtswirksam für den Mieter an die 
+Anschrift der vertragsgegenständlichen Wohnung abgegeben werden. Der 
+Mieter hat dafür zu sorgen, dass ihn auch bei Ortsabwesenheit die an diese 
+Adresse abgefertigten Schriftstücke erreichen. Dies gilt auch für die 
+Informationen über allgemeine Bekanntmachungen sinngemäß. 
+4.21. Gemäß § 6 Abs 1 Z 8 KSchG darf das Recht des Verbrauchers, seine 
+Verbindlichkeiten durch Aufrechnung aufzuheben, nicht für den Fall der 
+Zahlungsunfähigkeit des Unternehmers oder für Gegenforderungen ausgeschlossen 
+oder eingeschränkt werden, die im rechtlichen Zusammenhang mit der Verbindlichkeit 
+des Verbrauchers stehen, die gerichtlich festgestellt oder die vom Unternehmer 
+anerkannt worden sind. 
+22 
+Eine typische Klausel ist folgende: 
+Der Mieter ist nicht berechtigt, allfällige Gegenforderungen aus welchem 
+Titel immer, mit dem Mietentgelt zu kompensieren und aus diesem Grund 
+den Mietzins ganz oder teilweise zurückzuhalten.  
+Die Mehrzahl der überprüften Verträge, nämlich 12, enthalten mit § 6 Abs 1 Z 8 
+KSchG unvereinbare Klauseln. 
+4.22. Gemäß § 6 Abs 1 Z 9 KSchG dürfen Schadenersatzpflichten des Unternehmers 
+gegenüber dem Verbraucher weder ausgeschlossen noch eingeschränkt werden, 
+ausgenommen die Haftung für Sachschäden bei bloß leichter Fahrlässigkeit.  
+Fast alle Verträge enthalten einen oder mehrere Verstöße gegen diese Bestimmung, 
+insgesamt waren es 31. 
+Typisch sind etwa folgende Klauseln: 
+Bei zeitweiligem Ausfall von technischen Anlagen, zB von Strom- oder 
+Wasserzufuhr bzw Leitungsgebrechen, ist der Mieter nicht berechtigt, 
+Minderungs-, Schadenersatz-, Zurückbehaltungs- oder irgendwelche 
+sonstigen Ansprüche gegenüber dem Vermieter geltend zu machen.  
+oder auch: 
+Bei zeitlich begrenzter Unbenützbarkeit des Mietgegenstand wegen 
+notwendiger Reparaturen verpflichtet sich der Mieter zur Räumung und 
+verzichtet auf einen Ersatz der Kosten des Ersatzquartiers. 
+4.23. Gemäß § 6 Abs 1 Z 11 KSchG sind Klauseln unzulässig, die dem Verbraucher eine 
+Beweislast auferlegen, die ihn von Gesetzes wegen nicht trifft.  
+Fast alle Verträge enthalten derartige Klauseln, insgesamt wurden 26 Verstöße 
+festgestellt. 
+Derartige Beweislastumkehrklauseln werden häufig in das Kleid einer 
+„Tatsachenbestätigung“ gekleidet, indem man den Verbraucher/Mieter durch 
+Vertragsklauseln Umstände bestätigen lässt, für die eigentlich der Vermieter 
+beweispflichtig ist. Dies bewirkt eine Beweislastumkehr, da dann der Mieter im 
+Streitfall das Nichtvorliegen der Tatsachen bzw. die Unrichtigkeit seiner 
+Tatsachenerklärung zu beweisen hat. 
+Derartige mit § 6 Abs 1 Z 11 KSchG unvereinbare Tatsachenbestätigungen lauten 
+etwa wie folgt:  
+Die Gesamtnutzfläche wird als richtig anerkannt. 
+oder: 
+23 
+Es werden die Licht-, Gas- sowie Wasserinstallationen, die Küche, das WC, 
+die Heizung und die Heißwasseraufbereitungsanlage in brauchbaren 
+Zustand befindlich sowie der zeitgemäße Standard der Badegelegenheit 
+bestätigt. 
+oder auch: 
+Ebenso wird der ordnungsgemäße Erhaltungszustand der allgemeinen Teile 
+des Hauses bestätigt.  
+4.24. Gemäß § 6 Abs 3 KSchG sind Vertragsbestimmungen, die in allgemeinen 
+Geschäftsbedingungen oder Vertragsformblättern enthalten sind. unwirksam, wenn sie 
+unklar oder unverständlich abgefasst sind (Transparenzgebot). 
+Unwirksam gemäß § 6 Abs 3 KSchG sind sowohl Klauseln, die sprachlich unklar 
+sind, als auch solche, deren Regelungsgehalt sich dem durchschnittlichen Verbraucher 
+nicht ohne weiteres erschließt. Grundsätzlich ist davon auszugehen, dass gemäß § 6 
+Abs 3 KSchG jede Klausel unwirksam ist, die dem Verbraucher die aus ihr 
+resultierenden Rechtsfolgen verschleiert. 
+Im Rahmen dieser Studie wurde vom Transparenzgebot nur vorsichtig Gebrauch 
+gemacht und insbesondere dort nicht von einer Verletzung des Transparenzgebots 
+ausgegangen, wo einzelne Klauseln ohnehin offenkundig gegen andere, zwingende 
+Bestimmungen verstoßen haben. Trotzdem wurden aber insgesamt 116 Verstöße 
+gegen das Transparenzgebot des § 6 Abs 3 KSchG festgestellt, es enthält somit 
+durchschnittlich jeder Vertrag zirka 6 intransparente Vertragsbestimmungen. 
+Intransparent sind etwa folgende Klauseln: 
+Für diejenigen Fälle, in denen die Vermieterseite oder ihr Beauftragter 
+berechtigt sind das Objekt zu betreten, hat die Mieterseite dafür zu sorgen, 
+dass der Zutritt zum Bestandobjekt auch in ihrer Abwesenheit erfolgen 
+kann sofern ihr dies zumutbar ist.  
+oder: 
+Die Mieterseite erklärt aus zeitweiligen Störungen oder Absperrungen der 
+Wasserzufuhr, Gebrechen des Personenaufzuges, an den Gas-, Licht-, 
+Kraft-, und K
+ analisierungsleitungen und der gleichen, keinerlei 
+Rechtsfolgen abzuleiten sofern der Verzicht auf solche Rechtsfolgen der 
+Parteiendisposition obliegt.  
+oder auch: 
+Der Mieter verpflichtet sich, für sich sowie für seine allfälligen 
+Mitbewohner und sonstigen Personen, denen er den Zutritt zum Mietobjekt 
+gestattet oder ermöglicht, zur Einhaltung der von dem Vermieter 
+festzusetzenden Hausordnung... 
+24 
+4.25. Gemäß § 9 KSchG können Gewährleistungsrechte des Verbrauchers vor Kenntnis des 
+Mangels nicht ausgeschlossen oder eingeschränkt werden. Für das Bestandverhältnis 
+werden die allgemeinen Gewährleistungsvorschriften der §§ 922 bis 933 ABGB durch 
+Sondernormen, vor allem § 1096 ABGB ergänzt. § 1096 ABGB kennt anders als die 
+Gewährleistungsvorschriften der §§ 922 bis 933 ABGB nicht die Unterscheidung 
+zwischen Mängeln, die bereits zum Zeitpunkt der Übergabe vorhanden waren und für 
+die Gewähr zu leisten ist, und solchen, die erst nach Übergabe auftreten. Soweit 
+allerdings § 1096 ABGB mit seinen Regelungen an die Stelle der allgemeinen 
+Gewährleistungsvorschriften tritt, ist auch § 9 KSchG sinngemäß anzuwenden und ein 
+Ausschluss von sich aus § 1096 ABGB ergebenden Gewährleistungsansprüchen 
+unzulässig. Dies mag zwar nach der Neuformulierung des § 9 KSchG durch das 
+Gewährleistungsrechtsänderungsgesetz (BGBl 48/2001) unklar geworden sein (§ 9 
+Abs 1 KSchG §§ 922 bis 933 ABGB) jedoch ist von einem Willen des Gesetzgebers, 
+den Anwendungsbereich des § 9 KSchG einzuschränken, nichts bekannt. Die 
+gegenständliche Studie geht daher davon aus, dass § 9 KSchG weiterhin auch im 
+Rahmen von Bestandverträgen anwendbar ist.  
+In den überprüften Verträgen wurden insgesamt 23 Klauseln festgestellt, die einen 
+unzulässigen Gewährleistungsausschluss im Sinne des § 9 KSchG enthalten.  
+Typisch ist etwa folgende Klausel: 
+Der Mieter hat den Mietgegenstand besichtigt und übernimmt ihn mit allen 
+Vor- und Nachteilen sowie unter Verzicht auf die Rüge von Mängeln, die 
+nicht im Übergabeprotokoll festgehalten sind.  
+4.26. Gemäß § 10 Abs 3 KSchG kann die Rechtswirksamkeit formloser Erklärungen des 
+Unternehmers oder seiner Vertreter zum Nachteil des Verbrauchers vertraglich nicht 
+ausgeschlossen werden. Es ist daher unzulässig, die Wirksamkeit von Zusicherungen 
+des Vermieters oder seiner Vertreter an die Schriftform zu binden. 
+Im Rahmen der Vertragsprüfungen ist der Eindruck entstanden, dass dieses Verbot bei 
+den Mietvertragsverfassern weithin unbekannt ist, wurden doch insgesamt 97
+ unzulässige Schriftformvorbehalte
+ festgestellt, jeder
+ Typische Klausel: 
+ Vertrag war davon betroffen. 
+Ein Verzicht auf die Anwendung der Wertsicherung bedarf der 
+Schriftform.  
+4.27. Abschließend ist noch zu erwähnen, dass weitere 27 Verstöße
+ gegen sonstige 
+Konsumentenschutzbestimmungen (§§ 6 Abs 1 Z 1, Z 5, Z 14, §§ 6 Abs 2 Z 2, Z 3, 
+§ 14 KSchG) erhoben wurden, die jedoch wegen ihres bloß vereinzelten Auftretens 
+hier im Detail nicht erörtert werden. 

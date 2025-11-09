@@ -291,7 +291,7 @@ function generateAnalysis(message) {
             "Kündigungsfrist",
             "Miete (kalt)",
             "Betriebskosten",
-            "Quadratmeter",
+            "Wohnflaeche",
             "Zimmer",
             "Im Mietgegenstand enthalten",
         ];
@@ -307,7 +307,7 @@ function generateAnalysis(message) {
             summaryObj.kuendigungsfrist,
             summaryObj.miete_kalt,
             summaryObj.betriebskosten,
-            summaryObj.quadratmeter,
+            summaryObj.wohnflaeche,
             summaryObj.zimmer,
             summaryObj.im_mietgegenstand_enthalten,
         ];

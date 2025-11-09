@@ -5,10 +5,14 @@ namespace PocketLawyer.Application.Interfaces;
 
 public interface IContractAnalyzerAgent
 {
-    Task<T> ProcessContractRequest<T> (
-        FileContentDto content,
-        Func<AgentType, string, string, string> promptBuilder,
-        object schema,
-        bool detectKv = false,
-        string? kvName = null);
+    Task<T> ProcessContractRequest<T>(FileContentDto content, AgentAction action, object? data = null);
 }
+
+public enum AgentAction
+{
+    Validate,
+    Analyze
+}
+
+
+

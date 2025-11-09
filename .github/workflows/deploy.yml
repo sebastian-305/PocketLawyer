@@ -2,7 +2,7 @@ name: Deploy KlauselKlara
 
 on:
   push:
-   branches: [ "develope-rent" ]   # anpassen
+   branches: [ "develope" ]   # anpassen
   workflow_dispatch: {}     # manueller Start
 
 concurrency:
@@ -71,4 +71,3 @@ jobs:
             ln -sfn "$REL" "${{ env.RELEASES_DIR }}/current"
             sudo -n systemctl restart "${{ env.APP_SERVICE }}"
             sudo -n systemctl --no-pager -l status "${{ env.APP_SERVICE }}"
-

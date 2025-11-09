@@ -1,18 +1,9 @@
-using System.ClientModel;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Net.Http;
-using System.Runtime.ConstrainedExecution;
-using System.Text.Json;
-using Anthropic.SDK.Messaging;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Options;
 using OpenAI;
 using OpenAI.Chat;
 using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Infrastructure.AiServices.Gemini;
-using PocketLawyer.Infrastructure.AiServices.Gemini.Models;
 using PocketLawyer.Options;
+using System.ClientModel;
 
 namespace PocketLawyer.Infrastructure.AiServices.Nebius;
 
@@ -45,8 +36,9 @@ public class NebiusService : IAiClient
 
     }
 
-
     public static System.BinaryData AnalyzerSchemaDefinition => GetAnalizerSchema();
+    public static System.BinaryData RentAnalyzerSchemaDefinition => GetRentAnalizerSchema();
+    public static System.BinaryData EmploymentAnalyzerSchemaDefinition => GetEmploymentAnalizerSchema();
     public static System.BinaryData PreAnalyzerSchemaDefinition => GetPreAnalizerSchema();
 
     public async Task<string> SendPrompt(string prompt, object? outputSchema)
@@ -57,7 +49,7 @@ public class NebiusService : IAiClient
         List<ChatMessage> messages =
         [
             ChatMessage.CreateSystemMessage(
-                "Du bist ein erfahrener Rechtsanwalt, der sich auf das österreichische Mietrecht spezialisiert hat."+
+                "Du bist ein erfahrener Rechtsanwalt, der sich auf das österreichische Recht spezialisiert hat."+
     "Antworte NUR als gültiges JSON nach Schema. Deutsch. " +   
     "Keine Wiederholungen über Abschnitte; " +
     "Längenlimits strikt einhalten."),
@@ -104,6 +96,456 @@ public class NebiusService : IAiClient
         return completion.Content[0].Text ?? "Error";
     }
 
+    private static System.BinaryData GetRentAnalizerSchema()
+    {
+        return BinaryData.FromBytes("""
+               {
+                  "type": "object",
+                  "properties": {
+                    "fazit": {
+                      "type": "string",
+                        "maxLength":1500,
+                       "description": "Zusammenfassung der Analyse und ob der Mietvertrag von einem Rechstgutachter angesehen werden sollte."
+                    },
+                    "nachteile_klauseln": {
+                      "type": "array",
+                       "description": "Klauseln zum Nachteil des Mieters bzw. der Mieterin",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "problem": {
+                            "type": "string"
+                          },
+                          "rechtsgrundlage": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "rechtsgrundlage": {
+                                  "type": "string"
+                                },
+                                "wortlaut": {
+                                  "type": "string"                               
+                                }
+                              },
+                              "required": [
+                                "rechtsgrundlage",
+                                "wortlaut"
+                              ]
+                            }
+                          },
+                          "titel": {
+                            "type": "string"
+                          },
+                          "zitat": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "problem",
+                          "rechtsgrundlage",
+                          "titel",
+                          "zitat"
+                        ]
+                      }
+                    },
+                    "keypoints": {
+                      "type": "object",
+                      "descritpion": "Stichworte, keine ganzen Sätze.",
+                      "properties": {
+                        "vermieter": {
+                          "type": "string",
+                           "description": "Name des Vermiters"
+                        },"mieter": {
+                          "type": "string",
+                            "description": "Name des Mieters"
+                        },                       
+                        "beginn": {
+                          "type": "string",
+                          "examples": ["01.01.2025, Anfang nächsten Monats"],
+                          "description" : "Beginn der Miete"
+                        },
+                        "dauer": {
+                          "type": "string",
+                           "examples": ["3 Jahre, unbegrenzt"],
+                           "description": "Vereinbarte Dauer des Mietvertrages"
+                        },
+                        "mindestdauer": {
+                          "type": "string",
+                           "description": "Mindestdauer des Mietvertrages"
+                        },
+                        "kuendigungsfrist": {
+                          "type": "string",
+                        "examples": ["3 Monate, 1 Monat"]
+
+                        },
+                        "miete_kalt": {
+                          "type": "string",
+                            "examples": ["500 Euro, 1.200 Euro"],
+                          "description": "Kaltmiete in Euro"
+                        },
+                        "betriebskosten": {
+                          "type": "string",
+                            "examples": ["500 Euro, 1.200 Euro"],
+                            "description": "Betriebskosten (auch Nebenkosten genannt) wie sie im Mietvertrag aufgeführt sind."
+                        },
+                        "wohnflaeche": {
+                          "type": "string",
+                           "examples": ["50m², 120m²"]                           
+                        },
+                        "zimmer": {
+                          "type": "number"
+                        },
+                        "im_mietgegenstand_enthalten": {
+                          "type": "string",
+                           "description": "Bechreibung, was im Mietobjekt enthalten ist, bspw. Küche, Garage, Balkon etc."
+                        }                
+                      },
+                    "required": [
+                    "vermieter",
+                    "mieter",
+                    "beginn",
+                    "dauer",
+                    "mindestdauer",
+                    "kuendigungsfrist",
+                    "miete_kalt",
+                    "betriebskosten",
+                    "quadratmeter",
+                    "zimmer",
+                    "im_mietgegenstand_enthalten"
+                    ]
+                    },
+                    "unzulaessige_klauseln": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "problem": {
+                            "type": "string"
+                          },
+                          "rechtsgrundlage": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "rechtsgrundlage": {
+                                  "type": "string"
+                                },
+                                "wortlaut": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "rechtsgrundlage",
+                                "wortlaut"
+                              ]
+                            }
+                          },
+                          "titel": {
+                            "type": "string"
+                          },
+                          "zitat": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "problem",
+                          "rechtsgrundlage",
+                          "titel",
+                          "zitat"
+                        ]
+                      }
+                    },
+                    "vorteilhafte_klauseln": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "titel": {
+                            "type": "string"
+                          },
+                          "vorteil": {
+                            "type": "string"
+                          },
+                          "zitat": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "titel",
+                          "vorteil",
+                          "zitat"
+                        ]
+                      }
+                    },
+                    "widerspruechliche_klauseln": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "problem": {
+                            "type": "string"
+                          },
+                          "rechtsgrundlage": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "rechtsgrundlage": {
+                                  "type": "string"
+                                },
+                                "wortlaut": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "rechtsgrundlage",
+                                "wortlaut"
+                              ]
+                            }
+                          },
+                          "titel": {
+                            "type": "string"
+                          },
+                          "zitat_klausel_a": {
+                            "type": "string"
+                          },
+                          "zitat_klausel_b": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "problem",
+                          "rechtsgrundlage",
+                          "titel",
+                          "zitat_klausel_a",
+                          "zitat_klausel_b"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "fazit",
+                    "keypoints"
+                  ]
+                }
+            """u8.ToArray());
+    }
+    private static System.BinaryData GetEmploymentAnalizerSchema()
+    {
+        return BinaryData.FromBytes("""
+               {
+                  "type": "object",
+                  "properties": {
+                    "fazit": {
+                      "type": "string"
+                    },
+                    "nachteile_klauseln": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "problem": {
+                            "type": "string"
+                          },
+                          "rechtsgrundlage": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "rechtsgrundlage": {
+                                  "type": "string"
+                                },
+                                "wortlaut": {
+                                  "type": "string",
+                                  "enum": [
+                                    ""
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "rechtsgrundlage",
+                                "wortlaut"
+                              ]
+                            }
+                          },
+                          "titel": {
+                            "type": "string"
+                          },
+                          "zitat": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "problem",
+                          "rechtsgrundlage",
+                          "titel",
+                          "zitat"
+                        ]
+                      }
+                    },
+                    "keypoints": {
+                      "type": "object",
+                      "properties": {
+                        "arbeitgeber": {
+                          "type": "string"
+                        },
+                        "arbeitsstunden": {
+                          "type": "string"
+                        },
+                        "beginn": {
+                          "type": "string"
+                        },
+                        "dauer": {
+                          "type": "string"
+                        },
+                        "gehalt_brutto": {
+                          "type": "string"
+                        },
+                        "probezeit": {
+                          "type": "string"
+                        },
+                        "taetigkeit": {
+                          "type": "string"
+                        },
+                        "ueberstunden": {
+                          "type": "string"
+                        },
+                        "zuschlaege": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "arbeitgeber",
+                        "arbeitsstunden",
+                        "beginn",
+                        "dauer",
+                        "gehalt_brutto",
+                        "probezeit",
+                        "taetigkeit",
+                        "ueberstunden",
+                        "zuschlaege"
+                      ]
+                    },
+                    "unzulaessige_klauseln": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "problem": {
+                            "type": "string"
+                          },
+                          "rechtsgrundlage": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "rechtsgrundlage": {
+                                  "type": "string"
+                                },
+                                "wortlaut": {
+                                  "type": "string",
+                                  "enum": [
+                                    ""
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "rechtsgrundlage",
+                                "wortlaut"
+                              ]
+                            }
+                          },
+                          "titel": {
+                            "type": "string"
+                          },
+                          "zitat": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "problem",
+                          "rechtsgrundlage",
+                          "titel",
+                          "zitat"
+                        ]
+                      }
+                    },
+                    "vorteilhafte_klauseln": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "titel": {
+                            "type": "string"
+                          },
+                          "vorteil": {
+                            "type": "string"
+                          },
+                          "zitat": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "titel",
+                          "vorteil",
+                          "zitat"
+                        ]
+                      }
+                    },
+                    "widerspruechliche_klauseln": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "problem": {
+                            "type": "string"
+                          },
+                          "rechtsgrundlage": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "rechtsgrundlage": {
+                                  "type": "string"
+                                },
+                                "wortlaut": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "rechtsgrundlage",
+                                "wortlaut"
+                              ]
+                            }
+                          },
+                          "titel": {
+                            "type": "string"
+                          },
+                          "zitat_klausel_a": {
+                            "type": "string"
+                          },
+                          "zitat_klausel_b": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "problem",
+                          "rechtsgrundlage",
+                          "titel",
+                          "zitat_klausel_a",
+                          "zitat_klausel_b"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "fazit",
+                    "keypoints"
+                  ]
+                }
+            """u8.ToArray());
+    }
     private static System.BinaryData GetAnalizerSchema()
     {
         return BinaryData.FromBytes("""

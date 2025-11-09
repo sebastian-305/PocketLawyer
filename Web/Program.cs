@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Http;
+using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.UseCases;
 using PocketLawyer.Infrastructure;
@@ -58,7 +59,7 @@ builder.Services
     .AddHttpMessageHandler<RedactingLoggingHandler>();
 // inner (echte Implementierung)
 builder.Services
-    .AddHttpClient<WebSocketAnalysisService>()
+    .AddHttpClient<WebSocketAgentAnalysisService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
 // inner (echte Implementierung)
 builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini:inner");
@@ -95,9 +96,9 @@ builder.Services.AddScoped<IFileValidatorService, FileValidatorService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
 builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
-builder.Services.AddKeyedScoped<IContractAnalyzerAgent, AnalyzeEmploymentUseCase>("employment");
-builder.Services.AddKeyedScoped<IContractAnalyzerAgent, AnalyzeRentUseCase>("rent");
-builder.Services.AddScoped<IWebSocketAnalysisService, WebSocketAnalysisService>();
+builder.Services.AddKeyedScoped<IContractAnalyzerAgent, AnalyzeEmploymentAgent>("employment");
+builder.Services.AddKeyedScoped<IContractAnalyzerAgent, AnalyzeRentAgent>("rent");
+builder.Services.AddScoped<IWebSocketAnalysisService, WebSocketAgentAnalysisService>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

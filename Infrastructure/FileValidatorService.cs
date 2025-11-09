@@ -5,6 +5,7 @@ using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Options;
 using PocketLawyer.Domain.Dtos;
 using System.IO;
+using PocketLawyer.Application.Exceptions;
 
 namespace PocketLawyer.Infrastructure;
 

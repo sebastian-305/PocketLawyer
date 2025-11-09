@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
-using System.Text.Json;
+using PocketLawyer.Application.UseCases;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Options;
 using Microsoft.Extensions.Options;
@@ -18,19 +20,23 @@ public class PocketController : ControllerBase
     private readonly IWebHostEnvironment _environment;
     private readonly PathOptions _paths;
     private readonly IWebSocketAnalysisService _socketService;
-    private readonly IContractAnalyzerAgent _analyzeContractUseCase;
+    private readonly IContractAnalyzerAgent _analyzeEmploymentAgent;
+    private readonly IContractAnalyzerAgent _analyzeRentAgent;
+
     public PocketController(
         ILogger<PocketController> logger,
         IOptions<PathOptions> pathOptions,
         IWebHostEnvironment environment,
         IWebSocketAnalysisService socketService,
-        IContractAnalyzerAgent analyzeContractUseCase)
+             [FromKeyedServices("employment")] IContractAnalyzerAgent analyzeEmploymentAgent,
+        [FromKeyedServices("rent")] IContractAnalyzerAgent analyzeRentAgent)
     {
         _logger = logger;
         _paths = pathOptions.Value;
         _environment = environment;
         _socketService = socketService;
-        _analyzeContractUseCase = analyzeContractUseCase;
+        _analyzeEmploymentAgent = analyzeEmploymentAgent;
+        _analyzeRentAgent = analyzeRentAgent;
     }
 
     [HttpGet("/employment-mockdata")]
@@ -90,7 +96,7 @@ public class PocketController : ControllerBase
             return BadRequest();
 
 
-        await _socketService.HandleAsync(HttpContext, AgentType.Employment);
+        await _socketService.HandleAsync(HttpContext, _analyzeEmploymentAgent);
         return new EmptyResult();
     }
 
@@ -102,7 +108,7 @@ public class PocketController : ControllerBase
             return BadRequest();
 
 
-        await _socketService.HandleAsync(HttpContext, AgentType.Rent);
+        await _socketService.HandleAsync(HttpContext, _analyzeRentAgent);
         return new EmptyResult();
     }
 }
