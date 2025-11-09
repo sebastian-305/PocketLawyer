@@ -16,9 +16,137 @@ env:
   RELEASES_DIR: ${{ secrets.RELEASES_DIR || '/var/www/releases' }}
 
 jobs:
+  license-audit:
+    name: License compliance check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # SDKs getrennt installieren (Projekt auf 8, Tool braucht 7)
+      - name: Setup .NET 8 (Projekt)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Setup .NET 7 (für Lizenztool)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.0.x'
+
+      # NuGet-Cache beschleunigt Restore und Scan deutlich
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.sln','**/*.csproj','**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: |
+          SOLUTION=$(git ls-files '*.sln' | head -n 1 || true)
+          PROJECT=$(git ls-files '*/*.csproj' | head -n 1 || true)
+          echo "SOLUTION=$SOLUTION" >> $GITHUB_ENV
+          echo "PROJECT=$PROJECT" >> $GITHUB_ENV
+          if [ -n "$SOLUTION" ]; then
+            dotnet restore "$SOLUTION"
+          elif [ -n "$PROJECT" ]; then
+            dotnet restore "$PROJECT"
+          else
+            echo "Kein .sln oder .csproj gefunden." && exit 1
+          fi
+
+      - name: Install license scanner
+        run: |
+          dotnet tool install --global dotnet-project-licenses --ignore-failed-sources
+          ls -la "$HOME/.dotnet/tools" || true
+      - name: Prepare filters
+        run: |
+            mkdir -p license-report
+            # 1) Projekte überspringen (Suffix-Matching ist erlaubt: 'Tests.csproj')
+            cat > license-report/projects-skip.json <<'JSON'
+            ["Tests.csproj", "UnitTests.csproj", "IntegrationTests.csproj"]
+            JSON
+
+            # 2) Pakete überspringen (Regex erlaubt) – Framework & Test-Stack
+            cat > license-report/packages-skip.json <<'JSON'
+            [
+            "/^System\\./",
+            "/^Microsoft\\.NETCore\\./",
+            "NETStandard.Library",
+            "/^Microsoft\\.(NET|NETCore)\\.Test/",
+            "/^MSTest\\./",
+            "/^xunit(\\.|$)/",
+            "coverlet.collector",
+            "NSubstitute",
+            "FluentAssertions"
+            ]
+            JSON
+
+      - name: Generate license report (prod-only, schnell)
+        timeout-minutes: 10
+        run: |
+            # Wenn ihr eine Solution **ohne** Tests habt, setze TARGET explizit darauf (z. B. PocketLawyer.slnf)
+            TARGET="${SOLUTION:-$PROJECT}"
+            TOOL="$HOME/.dotnet/tools/dotnet-project-licenses"
+
+            # JSON-Report (inkl. transitiver Abhängigkeiten), nutzt project.assets.json
+            "$TOOL" \
+                --input "$TARGET" \
+                -t \
+                --use-project-assets-json \
+                --projects-filter license-report/projects-skip.json \
+                --packages-filter license-report/packages-skip.json \
+                --json \
+                --outfile "license-report/licenses.json" \
+                -l Warning \
+                --timeout 10
+
+            # Optionale Textübersicht
+            "$TOOL" \
+                --input "$TARGET" \
+                -t \
+                --use-project-assets-json \
+                --projects-filter license-report/projects-skip.json \
+                --packages-filter license-report/packages-skip.json \
+                --output \
+                --output-directory "license-report" \
+                -l Warning
+      - name: Enforce allowed licenses (fail on violation)
+        run: |
+          # Erlaubte Lizenzen (hier eure Policy pflegen)
+          ALLOWED='["MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause","ISC","Unicode-3.0"]'
+
+          # jq ggf. installieren
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+
+          # Finde Pakete außerhalb der Allow-Liste
+          jq --argjson allowed "$ALLOWED" '
+            map(select(.LicenseType as $lt | ($allowed | index($lt)) | not))
+          ' license-report/licenses.json > license-report/disallowed.json
+
+          COUNT=$(jq 'length' license-report/disallowed.json)
+          if [ "$COUNT" -gt 0 ]; then
+            echo "❌ Nicht erlaubte Lizenzen gefunden ($COUNT):"
+            jq -r '.[] | "\(.Id) \(.Version) – License: \(.LicenseType)"' license-report/disallowed.json
+            exit 1
+          else
+            echo "✅ Alle Lizenzen sind erlaubt."
+          fi
+
+      - name: Upload license report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: license-report/
+
   build-and-deploy:
     runs-on: ubuntu-latest
-
+    needs: license-audit
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,9 +161,13 @@ jobs:
 
       - name: Publish (linux-x64, framework-dependent)
         run: |
+          dotnet restore
+          dotnet build -c Release
+          dotnet test -c Release --no-build
           dotnet publish -c Release -r linux-x64 --self-contained false -o publish
           ls -la publish
-          test -f publish/${{ env.APP_DLL }} && test -f publish/*.runtimeconfig.json
+          test -f publish/PocketLawyer.dll
+          test -f publish/PocketLawyer.runtimeconfig.json
 
       - name: Create release archive
         run: |

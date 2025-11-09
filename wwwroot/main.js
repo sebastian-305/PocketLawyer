@@ -41,6 +41,23 @@ async function uploadFile(event) {
         } else {
             const file = input.files[0];
             const socket = startAnalysisSocket(file, event.target.contractType.value, (msg) => {
+                if (msg?.error) {
+                    socket.close();
+                    preAnalysisShown = false;
+                    const rawError = typeof msg.error === 'string' ? msg.error : '';
+                    const isAiBackendError = /invalid ai response/i.test(rawError)
+                        || /fehler beim interpretieren der ki-antwort/i.test(rawError)
+                        || /gemini api request failed/i.test(rawError)
+                        || /ki[- ]service/i.test(rawError)
+                        || /ai[- ]service/i.test(rawError);
+                    const friendlyMessage = 'Der KI-Service kann Ihre Anfrage derzeit nicht bearbeiten. Bitte versuchen Sie es später erneut.';
+                    const errorToShow = isAiBackendError && friendlyMessage ? friendlyMessage : rawError || friendlyMessage;
+                    if (DEBUG && isAiBackendError && rawError) {
+                        console.info('AI backend reported error:', rawError);
+                    }
+                    displayUploadError(new Error(errorToShow), body, loading, preAnalysisShown);
+                    return;
+                }
                 if (!preAnalysisShown) {
                     preMessage = msg;
                     body.replaceChildren();
