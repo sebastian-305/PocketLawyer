@@ -36,7 +36,7 @@ jobs:
           dotnet restore
           dotnet build -c Release
           dotnet test -c Release --no-build
-          dotnet publish PocketLawyer/PocketLawyer.csproj -c Release -r linux-x64 --self-contained false -o publish
+          dotnet publish -c Release -r linux-x64 --self-contained false -o publish
           ls -la publish
           test -f publish/PocketLawyer.dll
           test -f publish/PocketLawyer.runtimeconfig.json
