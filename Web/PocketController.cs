@@ -1,14 +1,9 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Application.UseCases;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Options;
-using Microsoft.Extensions.Options;
-using PocketLawyer.Application.UseCases;
-using PocketLawyer.Infrastructure;
+using System.Text.Json;
 
 namespace PocketLawyer.Web;
 

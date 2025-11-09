@@ -1,11 +1,9 @@
-using System.Text.Json;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Infrastructure.AiServices.Nebius;
 using PocketLawyer.Web;
-using System;
 using System.Text.Json;
 
 namespace PocketLawyer.Application.Agents;

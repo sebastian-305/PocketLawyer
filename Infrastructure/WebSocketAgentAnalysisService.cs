@@ -1,19 +1,9 @@
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;
-using PocketLawyer.Infrastructure.AiServices.Nebius;
-using PocketLawyer.Web;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Infrastructure.AiServices.Gemini;
-using PocketLawyer.Domain.Dtos;
-using PocketLawyer.Application.Exceptions;
 
 namespace PocketLawyer.Infrastructure;
 
