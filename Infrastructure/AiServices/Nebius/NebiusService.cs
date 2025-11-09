@@ -186,10 +186,10 @@ public class NebiusService : IAiClient
                         },
                         "betriebskosten": {
                           "type": "string",
-                            "examples": ["500 Euro, 1.200 Euro"]
-                        }
-                        ,
-                        "quadratmeter": {
+                            "examples": ["500 Euro, 1.200 Euro"],
+                            "description": "Betriebskosten (auch Nebenkosten genannt) wie sie im Mietvertrag aufgeführt sind."
+                        },
+                        "wohnflaeche": {
                           "type": "string",
                            "examples": ["50m², 120m²"]                           
                         },

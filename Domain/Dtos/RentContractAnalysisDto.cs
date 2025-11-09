@@ -55,8 +55,8 @@ public class Summary
     [JsonPropertyName("betriebskosten")]
     public string Betriebskosten { get; set; } = string.Empty;
 
-    [JsonPropertyName("quadratmeter")]
-    public string Quadratmeter { get; set; } = string.Empty;
+    [JsonPropertyName("wohnflaeche")]
+    public string Wohnflaeche { get; set; } = string.Empty;
 
     [JsonPropertyName("zimmer")]
     public int Zimmer { get; set; }
