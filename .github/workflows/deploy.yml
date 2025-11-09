@@ -61,42 +61,58 @@ jobs:
         run: |
           dotnet tool install --global dotnet-project-licenses --ignore-failed-sources
           ls -la "$HOME/.dotnet/tools" || true
-
       - name: Prepare filters
         run: |
-          mkdir -p license-report
-          # Rauschen reduzieren – Framework/BCL-Pakete überspringen:
-          cat > license-report/packages-skip.json <<'JSON'
-          ["/^System\\./", "/^Microsoft\\.NETCore\\./", "NETStandard.Library"]
-          JSON
+            mkdir -p license-report
+            # 1) Projekte überspringen (Suffix-Matching ist erlaubt: 'Tests.csproj')
+            cat > license-report/projects-skip.json <<'JSON'
+            ["Tests.csproj", "UnitTests.csproj", "IntegrationTests.csproj"]
+            JSON
 
-      - name: Generate license report (schnell)
+            # 2) Pakete überspringen (Regex erlaubt) – Framework & Test-Stack
+            cat > license-report/packages-skip.json <<'JSON'
+            [
+            "/^System\\./",
+            "/^Microsoft\\.NETCore\\./",
+            "NETStandard.Library",
+            "/^Microsoft\\.(NET|NETCore)\\.Test/",
+            "/^MSTest\\./",
+            "/^xunit(\\.|$)/",
+            "coverlet.collector",
+            "NSubstitute",
+            "FluentAssertions"
+            ]
+            JSON
+
+      - name: Generate license report (prod-only, schnell)
         timeout-minutes: 10
         run: |
-          TARGET="${SOLUTION:-$PROJECT}"
-          TOOL="$HOME/.dotnet/tools/dotnet-project-licenses"
+            # Wenn ihr eine Solution **ohne** Tests habt, setze TARGET explizit darauf (z. B. PocketLawyer.slnf)
+            TARGET="${SOLUTION:-$PROJECT}"
+            TOOL="$HOME/.dotnet/tools/dotnet-project-licenses"
 
-          # JSON-Report inkl. transitiver Abhängigkeiten; nutzt project.assets.json
-          "$TOOL" \
-            --input "$TARGET" \
-            -t \
-            --use-project-assets-json \
-            --packages-filter license-report/packages-skip.json \
-            --json \
-            --outfile "license-report/licenses.json" \
-            -l Warning \
-            --timeout 10
+            # JSON-Report (inkl. transitiver Abhängigkeiten), nutzt project.assets.json
+            "$TOOL" \
+                --input "$TARGET" \
+                -t \
+                --use-project-assets-json \
+                --projects-filter license-report/projects-skip.json \
+                --packages-filter license-report/packages-skip.json \
+                --json \
+                --outfile "license-report/licenses.json" \
+                -l Warning \
+                --timeout 10
 
-          # Optionale Textübersicht
-          "$TOOL" \
-            --input "$TARGET" \
-            -t \
-            --use-project-assets-json \
-            --packages-filter license-report/packages-skip.json \
-            --output \
-            --output-directory "license-report" \
-            -l Warning
-
+            # Optionale Textübersicht
+            "$TOOL" \
+                --input "$TARGET" \
+                -t \
+                --use-project-assets-json \
+                --projects-filter license-report/projects-skip.json \
+                --packages-filter license-report/packages-skip.json \
+                --output \
+                --output-directory "license-report" \
+                -l Warning
       - name: Enforce allowed licenses (fail on violation)
         run: |
           # Erlaubte Lizenzen (hier eure Policy pflegen)
