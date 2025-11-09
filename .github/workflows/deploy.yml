@@ -33,9 +33,13 @@ jobs:
 
       - name: Publish (linux-x64, framework-dependent)
         run: |
-          dotnet publish -c Release -r linux-x64 --self-contained false -o publish
+          dotnet restore
+          dotnet build -c Release
+          dotnet test -c Release --no-build
+          dotnet publish PocketLawyer/PocketLawyer.csproj -c Release -r linux-x64 --self-contained false -o publish
           ls -la publish
-          test -f publish/${{ env.APP_DLL }} && test -f publish/*.runtimeconfig.json
+          test -f publish/PocketLawyer.dll
+          test -f publish/PocketLawyer.runtimeconfig.json
 
       - name: Create release archive
         run: |
