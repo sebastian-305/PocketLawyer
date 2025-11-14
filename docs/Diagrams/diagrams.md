@@ -55,112 +55,129 @@ Employment-Analyse im Diagramm mit dem Präfix `Employment*` versehen.
 ```mermaid
 classDiagram
     class IValidationDto
+    class IAnalysisDto
+
     class ContractValidationDto {
-        bool IsReadable
-        bool IsContract
-        string Result
-        string? Kollektivvertrag
+        IsReadable: bool
+        IsContract: bool
+        Result: string
+        Kollektivvertrag: string
     }
     IValidationDto <|.. ContractValidationDto
 
-    class IAnalysisDto
-
     class EmploymentContractAnalysisDto {
-        EmploymentSummary Keypoints
-        EmploymentProblemKlausel[] UnzulaessigeKlauseln
-        EmploymentProblemKlausel[] NachteileKlauseln
-        EmploymentWiderspruechlicheKlausel[] WiderspruechlicheKlauseln
-        EmploymentVorteilKlausel[] VorteilhafteKlauseln
-        string Fazit
-        string? Kollektivvertrag
+        Keypoints: EmploymentSummary
+        UnzulaessigeKlauseln: EmploymentProblemKlausel[]
+        NachteileKlauseln: EmploymentProblemKlausel[]
+        WiderspruechlicheKlauseln: EmploymentWiderspruechlicheKlausel[]
+        VorteilhafteKlauseln: EmploymentVorteilKlausel[]
+        Fazit: string
+        Kollektivvertrag: string
     }
-    class EmploymentSummary <<nested>> {
-        string Arbeitgeber
-        string Taetigkeit
-        string Beginn
-        string Dauer
-        string GehaltBrutto
-        string Zuschlaege
-        string Arbeitsstunden
-        string Ueberstunden
-        string Probezeit
+
+    class EmploymentSummary {
+        <<nested>>
+        Arbeitgeber: string
+        Taetigkeit: string
+        Beginn: string
+        Dauer: string
+        GehaltBrutto: string
+        Zuschlaege: string
+        Arbeitsstunden: string
+        Ueberstunden: string
+        Probezeit: string
     }
-    class EmploymentProblemKlausel <<nested>> {
-        string Titel
-        string Zitat
-        string Problem
-        EmploymentRechtsgrundlage[] Rechtsgrundlage
+
+    class EmploymentProblemKlausel {
+        <<nested>>
+        Titel: string
+        Zitat: string
+        Problem: string
+        Rechtsgrundlage: EmploymentRechtsgrundlage[]
     }
-    class EmploymentWiderspruechlicheKlausel <<nested>> {
-        string Titel
-        string ZitatKlauselA
-        string ZitatKlauselB
-        string Problem
-        EmploymentRechtsgrundlage[] Rechtsgrundlage
+
+    class EmploymentWiderspruechlicheKlausel {
+        <<nested>>
+        Titel: string
+        ZitatKlauselA: string
+        ZitatKlauselB: string
+        Problem: string
+        Rechtsgrundlage: EmploymentRechtsgrundlage[]
     }
-    class EmploymentVorteilKlausel <<nested>> {
-        string Titel
-        string Zitat
-        string Vorteil
+
+    class EmploymentVorteilKlausel {
+        <<nested>>
+        Titel: string
+        Zitat: string
+        Vorteil: string
     }
-    class EmploymentRechtsgrundlage <<nested>> {
-        string Rechtsgrundlage
-        string Wortlaut
+
+    class EmploymentRechtsgrundlage {
+        <<nested>>
+        Rechtsgrundlage: string
+        Wortlaut: string
     }
 
     class RentContractAnalysisDto {
-        RentSummary Keypoints
-        RentProblemKlausel[] UnzulaessigeKlauseln
-        RentProblemKlausel[] NachteileKlauseln
-        RentWiderspruechlicheKlausel[] WiderspruechlicheKlauseln
-        RentVorteilKlausel[] VorteilhafteKlauseln
-        string Fazit
-        string? Kollektivvertrag
+        Keypoints: RentSummary
+        UnzulaessigeKlauseln: RentProblemKlausel[]
+        NachteileKlauseln: RentProblemKlausel[]
+        WiderspruechlicheKlauseln: RentWiderspruechlicheKlausel[]
+        VorteilhafteKlauseln: RentVorteilKlausel[]
+        Fazit: string
+        Kollektivvertrag: string
     }
+
     class RentSummary {
-        string Vermieter
-        string Mieter
-        string Beginn
-        string Dauer
-        string Mindestdauer
-        string Kuendigungsfrist
-        string MieteKalt
-        string Betriebskosten
-        string Wohnflaeche
-        int Zimmer
-        string ImMietgegenstandEnthalten
+        Vermieter: string
+        Mieter: string
+        Beginn: string
+        Dauer: string
+        Mindestdauer: string
+        Kuendigungsfrist: string
+        MieteKalt: string
+        Betriebskosten: string
+        Wohnflaeche: string
+        Zimmer: int
+        ImMietgegenstandEnthalten: string
     }
+
     class RentProblemKlausel {
-        string Titel
-        string Zitat
-        string Problem
-        RentRechtsgrundlage[] Rechtsgrundlage
+        Titel: string
+        Zitat: string
+        Problem: string
+        Rechtsgrundlage: RentRechtsgrundlage[]
     }
+
     class RentWiderspruechlicheKlausel {
-        string Titel
-        string ZitatKlauselA
-        string ZitatKlauselB
-        string Problem
-        RentRechtsgrundlage[] Rechtsgrundlage
+        Titel: string
+        ZitatKlauselA: string
+        ZitatKlauselB: string
+        Problem: string
+        Rechtsgrundlage: RentRechtsgrundlage[]
     }
+
     class RentVorteilKlausel {
-        string Titel
-        string Zitat
-        string Vorteil
+        Titel: string
+        Zitat: string
+        Vorteil: string
     }
+
     class RentRechtsgrundlage {
-        string Rechtsgrundlage
-        string Wortlaut
+        Rechtsgrundlage: string
+        Wortlaut: string
     }
 
     IAnalysisDto <|.. EmploymentContractAnalysisDto
     IAnalysisDto <|.. RentContractAnalysisDto
+
     EmploymentContractAnalysisDto --> EmploymentSummary
     EmploymentContractAnalysisDto --> EmploymentProblemKlausel
     EmploymentContractAnalysisDto --> EmploymentWiderspruechlicheKlausel
     EmploymentContractAnalysisDto --> EmploymentVorteilKlausel
     EmploymentProblemKlausel --> EmploymentRechtsgrundlage
     EmploymentWiderspruechlicheKlausel --> EmploymentRechtsgrundlage
+
     RentContractAnalysisDto --> RentSummary
     RentContractAnalysisDto --> RentProblemKlausel
     RentContractAnalysisDto --> RentWiderspruechlicheKlausel
