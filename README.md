@@ -62,16 +62,17 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 
 ## Endpunkte
 
-* `GET  /analysis` – WebSocket-Endpunkt, der nach dem Senden einer Datei zuerst die Voranalyse und danach die Hauptanalyse überträgt.
-* `GET  /mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `data/Responses`-Ordner.
+* `GET  /employment-analysis` – WebSocket-Endpunkt für Arbeitsverträge. Nach dem Upload folgen Pre- und Hauptanalyse als JSON.
+* `GET  /rent-analysis` – WebSocket-Endpunkt für Mietverträge mit identischem Ablauf, aber eigenem Agenten & Prompt.
+* `GET  /employment-mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `data/Responses`-Ordner.
 
 ## Analyse-Workflow
 
-1. Die Weboberfläche lädt eine Datei per WebSocket auf den Endpunkt `/analysis` hoch.
-2. `FileValidatorService` prüft Größe und Dateityp und dekodiert den Inhalt.
-3. `AnalyzeContractUseCase` ruft den Use Case **Voranalyse** auf und liefert ein `ContractValidationDto`.
-4. Steht fest, dass es sich um einen Arbeitsvertrag handelt, sucht `KvAiDetectionService` nach dem passenden Kollektivvertrag.
-5. Anschließend startet die **Hauptanalyse**, deren Ergebnis als `ContractAnalysisDto` zurückgesendet wird. Beide Domain-DTOs werden als JSON über den WebSocket übertragen.
+1. `main.js` lädt die gewählte Datei je nach Vertragstyp per WebSocket auf `/employment-analysis` oder `/rent-analysis` hoch.
+2. `WebSocketAgentAnalysisService` ruft den `FileValidatorService` auf, der Größe und Dateityp prüft und den Inhalt dekodiert.
+3. Der passende Agent (`AnalyzeEmploymentAgent` oder `AnalyzeRentAgent`) stößt die **Voranalyse** beim KI-Dienst an und liefert ein `ContractValidationDto`.
+4. Für Arbeitsverträge ermittelt `KvAiDetectionService` bei Bedarf den passenden Kollektivvertrag und speist dessen Inhalte in den Prompt ein.
+5. Anschließend startet die **Hauptanalyse**, deren Ergebnis als `EmploymentContractAnalysisDto` bzw. `RentContractAnalysisDto` über den WebSocket zurückgesendet wird. Beide Domain-DTOs werden als JSON übertragen.
 
 ## Installation und Ausführung
 
