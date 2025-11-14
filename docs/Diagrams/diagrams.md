@@ -5,144 +5,192 @@
 ```mermaid
 graph TD
     subgraph Web
-        FE[index.html<br>main.js]
+        FE[index.html<br>main.js<br>render-*.js]
+        NET[network.js]
         PC[PocketController]
     end
     subgraph Application
-        WSAS[WebSocketAnalysisService]
-        FVS[FileValidatorService]
-        CA[AnalyzeContractUseCase]
-        KAD[KvAiDetectionService]
+        AE[AnalyzeEmploymentAgent]
+        AR[AnalyzeRentAgent]
     end
     subgraph Domain
-        DTOs[ContractValidationDto\nContractAnalysisDto]
+        DTOs[ContractValidationDto\nEmploymentContractAnalysisDto\nRentContractAnalysisDto]
     end
     subgraph Infrastructure
+        WSAS[WebSocketAgentAnalysisService]
+        FVS[FileValidatorService]
         FDS[FileDecoderService]
-        GEM[GeminiService]
-        CLA[ClaudeService]
         KFS[KvFileService]
-        RL[ResponseLogger]
-        GCM[GeminiContextManager]
+        KAD[KvAiDetectionService]
+        NEB[NebiusService]
+        CLA[ClaudeService]
     end
     subgraph External_APIs
-        GeminiAPI[(Gemini API)]
+        NebiusAPI[(Nebius API)]
         ClaudeAPI[(Claude API)]
     end
 
-    FE -- WebSocket --> PC
+    FE --> NET
+    NET -- WebSocket --> PC
     PC --> WSAS
     WSAS --> FVS
-    WSAS --> KAD
-    WSAS --> CA
     FVS --> FDS
+    WSAS --> AE
+    WSAS --> AR
+    AE --> KFS
+    AE --> KAD
+    AE --> NEB
+    AR --> NEB
     KAD --> CLA
-    CA --> GEM
-    CA --> KFS
-    GEM --> GCM
-    GEM --> RL
-    GEM --> GeminiAPI
+    NEB --> NebiusAPI
     CLA --> ClaudeAPI
 ```
 
 ## Domänenmodell (DTOs)
 
+Die Pre-Analyse liefert weiterhin ein `ContractValidationDto`, die eigentliche Auswertung unterscheidet jetzt aber zwischen Arbeits-
+und Mietverträgen. Beide Ergebnis-DTOs implementieren `IAnalysisDto`. Zur besseren Lesbarkeit sind die verschachtelten Klassen der
+Employment-Analyse im Diagramm mit dem Präfix `Employment*` versehen.
+
 ```mermaid
 classDiagram
-    class ContractAnalysisDto {
-        Summary summary
-        ProblemKlausel[] unzulaessige_klauseln
-        ProblemKlausel[] nachteile_klauseln
-        WiderspruechlicheKlausel[] widerspruechliche_klauseln
-        VorteilKlausel[] vorteilhafte_klauseln
-        string fazit
-        string? kollektivvertrag
-    }
-    class Summary {
-        string arbeitgeber
-        string taetigkeit
-        string beginn
-        string dauer
-        string gehalt_brutto
-        string zuschlaege
-        string arbeitsstunden
-        string ueberstunden
-        string probezeit
-    }
-    class ProblemKlausel {
-        string titel
-        string zitat
-        string problem
-        RechtsgrundlageEintrag[] rechtsgrundlage
-    }
-    class WiderspruechlicheKlausel {
-        string titel
-        string zitat_klausel_a
-        string zitat_klausel_b
-        string problem
-        RechtsgrundlageEintrag[] rechtsgrundlage
-    }
-    class VorteilKlausel {
-        string titel
-        string zitat
-        string vorteil
-    }
-    class RechtsgrundlageEintrag {
-        string rechtsgrundlage
-        string wortlaut
-    }
+    class IValidationDto
     class ContractValidationDto {
-        bool isReadable
-        bool isContract
-        string result
-        string? kollektivvertrag
+        bool IsReadable
+        bool IsContract
+        string Result
+        string? Kollektivvertrag
     }
-    class KvDetectionResult {
-        string KvName
-        bool AllEqual
+    IValidationDto <|.. ContractValidationDto
+
+    class IAnalysisDto
+
+    class EmploymentContractAnalysisDto {
+        EmploymentSummary Keypoints
+        EmploymentProblemKlausel[] UnzulaessigeKlauseln
+        EmploymentProblemKlausel[] NachteileKlauseln
+        EmploymentWiderspruechlicheKlausel[] WiderspruechlicheKlauseln
+        EmploymentVorteilKlausel[] VorteilhafteKlauseln
+        string Fazit
+        string? Kollektivvertrag
     }
-    class FileContentDto {
-        string FileName
-        string FileContent
+    class EmploymentSummary <<nested>> {
+        string Arbeitgeber
+        string Taetigkeit
+        string Beginn
+        string Dauer
+        string GehaltBrutto
+        string Zuschlaege
+        string Arbeitsstunden
+        string Ueberstunden
+        string Probezeit
     }
-    class WebSocketFileDto {
-        string fileName
-        string data
+    class EmploymentProblemKlausel <<nested>> {
+        string Titel
+        string Zitat
+        string Problem
+        EmploymentRechtsgrundlage[] Rechtsgrundlage
+    }
+    class EmploymentWiderspruechlicheKlausel <<nested>> {
+        string Titel
+        string ZitatKlauselA
+        string ZitatKlauselB
+        string Problem
+        EmploymentRechtsgrundlage[] Rechtsgrundlage
+    }
+    class EmploymentVorteilKlausel <<nested>> {
+        string Titel
+        string Zitat
+        string Vorteil
+    }
+    class EmploymentRechtsgrundlage <<nested>> {
+        string Rechtsgrundlage
+        string Wortlaut
     }
 
-    ContractAnalysisDto --> Summary
-    ContractAnalysisDto --> ProblemKlausel
-    ContractAnalysisDto --> WiderspruechlicheKlausel
-    ContractAnalysisDto --> VorteilKlausel
-    ProblemKlausel --> RechtsgrundlageEintrag
-    WiderspruechlicheKlausel --> RechtsgrundlageEintrag
+    class RentContractAnalysisDto {
+        RentSummary Keypoints
+        RentProblemKlausel[] UnzulaessigeKlauseln
+        RentProblemKlausel[] NachteileKlauseln
+        RentWiderspruechlicheKlausel[] WiderspruechlicheKlauseln
+        RentVorteilKlausel[] VorteilhafteKlauseln
+        string Fazit
+        string? Kollektivvertrag
+    }
+    class RentSummary {
+        string Vermieter
+        string Mieter
+        string Beginn
+        string Dauer
+        string Mindestdauer
+        string Kuendigungsfrist
+        string MieteKalt
+        string Betriebskosten
+        string Wohnflaeche
+        int Zimmer
+        string ImMietgegenstandEnthalten
+    }
+    class RentProblemKlausel {
+        string Titel
+        string Zitat
+        string Problem
+        RentRechtsgrundlage[] Rechtsgrundlage
+    }
+    class RentWiderspruechlicheKlausel {
+        string Titel
+        string ZitatKlauselA
+        string ZitatKlauselB
+        string Problem
+        RentRechtsgrundlage[] Rechtsgrundlage
+    }
+    class RentVorteilKlausel {
+        string Titel
+        string Zitat
+        string Vorteil
+    }
+    class RentRechtsgrundlage {
+        string Rechtsgrundlage
+        string Wortlaut
+    }
+
+    IAnalysisDto <|.. EmploymentContractAnalysisDto
+    IAnalysisDto <|.. RentContractAnalysisDto
+    EmploymentContractAnalysisDto --> EmploymentSummary
+    EmploymentContractAnalysisDto --> EmploymentProblemKlausel
+    EmploymentContractAnalysisDto --> EmploymentWiderspruechlicheKlausel
+    EmploymentContractAnalysisDto --> EmploymentVorteilKlausel
+    EmploymentProblemKlausel --> EmploymentRechtsgrundlage
+    EmploymentWiderspruechlicheKlausel --> EmploymentRechtsgrundlage
+    RentContractAnalysisDto --> RentSummary
+    RentContractAnalysisDto --> RentProblemKlausel
+    RentContractAnalysisDto --> RentWiderspruechlicheKlausel
+    RentContractAnalysisDto --> RentVorteilKlausel
+    RentProblemKlausel --> RentRechtsgrundlage
+    RentWiderspruechlicheKlausel --> RentRechtsgrundlage
 ```
 
 ## PlantUML
 
 ```plantuml
 @startuml
+skinparam classAttributeIconSize 0
+
 interface IAiClient {
-    +Task<string> SendPrompt(string prompt, object? outputSchema, bool useAltKey)
+    +Task<string> SendPrompt(string prompt, object? schema)
 }
 
-class GeminiService {
-    -HttpClient _httpClient
-    -GeminiOptions _options
+class NebiusService {
     -ILogger _logger
-    -bool _writeInFile
-    -IGeminiContextManager _contextManager
-    -IResponseLogger _responseLogger
+    -NebiusOptions _options
     +Task<string> SendPrompt(...)
 }
 
 class ClaudeService {
-    -AnthropicClient _client
     -ILogger _logger
     +Task<string> SendPrompt(...)
 }
 
-IAiClient <|.. GeminiService
+IAiClient <|.. NebiusService
 IAiClient <|.. ClaudeService
 
 interface IFileDecoder {
@@ -166,8 +214,6 @@ interface IFileDecoderService {
 class FileDecoderService {
     -ILogger _logger
     -IEnumerable<IFileDecoder> _decoders
-    +string[] AllowedExtensions
-    +string AllowedExtensionsString
     +Task<string> GetFileContentAsync(...)
 }
 IFileDecoderService <|.. FileDecoderService
@@ -196,7 +242,6 @@ class KvFileService {
     -PathOptions _paths
     -IWebHostEnvironment _environment
     -IFileDecoderService _fileDecoderService
-    +string[] GetKvsDirectories()
     +Task<string[]> GetKvFileContentsAsync(string kvName)
 }
 IKollektivvertragService <|.. KvFileService
@@ -216,47 +261,54 @@ IKvDetectionService <|.. KvAiDetectionService
 KvAiDetectionService --> IKollektivvertragService
 KvAiDetectionService --> IAiClient
 
-interface IContractAnalyzerService {
-    +Task<T> ProcessContractRequest(FileContentDto content, Func<string,string,string> promptBuilder, object schema, bool useAltKey, bool detectKv = false, string? kvName = null)
+interface IContractAnalyzerAgent {
+    +Task<T> ProcessContractRequest(FileContentDto content, AgentAction action, object? data)
 }
 
-class AnalyzeContractUseCase {
+class AnalyzeEmploymentAgent {
     -ILogger _logger
     -IAiClient _aiService
     -IKollektivvertragService _kvService
     -IKvDetectionService _kvDetectionService
     +Task<T> ProcessContractRequest(...)
 }
-IContractAnalyzerService <|.. AnalyzeContractUseCase
-AnalyzeContractUseCase --> IAiClient
-AnalyzeContractUseCase --> IKollektivvertragService
-AnalyzeContractUseCase --> IKvDetectionService
+
+class AnalyzeRentAgent {
+    -ILogger _logger
+    -IAiClient _aiService
+    +Task<T> ProcessContractRequest(...)
+}
+
+IContractAnalyzerAgent <|.. AnalyzeEmploymentAgent
+IContractAnalyzerAgent <|.. AnalyzeRentAgent
+AnalyzeEmploymentAgent --> IAiClient
+AnalyzeEmploymentAgent --> IKollektivvertragService
+AnalyzeEmploymentAgent --> IKvDetectionService
+AnalyzeRentAgent --> IAiClient
 
 interface IWebSocketAnalysisService {
-    +Task HandleAsync(HttpContext context)
+    +Task HandleAsync(HttpContext context, IContractAnalyzerAgent agent)
 }
 
-class WebSocketAnalysisService {
+class WebSocketAgentAnalysisService {
     -ILogger _logger
     -IFileValidatorService _fileValidatorService
-    -IKvDetectionService _kvDetectionService
-    -IContractAnalyzerService _analyzeContractUseCase
-    +Task HandleAsync(HttpContext context)
+    +Task HandleAsync(HttpContext context, IContractAnalyzerAgent agent)
 }
-IWebSocketAnalysisService <|.. WebSocketAnalysisService
-WebSocketAnalysisService --> IFileValidatorService
-WebSocketAnalysisService --> IKvDetectionService
-WebSocketAnalysisService --> IContractAnalyzerService
+IWebSocketAnalysisService <|.. WebSocketAgentAnalysisService
+WebSocketAgentAnalysisService --> IFileValidatorService
+WebSocketAgentAnalysisService --> IContractAnalyzerAgent
 
 class PocketController {
     -ILogger _logger
-    -IWebHostEnvironment _environment
-    -PathOptions _paths
     -IWebSocketAnalysisService _socketService
-    +GetMockData()
-    +AnalyzeViaWebSocket()
+    -IContractAnalyzerAgent _employmentAgent
+    -IContractAnalyzerAgent _rentAgent
+    +AnalyzeEmploymentViaWebSocket()
+    +AnalyzeRentViaWebSocket()
 }
 PocketController --> IWebSocketAnalysisService
+PocketController --> IContractAnalyzerAgent
 
 class FileContentDto {
     +string FileName
@@ -269,61 +321,6 @@ class ContractValidationDto {
     +string Result
     +string? Kollektivvertrag
 }
-
-class Summary {
-    +Arbeitgeber
-    +Taetigkeit
-    +Beginn
-    +Dauer
-    +GehaltBrutto
-    +Zuschlaege
-    +Arbeitsstunden
-    +Ueberstunden
-    +Probezeit
-}
-
-class RechtsgrundlageEintrag {
-    +Rechtsgrundlage
-    +Wortlaut
-}
-
-class ProblemKlausel {
-    +Titel
-    +Zitat
-    +Problem
-    +RechtsgrundlageEintrag[] Rechtsgrundlage
-}
-
-class WiderspruechlicheKlausel {
-    +Titel
-    +ZitatKlauselA
-    +ZitatKlauselB
-    +Problem
-    +RechtsgrundlageEintrag[] Rechtsgrundlage
-}
-
-class VorteilKlausel {
-    +Titel
-    +Zitat
-    +Vorteil
-}
-
-class ContractAnalysisDto {
-    +Summary Summary
-    +ProblemKlausel[] UnzulaessigeKlauseln
-    +ProblemKlausel[] NachteileKlauseln
-    +WiderspruechlicheKlausel[] WiderspruechlicheKlauseln
-    +VorteilKlausel[] VorteilhafteKlauseln
-    +string Fazit
-    +string? Kollektivvertrag
-}
-
-ContractAnalysisDto --> Summary
-ContractAnalysisDto --> ProblemKlausel
-ContractAnalysisDto --> WiderspruechlicheKlausel
-ContractAnalysisDto --> VorteilKlausel
-ProblemKlausel --> RechtsgrundlageEintrag
-WiderspruechlicheKlausel --> RechtsgrundlageEintrag
 @enduml
 ```
 
@@ -332,24 +329,30 @@ WiderspruechlicheKlausel --> RechtsgrundlageEintrag
 ```mermaid
 sequenceDiagram
     participant FE as Browser
-    participant WEB as Web
-    participant APP as Application
-    participant INF as Infrastructure
+    participant WEB as Web (PocketController)
+    participant INF as Infrastructure (WebSocketAgentAnalysisService)
+    participant APP as Application (Analyze*-Agent)
+    participant AI as IAiClient
 
-    FE->>WEB: Datei hochladen (WebSocket)
-    WEB->>APP: Voranalyse starten
-    APP->>INF: KI-Aufruf
-    INF-->>APP: ContractValidationDto
-    APP-->>WEB: Voranalyse-Ergebnis
-    WEB-->>FE: Ergebnis zurückgeben
+    FE->>WEB: WebSocket /employment-analysis<br>oder /rent-analysis öffnen
+    WEB->>INF: IWebSocketAnalysisService.HandleAsync(agent)
+    INF->>INF: ValidateAndDecodeAsync()
+    INF-->>APP: FileContentDto
+    APP->>AI: SendPrompt(Validation)
+    AI-->>APP: ContractValidationDto
+    APP-->>INF: ContractValidationDto
+    INF-->>WEB: Voranalyse-Ergebnis
+    WEB-->>FE: JSON senden
 
     alt Vertrag gültig
-        WEB->>APP: Hauptanalyse
-        APP->>INF: KI-Aufruf
-        INF-->>APP: ContractAnalysisDto
-        APP-->>WEB: Analyse-Ergebnis
-        WEB-->>FE: Analyse senden
+        INF->>APP: ProcessContractRequest(Analyze)
+        APP->>AI: SendPrompt(Analyse)
+        AI-->>APP: EmploymentContractAnalysisDto<br>oder RentContractAnalysisDto
+        APP-->>INF: IAnalysisDto
+        INF-->>WEB: Analyse-Ergebnis
+        WEB-->>FE: Ergebnis darstellen
     else Vertrag ungültig
+        INF-->>WEB: Socket schließen
         WEB-->>FE: Verbindung schließen
     end
 ```
@@ -360,25 +363,25 @@ sequenceDiagram
 sequenceDiagram
     participant FE as Browser
     participant PC as PocketController
-    participant WS as WebSocketAnalysisService
+    participant WS as WebSocketAgentAnalysisService
     participant FV as FileValidatorService
     participant FDS as FileDecoderService
+    participant AG as AnalyzeEmploymentAgent<br>/ AnalyzeRentAgent
     participant KD as KvAiDetectionService
     participant CLA as ClaudeService
-    participant CA as AnalyzeContractUseCase
-    participant GEM as GeminiService
+    participant NEB as NebiusService
 
-    FE->>PC: WebSocket /analysis öffnen
+    FE->>PC: WebSocket /employment-analysis<br>oder /rent-analysis öffnen
     FE->>PC: Datei senden
-    PC->>WS: HandleAsync()
+    PC->>WS: HandleAsync(agent)
     WS->>FV: ValidateAndDecodeAsync(file)
     FV->>FDS: GetFileContentAsync()
     FDS-->>FV: Text
     FV-->>WS: FileContentDto
-    WS->>CA: ProcessContractRequest(PreAnalysis)
-    CA->>GEM: SendPrompt()
-    GEM-->>CA: ContractValidationDto
-    CA-->>WS: ContractValidationDto
+    WS->>AG: ProcessContractRequest<ContractValidationDto>(Validate)
+    AG->>NEB: SendPrompt()
+    NEB-->>AG: ContractValidationDto
+    AG-->>WS: ContractValidationDto
     WS-->>PC: PreAnalysis
     PC-->>FE: PreAnalysis
 
@@ -386,14 +389,16 @@ sequenceDiagram
         WS-->>PC: Socket schließen
         PC-->>FE: Verbindung geschlossen
     else Vertrag gültig
-        WS->>KD: DetectAsync(Text)
-        KD->>CLA: SendPrompt()
-        CLA-->>KD: KV-Name
-        KD-->>WS: KvDetectionResult
-        WS->>CA: ProcessContractRequest(Analysis)
-        CA->>GEM: SendPrompt()
-        GEM-->>CA: ContractAnalysisDto
-        CA-->>WS: ContractAnalysisDto
+        opt Arbeitsvertrag
+            AG->>KD: DetectAsync(Text)
+            KD->>CLA: SendPrompt()
+            CLA-->>KD: KvDetectionResult
+            KD-->>AG: KvDetectionResult
+        end
+        WS->>AG: ProcessContractRequest<IAnalysisDto>(Analyze)
+        AG->>NEB: SendPrompt()
+        NEB-->>AG: EmploymentContractAnalysisDto<br>oder RentContractAnalysisDto
+        AG-->>WS: Analyse-DTO
         WS-->>PC: Analyseergebnis
         PC-->>FE: Analyseergebnis
     end
@@ -404,25 +409,28 @@ sequenceDiagram
 ```mermaid
 graph TD
     subgraph Browser
-        U[File Upload] --> N[network.js]
+        Form[Upload-Formular<br>contractType Auswahl] --> NET[network.js]
+        NET --> RE[render-employment.js]
+        NET --> RR[render-rent.js]
     end
-    N -- WebSocket --> PC[WebSocket /analysis]
-    PC --> WSAS[WebSocketAnalysisService]
+    NET -- WebSocket --> PCE[/employment-analysis/]
+    NET -- WebSocket --> PCR[/rent-analysis/]
+    PCE & PCR --> PC[PocketController]
+    PC --> WSAS[WebSocketAgentAnalysisService]
     WSAS --> FV[FileValidatorService]
-    FV --> FDS[FileDecoderService]   
-    WSAS --> CA[AnalyzeContractUseCase]
-    CA --> GEM[GeminiService]
-    CA --> KFS[KvFileService]
-    WSAS --> KD[KvAiDetectionService]
+    FV --> FDS[FileDecoderService]
+    WSAS --> AGE[AnalyzeEmploymentAgent]
+    WSAS --> AGR[AnalyzeRentAgent]
+    AGE --> KFS[KvFileService]
+    AGE --> KD[KvAiDetectionService]
     KD --> CLA[ClaudeService]
-    GEM --> RL[ResponseLogger]
-    GEM --> GCM[GeminiContextManager]
-    RL --> Files[data/Responses/]
+    AGE --> NEB[NebiusService]
+    AGR --> NEB
     subgraph External
-        GeminiAPI[(Gemini API)]
+        NebiusAPI[(Nebius API)]
         ClaudeAPI[(Claude API)]
     end
-    GEM --> GeminiAPI
+    NEB --> NebiusAPI
     CLA --> ClaudeAPI
 ```
 
@@ -430,12 +438,15 @@ graph TD
 
 ```mermaid
 flowchart TD
-    A[Datei auswählen] --> B{main.js}
-    B -->|startAnalysisSocket| C[/WebSocket /analysis/]
-    C -->|JSON| D[PreAnalysis-Result]
+    A[Datei auswählen<br>Vertragstyp setzen] --> B{main.js}
+    B -->|rent-analysis| CR[/WebSocket /rent-analysis/]
+    B -->|employment-analysis| CE[/WebSocket /employment-analysis/]
+    CR & CE -->|JSON| D[PreAnalysis-Result]
     D -->|wenn ok| E[/weitere WebSocket-Nachricht/]
-    E -->|JSON| F[Analyseergebnis]
-    F --> G[render.js zeigt Ergebnis]
+    E -->|rent| FR[render-rent.js]
+    E -->|employment| FE[render-employment.js]
+    FR --> G[Anzeige aktualisieren]
+    FE --> G
     D -->|Fehler| H[Fehleranzeige]
 ```
 
@@ -443,13 +454,33 @@ flowchart TD
 
 ```mermaid
 classDiagram
-    class IAiService {
-        +SendPrompt(prompt, schema, useAltKey)
+    class IAiClient {
+        +SendPrompt(prompt, schema)
     }
-    class GeminiService
+    class NebiusService
     class ClaudeService
-    IAiService <|.. GeminiService
-    IAiService <|.. ClaudeService
+    IAiClient <|.. NebiusService
+    IAiClient <|.. ClaudeService
+
+    class IContractAnalyzerAgent {
+        +ProcessContractRequest(content, action, data)
+    }
+    class AnalyzeEmploymentAgent
+    class AnalyzeRentAgent
+    IContractAnalyzerAgent <|.. AnalyzeEmploymentAgent
+    IContractAnalyzerAgent <|.. AnalyzeRentAgent
+    AnalyzeEmploymentAgent --> IAiClient
+    AnalyzeEmploymentAgent --> IKvDetectionService
+    AnalyzeEmploymentAgent --> IKollektivvertragService
+    AnalyzeRentAgent --> IAiClient
+
+    class IWebSocketAnalysisService {
+        +HandleAsync(context, agent)
+    }
+    class WebSocketAgentAnalysisService
+    IWebSocketAnalysisService <|.. WebSocketAgentAnalysisService
+    WebSocketAgentAnalysisService --> IFileValidatorService
+    WebSocketAgentAnalysisService --> IContractAnalyzerAgent
 
     class IFileDecoder {
         +CanDecode(ext)
@@ -483,8 +514,7 @@ classDiagram
     }
     class KvAiDetectionService
     IKvDetectionService <|.. KvAiDetectionService
-    KvAiDetectionService --> IKollektivvertragService
-    KvAiDetectionService --> IAiService
+    KvAiDetectionService --> IAiClient
 
     class IKollektivvertragService {
         +GetKvsDirectories()
@@ -492,25 +522,9 @@ classDiagram
     }
     class KvFileService
     IKollektivvertragService <|.. KvFileService
-
-    class IContractAnalyzerService {
-        +ProcessContractRequest(content, promptBuilder, schema, useAltKey, detectKv, kvName)
-    }
-    class AnalyzeContractUseCase
-    IContractAnalyzerService <|.. AnalyzeContractUseCase
-    AnalyzeContractUseCase --> IAiService
-    AnalyzeContractUseCase --> IKvDetectionService
-    AnalyzeContractUseCase --> IKollektivvertragService
-
-    class IWebSocketAnalysisService {
-        +HandleAsync(context)
-    }
-    class WebSocketAnalysisService
-    IWebSocketAnalysisService <|.. WebSocketAnalysisService
-    WebSocketAnalysisService --> IFileValidatorService
-    WebSocketAnalysisService --> IKvDetectionService
-    WebSocketAnalysisService --> IContractAnalyzerService
+    KvFileService --> IFileDecoderService
 
     class PocketController
     PocketController --> IWebSocketAnalysisService
+    PocketController --> IContractAnalyzerAgent
 ```
