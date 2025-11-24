@@ -69,9 +69,9 @@ public class AgentIntegrationTests
         
         var rentalBasic = basicResult.Result as RentalBasicAnalysisDto;
         Assert.NotNull(rentalBasic);
-        Assert.NotNull(rentalBasic.AllgemeineVertragsdaten);
-        Assert.NotNull(rentalBasic.Mietkonditionen);
-        Assert.NotNull(rentalBasic.Vertragsbedingungen);
+        Assert.NotNull(rentalBasic.General);
+        Assert.NotNull(rentalBasic.Rent);
+        Assert.NotNull(rentalBasic.Conditions);
         Assert.NotNull(rentalBasic.Summary);
 
         // Act - Premium Analysis
@@ -83,12 +83,12 @@ public class AgentIntegrationTests
         
         var rentalPremium = premiumResult.Result as RentalPremiumAnalysisDto;
         Assert.NotNull(rentalPremium);
-        Assert.NotNull(rentalPremium.MietzahlungUndNebenkosten);
-        Assert.NotNull(rentalPremium.MietdauerUndKuendigung);
-        Assert.NotNull(rentalPremium.GebrauchDerMietsache);
-        Assert.NotNull(rentalPremium.InstandhaltungUndReparaturen);
-        Assert.NotNull(rentalPremium.RechteUndPflichten);
-        Assert.NotNull(rentalPremium.DatenschutzUndKommunikation);
+        Assert.NotNull(rentalPremium.Costs);
+        Assert.NotNull(rentalPremium.Terms);
+        Assert.NotNull(rentalPremium.Use);
+        Assert.NotNull(rentalPremium.Maintenance);
+        Assert.NotNull(rentalPremium.Duties);
+        Assert.NotNull(rentalPremium.Privacy);
     }
 
     [Fact]
@@ -164,9 +164,9 @@ public class AgentIntegrationTests
                 // Return appropriate response based on prompt
                 if (prompt.Contains("allgemeinen Vertragsdaten"))
                     return CreateBasicGeneralResponse();
-                if (prompt.Contains("Mietkonditionen"))
+                if (prompt.Contains("Rent"))
                     return CreateBasicRentResponse();
-                if (prompt.Contains("Vertragsbedingungen"))
+                if (prompt.Contains("Conditions"))
                     return CreateBasicConditionsResponse();
                 if (prompt.Contains("Zusammenfassung"))
                     return CreateBasicSummaryResponse();
@@ -202,12 +202,12 @@ public class AgentIntegrationTests
             .ThrowsAsync(new Exception("AI failure"));
 
         _aiClient.Setup(x => x.SendPrompt(
-            It.Is<string>(s => s.Contains("Mietkonditionen")),
+            It.Is<string>(s => s.Contains("Rent")),
             It.IsAny<object>()))
             .ReturnsAsync(CreateBasicRentResponse());
 
         _aiClient.Setup(x => x.SendPrompt(
-            It.Is<string>(s => s.Contains("Vertragsbedingungen")),
+            It.Is<string>(s => s.Contains("Conditions")),
             It.IsAny<object>()))
             .ReturnsAsync(CreateBasicConditionsResponse());
 
@@ -227,10 +227,10 @@ public class AgentIntegrationTests
         Assert.NotNull(rentalResult);
         
         // Failed step should have error message
-        Assert.Contains("Fehler", rentalResult.AllgemeineVertragsdaten.Vertragstyp);
+        Assert.Contains("Fehler", rentalResult.General.Vertragstyp);
         
         // Other steps should have succeeded (not contain "Fehler")
-        Assert.DoesNotContain("Fehler", rentalResult.Mietkonditionen.Zahlungsweise);
+        Assert.DoesNotContain("Fehler", rentalResult.Rent.Zahlungsweise);
     }
 
     [Fact]
@@ -333,8 +333,8 @@ public class AgentIntegrationTests
         Assert.NotNull(rentalResult);
         
         // All steps should have error messages
-        Assert.Contains("Fehler", rentalResult.AllgemeineVertragsdaten.Vertragstyp);
-        Assert.Contains("Fehler", rentalResult.Mietkonditionen.Zahlungsweise);
+        Assert.Contains("Fehler", rentalResult.General.Vertragstyp);
+        Assert.Contains("Fehler", rentalResult.Rent.Zahlungsweise);
     }
 
     [Fact]
@@ -382,12 +382,12 @@ public class AgentIntegrationTests
             .ReturnsAsync(CreateBasicGeneralResponse());
 
         _aiClient.Setup(x => x.SendPrompt(
-            It.Is<string>(s => s.Contains("Mietkonditionen")),
+            It.Is<string>(s => s.Contains("Rent")),
             It.IsAny<object>()))
             .ReturnsAsync(CreateBasicRentResponse());
 
         _aiClient.Setup(x => x.SendPrompt(
-            It.Is<string>(s => s.Contains("Vertragsbedingungen")),
+            It.Is<string>(s => s.Contains("Conditions")),
             It.IsAny<object>()))
             .ReturnsAsync(CreateBasicConditionsResponse());
 
@@ -418,8 +418,8 @@ public class AgentIntegrationTests
             It.Is<string>(s => s.Contains("Gesamtzusammenfassung") || (s.Contains("Premium") && s.Contains("Summary"))),
             It.IsAny<object>()))
             .ReturnsAsync(@"{
-                ""gesamtfazit"": ""Test overall summary"",
-                ""gesamtbewertung"": ""Gruen""
+                ""Summary.Gesamtfazit"": ""Test overall summary"",
+                ""Summary.Gesamtbewertung"": ""Gruen""
             }");
     }
 
@@ -461,8 +461,8 @@ public class AgentIntegrationTests
     {
         return @"{
             ""kurzfazit"": ""Standard Mietvertrag"",
-            ""gesamtfazit"": ""Der Vertrag entspricht den üblichen Standards"",
-            ""gesamtbewertung"": ""Gut"",
+            ""Summary.Gesamtfazit"": ""Der Vertrag entspricht den üblichen Standards"",
+            ""Summary.Gesamtbewertung"": ""Gut"",
             ""riskLevel"": ""Gruen""
         }";
     }

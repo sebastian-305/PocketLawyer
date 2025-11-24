@@ -11,13 +11,14 @@ public sealed class RentalContractConditionsSchemaProvider
     {
         ["type"] = "object",
         ["additionalProperties"] = false,
+        ["x-sectionTitle"] = "Vertragsbedingungen",
         ["properties"] = new JsonObject
         {
             ["kuendigungsfrist"] = new JsonObject
             {
                 ["type"] = "string",
                 ["description"] = "Kündigungsfrist für den Mietvertrag (z.B. '3 Monate zum Monatsende').",
-                ["x-title"] = "Kündigungsfrist",
+                ["x-displayName"] = "Kündigungsfrist",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "font-semibold",
@@ -29,7 +30,7 @@ public sealed class RentalContractConditionsSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Regelung zur Tierhaltung (erlaubt, verboten, mit Zustimmung).",
-                ["x-title"] = "Tierhaltung",
+                ["x-displayName"] = "Tierhaltung",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-secondary",
@@ -40,7 +41,7 @@ public sealed class RentalContractConditionsSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Regelung zur Untervermietung (erlaubt, verboten, mit Zustimmung).",
-                ["x-title"] = "Untervermietung",
+                ["x-displayName"] = "Untervermietung",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-secondary",
@@ -51,7 +52,7 @@ public sealed class RentalContractConditionsSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Weitere besondere Vertragsbedingungen oder Klauseln.",
-                ["x-title"] = "Besonderheiten",
+                ["x-displayName"] = "Besonderheiten",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-info",
@@ -62,7 +63,7 @@ public sealed class RentalContractConditionsSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Regelung zu Schönheitsreparaturen (Mieter, Vermieter, geteilt).",
-                ["x-title"] = "Schönheitsreparaturen",
+                ["x-displayName"] = "Schönheitsreparaturen",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-secondary",
@@ -74,7 +75,7 @@ public sealed class RentalContractConditionsSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Regelung zur Betriebskostenabrechnung (Frist, Umfang).",
-                ["x-title"] = "Betriebskostenabrechnung",
+                ["x-displayName"] = "Betriebskostenabrechnung",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-secondary",

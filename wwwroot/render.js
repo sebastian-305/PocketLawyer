@@ -107,7 +107,7 @@ export function createTierAccordion(id, title, content, expanded = true) {
  * Creates accordion sections for each root key in the result object.
  * 
  * @param {object} data - The analysis result data to render
- * @param {object} schema - The JSON schema with x-title metadata for field labels
+ * @param {object} schema - The JSON schema with x-displayName metadata for field labels
  * @param {HTMLElement} container - The DOM element to render into
  */
 export function renderAnalysisResult(data, schema, container) {
@@ -133,8 +133,8 @@ export function renderAnalysisResult(data, schema, container) {
     for (const [key, value] of Object.entries(data)) {
         const propertySchema = schemaProperties[key];
         
-        // Get the display label from x-title or fallback to key name
-        const label = propertySchema?.['x-title'] || key;
+        // Get the display label from x-displayName or fallback to key name
+        const label = propertySchema?.['x-displayName'] || key;
 
         // Create accordion section for this root key
         const sectionId = `section-${Date.now()}-${sectionIndex}`;
@@ -250,7 +250,14 @@ function renderObjectContent(value, propertySchema) {
 
     for (const [nestedKey, nestedValue] of Object.entries(value)) {
         const nestedPropertySchema = nestedProperties[nestedKey];
-        const nestedLabel = nestedPropertySchema?.['x-title'] || nestedKey;
+        
+        // Skip fields that are not defined in the schema (Single Source of Truth)
+        if (!nestedPropertySchema) {
+            if (DEBUG) console.log(`Skipping field '${nestedKey}' - not defined in schema`);
+            continue;
+        }
+        
+        const nestedLabel = nestedPropertySchema['x-displayName'] || nestedKey;
         const fieldElement = renderField(nestedValue, nestedLabel, nestedPropertySchema);
         
         if (fieldElement) {
@@ -282,7 +289,14 @@ function renderArrayContent(value, propertySchema) {
             if (itemSchema?.properties) {
                 for (const [itemKey, itemValue] of Object.entries(item)) {
                     const itemPropertySchema = itemSchema.properties[itemKey];
-                    const itemLabel = itemPropertySchema?.['x-title'] || itemKey;
+                    
+                    // Skip fields that are not defined in the schema
+                    if (!itemPropertySchema) {
+                        if (DEBUG) console.log(`Skipping array item field '${itemKey}' - not defined in schema`);
+                        continue;
+                    }
+                    
+                    const itemLabel = itemPropertySchema['x-displayName'] || itemKey;
                     const fieldElement = renderField(itemValue, itemLabel, itemPropertySchema);
                     if (fieldElement) {
                         itemContainer.appendChild(fieldElement);
@@ -443,7 +457,14 @@ function renderArrayField(label, value, propertySchema) {
                 // Render nested object
                 for (const [itemKey, itemValue] of Object.entries(item)) {
                     const itemPropertySchema = itemSchema.properties[itemKey];
-                    const itemLabel = itemPropertySchema?.['x-title'] || itemKey;
+                    
+                    // Skip fields that are not defined in the schema
+                    if (!itemPropertySchema) {
+                        if (DEBUG) console.log(`Skipping nested field '${itemKey}' - not defined in schema`);
+                        continue;
+                    }
+                    
+                    const itemLabel = itemPropertySchema['x-displayName'] || itemKey;
                     const fieldElement = renderField(itemValue, itemLabel, itemPropertySchema);
                     if (fieldElement) {
                         itemContainer.appendChild(fieldElement);
@@ -502,7 +523,14 @@ function renderObjectField(label, value, propertySchema) {
     // Recursively render nested properties
     for (const [nestedKey, nestedValue] of Object.entries(value)) {
         const nestedPropertySchema = nestedProperties[nestedKey];
-        const nestedLabel = nestedPropertySchema?.['x-title'] || nestedKey;
+        
+        // Skip fields that are not defined in the schema
+        if (!nestedPropertySchema) {
+            if (DEBUG) console.log(`Skipping nested field '${nestedKey}' - not defined in schema`);
+            continue;
+        }
+        
+        const nestedLabel = nestedPropertySchema['x-displayName'] || nestedKey;
         const fieldElement = renderField(nestedValue, nestedLabel, nestedPropertySchema);
         
         if (fieldElement) {

@@ -5,19 +5,21 @@ namespace PocketLawyer.Domain.Dtos;
 /// <summary>
 /// DTO for Rental contract basic analysis results.
 /// Contains all basic analysis sections: General, Rent, Conditions, and Summary.
+/// Property names match the step names in SchemaProvider for consistency.
+/// JSON serialization uses technical keys for backward compatibility.
 /// </summary>
 public record RentalBasicAnalysisDto : IAnalysisDto
 {
-    [JsonPropertyName("allgemeineVertragsdaten")]
-    public required RentalBasicGeneralDto AllgemeineVertragsdaten { get; init; }
+    [JsonPropertyName("General")]
+    public required RentalBasicGeneralDto General { get; init; }
     
-    [JsonPropertyName("mietkonditionen")]
-    public required RentalBasicRentDto Mietkonditionen { get; init; }
+    [JsonPropertyName("Rent")]
+    public required RentalBasicRentDto Rent { get; init; }
     
-    [JsonPropertyName("vertragsbedingungen")]
-    public required RentalBasicConditionsDto Vertragsbedingungen { get; init; }
+    [JsonPropertyName("Conditions")]
+    public required RentalBasicConditionsDto Conditions { get; init; }
     
-    [JsonPropertyName("summary")]
+    [JsonPropertyName("Summary")]
     public required RentalBasicSummaryDto Summary { get; init; }
     
     [JsonIgnore]

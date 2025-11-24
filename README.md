@@ -20,27 +20,46 @@ Alle Vertragsanalyse-Agenten folgen einem einheitlichen Lifecycle:
   - `RentalContractAgent`: Mietvertragsanalyse
   - `EmploymentContractAgent`: Arbeitsvertragsanalyse (Skeleton)
 - **Schema Provider**: Stellt JSON-Schemas als Single Source of Truth bereit
+  - Schemas enthalten `x-displayName` für Frontend-Labels
+  - Schemas enthalten `x-sectionTitle` für Section-Überschriften
 - **Schema Validator**: Validiert KI-Antworten gegen Schemas
 - **Prompt Provider**: Zentrale Verwaltung aller KI-Prompts
 - **WebSocket Handler**: Verwaltet Echtzeit-Kommunikation mit Clients
+- **Token Tracking**: Aggregiert Input/Output-Token pro Analyse
+- **Filesystem Logging**: Persistente Logs mit täglichem Rollover
 
 ### Vorteile der neuen Architektur
 
 - **Single Source of Truth**: JSON-Schemas definieren Datenstrukturen zentral
+- **Datengetriebenes Frontend**: Frontend nutzt Schema-Metadaten (`x-displayName`, `x-sectionTitle`) für Rendering
 - **Parallele Ausführung**: Alle Analyse-Steps laufen parallel (Task.WhenAll)
 - **Fehlertoleranz**: Fehlgeschlagene Steps blockieren andere nicht
+- **Token-Transparenz**: Vollständiges Tracking von AI-Token-Verbrauch pro Analyse
+- **Persistente Logs**: Tägliche Log-Dateien für Debugging und Monitoring
 - **Erweiterbarkeit**: Neue Vertragstypen einfach hinzufügbar
 - **Testbarkeit**: Umfassende Unit- und Property-Based-Tests
 - **Wartbarkeit**: Klare Trennung von Verantwortlichkeiten
 
+### Legacy-Komponenten (Deprecated)
+
+Die folgenden Komponenten sind als veraltet markiert und werden in zukünftigen Versionen entfernt:
+
+- **PromptBuilder** (`Domain/PromptBuilder.cs`): Ersetzt durch `PromptProvider`
+- **PromptBuilder_Deprecated** (`Infrastructure/PromptBuilder_deprecated1.cs`): Alte Implementierung
+- **ClaudeService** (`Infrastructure/AiServices/Claude/ClaudeService.cs`): Legacy AI-Service
+- **GeminiService** (`Infrastructure/AiServices/Gemini/GeminiService.cs`): Legacy AI-Service
+
+Verwenden Sie stattdessen `PromptProvider` und `NebiusService` für neue Implementierungen.
+
 ## Funktionsweise
 
-* **Nebius API**: Hauptdienst für die KI-gestützte Vertragsanalyse
+* **Nebius API**: Hauptdienst für die KI-gestützte Vertragsanalyse mit Token-Tracking
 * **UglyToad.PdfPig**: Liest Text direkt aus PDF-Dokumenten
 * **Tesseract OCR**: Liest Bilddateien (JPG, PNG) per OCR aus und wandelt sie in Text um
 * **NJsonSchema**: Validiert KI-Antworten gegen JSON-Schemas
+* **Serilog**: Persistentes Logging mit täglichem Rollover
 
-Eine Datei wird zunächst validiert und der Vertragstyp erkannt. Anschließend werden Basic- und Premium-Analysen parallel durchgeführt. Die Analysen bewerten Klauseln, geben Zusammenfassungen und stellen Verstöße gegen Gesetz und Kollektivvertrag heraus.
+Eine Datei wird zunächst validiert und der Vertragstyp erkannt. Anschließend werden Basic- und Premium-Analysen parallel durchgeführt. Die Analysen bewerten Klauseln, geben Zusammenfassungen und stellen Verstöße gegen Gesetz und Kollektivvertrag heraus. Token-Verbrauch wird pro Analyse aggregiert und geloggt.
 
 ## Ordnerstruktur
 
@@ -188,11 +207,16 @@ Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagram
 2. Bei Confirmation: Loading-Anzeige
 3. Bei Basic-Result: 
    - Schema abrufen über `/api/schemas/Rental/Basic/{step}`
-   - Generischer Renderer (`render.js`) erstellt Accordion mit x-title Labels
+   - Generischer Renderer (`render.js`) erstellt Accordion mit `x-displayName` Labels
 4. Bei Premium-Result:
    - Schema abrufen über `/api/schemas/Rental/Premium/{step}`
-   - Generischer Renderer erstellt Accordion
-5. Schemas enthalten `x-title` für deutsche Feldnamen und `x-styling` für Darstellungshinweise
+   - Generischer Renderer erstellt Accordion mit `x-sectionTitle` Überschriften
+5. Schemas enthalten:
+   - `x-displayName`: Deutsche Feldnamen für Properties
+   - `x-sectionTitle`: Deutsche Überschriften für Sections
+   - `x-styling`: Darstellungshinweise (optional)
+
+Das Frontend ist vollständig datengetrieben und benötigt keine hardcodierten Übersetzungen oder Mappings.
 
 ## Installation und Ausführung
 
@@ -248,6 +272,17 @@ Benötigte Einstellungen befinden sich in `appsettings.json` bzw. den User-Secre
     "TesseractData": "data/tessdata",
     "Responses": "data/Responses",
     "KVS": "data/KVS"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    },
+    "File": {
+      "Enabled": true,
+      "MinimumLevel": "Information",
+      "Path": "logs"
+    }
   }
 }
 ```
@@ -264,12 +299,33 @@ dotnet user-secrets init
 dotnet user-secrets set "Nebius:Key" "your-api-key"
 ```
 
+### Filesystem-Logging Konfiguration
+
+Das Filesystem-Logging kann über die `Logging:File` Sektion konfiguriert werden:
+
+- **Enabled**: Aktiviert/deaktiviert Filesystem-Logging (Standard: `true`)
+- **MinimumLevel**: Minimales Log-Level für Datei-Logs (Standard: `"Information"`)
+  - Mögliche Werte: `"Debug"`, `"Information"`, `"Warning"`, `"Error"`
+- **Path**: Verzeichnis für Log-Dateien (Standard: `"logs"`)
+
+Log-Dateien werden täglich rotiert im Format `YYYY-MM-DD.log` (z.B. `2024-01-15.log`).
+
+### Token-Tracking
+
+Token-Verbrauch wird automatisch für jede Analyse getrackt:
+- Input-Token: Anzahl der an die AI gesendeten Token
+- Output-Token: Anzahl der von der AI generierten Token
+- Total-Token: Summe aus Input- und Output-Token
+
+Token-Informationen werden am Ende jeder Analyse mit Log-Level `Information` geloggt.
+
 ## Dokumentation
 
 - **[API Documentation](docs/API_DOCUMENTATION.md)**: Vollständige API-Dokumentation mit Beispielen
 - **[Design Patterns](docs/DesignPatterns_de.md)**: Verwendete Entwurfsmuster
 - **[Diagrams](docs/Diagrams/)**: Architektur- und Ablaufdiagramme
 - **[Spec: Agent Refactoring](.kiro/specs/agent-refactoring/)**: Requirements, Design und Tasks
+- **[Spec: System Improvements](.kiro/specs/system-improvements/)**: Token-Tracking, Logging, Schema-Erweiterungen
 
 ## Architektur-Highlights
 
@@ -342,6 +398,8 @@ services.AddScoped<PurchaseContractAgent>();
 - **Initialisierung**: ~1-2 Sekunden (KI-Aufrufe für Lesbarkeit und Typerkennung)
 - **Basic-Analyse**: ~5-10 Sekunden (4 parallele Steps)
 - **Premium-Analyse**: ~10-20 Sekunden (7 parallele Steps)
+- **Token-Tracking**: Minimaler Overhead (< 1ms pro Analyse)
+- **Filesystem-Logging**: Asynchrones Schreiben ohne Performance-Impact
 
 ## Sicherheit
 

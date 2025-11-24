@@ -3,6 +3,11 @@ using System.Text;
 
 namespace PocketLawyer.Domain;
 
+/// <summary>
+/// Legacy class for building prompts. This class is deprecated and will be removed in a future version.
+/// Use PromptProvider instead for new implementations.
+/// </summary>
+[Obsolete("This class is deprecated. Use PromptProvider instead.")]
 public static class PromptBuilder
 {
     public static string AddKvInfo(string prompt, string kvName, IEnumerable<string> kvFiles)
@@ -15,7 +20,7 @@ public static class PromptBuilder
         sbPrompt.AppendLine(string.Join("\n\n", kvFiles));
         return sbPrompt.ToString();
     }
-    public static string BuildEmploymentAnalysisPrompt(AgentType type, string filename, string fileContent)
+    public static string BuildEmploymentAnalysisPrompt(string contractType, string filename, string fileContent)
     {
         StringBuilder promptBuilder = new StringBuilder();
         promptBuilder.AppendLine("Ich sende dir eine Datei. Dabei handelt es sich um einen Arbeitsvertrag. M\u00f6glicherweise erh\u00e4ltst du auch den Kollektivvertrag dazu. Der Kollektivvertrag ist die wichtigste Grundlage der Analyse.");
@@ -44,7 +49,7 @@ public static class PromptBuilder
     }
 
 
-    public static string BuildRentAnalysisPrompt(AgentType type, string filename, string fileContent)
+    public static string BuildRentAnalysisPrompt(string contractType, string filename, string fileContent)
     {
         StringBuilder promptBuilder = new StringBuilder();
         promptBuilder.AppendLine("Du bist ein erfahrener Rechtsanwalt, der sich auf das österreichische Mietrecht spezialisiert hat, insbesondere auf die Prüfung von Mietverträgen aus Sicht des Mieters.");
@@ -92,21 +97,14 @@ public static class PromptBuilder
         return promptBuilder.ToString();
     }
 
-    public static string BuildValidationPrompt(AgentType type, string filename, string fileContent)
+    public static string BuildValidationPrompt(string contractType, string filename, string fileContent)
     {
-        string typename = String.Empty;
-
-        switch (type)
+        string typename = contractType switch
         {
-            case AgentType.Employment:
-                typename = "Arbeitsvertrag";
-                break;
-            case AgentType.Rent:
-                typename = "Mietvertrag";
-                break;
-            default:
-                throw new NotImplementedException(type.ToString()); 
-        }
+            "Employment" => "Arbeitsvertrag",
+            "Rent" => "Mietvertrag",
+            _ => throw new NotImplementedException(contractType)
+        };
 
         var sb = new StringBuilder();
         sb.AppendLine("Analysiere die folgende Datei.");

@@ -23,7 +23,7 @@ public class PromptBuilderTests
     public void BuildEmploymentAnalysisPrompt_ContainsFilenameAndContent()
     {
         // Dieser Test prüft, dass der Beschäftigungs-Prompt den Dateinamen, den Vertragsinhalt und die Analyseleitlinien enthält.
-        string result = PromptBuilder.BuildEmploymentAnalysisPrompt(AgentType.Employment, "vertrag.pdf", "Inhalt");
+        string result = PromptBuilder.BuildEmploymentAnalysisPrompt("Employment", "vertrag.pdf", "Inhalt");
 
         Assert.Contains("vertrag.pdf", result);
         Assert.Contains("Vertragsinhalt", result);
@@ -34,8 +34,8 @@ public class PromptBuilderTests
     public void BuildValidationPrompt_UsesTypeSpecificLanguage()
     {
         // Dieser Test prüft, dass der Validierungs-Prompt den gewählten Vertragstyp korrekt benennt und Dateimetadaten einbettet.
-        string employmentPrompt = PromptBuilder.BuildValidationPrompt(AgentType.Employment, "job.pdf", "Text");
-        string rentPrompt = PromptBuilder.BuildValidationPrompt(AgentType.Rent, "rent.pdf", "Text");
+        string employmentPrompt = PromptBuilder.BuildValidationPrompt("Employment", "job.pdf", "Text");
+        string rentPrompt = PromptBuilder.BuildValidationPrompt("Rent", "rent.pdf", "Text");
 
         Assert.Contains("Arbeitsvertrag", employmentPrompt);
         Assert.Contains("Mietvertrag", rentPrompt);

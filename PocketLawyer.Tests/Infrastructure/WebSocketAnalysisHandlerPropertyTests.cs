@@ -252,7 +252,7 @@ public class WebSocketAnalysisHandlerPropertyTests
                         vertragsart = "unbefristet"
                     });
                 }
-                else if (prompt.Contains("Mietkonditionen", StringComparison.OrdinalIgnoreCase))
+                else if (prompt.Contains("Rent", StringComparison.OrdinalIgnoreCase))
                 {
                     return JsonSerializer.Serialize(new
                     {
@@ -264,7 +264,7 @@ public class WebSocketAnalysisHandlerPropertyTests
                         nebenkostenregelung = "Pauschale"
                     });
                 }
-                else if (prompt.Contains("Vertragsbedingungen", StringComparison.OrdinalIgnoreCase))
+                else if (prompt.Contains("Conditions", StringComparison.OrdinalIgnoreCase))
                 {
                     return JsonSerializer.Serialize(new
                     {

@@ -11,13 +11,14 @@ public sealed class RentalBasicSummarySchemaProvider
     {
         ["type"] = "object",
         ["additionalProperties"] = false,
+        ["x-sectionTitle"] = "Zusammenfassung",
         ["properties"] = new JsonObject
         {
             ["kurzfazit"] = new JsonObject
             {
                 ["type"] = "string",
                 ["description"] = "Kurze Zusammenfassung der wichtigsten Vertragspunkte (2-3 Sätze).",
-                ["x-title"] = "Kurzfazit",
+                ["x-displayName"] = "Kurzfazit",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-lg font-semibold",
@@ -28,7 +29,7 @@ public sealed class RentalBasicSummarySchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Ausführliches Fazit zur Vertragsgestaltung und wichtigen Punkten.",
-                ["x-title"] = "Gesamtfazit",
+                ["x-displayName"] = "Gesamtfazit",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-base",
@@ -39,7 +40,7 @@ public sealed class RentalBasicSummarySchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Gesamtbewertung des Vertrags (z.B. 'Gut', 'Akzeptabel', 'Problematisch').",
-                ["x-title"] = "Gesamtbewertung",
+                ["x-displayName"] = "Gesamtbewertung",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "badge badge-lg",
@@ -51,7 +52,7 @@ public sealed class RentalBasicSummarySchemaProvider
                 ["type"] = "string",
                 ["enum"] = new JsonArray { "Gruen", "Gelb", "Rot" },
                 ["description"] = "Risikostufe des Vertrags: Gruen (unkritisch), Gelb (beachtenswert), Rot (problematisch).",
-                ["x-title"] = "Risikostufe",
+                ["x-displayName"] = "Risikostufe",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "risk-indicator",

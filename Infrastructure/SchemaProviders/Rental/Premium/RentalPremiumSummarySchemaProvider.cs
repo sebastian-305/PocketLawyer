@@ -11,13 +11,14 @@ public sealed class RentalPremiumSummarySchemaProvider
     {
         ["type"] = "object",
         ["additionalProperties"] = false,
+        ["x-sectionTitle"] = "Gesamtzusammenfassung",
         ["properties"] = new JsonObject
         {
             ["gesamtfazit"] = new JsonObject
             {
                 ["type"] = "string",
                 ["description"] = "Gesamtfazit der Premium-Analyse mit Zusammenfassung aller Risiken und Empfehlungen.",
-                ["x-title"] = "Gesamtfazit",
+                ["x-displayName"] = "Gesamtfazit",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-lg font-semibold",
@@ -29,7 +30,7 @@ public sealed class RentalPremiumSummarySchemaProvider
                 ["type"] = "string",
                 ["enum"] = new JsonArray { "Gruen", "Gelb", "Rot" },
                 ["description"] = "Gesamtrisikostufe des Vertrags: Gruen (unkritisch), Gelb (beachtenswert), Rot (problematisch).",
-                ["x-title"] = "Gesamtbewertung",
+                ["x-displayName"] = "Gesamtbewertung",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "risk-indicator risk-indicator-lg",
@@ -45,7 +46,7 @@ public sealed class RentalPremiumSummarySchemaProvider
                     ["type"] = "string"
                 },
                 ["description"] = "Liste konkreter Handlungsempfehlungen für den Mieter.",
-                ["x-title"] = "Handlungsempfehlungen",
+                ["x-displayName"] = "Handlungsempfehlungen",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "list-disc ml-4",

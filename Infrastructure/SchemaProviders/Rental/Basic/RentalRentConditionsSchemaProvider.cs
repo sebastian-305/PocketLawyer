@@ -11,13 +11,14 @@ public sealed class RentalRentConditionsSchemaProvider
     {
         ["type"] = "object",
         ["additionalProperties"] = false,
+        ["x-sectionTitle"] = "Mietkonditionen",
         ["properties"] = new JsonObject
         {
             ["kaltmiete"] = new JsonObject
             {
                 ["type"] = "number",
                 ["description"] = "Monatliche Kaltmiete in Euro.",
-                ["x-title"] = "Kaltmiete",
+                ["x-displayName"] = "Kaltmiete",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "font-bold text-lg",
@@ -30,7 +31,7 @@ public sealed class RentalRentConditionsSchemaProvider
             {
                 ["type"] = "number",
                 ["description"] = "Monatliche Nebenkosten in Euro.",
-                ["x-title"] = "Nebenkosten",
+                ["x-displayName"] = "Nebenkosten",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-secondary",
@@ -42,7 +43,7 @@ public sealed class RentalRentConditionsSchemaProvider
             {
                 ["type"] = "number",
                 ["description"] = "Monatliche Warmmiete (Kaltmiete + Nebenkosten) in Euro.",
-                ["x-title"] = "Warmmiete",
+                ["x-displayName"] = "Warmmiete",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "font-bold text-primary",
@@ -55,7 +56,7 @@ public sealed class RentalRentConditionsSchemaProvider
             {
                 ["type"] = "number",
                 ["description"] = "Höhe der Kaution in Euro.",
-                ["x-title"] = "Kaution",
+                ["x-displayName"] = "Kaution",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-warning",
@@ -68,7 +69,7 @@ public sealed class RentalRentConditionsSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Zahlungsweise der Miete (z.B. monatlich, vierteljährlich).",
-                ["x-title"] = "Zahlungsweise",
+                ["x-displayName"] = "Zahlungsweise",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-info",
@@ -79,7 +80,7 @@ public sealed class RentalRentConditionsSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Beschreibung der Nebenkostenregelung (Pauschale, Vorauszahlung mit Abrechnung, etc.).",
-                ["x-title"] = "Nebenkostenregelung",
+                ["x-displayName"] = "Nebenkostenregelung",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-secondary",

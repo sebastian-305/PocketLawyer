@@ -114,9 +114,9 @@ public class AnalysisDtoPropertyTests
         from summary in GenRentalBasicSummary()
         select new RentalBasicAnalysisDto
         {
-            AllgemeineVertragsdaten = general,
-            Mietkonditionen = rent,
-            Vertragsbedingungen = conditions,
+            General = general,
+            Rent = rent,
+            Conditions = conditions,
             Summary = summary
         };
 
@@ -151,14 +151,17 @@ public class AnalysisDtoPropertyTests
         from bewertung in Gen.Elements("Gruen", "Gelb", "Rot")
         select new RentalPremiumAnalysisDto
         {
-            MietzahlungUndNebenkosten = costs,
-            MietdauerUndKuendigung = duration,
-            GebrauchDerMietsache = usage,
-            InstandhaltungUndReparaturen = maintenance,
-            RechteUndPflichten = rights,
-            DatenschutzUndKommunikation = privacy,
-            Gesamtfazit = fazit.Get,
-            Gesamtbewertung = bewertung
+            Costs = costs,
+            Terms = duration,
+            Use = usage,
+            Maintenance = maintenance,
+            Duties = rights,
+            Privacy = privacy,
+            Summary = new RentalPremiumSummaryDto(
+                Gesamtfazit: fazit.Get,
+                Gesamtbewertung: bewertung,
+                Handlungsempfehlungen: Array.Empty<string>()
+            )
         };
 
     #endregion
@@ -213,8 +216,8 @@ public class AnalysisDtoPropertyTests
     /// **Validates: Requirements 8.3**
     /// 
     /// For any completed rental basic analysis, when the DTO is created, 
-    /// it should contain AllgemeineVertragsdaten, Mietkonditionen, 
-    /// Vertragsbedingungen, and Summary sections.
+    /// it should contain General, Rent, 
+    /// Conditions, and Summary sections.
     /// </summary>
     [Property(MaxTest = 100)]
     public Property RentalBasicDtoHasAllSections()
@@ -224,9 +227,9 @@ public class AnalysisDtoPropertyTests
             dto =>
             {
                 // All sections should be non-null
-                Assert.NotNull(dto.AllgemeineVertragsdaten);
-                Assert.NotNull(dto.Mietkonditionen);
-                Assert.NotNull(dto.Vertragsbedingungen);
+                Assert.NotNull(dto.General);
+                Assert.NotNull(dto.Rent);
+                Assert.NotNull(dto.Conditions);
                 Assert.NotNull(dto.Summary);
 
                 // ContractType and Tier should be correct
@@ -234,16 +237,16 @@ public class AnalysisDtoPropertyTests
                 Assert.Equal("Basic", dto.Tier);
 
                 // Each section should have valid data
-                Assert.NotNull(dto.AllgemeineVertragsdaten.Vertragstyp);
-                Assert.NotEmpty(dto.AllgemeineVertragsdaten.Vertragstyp);
-                Assert.NotNull(dto.AllgemeineVertragsdaten.Mieter);
-                Assert.NotEmpty(dto.AllgemeineVertragsdaten.Mieter);
+                Assert.NotNull(dto.General.Vertragstyp);
+                Assert.NotEmpty(dto.General.Vertragstyp);
+                Assert.NotNull(dto.General.Mieter);
+                Assert.NotEmpty(dto.General.Mieter);
 
-                Assert.True(dto.Mietkonditionen.Kaltmiete > 0);
-                Assert.True(dto.Mietkonditionen.Warmmiete >= dto.Mietkonditionen.Kaltmiete);
+                Assert.True(dto.Rent.Kaltmiete > 0);
+                Assert.True(dto.Rent.Warmmiete >= dto.Rent.Kaltmiete);
 
-                Assert.NotNull(dto.Vertragsbedingungen.Kuendigungsfrist);
-                Assert.NotEmpty(dto.Vertragsbedingungen.Kuendigungsfrist);
+                Assert.NotNull(dto.Conditions.Kuendigungsfrist);
+                Assert.NotEmpty(dto.Conditions.Kuendigungsfrist);
 
                 Assert.NotNull(dto.Summary.Kurzfazit);
                 Assert.NotEmpty(dto.Summary.Kurzfazit);
@@ -263,8 +266,8 @@ public class AnalysisDtoPropertyTests
     /// 
     /// For any completed rental premium analysis, when the DTO is created, 
     /// it should contain all six premium sections (Mietzahlung, Mietdauer, 
-    /// Gebrauch, Instandhaltung, Rechte, Datenschutz) plus Gesamtfazit 
-    /// and Gesamtbewertung.
+    /// Gebrauch, Instandhaltung, Rechte, Datenschutz) plus Summary.Gesamtfazit 
+    /// and Summary.Gesamtbewertung.
     /// </summary>
     [Property(MaxTest = 100)]
     public Property RentalPremiumDtoHasAllSections()
@@ -274,18 +277,18 @@ public class AnalysisDtoPropertyTests
             dto =>
             {
                 // All six sections should be non-null
-                Assert.NotNull(dto.MietzahlungUndNebenkosten);
-                Assert.NotNull(dto.MietdauerUndKuendigung);
-                Assert.NotNull(dto.GebrauchDerMietsache);
-                Assert.NotNull(dto.InstandhaltungUndReparaturen);
-                Assert.NotNull(dto.RechteUndPflichten);
-                Assert.NotNull(dto.DatenschutzUndKommunikation);
+                Assert.NotNull(dto.Costs);
+                Assert.NotNull(dto.Terms);
+                Assert.NotNull(dto.Use);
+                Assert.NotNull(dto.Maintenance);
+                Assert.NotNull(dto.Duties);
+                Assert.NotNull(dto.Privacy);
 
                 // Summary fields should be non-null
-                Assert.NotNull(dto.Gesamtfazit);
-                Assert.NotEmpty(dto.Gesamtfazit);
-                Assert.NotNull(dto.Gesamtbewertung);
-                Assert.NotEmpty(dto.Gesamtbewertung);
+                Assert.NotNull(dto.Summary.Gesamtfazit);
+                Assert.NotEmpty(dto.Summary.Gesamtfazit);
+                Assert.NotNull(dto.Summary.Gesamtbewertung);
+                Assert.NotEmpty(dto.Summary.Gesamtbewertung);
 
                 // ContractType and Tier should be correct
                 Assert.Equal("Mietvertrag", dto.ContractType);

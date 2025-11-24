@@ -5,10 +5,24 @@ namespace PocketLawyer.Infrastructure.SchemaProviders.Rental.Premium;
 /// <summary>
 /// Provides JSON schema for Premium clause analysis sections.
 /// Used for all premium analysis sections (Costs, Terms, Use, Maintenance, Duties, Privacy).
+/// Each section gets its own x-sectionTitle based on the step name.
 /// </summary>
 public sealed class ClauseAnalysisSchemaProvider
 {
-    private readonly JsonObject _schema = new()
+    /// <summary>
+    /// Mapping of step names to German section titles.
+    /// </summary>
+    private static readonly Dictionary<string, string> SectionTitles = new()
+    {
+        ["Costs"] = "Mietzahlungs- und Nebenkostenklauseln",
+        ["Terms"] = "Mietdauer und Kündigungsklauseln",
+        ["Use"] = "Nutzungsklauseln",
+        ["Maintenance"] = "Instandhaltungs- und Reparaturklauseln",
+        ["Duties"] = "Pflichten und Obliegenheiten",
+        ["Privacy"] = "Datenschutz und Privatsphäre"
+    };
+
+    private readonly JsonObject _baseSchema = new()
     {
         ["type"] = "object",
         ["additionalProperties"] = false,
@@ -18,7 +32,7 @@ public sealed class ClauseAnalysisSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Zusammenfassung der relevanten Klauseln in diesem Bereich.",
-                ["x-title"] = "Zusammenfassung",
+                ["x-displayName"] = "Zusammenfassung",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-base",
@@ -29,7 +43,7 @@ public sealed class ClauseAnalysisSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Rechtliche Bewertung der Klauseln mit Hinweisen auf Risiken oder Vorteile.",
-                ["x-title"] = "Bewertung",
+                ["x-displayName"] = "Bewertung",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-base font-semibold",
@@ -40,7 +54,7 @@ public sealed class ClauseAnalysisSchemaProvider
             {
                 ["type"] = "string",
                 ["description"] = "Relevante Rechtsgrundlagen und Paragraphen (z.B. MRG, ABGB).",
-                ["x-title"] = "Rechtsgrundlage",
+                ["x-displayName"] = "Rechtsgrundlage",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "text-sm text-secondary",
@@ -53,7 +67,7 @@ public sealed class ClauseAnalysisSchemaProvider
                 ["type"] = "string",
                 ["enum"] = new JsonArray { "Zulaessig", "Nachteilhaft", "Unzulaessig" },
                 ["description"] = "Risikobewertung: Zulaessig (rechtlich unbedenklich), Nachteilhaft (nachteilig für Mieter), Unzulaessig (rechtlich problematisch).",
-                ["x-title"] = "Risiko-Score",
+                ["x-displayName"] = "Risiko-Score",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "badge",
@@ -66,7 +80,7 @@ public sealed class ClauseAnalysisSchemaProvider
                 ["type"] = "string",
                 ["enum"] = new JsonArray { "Gruen", "Gelb", "Rot" },
                 ["description"] = "Risikostufe: Gruen (unkritisch), Gelb (beachtenswert), Rot (problematisch).",
-                ["x-title"] = "Risikostufe",
+                ["x-displayName"] = "Risikostufe",
                 ["x-styling"] = new JsonObject
                 {
                     ["displayClass"] = "risk-indicator",
@@ -78,5 +92,32 @@ public sealed class ClauseAnalysisSchemaProvider
         ["required"] = new JsonArray { "zusammenfassung", "bewertung", "rechtsgrundlage", "risikoScore", "riskLevel" }
     };
 
-    public JsonObject GetSchema() => (JsonObject)_schema.DeepClone();
+    /// <summary>
+    /// Gets the schema for a specific step with the appropriate section title.
+    /// </summary>
+    /// <param name="stepName">The step name (e.g., "Costs", "Terms", "Use")</param>
+    /// <returns>A JSON schema with x-sectionTitle set for the step</returns>
+    public JsonObject GetSchema(string stepName)
+    {
+        var schema = (JsonObject)_baseSchema.DeepClone();
+        
+        // Add x-sectionTitle if we have a mapping for this step
+        if (SectionTitles.TryGetValue(stepName, out var title))
+        {
+            schema["x-sectionTitle"] = title;
+        }
+        else
+        {
+            // Fallback to step name if no mapping exists
+            schema["x-sectionTitle"] = stepName;
+        }
+        
+        return schema;
+    }
+
+    /// <summary>
+    /// Gets the schema without a step-specific title (for backward compatibility).
+    /// </summary>
+    /// <returns>A JSON schema without x-sectionTitle</returns>
+    public JsonObject GetSchema() => (JsonObject)_baseSchema.DeepClone();
 }

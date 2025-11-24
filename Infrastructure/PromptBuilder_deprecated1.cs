@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace PocketLawyer.Infrastructure;
 
+/// <summary>
+/// Legacy class for building prompts. This class is deprecated and will be removed in a future version.
+/// Use PromptProvider instead for new implementations.
+/// </summary>
+[Obsolete("This class is deprecated. Use PromptProvider instead.")]
 public static class PromptBuilder_Deprecated
 {
     public static string AddKvInfo(string prompt, string kvName, IEnumerable<string> kvFiles)

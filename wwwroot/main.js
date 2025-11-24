@@ -36,21 +36,18 @@ async function renderGenericAnalysis(results, body, contractType) {
     // Render Basic Analysis
     if (results.basic) {
         try {
-            // Fetch schemas for all basic steps
-            // For now, we'll create a combined schema or fetch individual ones
-            // This is a simplified approach - in production, you'd fetch all step schemas
             const basicContainer = document.createElement('div');
-            
-            // Use the result data directly (already extracted from DTO)
             const basicData = results.basic;
             
-            // For now, render without schema (fallback)
-            // TODO: Fetch and combine schemas for all basic steps
-            renderDataWithoutSchema(basicData, basicContainer);
+            // Build schema dynamically based on the actual data structure
+            const basicSchema = await buildSchemaFromData(basicData, contractType, 'Basic');
+            
+            // Render with schema
+            renderAnalysisResult(basicData, basicSchema, basicContainer);
             
             const basicAccordion = createTierAccordion(
                 'tier-basic',
-                'Basis Analyse',
+                getTierTitle('Basic'),
                 basicContainer,
                 true // expanded by default
             );
@@ -65,17 +62,17 @@ async function renderGenericAnalysis(results, body, contractType) {
     if (results.premium) {
         try {
             const premiumContainer = document.createElement('div');
-            
-            // Use the result data directly (already extracted from DTO)
             const premiumData = results.premium;
             
-            // For now, render without schema (fallback)
-            // TODO: Fetch and combine schemas for all premium steps
-            renderDataWithoutSchema(premiumData, premiumContainer);
+            // Build schema dynamically based on the actual data structure
+            const premiumSchema = await buildSchemaFromData(premiumData, contractType, 'Premium');
+            
+            // Render with schema
+            renderAnalysisResult(premiumData, premiumSchema, premiumContainer);
             
             const premiumAccordion = createTierAccordion(
                 'tier-premium',
-                'Premium Analyse',
+                getTierTitle('Premium'),
                 premiumContainer,
                 false // collapsed by default
             );
@@ -89,6 +86,85 @@ async function renderGenericAnalysis(results, body, contractType) {
     container.appendChild(tierAccordion);
     body.appendChild(container);
     container.focus();
+}
+
+/**
+ * Configuration for tier titles.
+ */
+const ANALYSIS_CONFIG = {
+    tierTitles: {
+        'Basic': 'Basis Analyse',
+        'Premium': 'Premium Analyse'
+    }
+};
+
+/**
+ * Gets the tier title from configuration.
+ * 
+ * @param {string} tier - The tier ("Basic" or "Premium")
+ * @returns {string} The user-friendly tier title
+ */
+function getTierTitle(tier) {
+    return ANALYSIS_CONFIG.tierTitles[tier] || tier;
+}
+
+/**
+ * Builds a dynamic schema based on the actual data structure.
+ * Fetches schemas for each key in the data and combines them.
+ * 
+ * @param {object} data - The analysis data
+ * @param {string} contractType - The contract type ("Rental" or "Employment")
+ * @param {string} tier - The tier ("Basic" or "Premium")
+ * @returns {Promise<object>} The combined schema
+ */
+async function buildSchemaFromData(data, contractType, tier) {
+    if (!data || typeof data !== 'object') {
+        return { type: 'object', properties: {} };
+    }
+
+    const combinedSchema = {
+        type: 'object',
+        properties: {}
+    };
+
+    // Fetch schemas for each key in the data
+    // Data keys now match step names directly (e.g., "General", "Rent", "Conditions")
+    const schemaPromises = Object.keys(data).map(async (stepName) => {
+        try {
+            const schema = await fetchSchema(contractType, tier, stepName);
+            return { stepName, schema };
+        } catch (err) {
+            if (DEBUG) console.warn(`Failed to fetch schema for ${contractType}/${tier}/${stepName}:`, err);
+            return { stepName, schema: null };
+        }
+    });
+
+    const schemaResults = await Promise.all(schemaPromises);
+
+    // Build combined schema
+    schemaResults.forEach(({ stepName, schema }) => {
+        if (schema) {
+            // Use x-sectionTitle from schema if available, otherwise use the step name
+            const sectionTitle = schema['x-sectionTitle'] || stepName;
+            
+            combinedSchema.properties[stepName] = {
+                type: 'object',
+                'x-displayName': sectionTitle,
+                'x-styling': schema['x-styling'] || {},
+                properties: schema.properties || {}
+            };
+        } else {
+            // Fallback: create a basic schema for this step
+            combinedSchema.properties[stepName] = {
+                type: 'object',
+                'x-displayName': stepName,
+                properties: {}
+            };
+        }
+    });
+
+    if (DEBUG) console.log(`Built schema from data for ${contractType} ${tier}:`, combinedSchema);
+    return combinedSchema;
 }
 
 /**
@@ -393,6 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .querySelectorAll('.upload-form')
         .forEach((form) => form.addEventListener('submit', uploadFile));
     window.printer = printer;
+    window.getTierTitle = getTierTitle;
 
     const restoreToastEl = document.getElementById('restoreToast');
     const restoreToast = bootstrap.Toast.getOrCreateInstance(restoreToastEl, { autohide: false });

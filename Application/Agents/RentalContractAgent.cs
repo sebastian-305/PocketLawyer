@@ -122,10 +122,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             });
             var schema = BinaryData.FromString(schemaJson);
 
-            var response = await _aiClient.SendPrompt(prompt + "\n\nText:\n" + contractText, schema);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nText:\n" + contractText, schema);
+            TrackTokens(aiResponse);
             
             // Parse the JSON response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             if (jsonDoc.RootElement.TryGetProperty("isReadable", out var isReadableElement))
             {
                 return isReadableElement.GetBoolean();
@@ -168,10 +169,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             });
             var schema = BinaryData.FromString(schemaJson);
 
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + contractText, schema);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + contractText, schema);
+            TrackTokens(aiResponse);
             
             // Parse the JSON response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             if (jsonDoc.RootElement.TryGetProperty("contractType", out var contractTypeElement))
             {
                 return contractTypeElement.GetString() ?? "Unbekannt";
@@ -219,9 +221,9 @@ public class RentalContractAgent : ContractAnalysisAgentBase
         // Create the combined result
         var result = new RentalBasicAnalysisDto
         {
-            AllgemeineVertragsdaten = generalData,
-            Mietkonditionen = rentData,
-            Vertragsbedingungen = conditionsData,
+            General = generalData,
+            Rent = rentData,
+            Conditions = conditionsData,
             Summary = summaryData
         };
 
@@ -236,6 +238,9 @@ public class RentalContractAgent : ContractAnalysisAgentBase
         );
 
         _logger.LogInformation("[Agent {AgentId}] Basic Analysis completed successfully", AgentId);
+        
+        // Log token summary
+        LogTokenSummary();
 
         return new AnalysisDto<IAnalysisDto>(result, metadata);
     }
@@ -258,10 +263,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "General");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -279,7 +285,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<RentalBasicGeneralDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<RentalBasicGeneralDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -327,10 +333,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Rent");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -348,7 +355,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<RentalBasicRentDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<RentalBasicRentDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -396,10 +403,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Conditions");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -417,7 +425,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<RentalBasicConditionsDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<RentalBasicConditionsDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -463,10 +471,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Summary");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -484,7 +493,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<RentalBasicSummaryDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<RentalBasicSummaryDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -547,14 +556,17 @@ public class RentalContractAgent : ContractAnalysisAgentBase
         // Create the combined result
         var result = new RentalPremiumAnalysisDto
         {
-            MietzahlungUndNebenkosten = costsData,
-            MietdauerUndKuendigung = termsData,
-            GebrauchDerMietsache = useData,
-            InstandhaltungUndReparaturen = maintenanceData,
-            RechteUndPflichten = dutiesData,
-            DatenschutzUndKommunikation = privacyData,
-            Gesamtfazit = gesamtfazit,
-            Gesamtbewertung = gesamtbewertung
+            Costs = costsData,
+            Terms = termsData,
+            Use = useData,
+            Maintenance = maintenanceData,
+            Duties = dutiesData,
+            Privacy = privacyData,
+            Summary = new RentalPremiumSummaryDto(
+                Gesamtfazit: gesamtfazit,
+                Gesamtbewertung: gesamtbewertung,
+                Handlungsempfehlungen: Array.Empty<string>()  // TODO: Implement recommendations
+            )
         };
 
         // Create metadata
@@ -568,6 +580,9 @@ public class RentalContractAgent : ContractAnalysisAgentBase
         );
 
         _logger.LogInformation("[Agent {AgentId}] Premium Analysis completed successfully", AgentId);
+        
+        // Log token summary
+        LogTokenSummary();
 
         return new AnalysisDto<IAnalysisDto>(result, metadata);
     }
@@ -590,10 +605,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Costs");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -611,7 +627,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -657,10 +673,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Terms");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -678,7 +695,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -724,10 +741,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Use");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -745,7 +763,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -791,10 +809,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Maintenance");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -812,7 +831,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -858,10 +877,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Duties");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -879,7 +899,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -925,10 +945,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Privacy");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)
@@ -946,7 +967,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             }
 
             // Deserialize to DTO
-            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(response);
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
             if (result == null)
             {
                 throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
@@ -992,10 +1013,11 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Summary");
 
             // Call AI service
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
 
             // Parse and validate response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
 
             if (responseObject == null)

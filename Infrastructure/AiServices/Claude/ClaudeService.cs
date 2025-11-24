@@ -5,9 +5,15 @@ using Anthropic.SDK.Messaging;
 using PocketLawyer.Application.Interfaces;
 using Microsoft.Extensions.Options;
 using PocketLawyer.Options;
+using PocketLawyer.Application.Models;
 
 namespace PocketLawyer.Infrastructure.AiServices.Claude
 {
+    /// <summary>
+    /// Legacy AI service for Claude API integration. This service is deprecated and will be removed in a future version.
+    /// Use NebiusService instead for new implementations.
+    /// </summary>
+    [Obsolete("This service is deprecated. Use NebiusService instead.")]
     public class ClaudeService : IAiClient
     {
         private readonly AnthropicClient _client;
@@ -47,6 +53,11 @@ namespace PocketLawyer.Infrastructure.AiServices.Claude
 
             _logger.LogDebug("Claude response: {Response}", jsonContent);
             return jsonContent;
+        }
+
+        public Task<AiResponse> SendPromptWithMetadata(string prompt, object? outputSchema)
+        {
+            throw new NotImplementedException();
         }
     }
 }

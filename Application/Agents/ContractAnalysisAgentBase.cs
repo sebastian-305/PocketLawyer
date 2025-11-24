@@ -21,6 +21,11 @@ public abstract class ContractAnalysisAgentBase : IContractAnalysisAgent
     protected string? _contractText;
     protected bool _isInitialized;
 
+    // Token tracking properties
+    protected int TotalInputTokens { get; private set; }
+    protected int TotalOutputTokens { get; private set; }
+    protected int TotalTokens => TotalInputTokens + TotalOutputTokens;
+
     /// <summary>
     /// Unique identifier for this agent instance, used for logging and tracking.
     /// </summary>
@@ -89,5 +94,27 @@ public abstract class ContractAnalysisAgentBase : IContractAnalysisAgent
             throw new InvalidOperationException(
                 "Agent must be initialized before performing analysis. Call InitializeAsync first.");
         }
+    }
+
+    /// <summary>
+    /// Tracks token usage from an AI response.
+    /// Aggregates input and output tokens for the entire analysis.
+    /// </summary>
+    /// <param name="response">The AI response containing token information</param>
+    protected void TrackTokens(AiResponse response)
+    {
+        TotalInputTokens += response.InputTokens;
+        TotalOutputTokens += response.OutputTokens;
+    }
+
+    /// <summary>
+    /// Logs a summary of token usage for the analysis.
+    /// Should be called at the end of AnalyzeBasicAsync or AnalyzePremiumAsync.
+    /// </summary>
+    protected void LogTokenSummary()
+    {
+        _logger.LogInformation(
+            "[Agent {AgentId}] Analysis completed. Total Input Tokens: {InputTokens}, Total Output Tokens: {OutputTokens}, Total Tokens: {TotalTokens}",
+            AgentId, TotalInputTokens, TotalOutputTokens, TotalTokens);
     }
 }

@@ -120,10 +120,11 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             });
             var schema = BinaryData.FromString(schemaJson);
 
-            var response = await _aiClient.SendPrompt(prompt + "\n\nText:\n" + contractText, schema);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nText:\n" + contractText, schema);
+            TrackTokens(aiResponse);
             
             // Parse the JSON response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             if (jsonDoc.RootElement.TryGetProperty("isReadable", out var isReadableElement))
             {
                 return isReadableElement.GetBoolean();
@@ -166,10 +167,11 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             });
             var schema = BinaryData.FromString(schemaJson);
 
-            var response = await _aiClient.SendPrompt(prompt + "\n\nVertragstext:\n" + contractText, schema);
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + contractText, schema);
+            TrackTokens(aiResponse);
             
             // Parse the JSON response
-            var jsonDoc = System.Text.Json.JsonDocument.Parse(response);
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
             if (jsonDoc.RootElement.TryGetProperty("contractType", out var contractTypeElement))
             {
                 return contractTypeElement.GetString() ?? "Unbekannt";

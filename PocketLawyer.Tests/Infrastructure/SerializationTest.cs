@@ -21,7 +21,7 @@ public class SerializationTest
         // Arrange
         var basicDto = new RentalBasicAnalysisDto
         {
-            AllgemeineVertragsdaten = new RentalBasicGeneralDto(
+            General = new RentalBasicGeneralDto(
                 Vertragstyp: "Wohnraum",
                 Mieter: "Max Mustermann",
                 Vermieter: "Erika Musterfrau",
@@ -29,7 +29,7 @@ public class SerializationTest
                 Vertragsbeginn: "2025-01-01",
                 Vertragsart: "Unbefristet"
             ),
-            Mietkonditionen = new RentalBasicRentDto(
+            Rent = new RentalBasicRentDto(
                 Kaltmiete: 1000m,
                 Nebenkosten: 200m,
                 Warmmiete: 1200m,
@@ -37,7 +37,7 @@ public class SerializationTest
                 Zahlungsweise: "Monatlich",
                 Nebenkostenregelung: "Vorauszahlung"
             ),
-            Vertragsbedingungen = new RentalBasicConditionsDto(
+            Conditions = new RentalBasicConditionsDto(
                 Kuendigungsfrist: "3 Monate",
                 Tierhaltung: "Erlaubt",
                 Untervermietung: "Mit Zustimmung",
@@ -86,7 +86,7 @@ public class SerializationTest
         _output.WriteLine("");
 
         // Assert
-        Assert.Contains("allgemeineVertragsdaten", json3);
-        Assert.Contains("mietkonditionen", json3);
+        Assert.Contains("General", json3);
+        Assert.Contains("Rent", json3);
     }
 }

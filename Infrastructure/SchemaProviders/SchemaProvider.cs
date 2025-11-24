@@ -25,13 +25,13 @@ public class SchemaProvider : ISchemaProvider
             ["Rental_Basic_Conditions"] = () => new RentalContractConditionsSchemaProvider().GetSchema(),
             ["Rental_Basic_Summary"] = () => new RentalBasicSummarySchemaProvider().GetSchema(),
 
-            // Rental Premium Schemas
-            ["Rental_Premium_Costs"] = () => new ClauseAnalysisSchemaProvider().GetSchema(),
-            ["Rental_Premium_Terms"] = () => new ClauseAnalysisSchemaProvider().GetSchema(),
-            ["Rental_Premium_Use"] = () => new ClauseAnalysisSchemaProvider().GetSchema(),
-            ["Rental_Premium_Maintenance"] = () => new ClauseAnalysisSchemaProvider().GetSchema(),
-            ["Rental_Premium_Duties"] = () => new ClauseAnalysisSchemaProvider().GetSchema(),
-            ["Rental_Premium_Privacy"] = () => new ClauseAnalysisSchemaProvider().GetSchema(),
+            // Rental Premium Schemas - each gets its own section title via step name
+            ["Rental_Premium_Costs"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Costs"),
+            ["Rental_Premium_Terms"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Terms"),
+            ["Rental_Premium_Use"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Use"),
+            ["Rental_Premium_Maintenance"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Maintenance"),
+            ["Rental_Premium_Duties"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Duties"),
+            ["Rental_Premium_Privacy"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Privacy"),
             ["Rental_Premium_Summary"] = () => new RentalPremiumSummarySchemaProvider().GetSchema()
         };
     }

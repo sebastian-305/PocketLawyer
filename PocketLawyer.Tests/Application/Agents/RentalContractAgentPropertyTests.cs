@@ -328,7 +328,7 @@ public class RentalContractAgentPropertyTests
                                 vertragsart = "unbefristet"
                             });
                         }
-                        else if (prompt.Contains("Mietkonditionen") || prompt.Contains("Rent"))
+                        else if (prompt.Contains("Rent") || prompt.Contains("Rent"))
                         {
                             return JsonSerializer.Serialize(new
                             {
@@ -340,7 +340,7 @@ public class RentalContractAgentPropertyTests
                                 nebenkostenregelung = "Pauschale"
                             });
                         }
-                        else if (prompt.Contains("Vertragsbedingungen") || prompt.Contains("Conditions"))
+                        else if (prompt.Contains("Conditions") || prompt.Contains("Conditions"))
                         {
                             return JsonSerializer.Serialize(new
                             {
@@ -467,13 +467,13 @@ public class RentalContractAgentPropertyTests
                             currentStepIndex = 3;
                         }
                         // Check for Conditions
-                        else if (prompt.Contains("Vertragsbedingungen", StringComparison.OrdinalIgnoreCase) || 
+                        else if (prompt.Contains("Conditions", StringComparison.OrdinalIgnoreCase) || 
                                  prompt.Contains("Kündigungsfrist", StringComparison.OrdinalIgnoreCase))
                         {
                             currentStepIndex = 2;
                         }
                         // Check for Rent
-                        else if (prompt.Contains("Mietkonditionen", StringComparison.OrdinalIgnoreCase) || 
+                        else if (prompt.Contains("Rent", StringComparison.OrdinalIgnoreCase) || 
                                  prompt.Contains("Kaltmiete", StringComparison.OrdinalIgnoreCase))
                         {
                             currentStepIndex = 1;
@@ -588,18 +588,18 @@ public class RentalContractAgentPropertyTests
                     // Check that at least one step has an error message
                     // Check all string fields in each DTO for "Fehler"
                     var hasErrorInGeneral = 
-                        result.AllgemeineVertragsdaten.Vertragstyp.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
-                        result.AllgemeineVertragsdaten.Mieter.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
-                        result.AllgemeineVertragsdaten.Vermieter.Contains("Fehler", StringComparison.OrdinalIgnoreCase);
+                        result.General.Vertragstyp.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
+                        result.General.Mieter.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
+                        result.General.Vermieter.Contains("Fehler", StringComparison.OrdinalIgnoreCase);
                     
                     var hasErrorInRent = 
-                        result.Mietkonditionen.Zahlungsweise.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
-                        result.Mietkonditionen.Nebenkostenregelung.Contains("Fehler", StringComparison.OrdinalIgnoreCase);
+                        result.Rent.Zahlungsweise.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
+                        result.Rent.Nebenkostenregelung.Contains("Fehler", StringComparison.OrdinalIgnoreCase);
                     
                     var hasErrorInConditions = 
-                        result.Vertragsbedingungen.Kuendigungsfrist.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
-                        result.Vertragsbedingungen.Tierhaltung.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
-                        result.Vertragsbedingungen.Besonderheiten.Contains("Fehler", StringComparison.OrdinalIgnoreCase);
+                        result.Conditions.Kuendigungsfrist.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
+                        result.Conditions.Tierhaltung.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
+                        result.Conditions.Besonderheiten.Contains("Fehler", StringComparison.OrdinalIgnoreCase);
                     
                     var hasErrorInSummary = 
                         result.Summary.Kurzfazit.Contains("Fehler", StringComparison.OrdinalIgnoreCase) ||
@@ -691,7 +691,7 @@ public class RentalContractAgentPropertyTests
                                 vertragsart = "unbefristet"
                             });
                         }
-                        else if (prompt.Contains("Mietkonditionen", StringComparison.OrdinalIgnoreCase))
+                        else if (prompt.Contains("Rent", StringComparison.OrdinalIgnoreCase))
                         {
                             return JsonSerializer.Serialize(new
                             {
@@ -703,7 +703,7 @@ public class RentalContractAgentPropertyTests
                                 nebenkostenregelung = "Pauschale"
                             });
                         }
-                        else if (prompt.Contains("Vertragsbedingungen", StringComparison.OrdinalIgnoreCase))
+                        else if (prompt.Contains("Conditions", StringComparison.OrdinalIgnoreCase))
                         {
                             return JsonSerializer.Serialize(new
                             {

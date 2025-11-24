@@ -5,32 +5,31 @@ namespace PocketLawyer.Domain.Dtos;
 /// <summary>
 /// DTO for Rental contract premium analysis results.
 /// Contains detailed legal analysis of all contract sections.
+/// Property names match the step names in SchemaProvider for consistency.
+/// JSON serialization uses technical keys for backward compatibility.
 /// </summary>
 public record RentalPremiumAnalysisDto : IAnalysisDto
 {
-    [JsonPropertyName("mietzahlungUndNebenkosten")]
-    public required PremiumSectionDto MietzahlungUndNebenkosten { get; init; }
+    [JsonPropertyName("Costs")]
+    public required PremiumSectionDto Costs { get; init; }
     
-    [JsonPropertyName("mietdauerUndKuendigung")]
-    public required PremiumSectionDto MietdauerUndKuendigung { get; init; }
+    [JsonPropertyName("Terms")]
+    public required PremiumSectionDto Terms { get; init; }
     
-    [JsonPropertyName("gebrauchDerMietsache")]
-    public required PremiumSectionDto GebrauchDerMietsache { get; init; }
+    [JsonPropertyName("Use")]
+    public required PremiumSectionDto Use { get; init; }
     
-    [JsonPropertyName("instandhaltungUndReparaturen")]
-    public required PremiumSectionDto InstandhaltungUndReparaturen { get; init; }
+    [JsonPropertyName("Maintenance")]
+    public required PremiumSectionDto Maintenance { get; init; }
     
-    [JsonPropertyName("rechteUndPflichten")]
-    public required PremiumSectionDto RechteUndPflichten { get; init; }
+    [JsonPropertyName("Duties")]
+    public required PremiumSectionDto Duties { get; init; }
     
-    [JsonPropertyName("datenschutzUndKommunikation")]
-    public required PremiumSectionDto DatenschutzUndKommunikation { get; init; }
+    [JsonPropertyName("Privacy")]
+    public required PremiumSectionDto Privacy { get; init; }
     
-    [JsonPropertyName("gesamtfazit")]
-    public required string Gesamtfazit { get; init; }
-    
-    [JsonPropertyName("gesamtbewertung")]
-    public required string Gesamtbewertung { get; init; }
+    [JsonPropertyName("Summary")]
+    public required RentalPremiumSummaryDto Summary { get; init; }
     
     [JsonIgnore]
     public string ContractType => "Mietvertrag";
@@ -38,6 +37,15 @@ public record RentalPremiumAnalysisDto : IAnalysisDto
     [JsonIgnore]
     public string Tier => "Premium";
 }
+
+/// <summary>
+/// DTO for premium analysis summary.
+/// </summary>
+public record RentalPremiumSummaryDto(
+    [property: JsonPropertyName("gesamtfazit")] string Gesamtfazit,
+    [property: JsonPropertyName("gesamtbewertung")] string Gesamtbewertung,
+    [property: JsonPropertyName("handlungsempfehlungen")] string[] Handlungsempfehlungen
+);
 
 /// <summary>
 /// DTO for a premium analysis section.

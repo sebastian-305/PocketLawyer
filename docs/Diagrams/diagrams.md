@@ -10,9 +10,10 @@ graph TD
         PC[PocketController]
     end
     subgraph Application
-        RCA[RentalContractAgent]
-        ECA[EmploymentContractAgent]
+        RCA[RentalContractAgent<br>+ Token Tracking]
+        ECA[EmploymentContractAgent<br>+ Token Tracking]
         ICAA[IContractAnalysisAgent]
+        AR[AiResponse Record<br>Content, InputTokens,<br>OutputTokens, TotalTokens]
     end
     subgraph Domain
         DTOs[AnalysisDto<br>RentalBasicAnalysisDto<br>RentalPremiumAnalysisDto<br>EmploymentAnalysisDto]
@@ -22,12 +23,16 @@ graph TD
         WSH[WebSocketAnalysisHandler]
         FVS[FileValidatorService]
         FDS[FileDecoderService]
-        SP[SchemaProvider]
+        SP[SchemaProvider<br>+ x-displayName<br>+ x-sectionTitle]
         SV[SchemaValidator]
-        NEB[NebiusService]
+        NEB[NebiusService<br>+ SendPromptWithMetadata]
+        LOG[Serilog<br>Filesystem Logging]
     end
     subgraph External_APIs
         NebiusAPI[(Nebius API)]
+    end
+    subgraph Filesystem
+        LOGS[(logs/<br>YYYY-MM-DD.log)]
     end
 
     FE --> NET
@@ -42,11 +47,17 @@ graph TD
     RCA --> SV
     RCA --> PP
     RCA --> NEB
+    RCA --> AR
+    RCA --> LOG
     ECA --> SP
     ECA --> SV
     ECA --> PP
     ECA --> NEB
+    ECA --> AR
+    ECA --> LOG
     NEB --> NebiusAPI
+    NEB --> AR
+    LOG --> LOGS
 ```
 
 ## Domänenmodell (DTOs)
@@ -334,7 +345,7 @@ record AnalysisMetadataDto {
 @enduml
 ```
 
-## Agent Lifecycle Sequence Diagram
+## Agent Lifecycle Sequence Diagram (with Token Tracking)
 
 ```mermaid
 sequenceDiagram
@@ -347,6 +358,7 @@ sequenceDiagram
     participant SV as SchemaValidator
     participant PP as PromptProvider
     participant AI as Nebius AI
+    participant LOG as Logger
 
     FE->>WEB: WebSocket /rental-analysis öffnen
     WEB->>WSH: HandleAsync(HttpContext)
@@ -358,7 +370,7 @@ sequenceDiagram
 
     Note over WSH,AG: Phase 1: Construction
     WSH->>AG: CreateAgent(contractType)
-    Note over AG: Nur DI, keine Logik
+    Note over AG: Nur DI, keine Logik<br>Token-Tracking initialisiert
 
     Note over WSH,AG: Phase 2: Initialization
     WSH->>AG: InitializeAsync(contractText)
@@ -375,30 +387,39 @@ sequenceDiagram
     WSH->>AG: AnalyzeBasicAsync()
     par Parallel Basic Steps
         AG->>SP: GetSchema("Rental", "Basic", "General")
-        SP-->>AG: Schema
+        SP-->>AG: Schema (mit x-displayName)
         AG->>PP: GetPrompt("Rental", "Basic", "General")
         PP-->>AG: Prompt
-        AG->>AI: SendPrompt(prompt, schema)
-        AI-->>AG: Response
+        AG->>AI: SendPromptWithMetadata(prompt, schema)
+        AI-->>AG: AiResponse (Content + Tokens)
+        AG->>AG: TrackTokens(AiResponse)
         AG->>SV: Validate(schema, response)
         SV-->>AG: Valid
     and
         AG->>SP: GetSchema("Rental", "Basic", "Rent")
         AG->>PP: GetPrompt("Rental", "Basic", "Rent")
-        AG->>AI: SendPrompt(prompt, schema)
+        AG->>AI: SendPromptWithMetadata(prompt, schema)
+        AI-->>AG: AiResponse (Content + Tokens)
+        AG->>AG: TrackTokens(AiResponse)
         AG->>SV: Validate(schema, response)
     and
         AG->>SP: GetSchema("Rental", "Basic", "Conditions")
         AG->>PP: GetPrompt("Rental", "Basic", "Conditions")
-        AG->>AI: SendPrompt(prompt, schema)
+        AG->>AI: SendPromptWithMetadata(prompt, schema)
+        AI-->>AG: AiResponse (Content + Tokens)
+        AG->>AG: TrackTokens(AiResponse)
         AG->>SV: Validate(schema, response)
     and
         AG->>SP: GetSchema("Rental", "Basic", "Summary")
         AG->>PP: GetPrompt("Rental", "Basic", "Summary")
-        AG->>AI: SendPrompt(prompt, schema)
+        AG->>AI: SendPromptWithMetadata(prompt, schema)
+        AI-->>AG: AiResponse (Content + Tokens)
+        AG->>AG: TrackTokens(AiResponse)
         AG->>SV: Validate(schema, response)
     end
     AG->>AG: Aggregate Results
+    AG->>LOG: LogTokenSummary() [Info Level]
+    Note over LOG: Total Input: X, Output: Y, Total: Z
     AG-->>WSH: AnalysisDto<RentalBasicAnalysisDto>
     WSH->>FE: Basic Result Message
 
@@ -406,18 +427,25 @@ sequenceDiagram
     WSH->>AG: AnalyzePremiumAsync()
     par Parallel Premium Steps
         AG->>SP: GetSchema("Rental", "Premium", "Costs")
+        Note over SP: Schema mit x-sectionTitle
         AG->>PP: GetPrompt("Rental", "Premium", "Costs")
-        AG->>AI: SendPrompt(prompt, schema)
+        AG->>AI: SendPromptWithMetadata(prompt, schema)
+        AI-->>AG: AiResponse (Content + Tokens)
+        AG->>AG: TrackTokens(AiResponse)
         AG->>SV: Validate(schema, response)
     and
         AG->>SP: GetSchema("Rental", "Premium", "Terms")
         AG->>PP: GetPrompt("Rental", "Premium", "Terms")
-        AG->>AI: SendPrompt(prompt, schema)
+        AG->>AI: SendPromptWithMetadata(prompt, schema)
+        AI-->>AG: AiResponse (Content + Tokens)
+        AG->>AG: TrackTokens(AiResponse)
         AG->>SV: Validate(schema, response)
     and
-        Note over AG: ... weitere Premium Steps parallel
+        Note over AG: ... weitere Premium Steps parallel<br>mit Token-Tracking
     end
     AG->>AG: Aggregate Results
+    AG->>LOG: LogTokenSummary() [Info Level]
+    Note over LOG: Total Input: X, Output: Y, Total: Z
     AG-->>WSH: AnalysisDto<RentalPremiumAnalysisDto>
     WSH->>FE: Premium Result Message
 
@@ -598,15 +626,149 @@ stateDiagram-v2
     Analysis --> [*]: Complete
 ```
 
+## Logging Architecture Diagram
+
+```mermaid
+graph TD
+    subgraph Application
+        AG[Contract Analysis Agents]
+        NEB[NebiusService]
+        WSH[WebSocketAnalysisHandler]
+        FV[FileValidatorService]
+    end
+    
+    subgraph Logging_Infrastructure
+        SERI[Serilog]
+        CONS[Console Sink]
+        FILE[File Sink<br>Rolling Daily]
+    end
+    
+    subgraph Configuration
+        APP[appsettings.json<br>Logging:File]
+        FLO[FileLoggingOptions<br>Enabled, MinimumLevel, Path]
+    end
+    
+    subgraph Filesystem
+        LOGS[(logs/<br>2024-01-15.log<br>2024-01-16.log<br>...)]
+    end
+    
+    AG -->|Info: Token Summary| SERI
+    NEB -->|Debug: Token Details| SERI
+    WSH -->|Info: Analysis Events| SERI
+    FV -->|Warning: Validation| SERI
+    
+    APP --> FLO
+    FLO --> SERI
+    
+    SERI --> CONS
+    SERI --> FILE
+    FILE -->|Daily Rollover| LOGS
+    
+    style LOGS fill:#e1f5ff
+    style SERI fill:#fff4e1
+    style FLO fill:#ffe1f5
+```
+
+## Token Tracking Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant AG as ContractAnalysisAgent
+    participant NEB as NebiusService
+    participant API as Nebius API
+    participant LOG as Logger
+    
+    Note over AG: Initialize Token Counters<br>TotalInputTokens = 0<br>TotalOutputTokens = 0
+    
+    loop For Each Analysis Step
+        AG->>NEB: SendPromptWithMetadata(prompt, schema)
+        NEB->>API: POST /chat/completions
+        API-->>NEB: Response + Usage Metadata
+        Note over NEB: Extract Token Counts<br>InputTokens, OutputTokens
+        NEB->>LOG: Log Token Details [Debug Level]
+        NEB-->>AG: AiResponse(Content, InputTokens, OutputTokens, TotalTokens)
+        AG->>AG: TrackTokens(AiResponse)<br>TotalInputTokens += InputTokens<br>TotalOutputTokens += OutputTokens
+    end
+    
+    Note over AG: All Steps Complete
+    AG->>LOG: LogTokenSummary() [Info Level]
+    Note over LOG: Total Input Tokens: X<br>Total Output Tokens: Y<br>Total Tokens: X+Y
+```
+
+## Schema Provider with x-displayName
+
+```mermaid
+graph TD
+    subgraph Schema_Provider
+        SP[SchemaProvider]
+        RGS[RentalGeneralSchemaProvider]
+        RRS[RentalRentSchemaProvider]
+        RCS[RentalConditionsSchemaProvider]
+        CAS[ClauseAnalysisSchemaProvider]
+    end
+    
+    subgraph Schema_Structure
+        SCH[JSON Schema]
+        PROPS[Properties]
+        PROP1[Property: vermieter<br>type: string<br>x-displayName: Vermieter]
+        PROP2[Property: mieter<br>type: string<br>x-displayName: Mieter]
+        PROP3[Property: kaltmiete<br>type: number<br>x-displayName: Kaltmiete]
+        SECT[x-sectionTitle:<br>Allgemeine Vertragsdaten]
+    end
+    
+    subgraph Frontend
+        FE[render.js]
+        ACC[Accordion Renderer]
+        LABEL[Label Generator]
+    end
+    
+    SP --> RGS
+    SP --> RRS
+    SP --> RCS
+    SP --> CAS
+    
+    RGS --> SCH
+    SCH --> SECT
+    SCH --> PROPS
+    PROPS --> PROP1
+    PROPS --> PROP2
+    PROPS --> PROP3
+    
+    FE -->|Fetch Schema| SP
+    SP -->|Return Schema| FE
+    FE --> ACC
+    ACC -->|Extract x-sectionTitle| LABEL
+    ACC -->|Extract x-displayName| LABEL
+    LABEL -->|Render German Labels| ACC
+    
+    style PROP1 fill:#e1ffe1
+    style PROP2 fill:#e1ffe1
+    style PROP3 fill:#e1ffe1
+    style SECT fill:#ffe1e1
+```
+
 ## UML-Übersicht der Services
 
 ```mermaid
 classDiagram
     class IAiClient {
         +SendPrompt(prompt, schema)
+        +SendPromptWithMetadata(prompt, schema)
     }
-    class NebiusService
+    class NebiusService {
+        +SendPrompt(prompt, schema)
+        +SendPromptWithMetadata(prompt, schema)
+    }
     IAiClient <|.. NebiusService
+
+    class AiResponse {
+        <<record>>
+        +string Content
+        +int InputTokens
+        +int OutputTokens
+        +int TotalTokens
+    }
+    NebiusService --> AiResponse
 
     class IContractAnalysisAgent {
         +InitializeAsync(contractText)
@@ -621,7 +783,12 @@ classDiagram
         #ISchemaValidator _schemaValidator
         #string? _contractText
         #bool _isInitialized
+        #int TotalInputTokens
+        #int TotalOutputTokens
+        #int TotalTokens
         +IsInitialized
+        #TrackTokens(AiResponse)
+        #LogTokenSummary()
     }
     class RentalContractAgent
     class EmploymentContractAgent
@@ -632,13 +799,20 @@ classDiagram
     ContractAnalysisAgentBase --> ISchemaProvider
     ContractAnalysisAgentBase --> ISchemaValidator
     ContractAnalysisAgentBase --> PromptProvider
+    ContractAnalysisAgentBase --> AiResponse
 
     class ISchemaProvider {
         +GetSchema(contractType, tier, step)
         +GetSchemaForEndpoint(contractType, tier, step)
     }
-    class SchemaProvider
+    class SchemaProvider {
+        +GetSchema(contractType, tier, step)
+        +GetSchemaForEndpoint(contractType, tier, step)
+        -Dictionary~string, Func~BinaryData~~ _schemaFactories
+    }
     ISchemaProvider <|.. SchemaProvider
+    
+    note for SchemaProvider "Schemas enthalten:\n- x-displayName für Properties\n- x-sectionTitle für Sections"
 
     class ISchemaValidator {
         +Validate(schema, response)
@@ -651,6 +825,14 @@ classDiagram
         <<static>>
         +GetPrompt(contractType, tier, step)
     }
+    
+    class FileLoggingOptions {
+        +bool Enabled
+        +string MinimumLevel
+        +string Path
+    }
+    
+    note for FileLoggingOptions "Konfiguriert Filesystem-Logging:\n- Täglicher Rollover\n- Format: YYYY-MM-DD.log"
 
     class WebSocketAnalysisHandler {
         +HandleAsync(context)
@@ -689,4 +871,21 @@ classDiagram
     class PocketController
     PocketController --> WebSocketAnalysisHandler
     PocketController --> ISchemaProvider
+    
+    class PromptBuilder {
+        <<deprecated>>
+    }
+    class PromptBuilder_Deprecated {
+        <<deprecated>>
+    }
+    class ClaudeService {
+        <<deprecated>>
+    }
+    class GeminiService {
+        <<deprecated>>
+    }
+    
+    note for PromptBuilder "Legacy: Ersetzt durch PromptProvider"
+    note for ClaudeService "Legacy: Verwende NebiusService"
+    note for GeminiService "Legacy: Verwende NebiusService"
 ```

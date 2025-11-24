@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using OpenAI;
 using OpenAI.Chat;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Application.Models;
 using PocketLawyer.Options;
 using System.ClientModel;
 
@@ -88,12 +89,74 @@ public class NebiusService : IAiClient
             return "Error";
         }
 
-        _logger.LogInformation("Nebius input Token:  {answ}", completion.Usage.InputTokenCount);
-        _logger.LogInformation("Nebius output Token: {answ}", completion.Usage.OutputTokenCount);
-        _logger.LogInformation("Nebius total Token:  {answ}", completion.Usage.TotalTokenCount);
+        _logger.LogDebug("Nebius input Token:  {answ}", completion.Usage.InputTokenCount);
+        _logger.LogDebug("Nebius output Token: {answ}", completion.Usage.OutputTokenCount);
+        _logger.LogDebug("Nebius total Token:  {answ}", completion.Usage.TotalTokenCount);
         _logger.LogDebug(completion.Content[0].Text);
 
         return completion.Content[0].Text ?? "Error";
+    }
+
+    public async Task<AiResponse> SendPromptWithMetadata(string prompt, object? outputSchema)
+    {
+        _logger.LogDebug("Entering {Method}", nameof(SendPromptWithMetadata));
+        _logger.LogDebug("Model: {model}", _model);
+
+        List<ChatMessage> messages =
+        [
+            ChatMessage.CreateSystemMessage(
+                "Du bist ein erfahrener Rechtsanwalt, der sich auf das österreichische Recht spezialisiert hat." +
+                "Antworte NUR als gültiges JSON nach Schema. Deutsch. " +
+                "Keine Wiederholungen über Abschnitte; " +
+                "Längenlimits strikt einhalten."),
+            new UserChatMessage(prompt),
+        ];
+
+        ChatCompletionOptions options = new()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                jsonSchemaFormatName: "Vertragsanalyse",
+                jsonSchema: outputSchema as BinaryData,
+                jsonSchemaIsStrict: true),
+            Temperature = 0.0f,
+            MaxOutputTokenCount = 700,
+            TopP = 0.1f
+        };
+
+        ChatCompletion completion;
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(4));
+            completion = await _client.CompleteChatAsync(messages, options, cts.Token);
+        }
+        catch (ClientResultException ex)
+        {
+            var raw = ex.GetRawResponse();
+            string body = raw?.Content?.ToString() ?? "(no body)";
+            _logger.LogError(ex, "OpenAI 400: {Message}\nResponse body: {Body}\nHeaders: {Headers}",
+                ex.Message, body, raw?.Headers);
+            throw new Application.Exceptions.AiServiceException("AI service request failed", ex);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in Nebius Request: {er}", ex.Message);
+            _logger.LogError("Content of completion: {comp}", ex.ToString());
+            throw new Application.Exceptions.AiServiceException("AI service request failed", ex);
+        }
+
+        // Extract token information
+        int inputTokens = completion.Usage.InputTokenCount;
+        int outputTokens = completion.Usage.OutputTokenCount;
+        int totalTokens = completion.Usage.TotalTokenCount;
+
+        _logger.LogDebug("Nebius input Token:  {inputTokens}", inputTokens);
+        _logger.LogDebug("Nebius output Token: {outputTokens}", outputTokens);
+        _logger.LogDebug("Nebius total Token:  {totalTokens}", totalTokens);
+        _logger.LogDebug(completion.Content[0].Text);
+
+        string content = completion.Content[0].Text ?? "Error";
+
+        return new AiResponse(content, inputTokens, outputTokens, totalTokens);
     }
 
     private static System.BinaryData GetRentAnalizerSchema()

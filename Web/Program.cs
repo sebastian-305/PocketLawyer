@@ -12,9 +12,43 @@ using PocketLawyer.Infrastructure.AiServices.Nebius;
 using PocketLawyer.Infrastructure.FileDecoding;
 using PocketLawyer.Infrastructure.SchemaProviders;
 using PocketLawyer.Options;
+using Serilog;
+using Serilog.Events;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+var fileLoggingOptions = builder.Configuration.GetSection("Logging:File").Get<FileLoggingOptions>() ?? new FileLoggingOptions();
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    var isDevelopment = context.HostingEnvironment.IsDevelopment();
+    var consoleLogLevel = isDevelopment ? LogEventLevel.Debug : LogEventLevel.Information;
+
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.AspNetCore.StaticFiles", LogEventLevel.Warning)
+        .MinimumLevel.Override("Microsoft.Extensions.Http", LogEventLevel.Warning)
+        .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
+        .Enrich.FromLogContext()
+        .WriteTo.Console(restrictedToMinimumLevel: consoleLogLevel);
+
+    // Add file logging if enabled - always at Information level
+    if (fileLoggingOptions.Enabled)
+    {
+        configuration.WriteTo.File(
+            path: System.IO.Path.Combine(fileLoggingOptions.Path, "log-.txt"),
+            rollingInterval: RollingInterval.Day,
+            restrictedToMinimumLevel: LogEventLevel.Information,
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+        );
+    }
+});
 
 // Add services to the container.
 builder.Services

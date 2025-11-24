@@ -6,10 +6,16 @@ using System.Text;
 using PocketLawyer.Options;
 using System.Text.Json;
 using PocketLawyer.Application.Exceptions;
+using PocketLawyer.Application.Models;
 
 
 namespace PocketLawyer.Infrastructure.AiServices.Gemini;
 
+/// <summary>
+/// Legacy AI service for Gemini API integration. This service is deprecated and will be removed in a future version.
+/// Use NebiusService instead for new implementations.
+/// </summary>
+[Obsolete("This service is deprecated. Use NebiusService instead.")]
 public class GeminiService : IAiClient
 {
     private readonly HttpClient _httpClient;
@@ -95,6 +101,11 @@ public class GeminiService : IAiClient
             _logger.LogError(ex, "Error while sending prompt");
             throw new AiServiceException("Gemini API request failed", ex);
         }
+    }
+
+    public Task<AiResponse> SendPromptWithMetadata(string prompt, object? outputSchema)
+    {
+        throw new NotImplementedException();
     }
     #endregion
 
