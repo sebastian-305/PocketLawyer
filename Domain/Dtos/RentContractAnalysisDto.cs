@@ -4,6 +4,9 @@ namespace PocketLawyer.Domain.Dtos;
 
 public class RentContractAnalysisDto : IAnalysisDto
 {
+    public string ContractType => "Mietvertrag";
+    public string Tier => "Legacy";
+
     [JsonPropertyName("keypoints")]
     public Summary Summary { get; set; } = new();
 

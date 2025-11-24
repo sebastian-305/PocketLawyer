@@ -5,185 +5,165 @@
 ```mermaid
 graph TD
     subgraph Web
-        FE[index.html<br>main.js<br>render-*.js]
+        FE[index.html<br>main.js<br>render.js]
         NET[network.js]
         PC[PocketController]
     end
     subgraph Application
-        AE[AnalyzeEmploymentAgent]
-        AR[AnalyzeRentAgent]
+        RCA[RentalContractAgent]
+        ECA[EmploymentContractAgent]
+        ICAA[IContractAnalysisAgent]
     end
     subgraph Domain
-        DTOs[ContractValidationDto\nEmploymentContractAnalysisDto\nRentContractAnalysisDto]
+        DTOs[AnalysisDto<br>RentalBasicAnalysisDto<br>RentalPremiumAnalysisDto<br>EmploymentAnalysisDto]
+        PP[PromptProvider]
     end
     subgraph Infrastructure
-        WSAS[WebSocketAgentAnalysisService]
+        WSH[WebSocketAnalysisHandler]
         FVS[FileValidatorService]
         FDS[FileDecoderService]
-        KFS[KvFileService]
-        KAD[KvAiDetectionService]
+        SP[SchemaProvider]
+        SV[SchemaValidator]
         NEB[NebiusService]
-        CLA[ClaudeService]
     end
     subgraph External_APIs
         NebiusAPI[(Nebius API)]
-        ClaudeAPI[(Claude API)]
     end
 
     FE --> NET
     NET -- WebSocket --> PC
-    PC --> WSAS
-    WSAS --> FVS
+    PC --> WSH
+    WSH --> FVS
     FVS --> FDS
-    WSAS --> AE
-    WSAS --> AR
-    AE --> KFS
-    AE --> KAD
-    AE --> NEB
-    AR --> NEB
-    KAD --> CLA
+    WSH --> ICAA
+    ICAA <|.. RCA
+    ICAA <|.. ECA
+    RCA --> SP
+    RCA --> SV
+    RCA --> PP
+    RCA --> NEB
+    ECA --> SP
+    ECA --> SV
+    ECA --> PP
+    ECA --> NEB
     NEB --> NebiusAPI
-    CLA --> ClaudeAPI
 ```
 
 ## Domänenmodell (DTOs)
 
-Die Pre-Analyse liefert weiterhin ein `ContractValidationDto`, die eigentliche Auswertung unterscheidet jetzt aber zwischen Arbeits-
-und Mietverträgen. Beide Ergebnis-DTOs implementieren `IAnalysisDto`. Zur besseren Lesbarkeit sind die verschachtelten Klassen der
-Employment-Analyse im Diagramm mit dem Präfix `Employment*` versehen.
+Das neue System verwendet eine generische AnalysisDto-Struktur mit Metadata. Alle Analyse-Ergebnisse implementieren `IAnalysisDto` und werden in einem `AnalysisDto<T>` Wrapper mit Metadaten zurückgegeben.
 
 ```mermaid
 classDiagram
-    class IValidationDto
-    class IAnalysisDto
-
-    class ContractValidationDto {
-        IsReadable: bool
-        IsContract: bool
-        Result: string
-        Kollektivvertrag: string
-    }
-    IValidationDto <|.. ContractValidationDto
-
-    class EmploymentContractAnalysisDto {
-        Keypoints: EmploymentSummary
-        UnzulaessigeKlauseln: EmploymentProblemKlausel[]
-        NachteileKlauseln: EmploymentProblemKlausel[]
-        WiderspruechlicheKlauseln: EmploymentWiderspruechlicheKlausel[]
-        VorteilhafteKlauseln: EmploymentVorteilKlausel[]
-        Fazit: string
-        Kollektivvertrag: string
+    class IAnalysisDto {
+        <<interface>>
+        +string ContractType
+        +string Tier
     }
 
-    class EmploymentSummary {
-        <<nested>>
-        Arbeitgeber: string
-        Taetigkeit: string
-        Beginn: string
-        Dauer: string
-        GehaltBrutto: string
-        Zuschlaege: string
-        Arbeitsstunden: string
-        Ueberstunden: string
-        Probezeit: string
+    class AnalysisDto~T~ {
+        +T Result
+        +AnalysisMetadataDto Metadata
     }
 
-    class EmploymentProblemKlausel {
-        <<nested>>
-        Titel: string
-        Zitat: string
-        Problem: string
-        Rechtsgrundlage: EmploymentRechtsgrundlage[]
+    class AnalysisMetadataDto {
+        +string ContractId
+        +string CountryCode
+        +string Language
+        +DateTimeOffset AnalyzedAt
+        +bool IsPreview
+        +string ModelVersion
     }
 
-    class EmploymentWiderspruechlicheKlausel {
-        <<nested>>
-        Titel: string
-        ZitatKlauselA: string
-        ZitatKlauselB: string
-        Problem: string
-        Rechtsgrundlage: EmploymentRechtsgrundlage[]
+    class RentalBasicAnalysisDto {
+        +RentalBasicGeneralDto AllgemeineVertragsdaten
+        +RentalBasicRentDto Mietkonditionen
+        +RentalBasicConditionsDto Vertragsbedingungen
+        +RentalBasicSummaryDto Summary
+        +string ContractType = "Mietvertrag"
+        +string Tier = "Basic"
     }
 
-    class EmploymentVorteilKlausel {
-        <<nested>>
-        Titel: string
-        Zitat: string
-        Vorteil: string
+    class RentalBasicGeneralDto {
+        +string Vertragstyp
+        +string Mieter
+        +string Vermieter
+        +string MietobjektAdresse
+        +DateOnly Vertragsbeginn
+        +string Vertragsart
     }
 
-    class EmploymentRechtsgrundlage {
-        <<nested>>
-        Rechtsgrundlage: string
-        Wortlaut: string
+    class RentalBasicRentDto {
+        +decimal Kaltmiete
+        +decimal Nebenkosten
+        +decimal Warmmiete
+        +decimal Kaution
+        +string Zahlungsweise
+        +string Nebenkostenregelung
     }
 
-    class RentContractAnalysisDto {
-        Keypoints: RentSummary
-        UnzulaessigeKlauseln: RentProblemKlausel[]
-        NachteileKlauseln: RentProblemKlausel[]
-        WiderspruechlicheKlauseln: RentWiderspruechlicheKlausel[]
-        VorteilhafteKlauseln: RentVorteilKlausel[]
-        Fazit: string
-        Kollektivvertrag: string
+    class RentalBasicConditionsDto {
+        +string Kuendigungsfrist
+        +string Tierhaltung
+        +string Untervermietung
+        +string Besonderheiten
     }
 
-    class RentSummary {
-        Vermieter: string
-        Mieter: string
-        Beginn: string
-        Dauer: string
-        Mindestdauer: string
-        Kuendigungsfrist: string
-        MieteKalt: string
-        Betriebskosten: string
-        Wohnflaeche: string
-        Zimmer: int
-        ImMietgegenstandEnthalten: string
+    class RentalBasicSummaryDto {
+        +string Kurzfazit
+        +string Gesamtfazit
+        +string Gesamtbewertung
+        +OverallRiskLevel RiskLevel
     }
 
-    class RentProblemKlausel {
-        Titel: string
-        Zitat: string
-        Problem: string
-        Rechtsgrundlage: RentRechtsgrundlage[]
+    class RentalPremiumAnalysisDto {
+        +PremiumSectionDto MietzahlungUndNebenkosten
+        +PremiumSectionDto MietdauerUndKuendigung
+        +PremiumSectionDto GebrauchDerMietsache
+        +PremiumSectionDto InstandhaltungUndReparaturen
+        +PremiumSectionDto RechteUndPflichten
+        +PremiumSectionDto DatenschutzUndKommunikation
+        +string Gesamtfazit
+        +OverallRiskLevel Gesamtbewertung
+        +string ContractType = "Mietvertrag"
+        +string Tier = "Premium"
     }
 
-    class RentWiderspruechlicheKlausel {
-        Titel: string
-        ZitatKlauselA: string
-        ZitatKlauselB: string
-        Problem: string
-        Rechtsgrundlage: RentRechtsgrundlage[]
+    class PremiumSectionDto {
+        +string Zusammenfassung
+        +string Bewertung
+        +string Rechtsgrundlage
+        +ClauseRiskScore RisikoScore
+        +OverallRiskLevel RiskLevel
     }
 
-    class RentVorteilKlausel {
-        Titel: string
-        Zitat: string
-        Vorteil: string
+    class ClauseRiskScore {
+        <<enumeration>>
+        Zulaessig
+        Nachteilhaft
+        Unzulaessig
     }
 
-    class RentRechtsgrundlage {
-        Rechtsgrundlage: string
-        Wortlaut: string
+    class OverallRiskLevel {
+        <<enumeration>>
+        Gruen
+        Gelb
+        Rot
     }
 
-    IAnalysisDto <|.. EmploymentContractAnalysisDto
-    IAnalysisDto <|.. RentContractAnalysisDto
-
-    EmploymentContractAnalysisDto --> EmploymentSummary
-    EmploymentContractAnalysisDto --> EmploymentProblemKlausel
-    EmploymentContractAnalysisDto --> EmploymentWiderspruechlicheKlausel
-    EmploymentContractAnalysisDto --> EmploymentVorteilKlausel
-    EmploymentProblemKlausel --> EmploymentRechtsgrundlage
-    EmploymentWiderspruechlicheKlausel --> EmploymentRechtsgrundlage
-
-    RentContractAnalysisDto --> RentSummary
-    RentContractAnalysisDto --> RentProblemKlausel
-    RentContractAnalysisDto --> RentWiderspruechlicheKlausel
-    RentContractAnalysisDto --> RentVorteilKlausel
-    RentProblemKlausel --> RentRechtsgrundlage
-    RentWiderspruechlicheKlausel --> RentRechtsgrundlage
+    IAnalysisDto <|.. RentalBasicAnalysisDto
+    IAnalysisDto <|.. RentalPremiumAnalysisDto
+    AnalysisDto~T~ --> IAnalysisDto
+    AnalysisDto~T~ --> AnalysisMetadataDto
+    RentalBasicAnalysisDto --> RentalBasicGeneralDto
+    RentalBasicAnalysisDto --> RentalBasicRentDto
+    RentalBasicAnalysisDto --> RentalBasicConditionsDto
+    RentalBasicAnalysisDto --> RentalBasicSummaryDto
+    RentalBasicSummaryDto --> OverallRiskLevel
+    RentalPremiumAnalysisDto --> PremiumSectionDto
+    RentalPremiumAnalysisDto --> OverallRiskLevel
+    PremiumSectionDto --> ClauseRiskScore
+    PremiumSectionDto --> OverallRiskLevel
 ```
 
 ## PlantUML
@@ -202,13 +182,7 @@ class NebiusService {
     +Task<string> SendPrompt(...)
 }
 
-class ClaudeService {
-    -ILogger _logger
-    +Task<string> SendPrompt(...)
-}
-
 IAiClient <|.. NebiusService
-IAiClient <|.. ClaudeService
 
 interface IFileDecoder {
     +bool CanDecode(string ext)
@@ -249,175 +223,270 @@ class FileValidatorService {
 IFileValidatorService <|.. FileValidatorService
 FileValidatorService --> IFileDecoderService
 
-interface IKollektivvertragService {
-    +string[] GetKvsDirectories()
-    +Task<string[]> GetKvFileContentsAsync(string kvName)
+interface ISchemaProvider {
+    +BinaryData GetSchema(string contractType, string tier, string step)
+    +JsonObject GetSchemaForEndpoint(string contractType, string tier, string step)
 }
 
-class KvFileService {
-    -ILogger _logger
-    -PathOptions _paths
-    -IWebHostEnvironment _environment
-    -IFileDecoderService _fileDecoderService
-    +Task<string[]> GetKvFileContentsAsync(string kvName)
+class SchemaProvider {
+    -Dictionary<string, Func<BinaryData>> _schemaFactories
+    +BinaryData GetSchema(...)
+    +JsonObject GetSchemaForEndpoint(...)
 }
-IKollektivvertragService <|.. KvFileService
-KvFileService --> IFileDecoderService
+ISchemaProvider <|.. SchemaProvider
 
-interface IKvDetectionService {
-    +Task<KvDetectionResult> DetectAsync(string contractContent)
+interface ISchemaValidator {
+    +bool Validate(JsonObject schema, JsonObject response)
+    +ValidationResult ValidateWithDetails(JsonObject schema, JsonObject response)
 }
 
-class KvAiDetectionService {
-    -ILogger _logger
-    -IKollektivvertragService _kvService
-    -IAiClient _aiService
-    +Task<KvDetectionResult> DetectAsync(string contractContent)
+class SchemaValidator {
+    +bool Validate(...)
+    +ValidationResult ValidateWithDetails(...)
 }
-IKvDetectionService <|.. KvAiDetectionService
-KvAiDetectionService --> IKollektivvertragService
-KvAiDetectionService --> IAiClient
+ISchemaValidator <|.. SchemaValidator
 
-interface IContractAnalyzerAgent {
-    +Task<T> ProcessContractRequest(FileContentDto content, AgentAction action, object? data)
+class PromptProvider {
+    <<static>>
+    +string GetPrompt(string contractType, string tier, string step)
 }
 
-class AnalyzeEmploymentAgent {
-    -ILogger _logger
-    -IAiClient _aiService
-    -IKollektivvertragService _kvService
-    -IKvDetectionService _kvDetectionService
-    +Task<T> ProcessContractRequest(...)
+interface IContractAnalysisAgent {
+    +Task<InitializationResult> InitializeAsync(string contractText)
+    +Task<AnalysisDto<IAnalysisDto>> AnalyzeBasicAsync()
+    +Task<AnalysisDto<IAnalysisDto>> AnalyzePremiumAsync()
+    +bool IsInitialized
 }
 
-class AnalyzeRentAgent {
-    -ILogger _logger
-    -IAiClient _aiService
-    +Task<T> ProcessContractRequest(...)
+abstract class ContractAnalysisAgentBase {
+    #IAiClient _aiClient
+    #ISchemaProvider _schemaProvider
+    #ISchemaValidator _schemaValidator
+    #ILogger _logger
+    #string? _contractText
+    #bool _isInitialized
+    +bool IsInitialized
+    #{abstract} string ExpectedContractType
+    +{abstract} Task<InitializationResult> InitializeAsync(string contractText)
+    +{abstract} Task<AnalysisDto<IAnalysisDto>> AnalyzeBasicAsync()
+    +{abstract} Task<AnalysisDto<IAnalysisDto>> AnalyzePremiumAsync()
 }
 
-IContractAnalyzerAgent <|.. AnalyzeEmploymentAgent
-IContractAnalyzerAgent <|.. AnalyzeRentAgent
-AnalyzeEmploymentAgent --> IAiClient
-AnalyzeEmploymentAgent --> IKollektivvertragService
-AnalyzeEmploymentAgent --> IKvDetectionService
-AnalyzeRentAgent --> IAiClient
-
-interface IWebSocketAnalysisService {
-    +Task HandleAsync(HttpContext context, IContractAnalyzerAgent agent)
+class RentalContractAgent {
+    #string ExpectedContractType = "Mietvertrag"
+    +Task<InitializationResult> InitializeAsync(...)
+    +Task<AnalysisDto<RentalBasicAnalysisDto>> AnalyzeBasicAsync()
+    +Task<AnalysisDto<RentalPremiumAnalysisDto>> AnalyzePremiumAsync()
 }
 
-class WebSocketAgentAnalysisService {
+class EmploymentContractAgent {
+    #string ExpectedContractType = "Arbeitsvertrag"
+    +Task<InitializationResult> InitializeAsync(...)
+    +Task<AnalysisDto<IAnalysisDto>> AnalyzeBasicAsync()
+    +Task<AnalysisDto<IAnalysisDto>> AnalyzePremiumAsync()
+}
+
+IContractAnalysisAgent <|.. ContractAnalysisAgentBase
+ContractAnalysisAgentBase <|-- RentalContractAgent
+ContractAnalysisAgentBase <|-- EmploymentContractAgent
+ContractAnalysisAgentBase --> IAiClient
+ContractAnalysisAgentBase --> ISchemaProvider
+ContractAnalysisAgentBase --> ISchemaValidator
+ContractAnalysisAgentBase --> PromptProvider
+
+class WebSocketAnalysisHandler {
     -ILogger _logger
     -IFileValidatorService _fileValidatorService
-    +Task HandleAsync(HttpContext context, IContractAnalyzerAgent agent)
+    -IServiceProvider _serviceProvider
+    +Task HandleAsync(HttpContext context)
+    -IContractAnalysisAgent CreateAgent(string contractType)
 }
-IWebSocketAnalysisService <|.. WebSocketAgentAnalysisService
-WebSocketAgentAnalysisService --> IFileValidatorService
-WebSocketAgentAnalysisService --> IContractAnalyzerAgent
+WebSocketAnalysisHandler --> IFileValidatorService
+WebSocketAnalysisHandler --> IContractAnalysisAgent
 
 class PocketController {
     -ILogger _logger
-    -IWebSocketAnalysisService _socketService
-    -IContractAnalyzerAgent _employmentAgent
-    -IContractAnalyzerAgent _rentAgent
-    +AnalyzeEmploymentViaWebSocket()
-    +AnalyzeRentViaWebSocket()
+    +Task RentalAnalysis()
+    +Task EmploymentAnalysis()
+    +Task GetSchema(string contractType, string tier, string step)
 }
-PocketController --> IWebSocketAnalysisService
-PocketController --> IContractAnalyzerAgent
+PocketController --> WebSocketAnalysisHandler
+PocketController --> ISchemaProvider
 
-class FileContentDto {
-    +string FileName
-    +string FileContent
+record InitializationResult {
+    +bool Success
+    +string? ErrorMessage
 }
 
-class ContractValidationDto {
-    +bool IsReadable
-    +bool IsContract
-    +string Result
-    +string? Kollektivvertrag
+record AnalysisDto~T~ {
+    +T Result
+    +AnalysisMetadataDto Metadata
+}
+
+record AnalysisMetadataDto {
+    +string ContractId
+    +string CountryCode
+    +string Language
+    +DateTimeOffset AnalyzedAt
+    +bool IsPreview
+    +string ModelVersion
 }
 @enduml
 ```
 
-## Onion-Layer Sequence Diagram
+## Agent Lifecycle Sequence Diagram
 
 ```mermaid
 sequenceDiagram
     participant FE as Browser
     participant WEB as Web (PocketController)
-    participant INF as Infrastructure (WebSocketAgentAnalysisService)
-    participant APP as Application (Analyze*-Agent)
-    participant AI as IAiClient
+    participant WSH as WebSocketAnalysisHandler
+    participant FV as FileValidatorService
+    participant AG as ContractAnalysisAgent
+    participant SP as SchemaProvider
+    participant SV as SchemaValidator
+    participant PP as PromptProvider
+    participant AI as Nebius AI
 
-    FE->>WEB: WebSocket /employment-analysis<br>oder /rent-analysis öffnen
-    WEB->>INF: IWebSocketAnalysisService.HandleAsync(agent)
-    INF->>INF: ValidateAndDecodeAsync()
-    INF-->>APP: FileContentDto
-    APP->>AI: SendPrompt(Validation)
-    AI-->>APP: ContractValidationDto
-    APP-->>INF: ContractValidationDto
-    INF-->>WEB: Voranalyse-Ergebnis
-    WEB-->>FE: JSON senden
+    FE->>WEB: WebSocket /rental-analysis öffnen
+    WEB->>WSH: HandleAsync(HttpContext)
+    WSH->>WSH: AcceptWebSocketAsync()
+    WSH->>WSH: ReceiveFileAsync()
+    Note over WSH: Empfängt Datei + ContractType
+    WSH->>FV: ValidateAndDecodeAsync(file)
+    FV-->>WSH: FileContentDto
 
-    alt Vertrag gültig
-        INF->>APP: ProcessContractRequest(Analyze)
-        APP->>AI: SendPrompt(Analyse)
-        AI-->>APP: EmploymentContractAnalysisDto<br>oder RentContractAnalysisDto
-        APP-->>INF: IAnalysisDto
-        INF-->>WEB: Analyse-Ergebnis
-        WEB-->>FE: Ergebnis darstellen
-    else Vertrag ungültig
-        INF-->>WEB: Socket schließen
-        WEB-->>FE: Verbindung schließen
+    Note over WSH,AG: Phase 1: Construction
+    WSH->>AG: CreateAgent(contractType)
+    Note over AG: Nur DI, keine Logik
+
+    Note over WSH,AG: Phase 2: Initialization
+    WSH->>AG: InitializeAsync(contractText)
+    AG->>AI: Check Readability
+    AI-->>AG: IsReadable
+    AG->>AI: Detect Contract Type
+    AI-->>AG: DetectedType
+    AG->>AG: Store contractText
+    AG->>AG: Set IsInitialized = true
+    AG-->>WSH: InitializationResult(Success)
+    WSH->>FE: Confirmation Message
+
+    Note over WSH,AG: Phase 3: Analysis - Basic
+    WSH->>AG: AnalyzeBasicAsync()
+    par Parallel Basic Steps
+        AG->>SP: GetSchema("Rental", "Basic", "General")
+        SP-->>AG: Schema
+        AG->>PP: GetPrompt("Rental", "Basic", "General")
+        PP-->>AG: Prompt
+        AG->>AI: SendPrompt(prompt, schema)
+        AI-->>AG: Response
+        AG->>SV: Validate(schema, response)
+        SV-->>AG: Valid
+    and
+        AG->>SP: GetSchema("Rental", "Basic", "Rent")
+        AG->>PP: GetPrompt("Rental", "Basic", "Rent")
+        AG->>AI: SendPrompt(prompt, schema)
+        AG->>SV: Validate(schema, response)
+    and
+        AG->>SP: GetSchema("Rental", "Basic", "Conditions")
+        AG->>PP: GetPrompt("Rental", "Basic", "Conditions")
+        AG->>AI: SendPrompt(prompt, schema)
+        AG->>SV: Validate(schema, response)
+    and
+        AG->>SP: GetSchema("Rental", "Basic", "Summary")
+        AG->>PP: GetPrompt("Rental", "Basic", "Summary")
+        AG->>AI: SendPrompt(prompt, schema)
+        AG->>SV: Validate(schema, response)
     end
+    AG->>AG: Aggregate Results
+    AG-->>WSH: AnalysisDto<RentalBasicAnalysisDto>
+    WSH->>FE: Basic Result Message
+
+    Note over WSH,AG: Phase 3: Analysis - Premium
+    WSH->>AG: AnalyzePremiumAsync()
+    par Parallel Premium Steps
+        AG->>SP: GetSchema("Rental", "Premium", "Costs")
+        AG->>PP: GetPrompt("Rental", "Premium", "Costs")
+        AG->>AI: SendPrompt(prompt, schema)
+        AG->>SV: Validate(schema, response)
+    and
+        AG->>SP: GetSchema("Rental", "Premium", "Terms")
+        AG->>PP: GetPrompt("Rental", "Premium", "Terms")
+        AG->>AI: SendPrompt(prompt, schema)
+        AG->>SV: Validate(schema, response)
+    and
+        Note over AG: ... weitere Premium Steps parallel
+    end
+    AG->>AG: Aggregate Results
+    AG-->>WSH: AnalysisDto<RentalPremiumAnalysisDto>
+    WSH->>FE: Premium Result Message
+
+    WSH->>WSH: CloseAsync(NormalClosure)
 ```
 
-## Sequence Diagram
+## WebSocket Message Flow Diagram
 
 ```mermaid
 sequenceDiagram
     participant FE as Browser
     participant PC as PocketController
-    participant WS as WebSocketAgentAnalysisService
-    participant FV as FileValidatorService
-    participant FDS as FileDecoderService
-    participant AG as AnalyzeEmploymentAgent<br>/ AnalyzeRentAgent
-    participant KD as KvAiDetectionService
-    participant CLA as ClaudeService
-    participant NEB as NebiusService
+    participant WSH as WebSocketAnalysisHandler
+    participant AG as ContractAnalysisAgent
+    participant NEB as Nebius AI
 
-    FE->>PC: WebSocket /employment-analysis<br>oder /rent-analysis öffnen
-    FE->>PC: Datei senden
-    PC->>WS: HandleAsync(agent)
-    WS->>FV: ValidateAndDecodeAsync(file)
-    FV->>FDS: GetFileContentAsync()
-    FDS-->>FV: Text
-    FV-->>WS: FileContentDto
-    WS->>AG: ProcessContractRequest<ContractValidationDto>(Validate)
-    AG->>NEB: SendPrompt()
-    NEB-->>AG: ContractValidationDto
-    AG-->>WS: ContractValidationDto
-    WS-->>PC: PreAnalysis
-    PC-->>FE: PreAnalysis
-
-    alt Vertrag ungültig
-        WS-->>PC: Socket schließen
-        PC-->>FE: Verbindung geschlossen
-    else Vertrag gültig
-        opt Arbeitsvertrag
-            AG->>KD: DetectAsync(Text)
-            KD->>CLA: SendPrompt()
-            CLA-->>KD: KvDetectionResult
-            KD-->>AG: KvDetectionResult
-        end
-        WS->>AG: ProcessContractRequest<IAnalysisDto>(Analyze)
-        AG->>NEB: SendPrompt()
-        NEB-->>AG: EmploymentContractAnalysisDto<br>oder RentContractAnalysisDto
-        AG-->>WS: Analyse-DTO
-        WS-->>PC: Analyseergebnis
-        PC-->>FE: Analyseergebnis
+    FE->>PC: WebSocket Connection<br>/rental-analysis
+    PC->>WSH: HandleAsync(HttpContext)
+    
+    Note over FE,WSH: Message 1: File Upload
+    FE->>WSH: { fileName, fileContent, contractType }
+    WSH->>WSH: Validate & Decode File
+    WSH->>AG: CreateAgent(contractType)
+    
+    Note over WSH,AG: Initialization Phase
+    WSH->>AG: InitializeAsync(contractText)
+    AG->>NEB: Check Readability
+    AG->>NEB: Detect Contract Type
+    AG->>AG: Store Text & Set Ready
+    AG-->>WSH: InitializationResult(Success)
+    
+    Note over FE,WSH: Message 2: Confirmation
+    WSH->>FE: { type: "confirmation",<br>message: "Vertrag akzeptiert" }
+    
+    Note over WSH,AG: Basic Analysis Phase
+    WSH->>AG: AnalyzeBasicAsync()
+    par Parallel Steps
+        AG->>NEB: Analyze General Data
+        AG->>NEB: Analyze Rent Conditions
+        AG->>NEB: Analyze Contract Conditions
+        AG->>NEB: Analyze Summary
+    end
+    AG-->>WSH: AnalysisDto<BasicAnalysisDto>
+    
+    Note over FE,WSH: Message 3: Basic Result
+    WSH->>FE: { type: "result",<br>data: { result, metadata } }
+    
+    Note over WSH,AG: Premium Analysis Phase
+    WSH->>AG: AnalyzePremiumAsync()
+    par Parallel Steps
+        AG->>NEB: Analyze Costs
+        AG->>NEB: Analyze Terms
+        AG->>NEB: Analyze Use
+        AG->>NEB: Analyze Maintenance
+        AG->>NEB: Analyze Rights
+        AG->>NEB: Analyze Privacy
+        AG->>NEB: Analyze Summary
+    end
+    AG-->>WSH: AnalysisDto<PremiumAnalysisDto>
+    
+    Note over FE,WSH: Message 4: Premium Result
+    WSH->>FE: { type: "result",<br>data: { result, metadata } }
+    
+    Note over FE,WSH: Connection Close
+    WSH->>FE: CloseAsync(NormalClosure)
+    
+    alt Error Scenario
+        WSH->>FE: { type: "error",<br>message: "Fehlermeldung" }
+        WSH->>FE: CloseAsync(ErrorStatus)
     end
 ```
 
@@ -427,28 +496,32 @@ sequenceDiagram
 graph TD
     subgraph Browser
         Form[Upload-Formular<br>contractType Auswahl] --> NET[network.js]
-        NET --> RE[render-employment.js]
-        NET --> RR[render-rent.js]
+        NET --> REN[render.js<br>Generic Renderer]
+        NET --> SCH[Schema Fetch]
     end
     NET -- WebSocket --> PCE[/employment-analysis/]
-    NET -- WebSocket --> PCR[/rent-analysis/]
+    NET -- WebSocket --> PCR[/rental-analysis/]
+    SCH -- HTTP GET --> SCHE[/api/schemas/]
     PCE & PCR --> PC[PocketController]
-    PC --> WSAS[WebSocketAgentAnalysisService]
-    WSAS --> FV[FileValidatorService]
+    SCHE --> PC
+    PC --> WSH[WebSocketAnalysisHandler]
+    PC --> SP[SchemaProvider]
+    WSH --> FV[FileValidatorService]
     FV --> FDS[FileDecoderService]
-    WSAS --> AGE[AnalyzeEmploymentAgent]
-    WSAS --> AGR[AnalyzeRentAgent]
-    AGE --> KFS[KvFileService]
-    AGE --> KD[KvAiDetectionService]
-    KD --> CLA[ClaudeService]
-    AGE --> NEB[NebiusService]
-    AGR --> NEB
+    WSH --> RCA[RentalContractAgent]
+    WSH --> ECA[EmploymentContractAgent]
+    RCA --> SP
+    RCA --> SV[SchemaValidator]
+    RCA --> PP[PromptProvider]
+    RCA --> NEB[NebiusService]
+    ECA --> SP
+    ECA --> SV
+    ECA --> PP
+    ECA --> NEB
     subgraph External
         NebiusAPI[(Nebius API)]
-        ClaudeAPI[(Claude API)]
     end
     NEB --> NebiusAPI
-    CLA --> ClaudeAPI
 ```
 
 ## UI-/Flow-Diagramm
@@ -456,15 +529,73 @@ graph TD
 ```mermaid
 flowchart TD
     A[Datei auswählen<br>Vertragstyp setzen] --> B{main.js}
-    B -->|rent-analysis| CR[/WebSocket /rent-analysis/]
-    B -->|employment-analysis| CE[/WebSocket /employment-analysis/]
-    CR & CE -->|JSON| D[PreAnalysis-Result]
-    D -->|wenn ok| E[/weitere WebSocket-Nachricht/]
-    E -->|rent| FR[render-rent.js]
-    E -->|employment| FE[render-employment.js]
-    FR --> G[Anzeige aktualisieren]
-    FE --> G
-    D -->|Fehler| H[Fehleranzeige]
+    B -->|rental| CR[/WebSocket /rental-analysis/]
+    B -->|employment| CE[/WebSocket /employment-analysis/]
+    CR & CE -->|Message 1| D[File Upload]
+    D --> E[/Message 2: Confirmation/]
+    E --> F[Loading anzeigen]
+    F --> G[/Message 3: Basic Result/]
+    G --> H[Schema abrufen]
+    H --> I[render.js<br>Generic Renderer]
+    I --> J[Basic Accordion anzeigen]
+    J --> K[/Message 4: Premium Result/]
+    K --> L[Schema abrufen]
+    L --> M[render.js<br>Generic Renderer]
+    M --> N[Premium Accordion anzeigen]
+    N --> O[WebSocket schließt]
+    
+    E -->|Fehler| P[Fehleranzeige]
+    G -->|Fehler| P
+    K -->|Fehler| P
+```
+
+## 3-Phasen Agent Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Construction: new Agent(dependencies)
+    
+    Construction --> Initialized: InitializeAsync(contractText)
+    Construction --> [*]: Error (nicht initialisiert)
+    
+    state Construction {
+        [*] --> DI: Inject Dependencies
+        DI --> Ready: Set _isInitialized = false
+        Ready --> [*]
+    }
+    
+    state Initialized {
+        [*] --> CheckReadability: AI Call
+        CheckReadability --> DetectType: AI Call
+        DetectType --> StoreText: Store contractText
+        StoreText --> SetReady: Set _isInitialized = true
+        SetReady --> [*]
+    }
+    
+    Initialized --> Analysis: AnalyzeBasicAsync() / AnalyzePremiumAsync()
+    
+    state Analysis {
+        [*] --> CheckInit: Check IsInitialized
+        CheckInit --> ParallelSteps: If true
+        CheckInit --> Error: If false (throw)
+        
+        state ParallelSteps {
+            [*] --> Step1
+            [*] --> Step2
+            [*] --> Step3
+            [*] --> StepN
+            
+            Step1 --> [*]
+            Step2 --> [*]
+            Step3 --> [*]
+            StepN --> [*]
+        }
+        
+        ParallelSteps --> Aggregate: Task.WhenAll
+        Aggregate --> [*]: Return AnalysisDto
+    }
+    
+    Analysis --> [*]: Complete
 ```
 
 ## UML-Übersicht der Services
@@ -475,29 +606,58 @@ classDiagram
         +SendPrompt(prompt, schema)
     }
     class NebiusService
-    class ClaudeService
     IAiClient <|.. NebiusService
-    IAiClient <|.. ClaudeService
 
-    class IContractAnalyzerAgent {
-        +ProcessContractRequest(content, action, data)
+    class IContractAnalysisAgent {
+        +InitializeAsync(contractText)
+        +AnalyzeBasicAsync()
+        +AnalyzePremiumAsync()
+        +IsInitialized
     }
-    class AnalyzeEmploymentAgent
-    class AnalyzeRentAgent
-    IContractAnalyzerAgent <|.. AnalyzeEmploymentAgent
-    IContractAnalyzerAgent <|.. AnalyzeRentAgent
-    AnalyzeEmploymentAgent --> IAiClient
-    AnalyzeEmploymentAgent --> IKvDetectionService
-    AnalyzeEmploymentAgent --> IKollektivvertragService
-    AnalyzeRentAgent --> IAiClient
+    class ContractAnalysisAgentBase {
+        <<abstract>>
+        #IAiClient _aiClient
+        #ISchemaProvider _schemaProvider
+        #ISchemaValidator _schemaValidator
+        #string? _contractText
+        #bool _isInitialized
+        +IsInitialized
+    }
+    class RentalContractAgent
+    class EmploymentContractAgent
+    IContractAnalysisAgent <|.. ContractAnalysisAgentBase
+    ContractAnalysisAgentBase <|-- RentalContractAgent
+    ContractAnalysisAgentBase <|-- EmploymentContractAgent
+    ContractAnalysisAgentBase --> IAiClient
+    ContractAnalysisAgentBase --> ISchemaProvider
+    ContractAnalysisAgentBase --> ISchemaValidator
+    ContractAnalysisAgentBase --> PromptProvider
 
-    class IWebSocketAnalysisService {
-        +HandleAsync(context, agent)
+    class ISchemaProvider {
+        +GetSchema(contractType, tier, step)
+        +GetSchemaForEndpoint(contractType, tier, step)
     }
-    class WebSocketAgentAnalysisService
-    IWebSocketAnalysisService <|.. WebSocketAgentAnalysisService
-    WebSocketAgentAnalysisService --> IFileValidatorService
-    WebSocketAgentAnalysisService --> IContractAnalyzerAgent
+    class SchemaProvider
+    ISchemaProvider <|.. SchemaProvider
+
+    class ISchemaValidator {
+        +Validate(schema, response)
+        +ValidateWithDetails(schema, response)
+    }
+    class SchemaValidator
+    ISchemaValidator <|.. SchemaValidator
+
+    class PromptProvider {
+        <<static>>
+        +GetPrompt(contractType, tier, step)
+    }
+
+    class WebSocketAnalysisHandler {
+        +HandleAsync(context)
+        -CreateAgent(contractType)
+    }
+    WebSocketAnalysisHandler --> IFileValidatorService
+    WebSocketAnalysisHandler --> IContractAnalysisAgent
 
     class IFileDecoder {
         +CanDecode(ext)
@@ -526,22 +686,7 @@ classDiagram
     IFileValidatorService <|.. FileValidatorService
     FileValidatorService --> IFileDecoderService
 
-    class IKvDetectionService {
-        +DetectAsync(contractContent)
-    }
-    class KvAiDetectionService
-    IKvDetectionService <|.. KvAiDetectionService
-    KvAiDetectionService --> IAiClient
-
-    class IKollektivvertragService {
-        +GetKvsDirectories()
-        +GetKvFileContentsAsync(kvName)
-    }
-    class KvFileService
-    IKollektivvertragService <|.. KvFileService
-    KvFileService --> IFileDecoderService
-
     class PocketController
-    PocketController --> IWebSocketAnalysisService
-    PocketController --> IContractAnalyzerAgent
+    PocketController --> WebSocketAnalysisHandler
+    PocketController --> ISchemaProvider
 ```

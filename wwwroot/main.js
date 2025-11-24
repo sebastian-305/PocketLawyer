@@ -1,9 +1,145 @@
-import { startAnalysisSocket, requestMockAnalysis, mockPreValidationMessage } from './network.js';
+import { startAnalysisSocket, requestMockAnalysis, mockPreValidationMessage, fetchSchema } from './network.js';
 import { renderPreValidation as rentPre, renderContractResult as rentRes } from './render-rent.js'; 
 import { renderPreValidation as emploPre, renderContractResult as emploRes } from './render-employment.js';
-import { createLoadingElement, displayUploadError, printer } from './render.js';
+import { createLoadingElement, displayUploadError, printer, createTierAccordion, renderAnalysisResult } from './render.js';
 
 const DEBUG = true;
+
+/**
+ * Renders analysis results using the generic schema-driven renderer.
+ * Creates tier accordions for Basic and Premium analyses.
+ * 
+ * @param {object} results - Object containing basic and premium results
+ * @param {HTMLElement} body - The container element to render into
+ * @param {string} contractType - The contract type ("Rental" or "Employment")
+ */
+async function renderGenericAnalysis(results, body, contractType) {
+    if (DEBUG) console.log('Rendering generic analysis for', contractType, results);
+
+    const container = document.createElement('div');
+    container.classList.add('analysis-container');
+    container.tabIndex = -1;
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.classList.add('header-a');
+    const heading = document.createElement('h2');
+    heading.textContent = 'Deine Vertragsanalyse';
+    hdr.appendChild(heading);
+    container.appendChild(hdr);
+
+    // Create tier accordion container
+    const tierAccordion = document.createElement('div');
+    tierAccordion.classList.add('accordion', 'tier-accordion');
+    tierAccordion.id = 'tier-accordion';
+
+    // Render Basic Analysis
+    if (results.basic) {
+        try {
+            // Fetch schemas for all basic steps
+            // For now, we'll create a combined schema or fetch individual ones
+            // This is a simplified approach - in production, you'd fetch all step schemas
+            const basicContainer = document.createElement('div');
+            
+            // Use the result data directly (already extracted from DTO)
+            const basicData = results.basic;
+            
+            // For now, render without schema (fallback)
+            // TODO: Fetch and combine schemas for all basic steps
+            renderDataWithoutSchema(basicData, basicContainer);
+            
+            const basicAccordion = createTierAccordion(
+                'tier-basic',
+                'Basis Analyse',
+                basicContainer,
+                true // expanded by default
+            );
+            
+            tierAccordion.appendChild(basicAccordion);
+        } catch (error) {
+            if (DEBUG) console.error('Error rendering basic analysis:', error);
+        }
+    }
+
+    // Render Premium Analysis
+    if (results.premium) {
+        try {
+            const premiumContainer = document.createElement('div');
+            
+            // Use the result data directly (already extracted from DTO)
+            const premiumData = results.premium;
+            
+            // For now, render without schema (fallback)
+            // TODO: Fetch and combine schemas for all premium steps
+            renderDataWithoutSchema(premiumData, premiumContainer);
+            
+            const premiumAccordion = createTierAccordion(
+                'tier-premium',
+                'Premium Analyse',
+                premiumContainer,
+                false // collapsed by default
+            );
+            
+            tierAccordion.appendChild(premiumAccordion);
+        } catch (error) {
+            if (DEBUG) console.error('Error rendering premium analysis:', error);
+        }
+    }
+
+    container.appendChild(tierAccordion);
+    body.appendChild(container);
+    container.focus();
+}
+
+/**
+ * Renders data without schema (fallback method).
+ * Creates simple field displays for all properties.
+ * 
+ * @param {object} data - The data to render
+ * @param {HTMLElement} container - The container to render into
+ */
+function renderDataWithoutSchema(data, container) {
+    if (!data || typeof data !== 'object') {
+        container.textContent = String(data || 'N/A');
+        return;
+    }
+
+    // Skip metadata properties from IAnalysisDto interface
+    const skipProperties = ['contractType', 'tier'];
+
+    for (const [key, value] of Object.entries(data)) {
+        // Skip interface properties
+        if (skipProperties.includes(key)) {
+            continue;
+        }
+
+        const fieldWrapper = document.createElement('div');
+        fieldWrapper.classList.add('field-item');
+
+        const label = document.createElement('strong');
+        label.classList.add('field-label');
+        label.textContent = `${key}:`;
+        fieldWrapper.appendChild(label);
+
+        const valueElement = document.createElement('span');
+        valueElement.classList.add('field-value');
+
+        if (value === null || value === undefined) {
+            valueElement.textContent = 'N/A';
+        } else if (typeof value === 'object') {
+            // Nested object or array
+            const nestedContainer = document.createElement('div');
+            nestedContainer.classList.add('field-nested');
+            renderDataWithoutSchema(value, nestedContainer);
+            fieldWrapper.appendChild(nestedContainer);
+        } else {
+            valueElement.textContent = String(value);
+            fieldWrapper.appendChild(valueElement);
+        }
+
+        container.appendChild(fieldWrapper);
+    }
+}
 
 async function uploadFile(event) {
     event.preventDefault();
@@ -40,10 +176,17 @@ async function uploadFile(event) {
             document.getElementById('printbtn').style.visibility = 'visible';
         } else {
             const file = input.files[0];
-            const socket = startAnalysisSocket(file, event.target.contractType.value, (msg) => {
+            let confirmationReceived = false;
+            let basicResultReceived = false;
+            let basicResult = null;
+            let premiumResult = null;
+
+            const socket = startAnalysisSocket(file, event.target.contractType.value, async (msg) => {
+                if (DEBUG) console.log('WebSocket message received:', msg);
+
+                // Handle error messages
                 if (msg?.error) {
                     socket.close();
-                    preAnalysisShown = false;
                     const rawError = typeof msg.error === 'string' ? msg.error : '';
                     const isAiBackendError = /invalid ai response/i.test(rawError)
                         || /fehler beim interpretieren der ki-antwort/i.test(rawError)
@@ -55,31 +198,166 @@ async function uploadFile(event) {
                     if (DEBUG && isAiBackendError && rawError) {
                         console.info('AI backend reported error:', rawError);
                     }
-                    displayUploadError(new Error(errorToShow), body, loading, preAnalysisShown);
+                    displayUploadError(new Error(errorToShow), body, loading, confirmationReceived);
                     return;
                 }
-                if (!preAnalysisShown) {
+
+                // Handle confirmation message (initialization successful)
+                if (msg?.type === 'confirmation') {
+                    if (DEBUG) console.log('Confirmation received:', msg.message);
+                    confirmationReceived = true;
+                    
+                    // Remove loading spinner temporarily
+                    if (body.contains(loading)) {
+                        body.removeChild(loading);
+                    }
+                    
+                    // Show confirmation message to user
+                    const confirmationDiv = document.createElement('div');
+                    confirmationDiv.classList.add('alert', 'alert-success');
+                    confirmationDiv.setAttribute('role', 'alert');
+                    confirmationDiv.id = 'confirmation-message';
+                    confirmationDiv.innerHTML = `
+                        <strong>✓ Vertrag akzeptiert</strong><br>
+                        Die Analyse wurde gestartet...
+                    `;
+                    body.appendChild(confirmationDiv);
+                    
+                    // Add loading spinner back
+                    body.appendChild(loading);
+                    return;
+                }
+
+                // Handle result messages (basic and premium)
+                if (msg?.type === 'result') {
+                    if (DEBUG) console.log('Result received:', msg.data);
+
+                    const contractTypeMap = {
+                        "rental-analysis": "Rental",
+                        "employment-analysis": "Employment"
+                    };
+                    const contractType = contractTypeMap[analysisType] || "Rental";
+
+                    // Determine if this is basic or premium based on what we've received
+                    if (!basicResultReceived) {
+                        // First result is basic - extract from data.result
+                        basicResult = msg.data.result;
+                        basicResultReceived = true;
+                        if (DEBUG) console.log('Basic result received, rendering immediately', basicResult);
+
+                        // Remove confirmation message if present
+                        const confirmationMsg = document.getElementById('confirmation-message');
+                        if (confirmationMsg) {
+                            body.removeChild(confirmationMsg);
+                        }
+
+                        // Remove loading spinner temporarily
+                        if (body.contains(loading)) {
+                            body.removeChild(loading);
+                        }
+
+                        // Render basic result immediately
+                        try {
+                            await renderGenericAnalysis(
+                                { basic: basicResult, premium: null },
+                                body,
+                                contractType
+                            );
+                        } catch (error) {
+                            if (DEBUG) console.error('Generic renderer failed for basic, using legacy:', error);
+                            // Fallback to legacy renderer
+                            switch (analysisType) {
+                                case "rental-analysis":
+                                    rentRes({ basic: basicResult, premium: null }, body);
+                                    break;
+                                case "employment-analysis":
+                                    emploRes({ basic: basicResult, premium: null }, body);
+                                    break;
+                            }
+                        }
+
+                        // Add loading spinner back for premium analysis
+                        body.appendChild(loading);
+                        return;
+                    } else {
+                        // Second result is premium - extract from data.result
+                        premiumResult = msg.data.result;
+                        if (DEBUG) console.log('Premium result received, rendering complete analysis');
+
+                        // Remove loading spinner
+                        if (body.contains(loading)) {
+                            body.removeChild(loading);
+                        }
+
+                        // Re-render with both basic and premium results
+                        try {
+                            // Clear body and render complete analysis
+                            body.replaceChildren();
+                            await renderGenericAnalysis(
+                                { basic: basicResult, premium: premiumResult },
+                                body,
+                                contractType
+                            );
+                        } catch (error) {
+                            if (DEBUG) console.error('Generic renderer failed for complete analysis, using legacy:', error);
+                            // Fallback to legacy renderer
+                            body.replaceChildren();
+                            switch (analysisType) {
+                                case "rental-analysis":
+                                    rentRes({ basic: basicResult, premium: premiumResult }, body);
+                                    break;
+                                case "employment-analysis":
+                                    emploRes({ basic: basicResult, premium: premiumResult }, body);
+                                    break;
+                            }
+                        }
+
+                        // Store results
+                        sessionStorage.setItem(
+                            'analysisResult',
+                            JSON.stringify({
+                                analysisType,
+                                basic: basicResult,
+                                premium: premiumResult,
+                            }),
+                        );
+
+                        document.getElementById('printbtn').style.visibility = 'visible';
+                        socket.close();
+                    }
+                    return;
+                }
+
+                // Handle legacy message format (for backward compatibility)
+                if (!confirmationReceived && (msg?.isReadable !== undefined || msg?.isContract !== undefined)) {
+                    if (DEBUG) console.log('Legacy pre-validation message received');
                     preMessage = msg;
                     body.replaceChildren();
                     switch (analysisType) {
-                        case "rent-analysis":
+                        case "rental-analysis":
                             rentPre(preMessage, body);
                             break;
                         case "employment-analysis":
                             emploPre(preMessage, body);
                             break;
                     }
-                    preAnalysisShown = true;
+                    confirmationReceived = true;
                     if (!msg.isReadable || !msg.isContract) {
                         socket.close();
                     } else {
                         body.appendChild(loading);
                     }
-                } else {
-                    if(DEBUG) console.log(msg);
-                    body.removeChild(loading);
+                    return;
+                }
+
+                // Handle legacy result format (for backward compatibility)
+                if (confirmationReceived && !msg?.type) {
+                    if (DEBUG) console.log('Legacy result message received');
+                    if (body.contains(loading)) {
+                        body.removeChild(loading);
+                    }
                     switch (analysisType) {
-                        case "rent-analysis":
+                        case "rental-analysis":
                             rentRes(msg, body);
                             break;
                         case "employment-analysis":
@@ -98,8 +376,9 @@ async function uploadFile(event) {
                     socket.close();
                 }
             });
+
             socket.addEventListener('error', () => {
-                displayUploadError(new Error('WebSocket Fehler'), body, loading, preAnalysisShown);
+                displayUploadError(new Error('WebSocket Fehler'), body, loading, confirmationReceived);
             });
         }
     } catch (ex) {
@@ -131,23 +410,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document
         .getElementById('restoreBtn')
-        .addEventListener('click', () => {
+        .addEventListener('click', async () => {
             const stored = sessionStorage.getItem('analysisResult');
             if (stored) {
-                const { validation, analysis, analysisType } = JSON.parse(stored);
+                const data = JSON.parse(stored);
                 const body = document.getElementById('evaluation-body');
                 body.replaceChildren();
-                switch (analysisType) {
-                    case 'rent-analysis':
-                        rentPre(validation, body);
-                        rentRes(analysis, body);
-                        break;
-                    case 'employment-analysis':
-                    default:
-                        emploPre(validation, body);
-                        emploRes(analysis, body);
-                        break;
+                
+                // Check if it's new format (has basic/premium) or old format (has validation/analysis)
+                if (data.basic && data.premium) {
+                    // New format
+                    const contractTypeMap = {
+                        "rental-analysis": "Rental",
+                        "employment-analysis": "Employment"
+                    };
+                    const contractType = contractTypeMap[data.analysisType] || "Rental";
+                    
+                    try {
+                        await renderGenericAnalysis(
+                            { basic: data.basic, premium: data.premium },
+                            body,
+                            contractType
+                        );
+                    } catch (error) {
+                        if (DEBUG) console.error('Generic renderer failed on restore:', error);
+                        // Fallback to legacy
+                        switch (data.analysisType) {
+                            case 'rental-analysis':
+                                rentRes({ basic: data.basic, premium: data.premium }, body);
+                                break;
+                            case 'employment-analysis':
+                                emploRes({ basic: data.basic, premium: data.premium }, body);
+                                break;
+                        }
+                    }
+                } else {
+                    // Old format
+                    const { validation, analysis, analysisType } = data;
+                    switch (analysisType) {
+                        case 'rental-analysis':
+                            if (validation) rentPre(validation, body);
+                            rentRes(analysis, body);
+                            break;
+                        case 'employment-analysis':
+                        default:
+                            if (validation) emploPre(validation, body);
+                            emploRes(analysis, body);
+                            break;
+                    }
                 }
+                
                 document.getElementById('printbtn').style.visibility = 'visible';
                 const modal = bootstrap.Modal.getOrCreateInstance(
                     evaluationModalEl,

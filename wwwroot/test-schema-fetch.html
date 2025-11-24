@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema Fetch Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+        .cache-info {
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Schema Fetch Utility Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Controls</h2>
+        <button onclick="testValidSchema()">Test Valid Schema (Rental/Basic/General)</button>
+        <button onclick="testInvalidSchema()">Test Invalid Schema (404)</button>
+        <button onclick="testCaching()">Test Caching</button>
+        <button onclick="testMultipleSchemas()">Test Multiple Schemas</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script type="module">
+        import { fetchSchema } from './network.js';
+        
+        window.fetchSchema = fetchSchema;
+        
+        window.testValidSchema = async function() {
+            addResult('Testing valid schema fetch...', 'info');
+            try {
+                const start = performance.now();
+                const schema = await fetchSchema('Rental', 'Basic', 'General');
+                const duration = (performance.now() - start).toFixed(2);
+                
+                if (schema) {
+                    addResult(`✓ Schema fetched successfully in ${duration}ms`, 'success');
+                    addResult(`Schema type: ${schema.type}`, 'info');
+                    addResult(`Properties count: ${Object.keys(schema.properties || {}).length}`, 'info');
+                    addResult(`Has x-styling: ${hasXStyling(schema)}`, 'info');
+                    addResult(JSON.stringify(schema, null, 2), 'code');
+                } else {
+                    addResult('✗ Schema is null', 'error');
+                }
+            } catch (error) {
+                addResult(`✗ Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.testInvalidSchema = async function() {
+            addResult('Testing invalid schema fetch (should return null)...', 'info');
+            try {
+                const start = performance.now();
+                const schema = await fetchSchema('Invalid', 'Invalid', 'Invalid');
+                const duration = (performance.now() - start).toFixed(2);
+                
+                if (schema === null) {
+                    addResult(`✓ Correctly returned null for invalid schema in ${duration}ms`, 'success');
+                } else {
+                    addResult('✗ Should have returned null for invalid schema', 'error');
+                }
+            } catch (error) {
+                addResult(`✗ Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.testCaching = async function() {
+            addResult('Testing schema caching...', 'info');
+            try {
+                // First fetch
+                const start1 = performance.now();
+                const schema1 = await fetchSchema('Rental', 'Basic', 'Rent');
+                const duration1 = (performance.now() - start1).toFixed(2);
+                addResult(`First fetch: ${duration1}ms`, 'info');
+                
+                // Second fetch (should be cached)
+                const start2 = performance.now();
+                const schema2 = await fetchSchema('Rental', 'Basic', 'Rent');
+                const duration2 = (performance.now() - start2).toFixed(2);
+                addResult(`Second fetch (cached): ${duration2}ms`, 'info');
+                
+                if (schema1 && schema2 && JSON.stringify(schema1) === JSON.stringify(schema2)) {
+                    addResult('✓ Caching works correctly', 'success');
+                    addResult(`Cache speedup: ${(duration1 / duration2).toFixed(1)}x faster`, 'success');
+                } else {
+                    addResult('✗ Caching issue detected', 'error');
+                }
+            } catch (error) {
+                addResult(`✗ Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.testMultipleSchemas = async function() {
+            addResult('Testing multiple schema fetches...', 'info');
+            const schemas = [
+                ['Rental', 'Basic', 'General'],
+                ['Rental', 'Basic', 'Rent'],
+                ['Rental', 'Basic', 'Conditions'],
+                ['Rental', 'Basic', 'Summary'],
+                ['Rental', 'Premium', 'Costs']
+            ];
+            
+            try {
+                const start = performance.now();
+                const results = await Promise.all(
+                    schemas.map(([type, tier, step]) => fetchSchema(type, tier, step))
+                );
+                const duration = (performance.now() - start).toFixed(2);
+                
+                const successCount = results.filter(s => s !== null).length;
+                addResult(`✓ Fetched ${successCount}/${schemas.length} schemas in ${duration}ms`, 'success');
+                
+                results.forEach((schema, i) => {
+                    const [type, tier, step] = schemas[i];
+                    if (schema) {
+                        addResult(`  ✓ ${type}/${tier}/${step}: ${Object.keys(schema.properties || {}).length} properties`, 'info');
+                    } else {
+                        addResult(`  ✗ ${type}/${tier}/${step}: Failed`, 'error');
+                    }
+                });
+            } catch (error) {
+                addResult(`✗ Error: ${error.message}`, 'error');
+            }
+        };
+        
+        window.clearResults = function() {
+            document.getElementById('results').innerHTML = '';
+        };
+        
+        function addResult(message, type) {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-section ${type}`;
+            
+            if (type === 'code') {
+                const pre = document.createElement('pre');
+                pre.textContent = message;
+                div.appendChild(pre);
+            } else {
+                div.textContent = message;
+            }
+            
+            resultsDiv.appendChild(div);
+        }
+        
+        function hasXStyling(schema) {
+            if (!schema.properties) return false;
+            return Object.values(schema.properties).some(prop => 
+                prop && typeof prop === 'object' && 'x-styling' in prop
+            );
+        }
+        
+        // Run initial test on load
+        addResult('Schema fetch utility loaded. Click buttons to run tests.', 'info');
+    </script>
+</body>
+</html>

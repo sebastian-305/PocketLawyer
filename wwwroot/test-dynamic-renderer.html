@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Renderer Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: var(--neutral-bg);
+            padding: 2rem;
+        }
+        .test-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+        }
+        .test-title {
+            color: var(--blue-bg);
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .test-container {
+            border: 2px solid var(--paper-bg);
+            padding: 1rem;
+            border-radius: 5px;
+            min-height: 200px;
+        }
+        .test-controls {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="test-title">Dynamic Renderer Test Suite</h1>
+        <p>This page tests the dynamic renderer with various data structures.</p>
+
+        <!-- Test 1: Basic Rental Analysis -->
+        <div class="test-section">
+            <h2 class="test-title">Test 1: Rental Contract - Basic Analysis</h2>
+            <div class="test-controls">
+                <button class="btn btn-warning" onclick="runTest1()">Run Test</button>
+                <button class="btn btn-light" onclick="clearTest('test1-container')">Clear</button>
+            </div>
+            <div id="test1-container" class="test-container"></div>
+        </div>
+
+        <!-- Test 2: Premium Rental Analysis -->
+        <div class="test-section">
+            <h2 class="test-title">Test 2: Rental Contract - Premium Analysis</h2>
+            <div class="test-controls">
+                <button class="btn btn-warning" onclick="runTest2()">Run Test</button>
+                <button class="btn btn-light" onclick="clearTest('test2-container')">Clear</button>
+            </div>
+            <div id="test2-container" class="test-container"></div>
+        </div>
+
+        <!-- Test 3: Missing/Null Fields -->
+        <div class="test-section">
+            <h2 class="test-title">Test 3: Data with Missing/Null Fields</h2>
+            <div class="test-controls">
+                <button class="btn btn-warning" onclick="runTest3()">Run Test</button>
+                <button class="btn btn-light" onclick="clearTest('test3-container')">Clear</button>
+            </div>
+            <div id="test3-container" class="test-container"></div>
+        </div>
+
+        <!-- Test 4: Deeply Nested Objects -->
+        <div class="test-section">
+            <h2 class="test-title">Test 4: Deeply Nested Objects</h2>
+            <div class="test-controls">
+                <button class="btn btn-warning" onclick="runTest4()">Run Test</button>
+                <button class="btn btn-light" onclick="clearTest('test4-container')">Clear</button>
+            </div>
+            <div id="test4-container" class="test-container"></div>
+        </div>
+
+        <!-- Test 5: Arrays and Lists -->
+        <div class="test-section">
+            <h2 class="test-title">Test 5: Arrays and Lists</h2>
+            <div class="test-controls">
+                <button class="btn btn-warning" onclick="runTest5()">Run Test</button>
+                <button class="btn btn-light" onclick="clearTest('test5-container')">Clear</button>
+            </div>
+            <div id="test5-container" class="test-container"></div>
+        </div>
+
+        <!-- Test 6: Missing x-title Metadata -->
+        <div class="test-section">
+            <h2 class="test-title">Test 6: Missing x-title Metadata (Fallback)</h2>
+            <div class="test-controls">
+                <button class="btn btn-warning" onclick="runTest6()">Run Test</button>
+                <button class="btn btn-light" onclick="clearTest('test6-container')">Clear</button>
+            </div>
+            <div id="test6-container" class="test-container"></div>
+        </div>
+
+        <!-- Test 7: Full Analysis with Tier Accordions -->
+        <div class="test-section">
+            <h2 class="test-title">Test 7: Full Analysis with Tier Accordions</h2>
+            <div class="test-controls">
+                <button class="btn btn-warning" onclick="runTest7()">Run Test</button>
+                <button class="btn btn-light" onclick="clearTest('test7-container')">Clear</button>
+            </div>
+            <div id="test7-container" class="test-container"></div>
+        </div>
+
+        <!-- Test 8: WebSocket Message Flow Simulation -->
+        <div class="test-section">
+            <h2 class="test-title">Test 8: WebSocket Message Flow</h2>
+            <div class="test-controls">
+                <button class="btn btn-warning" onclick="runTest8()">Run Test</button>
+                <button class="btn btn-light" onclick="clearTest('test8-container')">Clear</button>
+            </div>
+            <div id="test8-container" class="test-container"></div>
+            <div id="test8-log" style="margin-top: 1rem; padding: 1rem; background: #f0f0f0; border-radius: 5px; font-family: monospace; font-size: 12px;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="test-dynamic-renderer.mjs"></script>
+</body>
+</html>

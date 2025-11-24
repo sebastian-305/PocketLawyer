@@ -1,5 +1,5 @@
+using PocketLawyer.Domain;
 using PocketLawyer.Domain.Dtos;
-using PocketLawyer.Web;
 
 namespace PocketLawyer.Application.Interfaces;
 

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test: Tier Accordion Structure</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        .test-results {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-pass {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .test-fail {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .test-item {
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Test: Tier Accordion Structure</h1>
+        
+        <div class="test-results">
+            <h3>Test Results</h3>
+            <div id="test-output"></div>
+        </div>
+        
+        <div class="modal-content p-4">
+            <h2 class="mb-3">DEINE VERTRAGSANALYSE</h2>
+            
+            <!-- This is where the tier accordions will be rendered -->
+            <div id="test-container" class="tier-accordion"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createTierAccordion } from './render.js';
+
+        const testOutput = document.getElementById('test-output');
+        let testsPassed = 0;
+        let testsFailed = 0;
+
+        function logTest(message, passed) {
+            const div = document.createElement('div');
+            div.classList.add('test-item');
+            div.innerHTML = `<span class="${passed ? 'test-pass' : 'test-fail'}">${passed ? '✓' : '✗'}</span> ${message}`;
+            testOutput.appendChild(div);
+            
+            if (passed) {
+                testsPassed++;
+            } else {
+                testsFailed++;
+            }
+        }
+
+        function assert(condition, message) {
+            logTest(message, condition);
+            if (!condition) {
+                console.error(`Assertion failed: ${message}`);
+            }
+        }
+
+        // Run tests
+        console.log('Starting tier accordion tests...');
+
+        // Test 1: Create expanded accordion
+        const testContent1 = document.createElement('div');
+        testContent1.textContent = 'Test content';
+        const expandedAccordion = createTierAccordion('test-expanded', 'Test Expanded', testContent1, true);
+        
+        assert(expandedAccordion !== null, 'Expanded accordion should be created');
+        assert(expandedAccordion.classList.contains('accordion-item'), 'Should have accordion-item class');
+        
+        const expandedButton = expandedAccordion.querySelector('.accordion-button');
+        assert(expandedButton !== null, 'Should have accordion button');
+        assert(!expandedButton.classList.contains('collapsed'), 'Expanded accordion button should not have collapsed class');
+        assert(expandedButton.getAttribute('aria-expanded') === 'true', 'Expanded accordion should have aria-expanded=true');
+        
+        const expandedCollapse = expandedAccordion.querySelector('.accordion-collapse');
+        assert(expandedCollapse !== null, 'Should have collapse element');
+        assert(expandedCollapse.classList.contains('show'), 'Expanded accordion should have show class');
+        assert(expandedCollapse.id === 'test-expanded', 'Collapse element should have correct ID');
+
+        // Test 2: Create collapsed accordion
+        const testContent2 = document.createElement('div');
+        testContent2.textContent = 'Test content';
+        const collapsedAccordion = createTierAccordion('test-collapsed', 'Test Collapsed', testContent2, false);
+        
+        assert(collapsedAccordion !== null, 'Collapsed accordion should be created');
+        
+        const collapsedButton = collapsedAccordion.querySelector('.accordion-button');
+        assert(collapsedButton.classList.contains('collapsed'), 'Collapsed accordion button should have collapsed class');
+        assert(collapsedButton.getAttribute('aria-expanded') === 'false', 'Collapsed accordion should have aria-expanded=false');
+        
+        const collapsedCollapse = collapsedAccordion.querySelector('.accordion-collapse');
+        assert(!collapsedCollapse.classList.contains('show'), 'Collapsed accordion should not have show class');
+
+        // Test 3: Verify button attributes
+        assert(expandedButton.getAttribute('data-bs-toggle') === 'collapse', 'Button should have data-bs-toggle=collapse');
+        assert(expandedButton.getAttribute('data-bs-target') === '#test-expanded', 'Button should target correct collapse element');
+        assert(expandedButton.getAttribute('aria-controls') === 'test-expanded', 'Button should have correct aria-controls');
+        assert(expandedButton.textContent === 'Test Expanded', 'Button should display correct title');
+
+        // Create visual example
+        const basicContent = document.createElement('div');
+        basicContent.innerHTML = `
+            <div class="section">
+                <h3>Allgemeine Vertragsdaten</h3>
+                <p><strong>Vertragstyp:</strong> Mietvertrag</p>
+                <p><strong>Mieter:</strong> Max Mustermann</p>
+                <p><strong>Vermieter:</strong> Immobilien GmbH</p>
+            </div>
+            <div class="section">
+                <h3>Mietkonditionen</h3>
+                <p><strong>Kaltmiete:</strong> 800 EUR</p>
+                <p><strong>Nebenkosten:</strong> 150 EUR</p>
+                <p><strong>Warmmiete:</strong> 950 EUR</p>
+            </div>
+        `;
+
+        const premiumContent = document.createElement('div');
+        premiumContent.innerHTML = `
+            <div class="section">
+                <h3>Mietzahlung und Nebenkosten</h3>
+                <p><strong>Zusammenfassung:</strong> Die Nebenkostenregelung ist transparent.</p>
+                <p><strong>Bewertung:</strong> Zulässig</p>
+                <p><strong>Risiko Score:</strong> Grün</p>
+            </div>
+            <div class="section">
+                <h3>Mietdauer und Kündigung</h3>
+                <p><strong>Zusammenfassung:</strong> Kündigungsfristen entsprechen dem Gesetz.</p>
+                <p><strong>Bewertung:</strong> Zulässig</p>
+                <p><strong>Risiko Score:</strong> Grün</p>
+            </div>
+        `;
+
+        const container = document.getElementById('test-container');
+        
+        // Basic Analysis - expanded by default
+        const basicAccordion = createTierAccordion(
+            'tier-basic',
+            'Basis Analyse',
+            basicContent,
+            true
+        );
+        
+        // Premium Analysis - collapsed by default
+        const premiumAccordion = createTierAccordion(
+            'tier-premium',
+            'Premium Analyse',
+            premiumContent,
+            false
+        );
+
+        container.appendChild(basicAccordion);
+        container.appendChild(premiumAccordion);
+
+        // Test 4: Verify visual structure
+        assert(container.children.length === 2, 'Container should have 2 accordion items');
+        
+        const firstAccordion = container.children[0];
+        const secondAccordion = container.children[1];
+
+        const basicButton = firstAccordion.querySelector('.accordion-button');
+        assert(basicButton.textContent === 'Basis Analyse', 'First accordion should be Basic Analysis');
+        assert(!basicButton.classList.contains('collapsed'), 'Basic Analysis should be expanded');
+        
+        const premiumButton = secondAccordion.querySelector('.accordion-button');
+        assert(premiumButton.textContent === 'Premium Analyse', 'Second accordion should be Premium Analysis');
+        assert(premiumButton.classList.contains('collapsed'), 'Premium Analysis should be collapsed');
+
+        // Display summary
+        const summary = document.createElement('div');
+        summary.classList.add('test-item', 'mt-3');
+        summary.innerHTML = `<strong>Summary: ${testsPassed} passed, ${testsFailed} failed</strong>`;
+        testOutput.appendChild(summary);
+
+        if (testsFailed === 0) {
+            console.log('✅ All tests passed!');
+        } else {
+            console.error(`❌ ${testsFailed} test(s) failed`);
+        }
+    </script>
+</body>
+</html>

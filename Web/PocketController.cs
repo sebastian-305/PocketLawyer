@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PocketLawyer.Application.Agents;
+using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.UseCases;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Infrastructure;
 using PocketLawyer.Options;
 using System.Text.Json;
 
@@ -14,27 +16,47 @@ namespace PocketLawyer.Web;
 public class PocketController : ControllerBase
 {
     private readonly ILogger<PocketController> _logger;
-
     private readonly IWebHostEnvironment _environment;
     private readonly PathOptions _paths;
-    private readonly IWebSocketAnalysisService _socketService;
-    private readonly IContractAnalyzerAgent _analyzeEmploymentAgent;
-    private readonly IContractAnalyzerAgent _analyzeRentAgent;
+    private readonly WebSocketAnalysisHandler _webSocketHandler;
+    private readonly ISchemaProvider _schemaProvider;
 
     public PocketController(
         ILogger<PocketController> logger,
         IOptions<PathOptions> pathOptions,
         IWebHostEnvironment environment,
-        IWebSocketAnalysisService socketService,
-             [FromKeyedServices("employment")] IContractAnalyzerAgent analyzeEmploymentAgent,
-        [FromKeyedServices("rent")] IContractAnalyzerAgent analyzeRentAgent)
+        WebSocketAnalysisHandler webSocketHandler,
+        ISchemaProvider schemaProvider)
     {
         _logger = logger;
         _paths = pathOptions.Value;
         _environment = environment;
-        _socketService = socketService;
-        _analyzeEmploymentAgent = analyzeEmploymentAgent;
-        _analyzeRentAgent = analyzeRentAgent;
+        _webSocketHandler = webSocketHandler;
+        _schemaProvider = schemaProvider;
+    }
+
+    /// <summary>
+    /// Retrieves the JSON schema for a specific contract analysis step.
+    /// </summary>
+    /// <param name="contractType">Type of contract (e.g., "Rental", "Employment")</param>
+    /// <param name="tier">Analysis tier (e.g., "Basic", "Premium")</param>
+    /// <param name="step">Analysis step name (e.g., "General", "Costs")</param>
+    /// <returns>JSON schema as JsonObject</returns>
+    [HttpGet("/api/schemas/{contractType}/{tier}/{step}")]
+    public ActionResult<object> GetSchema(string contractType, string tier, string step)
+    {
+        _logger.LogInformation("Retrieving schema for {ContractType}/{Tier}/{Step}", contractType, tier, step);
+
+        try
+        {
+            var schema = _schemaProvider.GetSchemaForEndpoint(contractType, tier, step);
+            return Ok(schema);
+        }
+        catch (SchemaNotFoundException ex)
+        {
+            _logger.LogWarning(ex, "Schema not found: {SchemaKey}", ex.SchemaKey);
+            return NotFound(new { error = ex.Message, schemaKey = ex.SchemaKey });
+        }
     }
 
     [HttpGet("/employment-mockdata")]
@@ -86,33 +108,35 @@ public class PocketController : ControllerBase
         return Ok(dto);
     }
 
+    /// <summary>
+    /// WebSocket endpoint for employment contract analysis.
+    /// The agent is injected by the DI container based on the endpoint.
+    /// </summary>
     [HttpGet("/employment-analysis")]
-    public async Task<ActionResult> AnalyzeEmploymentViaWebSocket()
+    public async Task<ActionResult> AnalyzeEmploymentViaWebSocket(
+        [FromServices] EmploymentContractAgent agent)
     {
-        _logger.LogInformation("Request via {address}", Request.Host);
+        _logger.LogInformation("Employment contract analysis request via {address}", Request.Host);
         if (!HttpContext.WebSockets.IsWebSocketRequest)
-            return BadRequest();
+            return BadRequest("WebSocket connection required");
 
-
-        await _socketService.HandleAsync(HttpContext, _analyzeEmploymentAgent);
+        await _webSocketHandler.HandleAsync(HttpContext, agent);
         return new EmptyResult();
     }
 
-    [HttpGet("/rent-analysis")]
-    public async Task<ActionResult> AnalyzeRentViaWebSocket()
+    /// <summary>
+    /// WebSocket endpoint for rental contract analysis.
+    /// The agent is injected by the DI container based on the endpoint.
+    /// </summary>
+    [HttpGet("/rental-analysis")]
+    public async Task<ActionResult> AnalyzeRentalViaWebSocket(
+        [FromServices] RentalContractAgent agent)
     {
-        _logger.LogInformation("Request via {address}", Request.Host);
+        _logger.LogInformation("Rental contract analysis request via {address}", Request.Host);
         if (!HttpContext.WebSockets.IsWebSocketRequest)
-            return BadRequest();
+            return BadRequest("WebSocket connection required");
 
-
-        await _socketService.HandleAsync(HttpContext, _analyzeRentAgent);
+        await _webSocketHandler.HandleAsync(HttpContext, agent);
         return new EmptyResult();
     }
-}
-
-public enum AgentType
-{
-    Employment,
-    Rent
 }

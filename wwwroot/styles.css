@@ -541,8 +541,39 @@ body {
     border-radius: 10px;
 }
 
+/* Tier-level accordion styling (Basic/Premium) */
+.tier-accordion .accordion-item {
+    background-color: var(--neutral-bg);
+    border: 2px solid var(--paper-bg);
+}
 
-.accordion-button {
+.tier-accordion .accordion-button {
+    background-color: var(--neutral-bg);
+    color: var(--blue-bg);
+    font-size: 18px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 1.25rem;
+}
+
+.tier-accordion .accordion-button:not(.collapsed) {
+    background-color: var(--neutral-bg);
+    color: var(--blue-bg);
+    box-shadow: none;
+}
+
+.tier-accordion .accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--highlight);
+}
+
+.tier-accordion .accordion-body {
+    background-color: var(--neutral-bg);
+    padding: 1.5rem;
+}
+
+/* Section-level accordion styling (nested within tiers) */
+.section-accordion .accordion-button {
     background-color: var(--paper-bg);
     color: black;
     font-size: 16px;
@@ -550,15 +581,123 @@ body {
     text-transform: uppercase;
 }
 
-.accordion-button:not(.collapsed) {
+.section-accordion .accordion-button:not(.collapsed) {
     background-color: var(--paper-bg);
     color: black;
 }
 
-.accordion-button:focus {
+.section-accordion .accordion-button:focus {
     box-shadow: none;
 }
 
 .accordion-body.section {
     padding: 20px;
+}
+
+/* Dynamic Renderer Field Styling */
+.field-item {
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.field-item:last-child {
+    border-bottom: none;
+}
+
+.field-label {
+    display: inline-block;
+    min-width: 150px;
+    margin-right: 1rem;
+    color: black;
+    font-weight: 700;
+}
+
+.field-value {
+    display: inline;
+    color: black;
+    font-weight: 400;
+}
+
+/* Nested field styling */
+.field-nested {
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--highlight);
+}
+
+.field-object .field-nested {
+    margin-top: 0.75rem;
+}
+
+/* Array field styling */
+.field-array {
+    display: block;
+}
+
+.field-array-list {
+    list-style: none;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.field-array-list li {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+}
+
+.field-array-list li:before {
+    content: "•";
+    color: var(--highlight);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+/* Responsive field styling */
+@media (max-width: 768px) {
+    .field-label {
+        display: block;
+        min-width: auto;
+        margin-bottom: 0.25rem;
+    }
+
+    .field-value {
+        display: block;
+    }
+
+    .field-nested {
+        margin-left: 0.75rem;
+        padding-left: 0.5rem;
+    }
+}
+
+/* Print styles for dynamic renderer */
+@media print {
+    .field-item {
+        page-break-inside: avoid;
+    }
+
+    .field-nested {
+        border-left-color: #000;
+    }
+
+    .accordion-button {
+        display: none;
+    }
+
+    .accordion-collapse {
+        display: block !important;
+        height: auto !important;
+    }
+
+    .tier-accordion .accordion-item,
+    .section-accordion .accordion-item {
+        border: 1px solid #000;
+        margin-bottom: 1rem;
+    }
 }

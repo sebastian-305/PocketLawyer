@@ -10,6 +10,7 @@ using PocketLawyer.Infrastructure.AiServices.Claude;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.AiServices.Nebius;
 using PocketLawyer.Infrastructure.FileDecoding;
+using PocketLawyer.Infrastructure.SchemaProviders;
 using PocketLawyer.Options;
 
 
@@ -57,10 +58,7 @@ builder.Services
 builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
-// inner (echte Implementierung)
-builder.Services
-    .AddHttpClient<WebSocketAgentAnalysisService>()
-    .AddHttpMessageHandler<RedactingLoggingHandler>();
+
 // inner (echte Implementierung)
 builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini:inner");
 
@@ -96,9 +94,19 @@ builder.Services.AddScoped<IFileValidatorService, FileValidatorService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
 builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
-builder.Services.AddKeyedScoped<IContractAnalyzerAgent, AnalyzeEmploymentAgent>("employment");
-builder.Services.AddKeyedScoped<IContractAnalyzerAgent, AnalyzeRentAgent>("rent");
-builder.Services.AddScoped<IWebSocketAnalysisService, WebSocketAgentAnalysisService>();
+
+// Schema Provider and Validator (Singletons for performance)
+builder.Services.AddSingleton<ISchemaProvider, PocketLawyer.Infrastructure.SchemaProviders.SchemaProvider>();
+builder.Services.AddSingleton<ISchemaValidator, PocketLawyer.Infrastructure.SchemaValidator>();
+
+// New Contract Analysis Agents (Scoped - both keyed and direct registration)
+builder.Services.AddScoped<RentalContractAgent>();
+builder.Services.AddScoped<EmploymentContractAgent>();
+builder.Services.AddKeyedScoped<IContractAnalysisAgent, RentalContractAgent>("rental");
+builder.Services.AddKeyedScoped<IContractAnalysisAgent, EmploymentContractAgent>("employment");
+
+// WebSocket Analysis Handler
+builder.Services.AddScoped<WebSocketAnalysisHandler>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
