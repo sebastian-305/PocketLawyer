@@ -25,9 +25,19 @@ builder.Host.UseSerilog((context, configuration) =>
 {
     var isDevelopment = context.HostingEnvironment.IsDevelopment();
     var consoleLogLevel = isDevelopment ? LogEventLevel.Debug : LogEventLevel.Information;
+    var fileMinimumLevel = Enum.TryParse(fileLoggingOptions.MinimumLevel, true, out LogEventLevel parsedFileLevel)
+        ? parsedFileLevel
+        : LogEventLevel.Information;
 
     configuration
-        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Configuration(context.Configuration);
+
+    if (isDevelopment)
+    {
+        configuration.MinimumLevel.Is(LogEventLevel.Debug);
+    }
+
+    configuration
         .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
         .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
         .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
@@ -44,7 +54,7 @@ builder.Host.UseSerilog((context, configuration) =>
         configuration.WriteTo.File(
             path: System.IO.Path.Combine(fileLoggingOptions.Path, "log-.txt"),
             rollingInterval: RollingInterval.Day,
-            restrictedToMinimumLevel: LogEventLevel.Information,
+            restrictedToMinimumLevel: fileMinimumLevel,
             outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
         );
     }
