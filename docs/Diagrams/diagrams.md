@@ -3,7 +3,7 @@
 ## Layered Component Diagram
 
 ```mermaid
-classDiagram
+graph TD
     subgraph Web
         FE[index.html<br>main.js<br>render.js]
         NET[network.js]
@@ -41,8 +41,8 @@ classDiagram
     WSH --> FVS
     FVS --> FDS
     WSH --> ICAA
-    ICAA <|.. RCA
-    ICAA <|.. ECA
+    ICAA -- implements --> RCA
+    ICAA -- implements --> ECA
     RCA --> SP
     RCA --> SV
     RCA --> PP
