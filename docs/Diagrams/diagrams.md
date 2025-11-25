@@ -3,7 +3,7 @@
 ## Layered Component Diagram
 
 ```mermaid
-graph TD
+classDiagram
     subgraph Web
         FE[index.html<br>main.js<br>render.js]
         NET[network.js]
