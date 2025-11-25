@@ -41,8 +41,8 @@ graph TD
     WSH --> FVS
     FVS --> FDS
     WSH --> ICAA
-    ICAA -- implements --> RCA
-    ICAA -- implements --> ECA
+    ICAA --> RCA
+    ICAA --> ECA
     RCA --> SP
     RCA --> SV
     RCA --> PP
