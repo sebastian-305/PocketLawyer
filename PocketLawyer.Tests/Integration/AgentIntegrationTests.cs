@@ -3,6 +3,7 @@ using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Tests.Integration;
@@ -44,7 +45,9 @@ public class AgentIntegrationTests
     public async Task RentalContract_CompleteAnalysisFlow_Success()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
         var contractText = "Mietvertrag zwischen Max Mustermann und Maria Musterfrau für die Wohnung in der Musterstraße 1...";
 
         SetupReadabilityCheck(true);
@@ -95,7 +98,9 @@ public class AgentIntegrationTests
     public async Task RentalContract_WithInvalidFile_FailsInitialization()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
         var contractText = "Unreadable garbage text...";
 
         SetupReadabilityCheck(false);
@@ -113,7 +118,9 @@ public class AgentIntegrationTests
     public async Task RentalContract_WithWrongContractType_FailsInitialization()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
         var contractText = "Arbeitsvertrag zwischen Firma GmbH und Max Mustermann...";
 
         SetupReadabilityCheck(true);
@@ -132,7 +139,9 @@ public class AgentIntegrationTests
     public async Task RentalContract_AnalysisWithoutInitialization_ThrowsException()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => agent.AnalyzeBasicAsync());
@@ -143,7 +152,9 @@ public class AgentIntegrationTests
     public async Task RentalContract_ParallelStepExecution_AllStepsComplete()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
         var contractText = "Mietvertrag...";
 
         SetupReadabilityCheck(true);
@@ -187,7 +198,9 @@ public class AgentIntegrationTests
     public async Task RentalContract_OneStepFails_OthersContinue()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
         var contractText = "Mietvertrag...";
 
         SetupReadabilityCheck(true);
@@ -237,7 +250,9 @@ public class AgentIntegrationTests
     public async Task RentalContract_PremiumAnalysis_IndependentFromBasic()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
         var contractText = "Mietvertrag...";
 
         SetupReadabilityCheck(true);
@@ -265,7 +280,9 @@ public class AgentIntegrationTests
     public async Task EmploymentContract_Initialization_Success()
     {
         // Arrange
-        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _employmentLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _employmentLogger.Object);
         var contractText = "Arbeitsvertrag zwischen Firma GmbH und Max Mustermann...";
 
         SetupReadabilityCheck(true);
@@ -283,7 +300,9 @@ public class AgentIntegrationTests
     public async Task EmploymentContract_AnalysisStub_ThrowsNotImplemented()
     {
         // Arrange
-        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _employmentLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _employmentLogger.Object);
         var contractText = "Arbeitsvertrag...";
 
         SetupReadabilityCheck(true);
@@ -310,7 +329,9 @@ public class AgentIntegrationTests
     public async Task Agent_WithAiServiceFailure_HandlesGracefully()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
         var contractText = "Mietvertrag...";
 
         SetupReadabilityCheck(true);
@@ -341,7 +362,9 @@ public class AgentIntegrationTests
     public async Task Agent_WithEmptyContractText_FailsInitialization()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _rentalLogger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _rentalLogger.Object);
 
         // Act & Assert
         var result1 = await agent.InitializeAsync("");
@@ -360,18 +383,20 @@ public class AgentIntegrationTests
 
     private void SetupReadabilityCheck(bool isReadable)
     {
-        _aiClient.Setup(x => x.SendPrompt(
+        var response = new AiResponse($"{{\"isReadable\": {isReadable.ToString().ToLower()}}}", 100, 50, 150);
+        _aiClient.Setup(x => x.SendPromptWithMetadata(
             It.Is<string>(s => s.Contains("lesbar") || s.Contains("readable")),
-            It.IsAny<object>()))
-            .ReturnsAsync($"{{\"isReadable\": {isReadable.ToString().ToLower()}}}");
+            It.IsAny<BinaryData>()))
+            .ReturnsAsync(response);
     }
 
     private void SetupContractTypeDetection(string contractType)
     {
-        _aiClient.Setup(x => x.SendPrompt(
+        var response = new AiResponse($"{{\"contractType\": \"{contractType}\"}}", 100, 50, 150);
+        _aiClient.Setup(x => x.SendPromptWithMetadata(
             It.Is<string>(s => s.Contains("Vertragstyp") || s.Contains("contract type")),
-            It.IsAny<object>()))
-            .ReturnsAsync($"{{\"contractType\": \"{contractType}\"}}");
+            It.IsAny<BinaryData>()))
+            .ReturnsAsync(response);
     }
 
     private void SetupBasicAnalysisResponses()

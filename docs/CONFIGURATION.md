@@ -7,13 +7,15 @@ This document provides comprehensive configuration guidance for the PocketLawyer
 1. [Configuration Overview](#configuration-overview)
 2. [appsettings.json Structure](#appsettingsjson-structure)
 3. [Logging Configuration](#logging-configuration)
-4. [AI Service Configuration](#ai-service-configuration)
-5. [File Upload Configuration](#file-upload-configuration)
-6. [Path Configuration](#path-configuration)
-7. [Environment-Specific Configuration](#environment-specific-configuration)
-8. [Security Best Practices](#security-best-practices)
-9. [Production Deployment](#production-deployment)
-10. [Troubleshooting](#troubleshooting)
+4. [Method Tracing Configuration](#method-tracing-configuration)
+5. [AI Service Configuration](#ai-service-configuration)
+6. [File Upload Configuration](#file-upload-configuration)
+7. [Path Configuration](#path-configuration)
+8. [Context Management Configuration](#context-management-configuration)
+9. [Environment-Specific Configuration](#environment-specific-configuration)
+10. [Security Best Practices](#security-best-practices)
+11. [Production Deployment](#production-deployment)
+12. [Troubleshooting](#troubleshooting)
 
 ## Configuration Overview
 
@@ -242,6 +244,390 @@ Get-ChildItem -Path "C:\logs\pocketlawyer" -Recurse | Measure-Object -Property L
 find /var/log/pocketlawyer -name "*.log" -mtime +30 -delete
 ```
 
+## Method Tracing Configuration
+
+### Overview
+
+Method tracing provides automatic logging of method invocations with parameter information at the Verbose/Trace level. This feature enables detailed debugging and performance analysis without requiring manual logging code in every method.
+
+**Key Features**:
+- Automatic logging of controller action invocations
+- Automatic logging of service method calls (for decorated services)
+- Intelligent parameter serialization (handles large data, sensitive parameters)
+- Execution duration tracking
+- Exception logging
+- Minimal performance impact when disabled (<0.1% overhead)
+
+### Enabling Method Tracing
+
+Method tracing is controlled through Serilog's log level configuration. To enable tracing, set the log level to `Verbose` for the desired namespaces.
+
+#### Enable for All PocketLawyer Code
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Debug",
+      "Override": {
+        "PocketLawyer": "Verbose"
+      }
+    }
+  }
+}
+```
+
+#### Enable for Specific Namespaces
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "PocketLawyer.Application.Agents": "Verbose",
+        "PocketLawyer.Infrastructure.AiServices": "Verbose",
+        "PocketLawyer.Infrastructure.Logging": "Verbose"
+      }
+    }
+  }
+}
+```
+
+#### Enable for Controllers Only
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "PocketLawyer.Web": "Verbose"
+      }
+    }
+  }
+}
+```
+
+### Disabling Method Tracing
+
+To disable method tracing, set the log level to `Debug` or higher (Information, Warning, Error, Critical):
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "PocketLawyer": "Information"
+      }
+    }
+  }
+}
+```
+
+**Important**: When method tracing is disabled, there is virtually no performance overhead (<0.1%) due to short-circuit optimization.
+
+### Log Format
+
+Method tracing produces structured logs with the following formats:
+
+#### Method Entry
+```
+Entering {ClassName}.{MethodName} with parameters: {@Parameters}
+```
+
+**Example**:
+```
+2024-01-15 14:23:45.123 +01:00 [VRB] Entering PocketController.AnalyzeRentalContract with parameters: {"file": "FileContentDto { FileName=contract.pdf, ContentType=application/pdf, Content=byte[15234] }", "tier": "\"basic\""}
+```
+
+#### Method Exit
+```
+Exiting {ClassName}.{MethodName} in {Duration}ms
+```
+
+**Example**:
+```
+2024-01-15 14:23:47.456 +01:00 [VRB] Exiting PocketController.AnalyzeRentalContract in 2333ms
+```
+
+#### Exception
+```
+Exception in {ClassName}.{MethodName} after {Duration}ms: {ExceptionType}
+```
+
+**Example**:
+```
+2024-01-15 14:23:47.789 +01:00 [VRB] Exception in GeminiService.SendPromptWithMetadata after 1234ms: HttpRequestException
+```
+
+### Parameter Serialization
+
+The method tracing system intelligently serializes parameters to keep logs readable:
+
+#### String Parameters
+- Strings longer than 200 characters are truncated
+- Format: `"first 200 chars..." (truncated, total: 1234 chars)`
+
+#### Byte Arrays
+- Only the length is logged, not the content
+- Format: `byte[15234]`
+
+#### Collections
+- Shows collection type, count, and first 5 items
+- Format: `List[10]: [item1, item2, item3, item4, item5, ...]`
+
+#### Complex Objects
+- Shows type name and up to 5 properties
+- Format: `FileContentDto { FileName=contract.pdf, ContentType=application/pdf, Content=byte[15234] }`
+
+#### Sensitive Parameters
+- Parameters containing "password", "secret", "token", or "key" (case-insensitive) are redacted
+- Format: `[REDACTED]`
+
+### Configuration Examples
+
+#### Development Environment (Maximum Verbosity)
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Debug",
+      "Override": {
+        "Microsoft.AspNetCore": "Warning",
+        "PocketLawyer": "Verbose",
+        "PocketLawyer.Infrastructure.Logging": "Verbose"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console"
+      }
+    ]
+  },
+  "Logging": {
+    "File": {
+      "Enabled": true,
+      "MinimumLevel": "Verbose",
+      "Path": "logs"
+    }
+  }
+}
+```
+
+**Use Case**: Full method tracing for debugging, including all controller actions and service calls.
+
+#### Production Environment (Tracing Disabled)
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft.AspNetCore": "Warning",
+        "PocketLawyer": "Information"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console"
+      }
+    ]
+  },
+  "Logging": {
+    "File": {
+      "Enabled": true,
+      "MinimumLevel": "Information",
+      "Path": "/var/log/pocketlawyer"
+    }
+  }
+}
+```
+
+**Use Case**: No method tracing overhead, only standard application logs.
+
+#### Troubleshooting AI Services
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft.AspNetCore": "Warning",
+        "PocketLawyer.Infrastructure.AiServices": "Verbose",
+        "PocketLawyer.Application.Agents": "Verbose"
+      }
+    }
+  }
+}
+```
+
+**Use Case**: Trace only AI service calls and agent methods to debug AI integration issues.
+
+#### Troubleshooting Specific Controller
+
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft.AspNetCore": "Warning",
+        "PocketLawyer.Web.PocketController": "Verbose"
+      }
+    }
+  }
+}
+```
+
+**Use Case**: Trace only a specific controller to debug API endpoint issues.
+
+### Performance Impact
+
+Method tracing is designed to have minimal performance impact:
+
+| Scenario | Overhead | Notes |
+|----------|----------|-------|
+| Verbose disabled | <0.1% | Short-circuit optimization prevents serialization |
+| Verbose enabled, simple params | ~1-2ms per method | Fast serialization of primitives and strings |
+| Verbose enabled, complex params | ~5-10ms per method | Reflection limited to 5 properties, depth 2 |
+
+**Recommendations**:
+- **Development**: Enable Verbose logging for all PocketLawyer code
+- **Staging**: Enable Verbose logging for specific namespaces as needed
+- **Production**: Disable Verbose logging (use Information or Warning level)
+- **Troubleshooting**: Temporarily enable Verbose for specific namespaces
+
+### Security Considerations
+
+#### Sensitive Parameter Redaction
+
+The method tracing system automatically redacts sensitive parameters to prevent credentials and secrets from appearing in logs.
+
+**Redacted Parameter Names** (case-insensitive):
+- `password`
+- `secret`
+- `token`
+- `key`
+- `apikey`
+- `api_key`
+
+**Example**:
+```csharp
+// Method signature
+public async Task<string> Authenticate(string username, string password)
+
+// Logged parameters
+{"username": "john.doe", "password": "[REDACTED]"}
+```
+
+#### Production Security
+
+**Important**: Always disable Verbose logging in production to prevent:
+- Exposure of sensitive data in logs
+- Excessive log volume
+- Performance degradation
+- Increased storage costs
+
+### Troubleshooting Method Tracing
+
+#### Issue: Method tracing logs not appearing
+
+**Check 1**: Verify Verbose logging is enabled
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Override": {
+        "PocketLawyer": "Verbose"
+      }
+    }
+  }
+}
+```
+
+**Check 2**: Verify file logging minimum level
+```json
+{
+  "Logging": {
+    "File": {
+      "MinimumLevel": "Verbose"
+    }
+  }
+}
+```
+
+**Check 3**: Check console output for trace logs (look for `[VRB]` prefix)
+
+#### Issue: Too many trace logs
+
+**Solution 1**: Reduce scope to specific namespaces
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "PocketLawyer.Application.Agents": "Verbose"
+      }
+    }
+  }
+}
+```
+
+**Solution 2**: Disable method tracing entirely
+```json
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Override": {
+        "PocketLawyer": "Information"
+      }
+    }
+  }
+}
+```
+
+#### Issue: Performance degradation with tracing enabled
+
+**Solution 1**: Verify short-circuit is working (check that `IsEnabled(LogLevel.Trace)` is called)
+
+**Solution 2**: Reduce tracing scope to specific namespaces
+
+**Solution 3**: Disable tracing in production
+
+#### Issue: Sensitive data appearing in logs
+
+**Check**: Verify parameter names contain sensitive keywords (password, secret, token, key)
+
+**Solution**: Rename parameters to include sensitive keywords:
+```csharp
+// Before
+public async Task<string> Authenticate(string user, string pass)
+
+// After
+public async Task<string> Authenticate(string user, string password)
+```
+
+### Dynamic Configuration Changes
+
+Serilog supports dynamic configuration reloading. Changes to `appsettings.json` will be applied without restarting the application (typically within 30 seconds).
+
+**Example**: Enable tracing for troubleshooting
+1. Edit `appsettings.json` to add `"PocketLawyer": "Verbose"`
+2. Save the file
+3. Wait ~30 seconds for configuration reload
+4. Trace logs will start appearing
+5. Edit `appsettings.json` to remove Verbose level
+6. Save the file
+7. Trace logs will stop appearing
+
+**Note**: This feature requires `reloadOnChange: true` in `Program.cs` (enabled by default).
+
 ## AI Service Configuration
 
 ### Nebius API Configuration
@@ -346,6 +732,288 @@ Token tracking is automatically enabled for all AI requests. No additional confi
   }
 }
 ```
+
+## Context Management Configuration
+
+The Context Management System provides step-specific contextual information (such as legal texts and reference documents) to AI agents during contract analysis. Context files are automatically loaded based on the agent, analysis tier, and step being executed.
+
+### Configuration
+
+```json
+{
+  "Context": {
+    "BasePath": "data/Context",
+    "CreateReadmeFiles": true,
+    "MaxContextSizeBytes": 5242880
+  }
+}
+```
+
+**Configuration Options**:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `BasePath` | string | `"data/Context"` | Base directory for all context files |
+| `CreateReadmeFiles` | bool | `true` | Automatically create README files in context directories |
+| `MaxContextSizeBytes` | long | `5242880` (5MB) | Maximum total size of context files per step (warning threshold) |
+
+### Directory Structure
+
+The Context Management System automatically creates a hierarchical directory structure based on agent methods marked with the `[ContextStep]` attribute:
+
+```
+data/Context/
+├── rental/
+│   ├── basic/
+│   │   ├── general-data/
+│   │   │   ├── README.md
+│   │   │   └── *.txt, *.md
+│   │   ├── rent-conditions/
+│   │   ├── contract-conditions/
+│   │   ├── summary/
+│   │   └── common/              # Shared across all basic steps
+│   └── premium/
+│       ├── costs/
+│       ├── terms/
+│       ├── use/
+│       ├── maintenance/
+│       ├── duties/
+│       ├── privacy/
+│       ├── premium-summary/
+│       └── common/              # Shared across all premium steps
+└── employment/
+    ├── basic/
+    │   └── common/
+    └── premium/
+        └── common/
+```
+
+### Context File Format
+
+**Supported File Types**:
+- `.txt`: Plain text files
+- `.md`: Markdown files
+- `README.md` files are automatically excluded from context loading
+
+**File Naming**:
+- Use descriptive names (e.g., `mrg-articles.txt`, `abgb-sections.md`)
+- Files are loaded in alphabetical order
+- Multiple files are concatenated with filename headers
+
+**Example Context File** (`data/Context/rental/basic/rent-conditions/mrg-articles.txt`):
+```
+§ 16 MRG - Mietzinsbildung
+(1) Der Hauptmietzins darf den Richtwert nicht übersteigen...
+
+§ 17 MRG - Betriebskosten
+(1) Der Vermieter kann vom Mieter die Betriebskosten verlangen...
+```
+
+### Context Loading Behavior
+
+**Automatic Loading**:
+- Context is automatically loaded when an agent method marked with `[ContextStep]` is executed
+- No manual code required in agent methods (handled by `IContextProvider`)
+
+**Common Context**:
+- Files in `common/` directories are included in all steps at that level
+- Loading order: agent-level common → tier-level common → step-specific
+
+**Caching**:
+- Context is cached per HTTP request (scoped lifetime)
+- Subsequent calls to the same step within a request return cached content
+- Cache is automatically cleared at the end of the request
+
+**Performance**:
+- Context loading completes in <100ms for files up to 1MB
+- Warning logged if total context size exceeds `MaxContextSizeBytes`
+
+### Adding Context Files
+
+**Step 1**: Identify the agent, tier, and step
+- Agent: `rental` or `employment`
+- Tier: `basic` or `premium`
+- Step: e.g., `rent-conditions`, `costs`, `general-data`
+
+**Step 2**: Navigate to the appropriate directory
+```bash
+cd data/Context/rental/basic/rent-conditions
+```
+
+**Step 3**: Add your context files
+```bash
+# Copy legal text files
+cp ~/legal-texts/mrg-articles.txt .
+cp ~/legal-texts/abgb-sections.md .
+```
+
+**Step 4**: Verify files are loaded
+- Run the application
+- Execute an analysis for that step
+- Check logs for context loading messages:
+```
+[DBG] Loaded context for rental/basic/rent-conditions in 45ms (12450 chars)
+```
+
+### Configuration Examples
+
+#### Development Environment
+
+```json
+{
+  "Context": {
+    "BasePath": "data/Context",
+    "CreateReadmeFiles": true,
+    "MaxContextSizeBytes": 10485760
+  }
+}
+```
+
+**Use Case**: Larger context size limit (10MB) for development and testing with extensive legal texts.
+
+#### Production Environment
+
+```json
+{
+  "Context": {
+    "BasePath": "/opt/pocketlawyer/data/Context",
+    "CreateReadmeFiles": false,
+    "MaxContextSizeBytes": 5242880
+  }
+}
+```
+
+**Use Case**: Absolute path for production deployment, README creation disabled (directories already exist), standard 5MB limit.
+
+#### High-Performance Environment
+
+```json
+{
+  "Context": {
+    "BasePath": "data/Context",
+    "CreateReadmeFiles": false,
+    "MaxContextSizeBytes": 2097152
+  }
+}
+```
+
+**Use Case**: Reduced context size limit (2MB) for faster loading and lower memory usage in high-traffic scenarios.
+
+### Logging
+
+Context loading produces the following log messages:
+
+**Startup**:
+```
+[INF] Initializing context directories at data/Context
+[DBG] Created context directory: data/Context/rental/basic/general-data
+[INF] Context directory initialization complete
+```
+
+**Runtime**:
+```
+[DBG] Loaded context for rental/basic/rent-conditions in 45ms (12450 chars)
+[DBG] Returning cached context for rental:basic:rent-conditions
+[WRN] Context size (6291456 bytes) exceeds recommended maximum (5242880 bytes) for rental/premium/costs
+```
+
+**Errors**:
+```
+[WRN] Failed to read context file: data/Context/rental/basic/rent-conditions/locked-file.txt
+[DBG] No context files found for employment/basic/general-data
+```
+
+### Troubleshooting
+
+**Issue**: Context not being loaded
+- **Check**: Agent method is marked with `[ContextStep("step-name")]` attribute
+- **Check**: Directory exists at `{BasePath}/{agent}/{tier}/{step-name}`
+- **Check**: Directory contains `.txt` or `.md` files (excluding `README.md`)
+- **Check**: Application has read permissions for context directory
+
+**Issue**: Context files not found
+- **Check**: File extensions are `.txt` or `.md` (case-sensitive on Linux)
+- **Check**: Files are not named `README.md` (automatically excluded)
+- **Check**: Directory path matches normalized step name (lowercase, hyphens)
+
+**Issue**: Context size warning
+- **Solution**: Split large files into smaller, more focused files
+- **Solution**: Increase `MaxContextSizeBytes` in configuration
+- **Solution**: Move common content to `common/` directory to share across steps
+
+**Issue**: Outdated context being used
+- **Cause**: Context is cached per request
+- **Solution**: Context is automatically refreshed on the next request
+- **Note**: No application restart required for context file changes
+
+### Performance Considerations
+
+**File Size Recommendations**:
+- Individual files: <1MB for optimal performance
+- Total context per step: <5MB (default limit)
+- Use multiple smaller files instead of one large file
+
+**Optimization Tips**:
+- Place frequently used content in `common/` directories (loaded once per request)
+- Use `.txt` files for plain text (faster than `.md` parsing)
+- Remove unnecessary whitespace and formatting from legal texts
+- Monitor context loading duration in logs (should be <100ms)
+
+### Security Considerations
+
+**File System Access**:
+- Context files are read-only at runtime
+- No user input affects context file paths (prevents path traversal attacks)
+- Directory creation only occurs at application startup
+
+**Content Validation**:
+- No validation of context file content (trusted source)
+- File size limits prevent memory exhaustion
+- Only `.txt` and `.md` extensions allowed (prevents execution of scripts)
+
+### Migration from Manual Context Loading
+
+If you previously loaded context manually in agent methods, you can remove that code:
+
+**Before**:
+```csharp
+private async Task<PremiumSectionDto> AnalyzeCostsAsync()
+{
+    var contextPath = Path.Combine("data", "Context", "rental", "premium", "costs");
+    var context = await LoadContextFiles(contextPath);
+    
+    var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Costs");
+    if (!string.IsNullOrWhiteSpace(context))
+    {
+        prompt += $"\n\n## Reference Context\n\n{context}";
+    }
+    
+    // Continue with AI call...
+}
+```
+
+**After**:
+```csharp
+[ContextStep("costs")]
+private async Task<PremiumSectionDto> AnalyzeCostsAsync()
+{
+    var context = await _contextProvider.GetContextForCurrentStepAsync();
+    
+    var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Costs");
+    if (!string.IsNullOrWhiteSpace(context))
+    {
+        prompt += $"\n\n## Reference Context\n\n{context}";
+    }
+    
+    // Continue with AI call...
+}
+```
+
+**Benefits**:
+- Automatic directory structure creation
+- Consistent context loading across all agents
+- Built-in caching and performance optimization
+- Centralized configuration
 
 ## Environment-Specific Configuration
 

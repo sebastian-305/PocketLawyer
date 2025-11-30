@@ -129,10 +129,13 @@ public class WebSocketAnalysisHandlerPropertyTests
                     .Returns(true);
                 
                 // Create Rental agent (Employment is skeleton, so we only test Rental)
+                var mockContextProviderForAgent = new Mock<IContextProvider>();
+                mockContextProviderForAgent.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
                 var rentalAgent = new RentalContractAgent(
                     mockAiClientForAgent.Object,
                     mockSchemaProviderForAgent.Object,
                     mockSchemaValidatorForAgent.Object,
+                    mockContextProviderForAgent.Object,
                     new Mock<ILogger<RentalContractAgent>>().Object
                 );
 
@@ -296,10 +299,14 @@ public class WebSocketAnalysisHandlerPropertyTests
             .Setup(x => x.Validate(It.IsAny<System.Text.Json.Nodes.JsonObject>(), It.IsAny<System.Text.Json.Nodes.JsonObject>()))
             .Returns(true);
         
+        var mockContextProvider2 = new Mock<IContextProvider>();
+        mockContextProvider2.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        
         var realAgent = new RentalContractAgent(
             mockAiClient.Object,
             mockSchemaProvider.Object,
             mockSchemaValidator.Object,
+            mockContextProvider2.Object,
             mockAgentLogger.Object
         );
 

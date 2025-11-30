@@ -9,7 +9,9 @@ using PocketLawyer.Infrastructure.AiServices;
 using PocketLawyer.Infrastructure.AiServices.Claude;
 using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.AiServices.Nebius;
+using PocketLawyer.Infrastructure.Context;
 using PocketLawyer.Infrastructure.FileDecoding;
+using PocketLawyer.Infrastructure.Logging;
 using PocketLawyer.Infrastructure.SchemaProviders;
 using PocketLawyer.Options;
 using Serilog;
@@ -23,32 +25,15 @@ var fileLoggingOptions = builder.Configuration.GetSection("Logging:File").Get<Fi
 
 builder.Host.UseSerilog((context, configuration) =>
 {
-    var isDevelopment = context.HostingEnvironment.IsDevelopment();
-    var consoleLogLevel = isDevelopment ? LogEventLevel.Debug : LogEventLevel.Information;
     var fileMinimumLevel = Enum.TryParse(fileLoggingOptions.MinimumLevel, true, out LogEventLevel parsedFileLevel)
         ? parsedFileLevel
         : LogEventLevel.Information;
 
     configuration
-        .ReadFrom.Configuration(context.Configuration);
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext();
 
-    if (isDevelopment)
-    {
-        configuration.MinimumLevel.Is(LogEventLevel.Debug);
-    }
-
-    configuration
-        .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-        .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
-        .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
-        .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
-        .MinimumLevel.Override("Microsoft.AspNetCore.StaticFiles", LogEventLevel.Warning)
-        .MinimumLevel.Override("Microsoft.Extensions.Http", LogEventLevel.Warning)
-        .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
-        .Enrich.FromLogContext()
-        .WriteTo.Console(restrictedToMinimumLevel: consoleLogLevel);
-
-    // Add file logging if enabled - always at Information level
+    // Add file logging if enabled
     if (fileLoggingOptions.Enabled)
     {
         configuration.WriteTo.File(
@@ -94,6 +79,12 @@ builder.Services
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
+builder.Services
+    .AddOptions<ContextOptions>()
+    .Bind(builder.Configuration.GetSection("Context"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
 builder.Services.AddTransient<RedactingLoggingHandler>();
 builder.Services.AddSingleton<IHttpMessageHandlerBuilderFilter, NoLoggingHttpClientBuilderFilter>();
 builder.Services
@@ -103,28 +94,46 @@ builder.Services
     .AddHttpClient<GeminiService>()
     .AddHttpMessageHandler<RedactingLoggingHandler>();
 
-// inner (echte Implementierung)
-builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini:inner");
+// Register ParameterSerializer for method tracing
+builder.Services.AddSingleton<IParameterSerializer, ParameterSerializer>();
 
-// outer (Decorator) – Factory hat (sp, key)!
+// Gemini service registration with decorator chain: TimedAiClient → LoggingAiClientDecorator → GeminiService
+builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini:inner:inner");
+
+builder.Services.AddKeyedScoped<IAiClient>("gemini:inner", (sp, key) =>
+    new LoggingAiClientDecorator(
+        sp.GetRequiredKeyedService<IAiClient>("gemini:inner:inner"),
+        sp.GetRequiredService<ILogger<LoggingAiClientDecorator>>(),
+        sp.GetRequiredService<IParameterSerializer>()));
+
 builder.Services.AddKeyedScoped<IAiClient>("gemini", (sp, key) =>
     new TimedAiClient(
         sp.GetRequiredKeyedService<IAiClient>("gemini:inner"),
         sp.GetRequiredService<ILogger<TimedAiClient>>()));
 
-// inner (echte Implementierung)
-builder.Services.AddKeyedScoped<IAiClient, ClaudeService>("claude:inner");
+// Claude service registration with decorator chain: TimedAiClient → LoggingAiClientDecorator → ClaudeService
+builder.Services.AddKeyedScoped<IAiClient, ClaudeService>("claude:inner:inner");
 
-// outer (Decorator) – Factory hat (sp, key)!
+builder.Services.AddKeyedScoped<IAiClient>("claude:inner", (sp, key) =>
+    new LoggingAiClientDecorator(
+        sp.GetRequiredKeyedService<IAiClient>("claude:inner:inner"),
+        sp.GetRequiredService<ILogger<LoggingAiClientDecorator>>(),
+        sp.GetRequiredService<IParameterSerializer>()));
+
 builder.Services.AddKeyedScoped<IAiClient>("claude", (sp, key) =>
     new TimedAiClient(
         sp.GetRequiredKeyedService<IAiClient>("claude:inner"),
         sp.GetRequiredService<ILogger<TimedAiClient>>()));
 
-// inner (echte Implementierung)
-builder.Services.AddKeyedScoped<IAiClient, NebiusService>("nebius:inner");
+// Nebius service registration with decorator chain: TimedAiClient → LoggingAiClientDecorator → NebiusService
+builder.Services.AddKeyedScoped<IAiClient, NebiusService>("nebius:inner:inner");
 
-// outer (Decorator) – Factory hat (sp, key)!
+builder.Services.AddKeyedScoped<IAiClient>("nebius:inner", (sp, key) =>
+    new LoggingAiClientDecorator(
+        sp.GetRequiredKeyedService<IAiClient>("nebius:inner:inner"),
+        sp.GetRequiredService<ILogger<LoggingAiClientDecorator>>(),
+        sp.GetRequiredService<IParameterSerializer>()));
+
 builder.Services.AddKeyedScoped<IAiClient>("nebius", (sp, key) =>
     new TimedAiClient(
         sp.GetRequiredKeyedService<IAiClient>("nebius:inner"),
@@ -143,6 +152,11 @@ builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
 builder.Services.AddSingleton<ISchemaProvider, PocketLawyer.Infrastructure.SchemaProviders.SchemaProvider>();
 builder.Services.AddSingleton<ISchemaValidator, PocketLawyer.Infrastructure.SchemaValidator>();
 
+// Context Management System
+builder.Services.AddSingleton<IContextFileReader, ContextFileReader>();
+builder.Services.AddScoped<IContextProvider, ContextProvider>();
+builder.Services.AddHostedService<ContextDirectoryInitializer>();
+
 // New Contract Analysis Agents (Scoped - both keyed and direct registration)
 builder.Services.AddScoped<RentalContractAgent>();
 builder.Services.AddScoped<EmploymentContractAgent>();
@@ -152,7 +166,12 @@ builder.Services.AddKeyedScoped<IContractAnalysisAgent, EmploymentContractAgent>
 // WebSocket Analysis Handler
 builder.Services.AddScoped<WebSocketAnalysisHandler>();
 //var secrets = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-builder.Services.AddControllers();
+
+// Register MethodTracingActionFilter globally for all controllers
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<MethodTracingActionFilter>();
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
@@ -197,3 +216,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.Run();
+
+// Make Program class accessible for integration tests
+public partial class Program { }

@@ -15,7 +15,8 @@ public class TextFileDecoder : IFileDecoder
 
     public bool CanDecode(string ext)
     {
-        return string.Equals(ext, "txt", StringComparison.OrdinalIgnoreCase);
+        return string.Equals(ext, "txt", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(ext, "md", StringComparison.OrdinalIgnoreCase);
     }
 
     public async Task<string> DecodeAsync(Stream input)

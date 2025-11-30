@@ -15,7 +15,7 @@ public class FileDecoderService : IFileDecoderService
         _decoders = decoders;
     }
 
-    public string[] AllowedExtensions => ["txt", "pdf", "jpg", "jpeg", "png"];
+    public string[] AllowedExtensions => ["txt", "md", "pdf", "jpg", "jpeg", "png"];
     public string AllowedExtensionsString => string.Join(", ", AllowedExtensions);
 
     public async Task<string> GetFileContentAsync(string filename, Stream content)

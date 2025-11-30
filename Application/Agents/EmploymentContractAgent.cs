@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Infrastructure.Context;
 
 namespace PocketLawyer.Application.Agents;
 
@@ -13,6 +14,8 @@ namespace PocketLawyer.Application.Agents;
 /// </summary>
 public class EmploymentContractAgent : ContractAnalysisAgentBase
 {
+    private readonly IContextProvider _contextProvider;
+
     /// <summary>
     /// The expected contract type for this agent.
     /// </summary>
@@ -25,14 +28,17 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
     /// <param name="aiClient">AI client for making AI requests (Nebius service)</param>
     /// <param name="schemaProvider">Provider for JSON schemas</param>
     /// <param name="schemaValidator">Validator for AI responses against schemas</param>
+    /// <param name="contextProvider">Provider for context files</param>
     /// <param name="logger">Logger for diagnostic information</param>
     public EmploymentContractAgent(
         [FromKeyedServices("nebius")] IAiClient aiClient,
         ISchemaProvider schemaProvider,
         ISchemaValidator schemaValidator,
+        IContextProvider contextProvider,
         ILogger<EmploymentContractAgent> logger)
         : base(aiClient, schemaProvider, schemaValidator, logger)
     {
+        _contextProvider = contextProvider ?? throw new ArgumentNullException(nameof(contextProvider));
         // Phase 1: Construction complete - only dependency injection, no contract logic
     }
 
@@ -240,5 +246,200 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
         throw new NotImplementedException(
             "AnalyzePremiumAsync for EmploymentContractAgent is not yet implemented. " +
             "This is a skeleton implementation to be completed later.");
+    }
+
+    // ============================================================================
+    // STUB METHODS WITH CONTEXTSTEP ATTRIBUTES
+    // These methods are placeholders for future implementation
+    // ============================================================================
+
+    /// <summary>
+    /// STUB: Analyzes general employment data (employer, employee, position, start date).
+    /// </summary>
+    [ContextStep("general-employment-data")]
+    private async Task<object> AnalyzeGeneralEmploymentDataAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeGeneralEmploymentDataAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for general-employment-data: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeGeneralEmploymentDataAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes compensation (salary, bonuses, benefits).
+    /// </summary>
+    [ContextStep("compensation")]
+    private async Task<object> AnalyzeCompensationAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeCompensationAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for compensation: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeCompensationAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes working conditions (hours, location, remote work).
+    /// </summary>
+    [ContextStep("working-conditions")]
+    private async Task<object> AnalyzeWorkingConditionsAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeWorkingConditionsAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for working-conditions: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeWorkingConditionsAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes basic summary.
+    /// </summary>
+    [ContextStep("basic-summary")]
+    private async Task<object> AnalyzeBasicSummaryAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeBasicSummaryAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for basic-summary: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeBasicSummaryAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes compensation and benefits clauses.
+    /// </summary>
+    [ContextStep("compensation-benefits-clauses")]
+    private async Task<object> AnalyzeCompensationBenefitsClausesAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeCompensationBenefitsClausesAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for compensation-benefits-clauses: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeCompensationBenefitsClausesAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes working time and vacation clauses.
+    /// </summary>
+    [ContextStep("working-time-vacation")]
+    private async Task<object> AnalyzeWorkingTimeVacationAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeWorkingTimeVacationAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for working-time-vacation: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeWorkingTimeVacationAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes termination and notice period clauses.
+    /// </summary>
+    [ContextStep("termination-notice")]
+    private async Task<object> AnalyzeTerminationNoticeAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeTerminationNoticeAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for termination-notice: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeTerminationNoticeAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes non-compete and confidentiality clauses.
+    /// </summary>
+    [ContextStep("non-compete-confidentiality")]
+    private async Task<object> AnalyzeNonCompeteConfidentialityAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeNonCompeteConfidentialityAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for non-compete-confidentiality: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeNonCompeteConfidentialityAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes rights and duties clauses.
+    /// </summary>
+    [ContextStep("rights-duties")]
+    private async Task<object> AnalyzeRightsDutiesAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzeRightsDutiesAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for rights-duties: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzeRightsDutiesAsync is not yet implemented");
+    }
+
+    /// <summary>
+    /// STUB: Analyzes premium summary.
+    /// </summary>
+    [ContextStep("premium-summary")]
+    private async Task<object> AnalyzePremiumSummaryAsync()
+    {
+        _logger.LogInformation("[Agent {AgentId}] AnalyzePremiumSummaryAsync (STUB)", AgentId);
+        
+        // Load context for this step
+        var context = await _contextProvider.GetContextForCurrentStepAsync();
+        if (!string.IsNullOrWhiteSpace(context))
+        {
+            _logger.LogDebug("[Agent {AgentId}] Context loaded for premium-summary: {ContextLength} chars", 
+                AgentId, context.Length);
+        }
+
+        throw new NotImplementedException("AnalyzePremiumSummaryAsync is not yet implemented");
     }
 }

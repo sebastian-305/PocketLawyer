@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Infrastructure.Context;
 using System.Diagnostics;
 
 namespace PocketLawyer.Application.Agents;
@@ -13,6 +14,8 @@ namespace PocketLawyer.Application.Agents;
 /// </summary>
 public class RentalContractAgent : ContractAnalysisAgentBase
 {
+    private readonly IContextProvider _contextProvider;
+
     /// <summary>
     /// The expected contract type for this agent.
     /// </summary>
@@ -25,14 +28,17 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <param name="aiClient">AI client for making AI requests (Nebius service)</param>
     /// <param name="schemaProvider">Provider for JSON schemas</param>
     /// <param name="schemaValidator">Validator for AI responses against schemas</param>
+    /// <param name="contextProvider">Provider for context files</param>
     /// <param name="logger">Logger for diagnostic information</param>
     public RentalContractAgent(
         [FromKeyedServices("nebius")] IAiClient aiClient,
         ISchemaProvider schemaProvider,
         ISchemaValidator schemaValidator,
+        IContextProvider contextProvider,
         ILogger<RentalContractAgent> logger)
         : base(aiClient, schemaProvider, schemaValidator, logger)
     {
+        _contextProvider = contextProvider ?? throw new ArgumentNullException(nameof(contextProvider));
         // Phase 1: Construction complete - only dependency injection, no contract logic
     }
 
@@ -248,6 +254,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes general contract data (parties, dates, type).
     /// </summary>
+    [ContextStep("general-data")]
     private async Task<RentalBasicGeneralDto> AnalyzeGeneralDataAsync()
     {
         var stepName = "AnalyzeGeneralDataAsync";
@@ -261,6 +268,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Basic", "General");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Basic", "General");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "General");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -318,6 +332,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes rent conditions (amounts, payment terms).
     /// </summary>
+    [ContextStep("rent-conditions")]
     private async Task<RentalBasicRentDto> AnalyzeRentConditionsAsync()
     {
         var stepName = "AnalyzeRentConditionsAsync";
@@ -331,6 +346,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Basic", "Rent");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Basic", "Rent");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Rent");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -388,6 +410,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes contract conditions (termination, pets, subletting).
     /// </summary>
+    [ContextStep("contract-conditions")]
     private async Task<RentalBasicConditionsDto> AnalyzeContractConditionsAsync()
     {
         var stepName = "AnalyzeContractConditionsAsync";
@@ -401,6 +424,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Basic", "Conditions");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Basic", "Conditions");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Conditions");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -456,6 +486,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes and creates a summary of the basic analysis.
     /// </summary>
+    [ContextStep("summary")]
     private async Task<RentalBasicSummaryDto> AnalyzeSummaryAsync()
     {
         var stepName = "AnalyzeSummaryAsync";
@@ -469,6 +500,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Basic", "Summary");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Basic", "Summary");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Summary");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -590,6 +628,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes costs and payment clauses (rent, utilities, deposit).
     /// </summary>
+    [ContextStep("costs")]
     private async Task<PremiumSectionDto> AnalyzeCostsAsync()
     {
         var stepName = "AnalyzeCostsAsync";
@@ -603,6 +642,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Costs");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Costs");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Costs");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -658,6 +704,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes rental duration and termination clauses.
     /// </summary>
+    [ContextStep("terms")]
     private async Task<PremiumSectionDto> AnalyzeTermsAsync()
     {
         var stepName = "AnalyzeTermsAsync";
@@ -671,6 +718,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Terms");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Terms");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Terms");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -726,6 +780,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes usage rights and restrictions clauses.
     /// </summary>
+    [ContextStep("use")]
     private async Task<PremiumSectionDto> AnalyzeUseAsync()
     {
         var stepName = "AnalyzeUseAsync";
@@ -739,6 +794,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Use");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Use");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Use");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -794,6 +856,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes maintenance and repair clauses.
     /// </summary>
+    [ContextStep("maintenance")]
     private async Task<PremiumSectionDto> AnalyzeMaintenanceAsync()
     {
         var stepName = "AnalyzeMaintenanceAsync";
@@ -807,6 +870,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Maintenance");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Maintenance");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Maintenance");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -862,6 +932,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes rights and duties clauses.
     /// </summary>
+    [ContextStep("duties")]
     private async Task<PremiumSectionDto> AnalyzeDutiesAsync()
     {
         var stepName = "AnalyzeDutiesAsync";
@@ -875,6 +946,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Duties");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Duties");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Duties");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -930,6 +1008,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes privacy and communication clauses.
     /// </summary>
+    [ContextStep("privacy")]
     private async Task<PremiumSectionDto> AnalyzePrivacyAsync()
     {
         var stepName = "AnalyzePrivacyAsync";
@@ -943,6 +1022,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Privacy");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Privacy");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Privacy");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -998,6 +1084,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     /// <summary>
     /// Analyzes and creates a summary of the premium analysis.
     /// </summary>
+    [ContextStep("premium-summary")]
     private async Task<(string Gesamtfazit, string Gesamtbewertung)> AnalyzePremiumSummaryAsync()
     {
         var stepName = "AnalyzePremiumSummaryAsync";
@@ -1011,6 +1098,13 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Summary");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Summary");
             var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Summary");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+            }
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);

@@ -30,7 +30,9 @@ public class TokenTrackingIntegrationTests
     public async Task RentalContractAgent_BasicAnalysis_AggregatesTokensCorrectly()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _logger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _logger.Object);
         var contractText = "Mietvertrag zwischen Max Mustermann und Maria Musterfrau...";
 
         SetupInitialization();
@@ -65,7 +67,9 @@ public class TokenTrackingIntegrationTests
     public async Task RentalContractAgent_PremiumAnalysis_AggregatesTokensCorrectly()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _logger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _logger.Object);
         var contractText = "Mietvertrag zwischen Max Mustermann und Maria Musterfrau...";
 
         SetupInitialization();
@@ -100,7 +104,9 @@ public class TokenTrackingIntegrationTests
     public async Task RentalContractAgent_MultipleAnalyses_TracksTokensSeparately()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _logger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _logger.Object);
         var contractText = "Mietvertrag zwischen Max Mustermann und Maria Musterfrau...";
 
         SetupInitialization();
@@ -134,7 +140,9 @@ public class TokenTrackingIntegrationTests
     public async Task RentalContractAgent_ParallelRequests_AggregatesAllTokens()
     {
         // Arrange
-        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, _logger.Object);
+        var mockContextProvider = new Mock<IContextProvider>();
+        mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
+        var agent = new RentalContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _logger.Object);
         var contractText = "Mietvertrag zwischen Max Mustermann und Maria Musterfrau...";
 
         SetupInitialization();

@@ -5,6 +5,7 @@ using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace PocketLawyer.Tests.Application.Agents;
 
@@ -14,6 +15,19 @@ namespace PocketLawyer.Tests.Application.Agents;
 /// </summary>
 public class RentalContractAgentPropertyTests
 {
+    /// <summary>
+    /// Creates a mock IContextProvider that returns empty context.
+    /// </summary>
+    private static Mock<IContextProvider> CreateMockContextProvider()
+    {
+        var mock = new Mock<IContextProvider>();
+        mock.Setup(x => x.GetContextForCurrentStepAsync())
+            .ReturnsAsync(string.Empty);
+        mock.Setup(x => x.GetContextAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(string.Empty);
+        return mock;
+    }
+
     /// <summary>
     /// **Feature: agent-refactoring, Property 9: Successful initialization stores text**
     /// For any valid contract text, when initialization succeeds, 
@@ -51,10 +65,12 @@ public class RentalContractAgentPropertyTests
                         It.IsAny<object>()))
                     .ReturnsAsync(JsonSerializer.Serialize(new { contractType = "Mietvertrag" }));
 
+                var mockContextProvider = CreateMockContextProvider();
                 var agent = new RentalContractAgent(
                     mockAiClient.Object,
                     mockSchemaProvider.Object,
                     mockSchemaValidator.Object,
+                    mockContextProvider.Object,
                     mockLogger.Object);
 
                 // Verify agent is not initialized before InitializeAsync
@@ -116,10 +132,12 @@ public class RentalContractAgentPropertyTests
                         It.IsAny<object>()))
                     .ReturnsAsync(JsonSerializer.Serialize(new { isReadable = false }));
 
+                var mockContextProvider = CreateMockContextProvider();
                 var agent = new RentalContractAgent(
                     mockAiClient.Object,
                     mockSchemaProvider.Object,
                     mockSchemaValidator.Object,
+                    mockContextProvider.Object,
                     mockLogger.Object);
 
                 // Act - Execute async method synchronously for property test
@@ -189,10 +207,12 @@ public class RentalContractAgentPropertyTests
                         It.IsAny<object>()))
                     .ReturnsAsync(JsonSerializer.Serialize(new { contractType = wrongContractType }));
 
+                var mockContextProvider = CreateMockContextProvider();
                 var agent = new RentalContractAgent(
                     mockAiClient.Object,
                     mockSchemaProvider.Object,
                     mockSchemaValidator.Object,
+                    mockContextProvider.Object,
                     mockLogger.Object);
 
                 // Act - Execute async method synchronously for property test
@@ -231,10 +251,12 @@ public class RentalContractAgentPropertyTests
                 var mockSchemaValidator = new Mock<ISchemaValidator>();
                 var mockLogger = new Mock<ILogger<RentalContractAgent>>();
 
+                var mockContextProvider = CreateMockContextProvider();
                 var agent = new RentalContractAgent(
                     mockAiClient.Object,
                     mockSchemaProvider.Object,
                     mockSchemaValidator.Object,
+                    mockContextProvider.Object,
                     mockLogger.Object);
 
                 // Verify agent is not initialized
@@ -376,10 +398,18 @@ public class RentalContractAgentPropertyTests
                     .Setup(x => x.Validate(It.IsAny<System.Text.Json.Nodes.JsonObject>(), It.IsAny<System.Text.Json.Nodes.JsonObject>()))
                     .Returns(true);
 
+                var mockContextProvider = CreateMockContextProvider();
+
                 var agent = new RentalContractAgent(
+
                     mockAiClient.Object,
+
                     mockSchemaProvider.Object,
+
                     mockSchemaValidator.Object,
+
+                    mockContextProvider.Object,
+
                     mockLogger.Object);
 
                 // Act - Initialize and analyze
@@ -553,10 +583,18 @@ public class RentalContractAgentPropertyTests
                     .Setup(x => x.Validate(It.IsAny<System.Text.Json.Nodes.JsonObject>(), It.IsAny<System.Text.Json.Nodes.JsonObject>()))
                     .Returns(true);
 
+                var mockContextProvider = CreateMockContextProvider();
+
                 var agent = new RentalContractAgent(
+
                     mockAiClient.Object,
+
                     mockSchemaProvider.Object,
+
                     mockSchemaValidator.Object,
+
+                    mockContextProvider.Object,
+
                     mockLogger.Object);
 
                 // Act - Initialize and analyze
@@ -822,10 +860,18 @@ public class RentalContractAgentPropertyTests
                     .Setup(x => x.Validate(It.IsAny<System.Text.Json.Nodes.JsonObject>(), It.IsAny<System.Text.Json.Nodes.JsonObject>()))
                     .Returns(true);
 
+                var mockContextProvider = CreateMockContextProvider();
+
                 var agent = new RentalContractAgent(
+
                     mockAiClient.Object,
+
                     mockSchemaProvider.Object,
+
                     mockSchemaValidator.Object,
+
+                    mockContextProvider.Object,
+
                     mockLogger.Object);
 
                 // Act - Initialize, run basic analysis, then premium analysis
