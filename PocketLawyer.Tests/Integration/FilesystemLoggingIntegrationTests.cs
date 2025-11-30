@@ -49,6 +49,9 @@ public class FilesystemLoggingIntegrationTests : IDisposable
         // Act
         logger.LogInformation("Test log message");
         Log.CloseAndFlush();
+        
+        // Give the file system time to flush and close handles
+        System.Threading.Thread.Sleep(200);
 
         // Assert
         var logFiles = Directory.GetFiles(_testLogPath, "log-*.txt");
@@ -87,6 +90,9 @@ public class FilesystemLoggingIntegrationTests : IDisposable
         logger.LogInformation("Information message - should appear");
         logger.LogWarning("Warning message - should appear");
         Log.CloseAndFlush();
+        
+        // Give the file system time to flush
+        System.Threading.Thread.Sleep(100);
 
         // Assert
         var logFiles = Directory.GetFiles(_testLogPath, "log-*.txt");
@@ -133,6 +139,9 @@ public class FilesystemLoggingIntegrationTests : IDisposable
         // Act
         logger.LogInformation("Test message with format");
         Log.CloseAndFlush();
+        
+        // Give the file system time to flush and close handles
+        System.Threading.Thread.Sleep(200);
 
         // Assert
         var logFiles = Directory.GetFiles(_testLogPath, "log-*.txt");
@@ -160,6 +169,9 @@ public class FilesystemLoggingIntegrationTests : IDisposable
         logger.LogError("Error level");
         logger.LogCritical("Critical level");
         Log.CloseAndFlush();
+        
+        // Give the file system time to flush
+        System.Threading.Thread.Sleep(100);
 
         // Assert
         var logFiles = Directory.GetFiles(_testLogPath, "log-*.txt");
@@ -205,6 +217,9 @@ public class FilesystemLoggingIntegrationTests : IDisposable
         // Act
         logger.LogInformation("User {UserId} performed action {Action}", 123, "Login");
         Log.CloseAndFlush();
+        
+        // Give the file system time to flush and close handles
+        System.Threading.Thread.Sleep(200);
 
         // Assert
         var logFiles = Directory.GetFiles(_testLogPath, "log-*.txt");
@@ -237,8 +252,7 @@ public class FilesystemLoggingIntegrationTests : IDisposable
 
         var loggerConfig = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .Enrich.FromLogContext()
-            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Debug);
+            .Enrich.FromLogContext();
 
         // Add file logging if enabled
         if (fileLoggingOptions.Enabled)
@@ -260,6 +274,8 @@ public class FilesystemLoggingIntegrationTests : IDisposable
         {
             builder.ClearProviders();
             builder.AddSerilog(dispose: true);
+            // Set minimum level to match Serilog configuration
+            builder.SetMinimumLevel(LogLevel.Trace);
         });
 
         var serviceProvider = serviceCollection.BuildServiceProvider();

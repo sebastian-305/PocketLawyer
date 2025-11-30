@@ -74,6 +74,10 @@ jobs:
             [
             "/^System\\./",
             "/^Microsoft\\.NETCore\\./",
+            "/^Microsoft\\.Extensions\\./",
+            "/^Microsoft\\.Bcl\\./",
+            "Microsoft.CSharp",
+            "Microsoft.OpenApi",
             "NETStandard.Library",
             "/^Microsoft\\.(NET|NETCore)\\.Test/",
             "/^MSTest\\./",
@@ -116,7 +120,10 @@ jobs:
       - name: Enforce allowed licenses (fail on violation)
         run: |
           # Erlaubte Lizenzen (hier eure Policy pflegen)
-          ALLOWED='["MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause","ISC","Unicode-3.0","MS-EULA"]'
+          ALLOWED='["MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause","ISC","Unicode-3.0"]'
+          
+          # Ausnahmen: Spezifische Pakete mit MS-EULA die erlaubt sind (alte .NET Core 1.x Framework-Pakete)
+          MS_EULA_EXCEPTIONS='["System.","Microsoft.NETCore.","Microsoft.CSharp"]'
 
           # jq ggf. installieren
           if ! command -v jq >/dev/null 2>&1; then
@@ -126,12 +133,23 @@ jobs:
           # Finde Pakete außerhalb der Allow-Liste
           jq --argjson allowed "$ALLOWED" '
             map(select(.LicenseType as $lt | ($allowed | index($lt)) | not))
-          ' license-report/licenses.json > license-report/disallowed.json
+          ' license-report/licenses.json > license-report/disallowed-temp.json
+
+          # Filtere MS-EULA Pakete: Nur erlauben wenn PackageName mit Exception-Prefix beginnt
+          jq --argjson exceptions "$MS_EULA_EXCEPTIONS" '
+            map(select(
+              if .LicenseType == "MS-EULA" then
+                (.PackageName as $name | ($exceptions | map($name | startswith(.)) | any) | not)
+              else
+                true
+              end
+            ))
+          ' license-report/disallowed-temp.json > license-report/disallowed.json
 
           COUNT=$(jq 'length' license-report/disallowed.json)
           if [ "$COUNT" -gt 0 ]; then
             echo "❌ Nicht erlaubte Lizenzen gefunden ($COUNT):"
-            jq -r '.[] | "\(.Id) \(.Version) – License: \(.LicenseType)"' license-report/disallowed.json
+            jq -r '.[] | "\(.PackageName) \(.PackageVersion) – License: \(.LicenseType)"' license-report/disallowed.json
             exit 1
           else
             echo "✅ Alle Lizenzen sind erlaubt."

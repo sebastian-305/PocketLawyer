@@ -1,0 +1,11 @@
+[
+  "/^System\\./",
+  "/^Microsoft\\.NETCore\\./",
+  "NETStandard.Library",
+  "/^Microsoft\\.(NET|NETCore)\\.Test/",
+  "/^MSTest\\./",
+  "/^xunit(\\.|$)/",
+  "coverlet.collector",
+  "NSubstitute",
+  "FluentAssertions"
+]

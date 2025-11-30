@@ -14,6 +14,7 @@ public interface IAiClient
     /// <param name="outputSchema">Optional JSON schema defining the expected response structure</param>
     /// <returns>The AI response as a JSON string</returns>
     /// <exception cref="AiServiceException">Thrown when the AI service returns an error</exception>
+    [Obsolete("Use SendPromptWithMetadata instead to get token usage information. This method will be removed in a future version.")]
     Task<string> SendPrompt(string prompt, object? outputSchema);
 
     /// <summary>

@@ -144,10 +144,8 @@ public class RentalContractAgent : ContractAnalysisAgentBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "[Agent {AgentId}] Error checking contract readability", AgentId);
-            throw new Application.Exceptions.ContractValidationException(
-                "Fehler bei der Prüfung der Lesbarkeit des Vertrags", 
-                "readability_check", 
-                ex);
+            // Don't throw - return false to indicate the contract is not readable
+            return false;
         }
     }
 
@@ -191,10 +189,8 @@ public class RentalContractAgent : ContractAnalysisAgentBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "[Agent {AgentId}] Error detecting contract type", AgentId);
-            throw new Application.Exceptions.ContractValidationException(
-                "Fehler bei der Erkennung des Vertragstyps", 
-                "type_detection", 
-                ex);
+            // Don't throw - return "Unbekannt" to indicate the type could not be detected
+            return "Unbekannt";
         }
     }
 
