@@ -14,6 +14,10 @@ env:
   APP_DLL: "PocketLawyer.dll"
   APP_SERVICE: ${{ secrets.APP_SERVICE || 'klauselklara' }}
   RELEASES_DIR: ${{ secrets.RELEASES_DIR || '/var/www/releases' }}
+  Claude__Key: ${{ secrets.Claude__Key }}
+  Gemini__Key: ${{ secrets.Gemini__Key }}
+  Gemini__Alt__Key: ${{ secrets.Gemini__Alt__Key }}
+  Nebius__Key: ${{ secrets.Nebius__Key }}
 
 jobs:
   license-audit:
