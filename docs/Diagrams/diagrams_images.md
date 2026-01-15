@@ -26,7 +26,7 @@
 
 ## UI-/Flow-Diagramm
 
-![UI-/Flow-Diagramm](UI-FLow.png)
+![UI-/Flow-Diagramm](UI-Flow.png)
 
 ## UML-Übersicht der Services
 

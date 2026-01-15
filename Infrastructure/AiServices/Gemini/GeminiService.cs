@@ -49,6 +49,8 @@ public class GeminiService : IAiClient
         bool useAltKey = outputSchema is PreAnalyzerSchema;
         string apiKey =  useAltKey ? _options.AltKey : _options.Key;
 
+        _logger.LogDebug("Using Schema: {schema}", outputSchema?.ToString());
+
         var requestUri = $"https://generativelanguage.googleapis.com/v1beta/models/{_options.ModelId}:generateContent?key={apiKey}";
 
         var requestBody = new
@@ -83,7 +85,8 @@ public class GeminiService : IAiClient
         _logger.LogInformation("Sending prompt to Gemini API");
         try
         {
-            var response = await _httpClient.PostAsync(requestUri, content);
+            var response = await _httpClient
+                .PostAsync(requestUri, content);
             var responseString = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("Prompt response: {Response}", responseString);
             response.EnsureSuccessStatusCode();

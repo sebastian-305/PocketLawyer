@@ -1,0 +1,23 @@
+on: 
+  push:
+    branches:
+       - front-end 
+name: Deploy website on push
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v4
+    
+    - name: Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: www383.your-server.de
+        protocol: ftps
+        username: sebastpt_3
+        password: ${{secrets.FTP_PW_KK}}
+        local-dir: ./wwwroot/
+      
+        
