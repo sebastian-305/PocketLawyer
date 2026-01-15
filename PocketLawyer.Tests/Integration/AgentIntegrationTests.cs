@@ -307,7 +307,9 @@ public class AgentIntegrationTests
         // Arrange
         var mockContextProvider = new Mock<IContextProvider>();
         mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
-        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _employmentLogger.Object);
+        var mockKvDetectionService = new Mock<IKvDetectionService>();
+        var mockKvService = new Mock<IKollektivvertragService>();
+        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, mockKvDetectionService.Object, mockKvService.Object, _employmentLogger.Object);
         var contractText = "Arbeitsvertrag zwischen Firma GmbH und Max Mustermann...";
 
         SetupReadabilityCheck(true);
@@ -327,7 +329,9 @@ public class AgentIntegrationTests
         // Arrange
         var mockContextProvider = new Mock<IContextProvider>();
         mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
-        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, _employmentLogger.Object);
+        var mockKvDetectionService = new Mock<IKvDetectionService>();
+        var mockKvService = new Mock<IKollektivvertragService>();
+        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, mockKvDetectionService.Object, mockKvService.Object, _employmentLogger.Object);
         var contractText = "Arbeitsvertrag...";
 
         SetupReadabilityCheck(true);
@@ -337,7 +341,7 @@ public class AgentIntegrationTests
         var initResult = await agent.InitializeAsync(contractText);
         Assert.True(initResult.Success);
         
-        // Setup stub responses (empty objects)
+        // Setup stub responses (empty objects that will cause error DTOs)
         _aiClient.Setup(x => x.SendPromptWithMetadata(It.IsAny<string>(), It.IsAny<object>()))
             .ReturnsAsync(new PocketLawyer.Application.Models.AiResponse(
                 Content: "{}",
@@ -346,9 +350,13 @@ public class AgentIntegrationTests
                 TotalTokens: 110
             ));
 
-        // Act & Assert - Stub implementation throws NotImplementedException
-        await Assert.ThrowsAsync<NotImplementedException>(() => agent.AnalyzeBasicAsync());
-        await Assert.ThrowsAsync<NotImplementedException>(() => agent.AnalyzePremiumAsync());
+        // Act - EmploymentContractAgent is now fully implemented, so it should return results (not throw)
+        var basicResult = await agent.AnalyzeBasicAsync();
+        var premiumResult = await agent.AnalyzePremiumAsync();
+        
+        // Assert - Results should be returned (even if they contain error DTOs due to invalid responses)
+        Assert.NotNull(basicResult);
+        Assert.NotNull(premiumResult);
     }
 
     #endregion

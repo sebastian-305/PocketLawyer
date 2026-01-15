@@ -63,4 +63,112 @@ public class SchemaProviderTests
         Assert.NotNull(titleNode?.ToString());
         Assert.NotEmpty(titleNode?.ToString());
     }
+
+    #region Employment Schema Tests
+
+    [Theory]
+    [InlineData("General", "Allgemeine Arbeitsdaten")]
+    [InlineData("Compensation", "Vergütung und Zusatzleistungen")]
+    [InlineData("WorkingConditions", "Arbeitsbedingungen")]
+    [InlineData("Summary", "Zusammenfassung")]
+    public void GetSchemaForEndpoint_EmploymentBasicSections_ShouldHaveCorrectSectionTitle(string step, string expectedTitle)
+    {
+        // Arrange
+        var provider = new SchemaProvider();
+
+        // Act
+        var schema = provider.GetSchemaForEndpoint("Employment", "Basic", step);
+
+        // Assert
+        Assert.True(schema.TryGetPropertyValue("x-sectionTitle", out var titleNode), 
+            $"Schema for {step} should have x-sectionTitle");
+        Assert.Equal(expectedTitle, titleNode?.ToString());
+    }
+
+    [Theory]
+    [InlineData("CompensationBenefits", "Vergütungs- und Zusatzleistungsklauseln")]
+    [InlineData("WorkingTimeVacation", "Arbeitszeit- und Urlaubsklauseln")]
+    [InlineData("TerminationNotice", "Kündigungs- und Kündigungsfristklauseln")]
+    [InlineData("NonCompeteConfidentiality", "Wettbewerbs- und Vertraulichkeitsklauseln")]
+    [InlineData("RightsDuties", "Rechte und Pflichten")]
+    public void GetSchemaForEndpoint_EmploymentPremiumSections_ShouldHaveCorrectSectionTitle(string step, string expectedTitle)
+    {
+        // Arrange
+        var provider = new SchemaProvider();
+
+        // Act
+        var schema = provider.GetSchemaForEndpoint("Employment", "Premium", step);
+
+        // Assert
+        Assert.True(schema.TryGetPropertyValue("x-sectionTitle", out var titleNode), 
+            $"Schema for {step} should have x-sectionTitle");
+        Assert.Equal(expectedTitle, titleNode?.ToString());
+    }
+
+    [Fact]
+    public void GetSchemaForEndpoint_EmploymentPremiumSummary_ShouldHaveCorrectSectionTitle()
+    {
+        // Arrange
+        var provider = new SchemaProvider();
+
+        // Act
+        var schema = provider.GetSchemaForEndpoint("Employment", "Premium", "Summary");
+
+        // Assert
+        Assert.True(schema.TryGetPropertyValue("x-sectionTitle", out var titleNode), 
+            "Schema for Summary should have x-sectionTitle");
+        Assert.Equal("Gesamtfazit", titleNode?.ToString());
+    }
+
+    [Theory]
+    [InlineData("Employment", "Basic", "General")]
+    [InlineData("Employment", "Basic", "Compensation")]
+    [InlineData("Employment", "Basic", "WorkingConditions")]
+    [InlineData("Employment", "Basic", "Summary")]
+    public void GetSchemaForEndpoint_EmploymentBasicSchemas_ShouldHaveRequiredProperties(string contractType, string tier, string step)
+    {
+        // Arrange
+        var provider = new SchemaProvider();
+
+        // Act
+        var schema = provider.GetSchemaForEndpoint(contractType, tier, step);
+
+        // Assert
+        Assert.True(schema.TryGetPropertyValue("type", out var typeNode), "Schema should have 'type' property");
+        Assert.Equal("object", typeNode?.ToString());
+        
+        Assert.True(schema.TryGetPropertyValue("properties", out var propertiesNode), "Schema should have 'properties'");
+        Assert.NotNull(propertiesNode);
+        
+        Assert.True(schema.TryGetPropertyValue("required", out var requiredNode), "Schema should have 'required' array");
+        Assert.NotNull(requiredNode);
+    }
+
+    [Theory]
+    [InlineData("Employment", "Premium", "CompensationBenefits")]
+    [InlineData("Employment", "Premium", "WorkingTimeVacation")]
+    [InlineData("Employment", "Premium", "TerminationNotice")]
+    [InlineData("Employment", "Premium", "NonCompeteConfidentiality")]
+    [InlineData("Employment", "Premium", "RightsDuties")]
+    [InlineData("Employment", "Premium", "Summary")]
+    public void GetSchemaForEndpoint_EmploymentPremiumSchemas_ShouldHaveRequiredProperties(string contractType, string tier, string step)
+    {
+        // Arrange
+        var provider = new SchemaProvider();
+
+        // Act
+        var schema = provider.GetSchemaForEndpoint(contractType, tier, step);
+
+        // Assert
+        Assert.True(schema.TryGetPropertyValue("type", out var typeNode), "Schema should have 'type' property");
+        Assert.Equal("object", typeNode?.ToString());
+        
+        Assert.True(schema.TryGetPropertyValue("properties", out var propertiesNode), "Schema should have 'properties'");
+        Assert.NotNull(propertiesNode);
+        
+        Assert.True(schema.TryGetPropertyValue("required", out var requiredNode), "Schema should have 'required' array");
+        Assert.NotNull(requiredNode);
+    }
+
+    #endregion
 }

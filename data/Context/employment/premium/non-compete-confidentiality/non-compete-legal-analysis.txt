@@ -1,0 +1,241 @@
+# Kontext für rechtliche Bewertung von Konkurrenz- und Verschwiegenheitsklauseln
+
+## Wettbewerbsverbot während des Dienstverhältnisses
+
+### Gesetzliche Regelung (AngG § 7)
+
+#### Inhalt
+- Angestellte dürfen ohne Bewilligung des Arbeitgebers kein selbständiges kaufmännisches Unternehmen betreiben
+- Keine Handelsgeschäfte im Geschäftszweig des Arbeitgebers für eigene oder fremde Rechnung
+- Verbot der Teilnahme an Wettbewerben gegen den Arbeitgeber
+
+#### Rechtsfolgen bei Verstoß
+- Schadenersatzanspruch des Arbeitgebers
+- Herausgabe der Vergütung aus konkurrierenden Geschäften
+- Abtretung des Vergütungsanspruchs
+- Verjährung: 3 Monate ab Kenntnis, spätestens 5 Jahre ab Geschäftsabschluss
+
+#### Zulässige vertragliche Regelungen
+- Konkretisierung des gesetzlichen Wettbewerbsverbots
+- Klarstellung, welche Tätigkeiten als konkurrierend gelten
+- Regelung zur Erteilung von Bewilligungen
+
+#### Problematische Klauseln
+- Übermäßig weite Auslegung des Wettbewerbsverbots
+- Verbot jeglicher Nebentätigkeit (auch nicht-konkurrierender)
+- Fehlende Möglichkeit zur Erteilung von Bewilligungen
+
+## Konkurrenzklausel nach Beendigung des Dienstverhältnisses
+
+### Rechtliche Voraussetzungen (AVRAG § 2c)
+
+#### Formale Anforderungen
+- **Schriftform**: Zwingend erforderlich, sonst unwirksam
+- **Zeitpunkt**: Muss bei Vertragsabschluss oder während des Dienstverhältnisses vereinbart werden
+- **Klarheit**: Räumlicher, zeitlicher und sachlicher Umfang muss klar definiert sein
+
+#### Sachliche Voraussetzungen
+- **Berechtigtes Interesse**: Arbeitgeber muss schützenswertes Interesse haben
+  - Schutz von Geschäftsgeheimnissen
+  - Schutz von Kundenbeziehungen
+  - Schutz von Know-how
+- **Verhältnismäßigkeit**: Beschränkung muss angemessen sein
+- **Position**: Meist nur bei Führungskräften, Spezialisten oder Außendienstmitarbeitern
+
+#### Zeitliche Begrenzung
+- **Maximum**: 1 Jahr nach Beendigung des Dienstverhältnisses
+- **Ausnahme**: Bei Lehrlingen bis zu 6 Monate nach Lehrabschluss
+
+#### Räumliche Begrenzung
+- Muss auf das Gebiet beschränkt sein, in dem Arbeitnehmer tätig war
+- Österreichweites Verbot nur bei entsprechender Tätigkeit
+- Weltweites Verbot meist unverhältnismäßig
+
+#### Sachliche Begrenzung
+- Beschränkung auf konkrete Tätigkeiten oder Branchen
+- Nicht jegliche Erwerbstätigkeit
+
+#### Karenzentschädigung
+- **Pflicht**: Arbeitgeber muss Karenzentschädigung zahlen
+- **Höhe**: Mindestens 50% des zuletzt bezogenen Entgelts
+- **Zahlung**: Monatlich während der Dauer des Konkurrenzverbots
+- **Verzicht**: Arbeitgeber kann auf Konkurrenzklausel verzichten (dann keine Zahlung)
+
+### Unwirksamkeit der Konkurrenzklausel
+
+#### Gründe für Unwirksamkeit
+- Fehlende Schriftform
+- Keine Karenzentschädigung vereinbart
+- Übermäßige zeitliche, räumliche oder sachliche Beschränkung
+- Fehlendes berechtigtes Interesse des Arbeitgebers
+- Unverhältnismäßigkeit (z.B. bei niedrigen Positionen)
+
+#### Rechtsfolgen
+- Konkurrenzklausel ist unwirksam
+- Arbeitnehmer kann frei konkurrieren
+- Keine Karenzentschädigung zu zahlen
+
+### Problematische Klauseln
+
+#### Formale Mängel
+- Fehlende Schriftform
+- Unklare Formulierungen zu Umfang und Dauer
+- Fehlende Regelung zur Karenzentschädigung
+
+#### Inhaltliche Mängel
+- Konkurrenzverbot über 1 Jahr hinaus
+- Übermäßig weite räumliche Beschränkung (z.B. weltweit bei lokaler Tätigkeit)
+- Verbot jeglicher Erwerbstätigkeit
+- Konkurrenzklausel bei einfachen Tätigkeiten ohne schützenswertes Interesse
+- Karenzentschädigung unter 50%
+
+#### Einseitige Klauseln
+- Arbeitgeber kann einseitig auf Konkurrenzklausel verzichten (zulässig)
+- Arbeitnehmer muss sich aber an Verbot halten, solange Arbeitgeber nicht verzichtet
+- Verzicht sollte schriftlich erfolgen
+
+### Zulässige Regelungen
+
+#### Angemessene Konkurrenzklauseln
+- Zeitlich auf 6-12 Monate begrenzt
+- Räumlich auf tatsächliches Tätigkeitsgebiet beschränkt
+- Sachlich auf konkrete konkurrierende Tätigkeiten begrenzt
+- Karenzentschädigung von mindestens 50% des letzten Entgelts
+- Klare Regelung zur Zahlung der Karenzentschädigung
+
+#### Verzichtsregelungen
+- Arbeitgeber kann innerhalb bestimmter Frist auf Konkurrenzklausel verzichten
+- Bei Verzicht entfällt Pflicht zur Karenzentschädigung
+- Verzichtsfrist sollte angemessen sein (z.B. 1 Monat vor Beendigung)
+
+## Verschwiegenheitspflicht
+
+### Gesetzliche Grundlage
+
+#### Treuepflicht
+- Allgemeine Treuepflicht aus Dienstvertrag
+- Schutz von Geschäfts- und Betriebsgeheimnissen
+- Gilt während und nach Beendigung des Dienstverhältnisses
+
+#### Geschäftsgeheimnisse-Gesetz (GeschGehG)
+- Schutz von Geschäftsgeheimnissen
+- Verbot der unbefugten Erlangung, Nutzung und Offenlegung
+- Strafrechtliche und zivilrechtliche Sanktionen
+
+### Vertragliche Verschwiegenheitsklauseln
+
+#### Zulässiger Inhalt
+- Konkretisierung der gesetzlichen Verschwiegenheitspflicht
+- Definition von Geschäfts- und Betriebsgeheimnissen
+- Regelung zum Umgang mit vertraulichen Informationen
+- Pflicht zur Rückgabe von Unterlagen bei Beendigung
+
+#### Zeitliche Geltung
+- Während des Dienstverhältnisses: Unbegrenzt
+- Nach Beendigung: Solange Information geheimhaltungsbedürftig ist
+- Keine zeitliche Begrenzung erforderlich (im Gegensatz zu Konkurrenzklausel)
+
+#### Umfang
+- Geschäfts- und Betriebsgeheimnisse
+- Kundendaten und Kundenbeziehungen
+- Technisches Know-how
+- Geschäftspläne und Strategien
+- Preiskalkulationen
+- Personaldaten
+
+### Problematische Klauseln
+
+#### Übermäßig weite Verschwiegenheitspflichten
+- Verbot jeglicher Kommunikation über Arbeitgeber
+- Einschränkung der Meinungsfreiheit
+- Verbot von Whistleblowing bei Missständen
+
+#### Unklare Definitionen
+- Fehlende Definition von "vertraulichen Informationen"
+- Unklare Abgrenzung zu allgemeinem Fachwissen
+- Keine Unterscheidung zwischen Geschäftsgeheimnissen und öffentlich bekannten Informationen
+
+#### Unverhältnismäßige Sanktionen
+- Überhöhte Vertragsstrafen
+- Pauschalierte Schadenersatzansprüche ohne Nachweis
+
+### Zulässige Regelungen
+
+#### Angemessene Verschwiegenheitsklauseln
+- Klare Definition von Geschäfts- und Betriebsgeheimnissen
+- Konkrete Beispiele für vertrauliche Informationen
+- Ausnahmen für öffentlich bekannte Informationen
+- Ausnahmen für gesetzliche Offenlegungspflichten
+- Regelung zur Rückgabe von Unterlagen und Daten
+
+#### Sanktionen
+- Angemessene Vertragsstrafen (nicht überhöht)
+- Schadenersatzanspruch bei nachgewiesenem Schaden
+- Unterlassungsanspruch bei Verletzung
+
+## Datenschutz
+
+### DSGVO-Konformität
+- Arbeitgeber muss Datenschutzbestimmungen einhalten
+- Arbeitnehmer hat Recht auf Auskunft über gespeicherte Daten
+- Löschung von Daten nach Beendigung (mit Ausnahmen)
+
+### Vertragliche Regelungen
+- Einwilligung zur Datenverarbeitung (soweit erforderlich)
+- Information über Datenschutzrechte
+- Regelung zur Nutzung von IT-Systemen und E-Mail
+
+### Problematische Klauseln
+- Übermäßige Überwachung (E-Mail, Internet, Telefon)
+- Fehlende Information über Datenschutzrechte
+- Unzulässige Datenverarbeitung ohne Rechtsgrundlage
+
+## Rückgabepflichten
+
+### Arbeitsmittel
+- Laptop, Handy, Tablet
+- Firmenwagen
+- Schlüssel, Zugangskarten
+- Arbeitskleidung
+
+### Unterlagen und Daten
+- Geschäftsunterlagen
+- Kundenlisten
+- Digitale Daten
+- Kopien und Notizen
+
+### Zulässige Regelungen
+- Klare Auflistung der zurückzugebenden Gegenstände
+- Frist für Rückgabe (z.B. letzter Arbeitstag)
+- Regelung zu Vertragsstrafen bei Nichtrückgabe
+
+## Bewertungskriterien
+
+### Vorteilhafte Regelungen
+- Klare und angemessene Verschwiegenheitsklauseln
+- Keine oder angemessene Konkurrenzklausel mit fairer Karenzentschädigung
+- Ausgewogene Regelungen zu Rückgabepflichten
+- DSGVO-konforme Datenschutzregelungen
+
+### Neutrale Regelungen
+- Standardmäßige Verschwiegenheitspflichten
+- Gesetzliches Wettbewerbsverbot während Dienstverhältnis
+- Übliche Rückgabepflichten
+
+### Nachteilige Regelungen
+- Konkurrenzklausel ohne oder mit zu niedriger Karenzentschädigung
+- Übermäßig weite Konkurrenzklauseln (zeitlich, räumlich, sachlich)
+- Unverhältnismäßige Verschwiegenheitspflichten
+- Überhöhte Vertragsstrafen
+- Einschränkung von Arbeitnehmerrechten (Whistleblowing, Meinungsfreiheit)
+
+### Kollektivvertragsbezug
+- Kollektivverträge enthalten meist keine spezifischen Regelungen zu Konkurrenz- und Verschwiegenheitsklauseln
+- Allgemeine arbeitsrechtliche Grundsätze sind zu beachten
+
+### Rechtsgrundlagen
+- Angestelltengesetz (AngG) § 7 - Wettbewerbsverbot während Dienstverhältnis
+- Arbeitsvertragsrechts-Anpassungsgesetz (AVRAG) § 2c - Konkurrenzklausel nach Beendigung
+- Geschäftsgeheimnisse-Gesetz (GeschGehG)
+- Datenschutz-Grundverordnung (DSGVO)
+- OGH-Rechtsprechung zu Konkurrenzklauseln und Verschwiegenheitspflichten

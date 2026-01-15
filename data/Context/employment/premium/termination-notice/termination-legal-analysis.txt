@@ -1,0 +1,231 @@
+# Kontext für rechtliche Bewertung von Kündigungs- und Beendigungsklauseln
+
+## Rechtliche Prüfung von Kündigungsregelungen
+
+### Kündigungsfristen
+
+#### Gesetzliche Kündigungsfristen (AngG § 20)
+**Kündigung durch Arbeitgeber:**
+- Bis 2 Jahre Betriebszugehörigkeit: 6 Wochen zum Quartalsende
+- Nach 2 Jahren: 2 Monate zum Quartalsende
+- Nach 5 Jahren: 3 Monate zum Quartalsende
+- Nach 15 Jahren: 4 Monate zum Quartalsende
+- Nach 25 Jahren: 5 Monate zum Quartalsende
+
+**Kündigung durch Arbeitnehmer:**
+- Grundsätzlich: 1 Monat zum Monatsende
+- Kollektivverträge können abweichende Regelungen vorsehen
+
+#### Kündigungstermine
+- **Quartalsende**: 31. März, 30. Juni, 30. September, 31. Dezember
+- **Monatsende**: Letzter Tag des Kalendermonats
+- Kollektivverträge können andere Termine vorsehen (z.B. 15. oder letzter Tag des Monats)
+
+#### Problematische Klauseln
+- Verlängerung der Kündigungsfrist für Arbeitnehmer über gesetzliches Maß
+- Asymmetrische Kündigungsfristen (Arbeitnehmer länger als Arbeitgeber)
+- Verkürzung der Kündigungsfrist für Arbeitgeber unter gesetzliches Minimum
+- Unklare Kündigungstermine
+
+#### Zulässige Regelungen
+- Verlängerung der Kündigungsfrist für Arbeitgeber
+- Symmetrische Kündigungsfristen (beide Seiten gleich)
+- Klarstellung der Kündigungstermine gemäß KV
+
+### Probezeit
+
+#### Gesetzliche Regelung
+- **Dauer**: Maximal 1 Monat (AngG § 19)
+- **Verlängerung**: Durch Kollektivvertrag möglich (oft bis 3 Monate)
+- **Kündigung**: Jederzeit ohne Einhaltung von Fristen und Terminen möglich
+
+#### Problematische Klauseln
+- Probezeit über kollektivvertragliches Maximum
+- Einseitige Verlängerung der Probezeit
+- Probezeit bei befristeten Verträgen unter 6 Monaten (unverhältnismäßig)
+
+#### Zulässige Regelungen
+- Probezeit bis 1 Monat (gesetzlich)
+- Probezeit bis 3 Monate (wenn KV dies vorsieht)
+- Klarstellung der Kündigungsmöglichkeiten während Probezeit
+
+### Befristete Verträge
+
+#### Zulässigkeit
+- Befristung nur mit sachlichem Grund
+- Sachliche Gründe: Vertretung, Projektarbeit, Saisonarbeit, etc.
+- Ohne sachlichen Grund: Unwirksam, Vertrag gilt als unbefristet
+
+#### Kettenbefristungen
+- Nach 3 Jahren oder 3 Verlängerungen: Vertrag gilt als unbefristet
+- Ausnahmen für bestimmte Branchen (z.B. Universitäten)
+
+#### Problematische Klauseln
+- Befristung ohne erkennbaren sachlichen Grund
+- Übermäßige Kettenbefristungen
+- Automatische Verlängerungsklauseln ohne Zustimmung
+
+#### Zulässige Regelungen
+- Befristung mit klarem sachlichen Grund
+- Befristung für Projektdauer
+- Vertretungsbefristung (z.B. Karenz, Krankenstand)
+
+### Einvernehmliche Auflösung
+
+#### Rechtliche Einordnung
+- Beendigung im gegenseitigen Einvernehmen
+- Keine Kündigungsfristen erforderlich
+- Sofortige oder vereinbarte Beendigung möglich
+
+#### Wichtige Aspekte
+- Schriftform empfohlen
+- Regelung zu Resturlaub und Zeitguthaben
+- Regelung zu Abfertigung und Sonderzahlungen
+- Arbeitslosengeld: Keine Sperrfrist bei einvernehmlicher Auflösung
+
+#### Problematische Klauseln
+- Vorformulierte Auflösungsvereinbarungen im Arbeitsvertrag
+- Druck zur einvernehmlichen Auflösung
+- Verzicht auf Ansprüche ohne Gegenleistung
+
+### Entlassung (fristlose Kündigung)
+
+#### Entlassungsgründe (AngG § 27)
+- Vertrauensunwürdigkeit
+- Dienstunfähigkeit
+- Beharrliche Pflichtverletzung
+- Strafbare Handlung
+- Verletzung von Geschäftsgeheimnissen
+
+#### Formale Anforderungen
+- Unverzügliche Erklärung (innerhalb weniger Tage nach Kenntniserlangung)
+- Schriftform empfohlen
+- Angabe des Entlassungsgrundes
+
+#### Rechtsfolgen
+- Sofortige Beendigung ohne Kündigungsfrist
+- Verlust von Abfertigung und aliquoten Sonderzahlungen
+- Sperrfrist beim Arbeitslosengeld
+
+#### Problematische Klauseln
+- Erweiterung der Entlassungsgründe über gesetzliche Gründe hinaus
+- Einseitige Entlassungsmöglichkeiten ohne Verschulden
+
+### Vorzeitiger Austritt
+
+#### Austrittsgründe (AngG § 26)
+- Gesundheitsgefährdung
+- Ehrverletzung oder Tätlichkeiten
+- Verleitung zu strafbaren Handlungen
+- Vorenthaltung des Entgelts
+- Beharrliche Pflichtverletzung durch Arbeitgeber
+
+#### Formale Anforderungen
+- Unverzügliche Erklärung
+- Schriftform empfohlen
+- Angabe des Austrittsgrundes
+
+#### Rechtsfolgen
+- Sofortige Beendigung
+- Anspruch auf Kündigungsentschädigung
+- Anspruch auf Abfertigung und Sonderzahlungen
+- Keine Sperrfrist beim Arbeitslosengeld
+
+### Abfertigung
+
+#### Abfertigung Alt (vor 1.1.2003)
+- Nach 3 Jahren: 2 Monatsentgelte
+- Nach 5 Jahren: 3 Monatsentgelte
+- Nach 10 Jahren: 4 Monatsentgelte
+- Nach 15 Jahren: 6 Monatsentgelte
+- Nach 20 Jahren: 9 Monatsentgelte
+- Nach 25 Jahren: 12 Monatsentgelte
+
+#### Abfertigung Neu (ab 1.1.2003)
+- Betriebliche Vorsorgekasse
+- Monatliche Einzahlung von 1,53% des Bruttoentgelts
+- Anspruch ab 3 Jahren Betriebszugehörigkeit
+- Auch bei Selbstkündigung (nach 3 Jahren)
+
+#### Problematische Klauseln
+- Ausschluss der Abfertigung (nur bei Abfertigung Neu möglich)
+- Verfallsklauseln bei Abfertigung Alt
+- Fehlende Regelung zur betrieblichen Vorsorgekasse
+
+### Konkurrenzklausel nach Beendigung
+
+#### Zulässigkeit
+- Nur bei berechtigtem Interesse des Arbeitgebers
+- Maximal 1 Jahr nach Beendigung
+- Karenzentschädigung erforderlich (50% des letzten Entgelts)
+- Schriftform erforderlich
+
+#### Problematische Klauseln
+- Konkurrenzklausel ohne Karenzentschädigung (unwirksam)
+- Übermäßig weite räumliche oder sachliche Beschränkung
+- Konkurrenzklausel über 1 Jahr hinaus
+- Konkurrenzklausel bei niedrigen Positionen (unverhältnismäßig)
+
+#### Zulässige Regelungen
+- Konkurrenzklausel mit angemessener Karenzentschädigung
+- Räumlich und sachlich begrenzte Konkurrenzklausel
+- Konkurrenzklausel bei Führungskräften oder Spezialisten
+
+### Dienstzeugnis
+
+#### Anspruch
+- Arbeitnehmer hat Anspruch auf Dienstzeugnis
+- Einfaches Zeugnis: Dauer und Art der Tätigkeit
+- Qualifiziertes Zeugnis: Zusätzlich Leistung und Verhalten
+
+#### Inhalt
+- Wahrheitspflicht
+- Wohlwollende Formulierung
+- Keine versteckten negativen Aussagen (Geheimcodes)
+
+#### Problematische Klauseln
+- Ausschluss des Anspruchs auf Dienstzeugnis
+- Einseitige Festlegung auf einfaches Zeugnis
+
+### Wettbewerbsverbot während des Dienstverhältnisses
+
+#### Gesetzliche Regelung (AngG § 7)
+- Angestellte dürfen ohne Bewilligung kein konkurrierendes Unternehmen betreiben
+- Keine Handelsgeschäfte im Geschäftszweig des Arbeitgebers
+
+#### Rechtsfolgen bei Verstoß
+- Schadenersatz
+- Herausgabe der Vergütung
+
+### Bewertungskriterien
+
+#### Vorteilhafte Regelungen
+- Verlängerte Kündigungsfristen für Arbeitgeber
+- Symmetrische Kündigungsfristen
+- Klare Regelungen zu Beendigung
+- Keine oder angemessene Konkurrenzklausel mit Karenzentschädigung
+- Regelung zu Dienstzeugnis
+
+#### Neutrale Regelungen
+- Gesetzliche Kündigungsfristen
+- Standardmäßige Probezeitregelungen
+- Übliche KV-Regelungen
+
+#### Nachteilige Regelungen
+- Verlängerte Kündigungsfristen für Arbeitnehmer
+- Asymmetrische Kündigungsfristen (zulasten Arbeitnehmer)
+- Überlange Probezeiten
+- Konkurrenzklausel ohne Karenzentschädigung
+- Unklare Befristungsgründe
+- Einschränkung von Abfertigungsansprüchen
+
+### Kollektivvertragsbezug
+- Prüfung der KV-Kündigungsfristen
+- Beachtung von KV-Kündigungsterminen
+- Einhaltung von KV-Probezeitregelungen
+
+### Rechtsgrundlagen
+- Angestelltengesetz (AngG) - §§ 19, 20, 26, 27
+- Betriebliches Mitarbeiter- und Selbständigenvorsorgegesetz (BMSVG)
+- Kollektivverträge
+- OGH-Rechtsprechung zu Konkurrenzklauseln und Befristungen

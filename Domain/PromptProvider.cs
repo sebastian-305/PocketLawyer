@@ -265,31 +265,191 @@ Achte auf:
     private const string EmploymentBasicGeneralPrompt = @"Analysiere die allgemeinen Vertragsdaten des Arbeitsvertrags.
 
 Extrahiere folgende Informationen:
-- Arbeitgeber
-- Arbeitnehmer
+- Arbeitgeber (Name und ggf. Adresse)
+- Arbeitnehmer (Name)
 - Position/Tätigkeit
-- Vertragsbeginn
+- Startdatum (Vertragsbeginn)
 - Vertragsart (befristet oder unbefristet)
-- Probezeit
+- Probezeit (Dauer)
+- Vertragsende (falls befristet)
 
 Achte auf:
-- Vollständige Namen und Adressen
+- Vollständige Namen
 - Präzise Tätigkeitsbeschreibung
-- Zulässigkeit der Befristung";
+- Zulässigkeit der Befristung
+- Korrekte Datumsangaben";
 
-    private const string EmploymentBasicConditionsPrompt = @"Analysiere die Arbeitsbedingungen des Arbeitsvertrags.
+    private const string EmploymentBasicCompensationPrompt = @"Analysiere die Vergütungsregelungen des Arbeitsvertrags.
 
 Extrahiere folgende Informationen:
-- Arbeitszeit (Wochenstunden)
-- Gehalt/Lohn
-- Urlaubsanspruch
-- Kündigungsfrist
-- Arbeitsort
+- Gehalt Brutto (Betrag und Währung)
+- Gehalt Netto ca. (geschätzter Nettobetrag)
+- Zahlungsweise (monatlich, wöchentlich, etc.)
+- Sonderzahlungen (13./14. Gehalt, Boni, etc.)
+- Zuschläge (Überstunden, Nacht, Wochenende, etc.)
+- Zusatzleistungen (Firmenwagen, Handy, Essensgutscheine, etc.)
 
 Achte auf:
-- Einhaltung gesetzlicher Mindeststandards
-- Kollektivvertragliche Regelungen
-- Überstundenregelungen";
+- Einhaltung kollektivvertraglicher Mindestlöhne
+- Klare Angabe der Vergütungsbestandteile
+- Regelungen zu Sonderzahlungen";
+
+    private const string EmploymentBasicWorkingConditionsPrompt = @"Analysiere die Arbeitsbedingungen des Arbeitsvertrags.
+
+Extrahiere folgende Informationen:
+- Wochenarbeitszeit (Stunden pro Woche)
+- Arbeitszeitmodell (Vollzeit, Teilzeit, Gleitzeit, etc.)
+- Überstundenregelung (Abgeltung, Zeitausgleich, etc.)
+- Urlaubstage (Anzahl pro Jahr)
+- Arbeitsort (Adresse, Standort)
+- Remote-Arbeit (Homeoffice-Regelung)
+
+Achte auf:
+- Einhaltung gesetzlicher Arbeitszeitgrenzen
+- Urlaubsanspruch nach Gesetz/Kollektivvertrag
+- Klare Regelungen zu Überstunden
+- Flexibilität bei Arbeitsort";
+
+    private const string EmploymentBasicSummaryPrompt = @"Erstelle eine Zusammenfassung der Basic-Analyse des Arbeitsvertrags.
+
+Erstelle:
+- Kurzfazit (2-3 Sätze): Die wichtigsten Eckdaten des Vertrags
+- Kollektivvertrag (Name des erkannten KV oder 'Kein Kollektivvertrag erkannt')
+- Gesamtbewertung (Text): Erste Einschätzung der Vertragsqualität
+- RiskLevel (Gruen/Gelb/Rot): Erste Risikobewertung basierend auf den Grunddaten
+
+Achte auf:
+- Verständliche Sprache für Laien
+- Hervorhebung wichtiger Punkte (Gehalt, Arbeitszeit, Befristung)
+- Erwähnung des Kollektivvertrags falls erkannt
+- Objektive Bewertung";
+
+    #endregion
+
+    #region Employment Premium Analysis Prompts
+
+    private const string EmploymentPremiumCompensationBenefitsPrompt = @"Analysiere die Vergütungs- und Zusatzleistungsklauseln des Arbeitsvertrags rechtlich detailliert.
+
+Bewerte folgende Aspekte:
+- Einhaltung des Kollektivvertrags (Mindestgehalt, Einstufung)
+- Sonderzahlungen (13./14. Gehalt, Boni, Prämien)
+- Überstundenvergütung (Zuschläge, Abgeltung)
+- Zusatzleistungen (Firmenwagen, Handy, Essensgutscheine, etc.)
+- Gehaltsanpassungen (Valorisierung, Leistungssteigerungen)
+
+Erstelle:
+- Zusammenfassung: Überblick über die Vergütungsregelungen
+- Bewertung: Rechtliche Einschätzung der Klauseln
+- Rechtsgrundlage: Relevante Gesetzesbestimmungen (ArbVG, Kollektivvertrag)
+- RisikoScore: Vorteilhaft/Neutral/Nachteilhaft
+- RiskLevel: Gruen/Gelb/Rot
+
+Achte auf:
+- Einhaltung kollektivvertraglicher Mindeststandards
+- Zulässigkeit von Gehaltsklauseln
+- Transparenz der Vergütungsbestandteile";
+
+    private const string EmploymentPremiumWorkingTimeVacationPrompt = @"Analysiere die Arbeitszeit- und Urlaubsklauseln des Arbeitsvertrags rechtlich detailliert.
+
+Bewerte folgende Aspekte:
+- Arbeitszeitregelungen (Normalarbeitszeit, Höchstarbeitszeit)
+- Überstundenregelungen (Anordnung, Abgeltung, Zeitausgleich)
+- Urlaubsanspruch (gesetzlich, kollektivvertraglich, vertraglich)
+- Urlaubsverbrauch (Zeitpunkt, Verfallsregelungen)
+- Arbeitszeitmodelle (Gleitzeit, Schichtarbeit, etc.)
+
+Erstelle:
+- Zusammenfassung: Überblick über Arbeitszeit- und Urlaubsregelungen
+- Bewertung: Rechtliche Einschätzung der Klauseln
+- Rechtsgrundlage: Relevante Gesetzesbestimmungen (AZG, UrlG, Kollektivvertrag)
+- RisikoScore: Vorteilhaft/Neutral/Nachteilhaft
+- RiskLevel: Gruen/Gelb/Rot
+
+Achte auf:
+- Einhaltung gesetzlicher Arbeitszeitgrenzen
+- Zulässigkeit von Überstundenregelungen
+- Urlaubsanspruch nach Gesetz und Kollektivvertrag";
+
+    private const string EmploymentPremiumTerminationNoticePrompt = @"Analysiere die Kündigungs- und Kündigungsfristklauseln des Arbeitsvertrags rechtlich detailliert.
+
+Bewerte folgende Aspekte:
+- Kündigungsfristen (gesetzlich, kollektivvertraglich, vertraglich)
+- Kündigungstermine (Monatsletzter, Quartalsletzter, etc.)
+- Probezeit (Dauer, Kündigungsmöglichkeiten)
+- Kündigungsgründe (ordentlich, außerordentlich)
+- Abfindungsregelungen
+
+Erstelle:
+- Zusammenfassung: Überblick über Kündigungsregelungen
+- Bewertung: Rechtliche Einschätzung der Klauseln
+- Rechtsgrundlage: Relevante Gesetzesbestimmungen (AngG, Kollektivvertrag)
+- RisikoScore: Vorteilhaft/Neutral/Nachteilhaft
+- RiskLevel: Gruen/Gelb/Rot
+
+Achte auf:
+- Einhaltung gesetzlicher Kündigungsfristen
+- Zulässigkeit von Probezeitregelungen
+- Kündigungsschutzbestimmungen";
+
+    private const string EmploymentPremiumNonCompeteConfidentialityPrompt = @"Analysiere die Wettbewerbs- und Vertraulichkeitsklauseln des Arbeitsvertrags rechtlich detailliert.
+
+Bewerte folgende Aspekte:
+- Konkurrenzklauseln (während und nach dem Dienstverhältnis)
+- Vertraulichkeitsvereinbarungen (Geschäftsgeheimnisse, Datenschutz)
+- Geheimhaltungspflichten
+- Karenzentschädigungen (bei Konkurrenzklauseln)
+- Vertragsstrafen
+
+Erstelle:
+- Zusammenfassung: Überblick über Wettbewerbs- und Vertraulichkeitsregelungen
+- Bewertung: Rechtliche Einschätzung der Klauseln
+- Rechtsgrundlage: Relevante Gesetzesbestimmungen (AngG, UWG, DSGVO)
+- RisikoScore: Vorteilhaft/Neutral/Nachteilhaft
+- RiskLevel: Gruen/Gelb/Rot
+
+Achte auf:
+- Zulässigkeit von Konkurrenzklauseln
+- Angemessenheit von Karenzentschädigungen
+- Verhältnismäßigkeit von Geheimhaltungspflichten";
+
+    private const string EmploymentPremiumRightsDutiesPrompt = @"Analysiere die Rechte- und Pflichtenklauseln des Arbeitsvertrags rechtlich detailliert.
+
+Bewerte folgende Aspekte:
+- Arbeitspflichten (Tätigkeitsbereich, Weisungsrecht)
+- Treuepflichten (Loyalität, Interessenkonflikte)
+- Nebentätigkeiten (Zustimmungspflicht, Verbote)
+- Versetzungsklauseln (örtlich, fachlich)
+- Haftungsregelungen
+
+Erstelle:
+- Zusammenfassung: Überblick über Rechte und Pflichten
+- Bewertung: Rechtliche Einschätzung der Klauseln
+- Rechtsgrundlage: Relevante Gesetzesbestimmungen (ABGB, AngG)
+- RisikoScore: Vorteilhaft/Neutral/Nachteilhaft
+- RiskLevel: Gruen/Gelb/Rot
+
+Achte auf:
+- Angemessenheit von Versetzungsklauseln
+- Zulässigkeit von Nebentätigkeitsverboten
+- Rechtmäßigkeit von Haftungsausschlüssen";
+
+    private const string EmploymentPremiumSummaryPrompt = @"Erstelle eine Gesamtzusammenfassung der Premium-Analyse des Arbeitsvertrags.
+
+Erstelle:
+- Gesamtfazit (2-3 Absätze): Zusammenfassung aller rechtlichen Bewertungen
+- Gesamtbewertung (Text): Gesamteinschätzung des Vertrags
+- Handlungsempfehlungen (Array): Konkrete Empfehlungen für den Arbeitnehmer
+
+Berücksichtige:
+- Alle analysierten Sektionen (Vergütung, Arbeitszeit, Kündigung, Wettbewerb, Rechte)
+- Schwerwiegende vs. geringfügige Probleme
+- Gesamtrisiko für den Arbeitnehmer
+- Kollektivvertragliche Bestimmungen
+
+Achte auf:
+- Klare, verständliche Zusammenfassung
+- Priorisierung der wichtigsten Punkte
+- Konkrete, umsetzbare Handlungsempfehlungen";
 
     #endregion
 
@@ -324,9 +484,19 @@ Achte auf:
             "RentalPremiumPrivacy" => RentalPremiumPrivacyPrompt,
             "RentalPremiumSummary" => RentalPremiumSummaryPrompt,
 
-            // Employment Basic (placeholder)
+            // Employment Basic
             "EmploymentBasicGeneral" => EmploymentBasicGeneralPrompt,
-            "EmploymentBasicConditions" => EmploymentBasicConditionsPrompt,
+            "EmploymentBasicCompensation" => EmploymentBasicCompensationPrompt,
+            "EmploymentBasicWorkingConditions" => EmploymentBasicWorkingConditionsPrompt,
+            "EmploymentBasicSummary" => EmploymentBasicSummaryPrompt,
+
+            // Employment Premium
+            "EmploymentPremiumCompensationBenefits" => EmploymentPremiumCompensationBenefitsPrompt,
+            "EmploymentPremiumWorkingTimeVacation" => EmploymentPremiumWorkingTimeVacationPrompt,
+            "EmploymentPremiumTerminationNotice" => EmploymentPremiumTerminationNoticePrompt,
+            "EmploymentPremiumNonCompeteConfidentiality" => EmploymentPremiumNonCompeteConfidentialityPrompt,
+            "EmploymentPremiumRightsDuties" => EmploymentPremiumRightsDutiesPrompt,
+            "EmploymentPremiumSummary" => EmploymentPremiumSummaryPrompt,
 
             _ => throw new PromptNotFoundException(key)
         };

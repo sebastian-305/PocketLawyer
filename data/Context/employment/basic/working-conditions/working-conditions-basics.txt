@@ -1,0 +1,94 @@
+# Kontext für Arbeitsbedingungen
+
+## Arbeitszeit im österreichischen Arbeitsrecht
+
+### Normalarbeitszeit
+- **Gesetzliche Normalarbeitszeit**: 8 Stunden/Tag, 40 Stunden/Woche (AZG § 3)
+- **Kollektivvertragliche Regelungen**: Oft 38,5 oder 40 Stunden/Woche
+- **Teilzeit**: Reduzierte Wochenarbeitszeit (z.B. 20, 30 Stunden)
+- **Vollzeit**: Entspricht der kollektivvertraglichen Normalarbeitszeit
+
+### Arbeitszeitmodelle
+- **Fixe Arbeitszeit**: Feste Beginn- und Endzeiten
+- **Gleitzeit**: Flexible Gestaltung innerhalb von Kernzeiten
+- **Schichtarbeit**: Wechselnde Arbeitszeiten (Früh-, Spät-, Nachtschicht)
+- **Homeoffice/Remote**: Arbeit von zu Hause oder anderen Orten
+- **4-Tage-Woche**: 10 Stunden/Tag, 4 Tage/Woche (max. 40 Std.)
+
+### Überstunden
+- **Definition**: Arbeit über die Normalarbeitszeit hinaus
+- **Höchstgrenzen**: 
+  - 10 Stunden/Tag (mit Überstunden)
+  - 50 Stunden/Woche (mit Überstunden)
+  - 60 Stunden/Woche bei besonderen Umständen
+- **Vergütung**: 
+  - Erste 2 Überstunden: +50% Zuschlag
+  - Weitere Überstunden: +100% Zuschlag
+- **Zeitausgleich**: Überstunden können auch durch Freizeit abgegolten werden
+- **All-in-Verträge**: Überstunden können pauschal abgegolten sein (muss klar geregelt sein)
+
+### Urlaub
+- **Gesetzlicher Mindesturlaub**: 
+  - 5 Wochen (25 Arbeitstage) pro Jahr
+  - Nach 25 Dienstjahren: 6 Wochen (30 Arbeitstage)
+- **Kollektivvertragliche Regelungen**: Oft mehr als gesetzliches Minimum
+- **Urlaubsverbrauch**: Muss im Urlaubsjahr oder bis 30. Juni des Folgejahres konsumiert werden
+- **Urlaubsentgelt**: Volles Entgelt während des Urlaubs
+- **Urlaubsgeld**: Sonderzahlung (13. Gehalt) vor Urlaubsantritt
+
+### Arbeitsort
+- **Betriebsstätte**: Hauptarbeitsort (Adresse)
+- **Homeoffice**: 
+  - Seit COVID-19 häufiger
+  - Sollte vertraglich geregelt sein
+  - Unfallversicherungsschutz auch zu Hause
+- **Mobile Arbeit**: Arbeit von verschiedenen Orten
+- **Versetzung**: Änderung des Arbeitsortes (bedarf Zustimmung oder vertraglicher Grundlage)
+
+### Ruhepausen und Ruhezeiten
+- **Ruhepausen**: 
+  - Bei mehr als 6 Stunden Arbeit: mindestens 30 Minuten
+  - Nicht als Arbeitszeit zu zählen
+- **Tägliche Ruhezeit**: Mindestens 11 Stunden zwischen zwei Arbeitstagen
+- **Wöchentliche Ruhezeit**: Mindestens 36 Stunden zusammenhängend (meist Samstag/Sonntag)
+
+### Nachtarbeit
+- **Definition**: Arbeit zwischen 22:00 und 6:00 Uhr
+- **Zuschläge**: Nachtarbeitszuschlag (kollektivvertraglich geregelt)
+- **Gesundheitsschutz**: Besondere Schutzbestimmungen für Nachtarbeiter
+- **Untersuchungen**: Recht auf arbeitsmedizinische Untersuchungen
+
+### Sonn- und Feiertagsarbeit
+- **Grundsatz**: Sonn- und Feiertagsruhe
+- **Ausnahmen**: Bestimmte Branchen (Gastronomie, Gesundheit, etc.)
+- **Zuschläge**: +100% für Sonn- und Feiertagsarbeit
+- **Ersatzruhe**: Anspruch auf Ersatzruhetag
+
+### Rechtliche Grundlagen
+
+**Arbeitszeitgesetz (AZG)**
+- Regelt Normalarbeitszeit, Überstunden, Ruhepausen
+- Höchstgrenzen der Arbeitszeit
+- Nachtarbeitsschutz
+
+**Arbeitsruhegesetz (ARG)**
+- Sonn- und Feiertagsruhe
+- Wöchentliche Ruhezeit
+
+**Urlaubsgesetz (UrlG)**
+- Mindesturlaub und Urlaubsentgelt
+- Urlaubsverbrauch und Ersatzleistung
+
+**Kollektivverträge**
+- Konkrete Arbeitszeitregelungen
+- Urlaubsansprüche über gesetzlichem Minimum
+- Zuschläge und Zulagen
+
+### Wichtige Prüfpunkte
+
+1. **Wochenarbeitszeit**: Entspricht sie dem KV und ist sie realistisch?
+2. **Überstundenregelung**: Wie werden Überstunden abgegolten?
+3. **Urlaubsanspruch**: Mindestens 25 Tage? KV-Regelung beachtet?
+4. **Arbeitsort**: Ist Homeoffice geregelt?
+5. **Arbeitszeitmodell**: Ist es klar definiert (Gleitzeit, Schicht, etc.)?
+6. **All-in-Klauseln**: Sind sie transparent und angemessen?

@@ -1,0 +1,138 @@
+# Kontext für rechtliche Bewertung von Vergütungs- und Zusatzleistungsklauseln
+
+## Rechtliche Prüfung von Entgeltvereinbarungen
+
+### All-in-Vereinbarungen (Pauschalentgelt)
+
+#### Zulässigkeit
+- Grundsätzlich zulässig, aber an strenge Voraussetzungen gebunden
+- Muss für Arbeitnehmer transparent und nachvollziehbar sein
+- Überstunden müssen erkennbar abgegolten sein
+
+#### Rechtsprechung des OGH
+- **Transparenzgebot**: Arbeitnehmer muss erkennen können, welche Leistungen abgegolten sind
+- **Angemessenheit**: All-in-Entgelt muss deutlich über KV-Mindestgehalt liegen
+- **Faustregel**: Mindestens 20-25% über KV-Gehalt bei regelmäßigen Überstunden
+- **Dokumentation**: Tatsächlich geleistete Überstunden sollten aufgezeichnet werden
+
+#### Problematische Klauseln
+- "Mit dem Gehalt sind alle Überstunden abgegolten" - zu pauschal
+- Keine Angabe, wie viele Überstunden abgegolten sind
+- All-in bei niedrigem Gehalt (knapp über KV-Minimum)
+- Fehlende Aufzeichnung der tatsächlichen Arbeitszeit
+
+#### Empfohlene Formulierung
+- "Das Bruttogehalt von X Euro beinhaltet die Abgeltung von bis zu Y Überstunden monatlich"
+- Klare Angabe des Grundgehalts und der Überstundenpauschale
+- Regelung für darüber hinausgehende Überstunden
+
+### Sonderzahlungen (13. und 14. Gehalt)
+
+#### Gesetzliche Grundlage
+- Meist kollektivvertraglich geregelt
+- Anspruch entsteht nach Ablauf des Arbeitsjahres
+- Aliquotierung bei unterjährigem Ein-/Austritt
+
+#### Problematische Klauseln
+- Ausschluss von Sonderzahlungen (nur zulässig, wenn durch höheres Grundgehalt kompensiert)
+- Freiwilligkeitsvorbehalt bei kollektivvertraglich geregelten Sonderzahlungen
+- Rückforderungsklauseln bei vorzeitigem Austritt (nur eingeschränkt zulässig)
+
+#### Zulässige Regelungen
+- Auszahlungszeitpunkt (meist Juni und November/Dezember)
+- Aliquotierung bei unterjährigem Eintritt
+- Anrechnung auf kollektivvertragliche Ansprüche (wenn Gesamtentgelt höher)
+
+### Prämien und Bonuszahlungen
+
+#### Freiwilligkeitsvorbehalt
+- **Zulässig**: "Die Zahlung erfolgt freiwillig und ohne Anerkennung einer Rechtspflicht"
+- **Problematisch**: Wenn Prämie regelmäßig gezahlt wird, kann Anspruch entstehen
+- **Betriebliche Übung**: Nach 3-maliger vorbehaltloser Zahlung kann Anspruch entstehen
+
+#### Zielvereinbarungen
+- Ziele müssen erreichbar und messbar sein
+- Einseitige Änderung durch Arbeitgeber problematisch
+- Transparente Berechnungsgrundlage erforderlich
+
+### Sachbezüge
+
+#### Firmenwagen
+- **Privatnutzung**: Sachbezugswert ist zu versteuern (derzeit 2% der Anschaffungskosten/Monat)
+- **Rückgabe**: Regelung bei Beendigung des Dienstverhältnisses
+- **Kosten**: Wer trägt Treibstoff, Versicherung, Reparaturen?
+
+#### Weitere Sachbezüge
+- Diensthandy, Laptop: Privatnutzung sollte geregelt sein
+- Essenszuschuss: Steuerfreie Grenzen beachten
+- Parkplatz: Sachbezugswert bei besonderem Vorteil
+
+### Rückzahlungsklauseln
+
+#### Ausbildungskosten
+- **Zulässig**: Rückzahlung bei selbstverschuldetem vorzeitigen Austritt
+- **Höchstdauer**: Meist 3-5 Jahre, abhängig von Ausbildungsdauer und -kosten
+- **Aliquotierung**: Rückzahlungsbetrag muss mit der Zeit sinken
+- **Unzulässig**: Rückzahlung bei Kündigung durch Arbeitgeber
+
+#### Sonderzahlungen
+- **Grundsätzlich unzulässig**: Rückforderung von bereits erarbeitetem 13./14. Gehalt
+- **Ausnahme**: Bei Vorschusszahlung und selbstverschuldetem Austritt
+
+### Gehaltsanpassung
+
+#### Valorisierung
+- Keine automatische Anpassung an Inflation
+- Kollektivvertragserhöhungen sind zu beachten
+- Überzahlung muss nicht automatisch erhöht werden
+
+#### Vorrückung
+- Kollektivvertragliche Vorrückungssysteme sind zu beachten
+- Automatische Gehaltssteigerung nach Dienstjahren
+- Kann vertraglich ausgeschlossen werden, wenn Überzahlung entsprechend hoch
+
+### Lohnsteuer und Sozialversicherung
+
+#### Arbeitgeberpflichten
+- Abfuhr von Lohnsteuer und SV-Beiträgen
+- Meldung an Sozialversicherung
+- Ausstellung von Lohnzetteln
+
+#### Nettolohnvereinbarungen
+- Grundsätzlich zulässig
+- Arbeitgeber trägt Lohnsteuer und SV-Beiträge
+- Risiko von Steueränderungen beim Arbeitgeber
+
+### Bewertungskriterien
+
+#### Vorteilhafte Regelungen
+- Transparente All-in-Vereinbarung mit angemessenem Entgelt
+- Überzahlung deutlich über KV-Minimum
+- Zusätzliche Prämien und Bonuszahlungen
+- Attraktive Sachbezüge (Firmenwagen, Weiterbildung)
+- Betriebliche Altersvorsorge
+
+#### Neutrale Regelungen
+- Standardmäßige Sonderzahlungen gemäß KV
+- Übliche Sachbezüge
+- Marktübliche Gehälter
+
+#### Nachteilige Regelungen
+- Intransparente All-in-Vereinbarungen
+- Gehalt unter KV-Minimum
+- Übermäßige Rückzahlungsklauseln
+- Freiwilligkeitsvorbehalt bei KV-Ansprüchen
+- Fehlende Regelung zu Sonderzahlungen
+
+### Kollektivvertragsbezug
+- Prüfung, ob Entgelt KV-Mindestgehalt erreicht
+- Beachtung von KV-Vorrückungssystemen
+- Einhaltung von KV-Regelungen zu Sonderzahlungen
+- Berücksichtigung von KV-Zulagen und Zuschlägen
+
+### Rechtsgrundlagen
+- Angestelltengesetz (AngG)
+- Kollektivverträge
+- OGH-Rechtsprechung zu All-in-Vereinbarungen
+- Lohn- und Sozialdumping-Bekämpfungsgesetz (LSD-BG)
+- Einkommensteuergesetz (EStG) - Sachbezüge

@@ -1,0 +1,103 @@
+# Kontext für Basiszusammenfassung
+
+## Leitfaden für die Erstellung einer Basiszusammenfassung
+
+### Zweck der Basiszusammenfassung
+Die Basiszusammenfassung soll dem Arbeitnehmer einen schnellen Überblick über die wichtigsten Vertragsinhalte geben und eine erste Einschätzung ermöglichen.
+
+### Struktur der Zusammenfassung
+
+#### 1. Kurzfazit (2-3 Sätze)
+- Gesamteindruck des Vertrags
+- Hauptmerkmale (befristet/unbefristet, Vollzeit/Teilzeit, Position)
+- Erste Einschätzung (positiv/neutral/kritisch)
+
+#### 2. Kollektivvertrag
+- **Erkannter KV**: Name des anwendbaren Kollektivvertrags
+- **Bedeutung**: Kurze Erklärung, warum der KV wichtig ist
+- **Kein KV erkannt**: Falls kein KV identifiziert wurde, dies klar kommunizieren
+  - "Es konnte kein spezifischer Kollektivvertrag identifiziert werden."
+  - Hinweis auf mögliche Konsequenzen (fehlende Mindeststandards)
+
+#### 3. Gesamtbewertung
+- **Positive Aspekte**: Was ist gut geregelt?
+  - Klare Vertragsgestaltung
+  - Überdurchschnittliche Vergütung
+  - Gute Arbeitsbedingungen
+  - Zusatzleistungen
+
+- **Neutrale Aspekte**: Was ist standardmäßig geregelt?
+  - Gesetzliche Mindeststandards
+  - Übliche Branchenregelungen
+
+- **Kritische Aspekte**: Was sollte beachtet werden?
+  - Unklare Formulierungen
+  - Fehlende Regelungen
+  - Potenzielle Nachteile
+  - Abweichungen von Standards
+
+#### 4. Risk Level (Ampelsystem)
+- **Grün**: Vertrag ist gut und fair gestaltet
+  - Alle wesentlichen Punkte klar geregelt
+  - KV-konform oder besser
+  - Keine erkennbaren Nachteile
+  
+- **Gelb**: Vertrag ist akzeptabel, aber mit Hinweisen
+  - Einige Unklarheiten vorhanden
+  - Standardregelungen, aber nicht optimal
+  - Einzelne Punkte sollten nachverhandelt werden
+  
+- **Rot**: Vertrag hat erhebliche Probleme
+  - Wesentliche Punkte fehlen oder unklar
+  - Mögliche Unterschreitung von Mindeststandards
+  - Unzulässige oder sehr nachteilige Klauseln
+  - Dringender Handlungsbedarf
+
+### Bewertungskriterien
+
+#### Positive Indikatoren
+- Überzahlung gegenüber KV-Mindestgehalt
+- Klare und vollständige Vertragsgestaltung
+- Zusätzliche Benefits (Firmenwagen, Weiterbildung, etc.)
+- Flexible Arbeitszeitmodelle (Homeoffice, Gleitzeit)
+- Mehr Urlaub als gesetzlich vorgeschrieben
+- Betriebliche Altersvorsorge
+
+#### Neutrale Indikatoren
+- Einhaltung gesetzlicher Mindeststandards
+- Standardmäßige KV-Regelungen
+- Übliche Branchenpraktiken
+- Probezeit im normalen Rahmen
+
+#### Kritische Indikatoren
+- Unterschreitung KV-Mindestgehalt
+- Fehlende oder unklare Regelungen zu Gehalt, Arbeitszeit, Urlaub
+- Überlange Probezeiten
+- Intransparente All-in-Vereinbarungen
+- Unzulässige Konkurrenzklauseln
+- Einseitige Versetzungsklauseln
+- Fehlende Kündigungsfristen
+- Unklare Befristungsgründe
+
+### Tonalität und Sprache
+- **Verständlich**: Keine übermäßige Juristensprache
+- **Objektiv**: Sachliche Darstellung ohne Übertreibung
+- **Konstruktiv**: Hinweise auf Verbesserungsmöglichkeiten
+- **Klar**: Eindeutige Aussagen, keine Mehrdeutigkeiten
+
+### Beispielformulierungen
+
+**Grüner Vertrag:**
+"Der vorliegende Arbeitsvertrag ist gut strukturiert und fair gestaltet. Die Vergütung liegt deutlich über dem kollektivvertraglichen Mindestgehalt, und es werden attraktive Zusatzleistungen geboten. Alle wesentlichen Punkte sind klar geregelt."
+
+**Gelber Vertrag:**
+"Der Arbeitsvertrag entspricht den grundlegenden Standards, weist jedoch einige Unklarheiten auf. Die Überstundenregelung sollte präzisiert werden, und die All-in-Vereinbarung könnte transparenter gestaltet sein. Eine Nachverhandlung einzelner Punkte wird empfohlen."
+
+**Roter Vertrag:**
+"Der Arbeitsvertrag weist erhebliche Mängel auf. Das angegebene Gehalt liegt unter dem kollektivvertraglichen Mindestgehalt, und wichtige Regelungen zu Arbeitszeit und Urlaub fehlen. Es wird dringend empfohlen, den Vertrag vor Unterzeichnung überarbeiten zu lassen."
+
+### Wichtige Hinweise
+- Die Basiszusammenfassung ist eine erste Einschätzung
+- Für detaillierte rechtliche Bewertung ist die Premium-Analyse erforderlich
+- Bei kritischen Verträgen sollte rechtlicher Rat eingeholt werden
+- Die Zusammenfassung ersetzt keine individuelle Rechtsberatung

@@ -1,0 +1,71 @@
+# Kontext für Vergütungsanalyse
+
+## Entgeltbestandteile im österreichischen Arbeitsrecht
+
+### Grundgehalt/Grundlohn
+- **Bruttobezug**: Vor Abzug von Steuern und Sozialversicherung
+- **Nettobezug**: Nach Abzügen (ca. 70-80% des Brutto bei Angestellten)
+- **Kollektivvertragliches Mindestgehalt**: Muss eingehalten werden
+- **Überzahlung**: Häufig in Österreich, sollte klar ausgewiesen sein
+
+### Zahlungsweise
+- **Monatlich**: Standardfall bei Angestellten
+- **14 Gehälter**: Urlaubsgeld (Juni) und Weihnachtsgeld (November/Dezember)
+- **Auszahlungstermin**: Meist Ende des Monats oder Monatsmitte
+
+### Sonderzahlungen (13. und 14. Gehalt)
+- **Urlaubsgeld**: Auszahlung vor Haupturlaubszeit (meist Juni)
+- **Weihnachtsgeld**: Auszahlung November/Dezember
+- **Höhe**: Meist ein volles Monatsgehalt
+- **Aliquotierung**: Bei unterjährigem Ein-/Austritt anteilig
+- **Steuerliche Begünstigung**: Sonderzahlungen bis 620 Euro/Monat (Stand 2024) mit 6% besteuert
+
+### Zuschläge und Zulagen
+- **Überstundenzuschläge**: 
+  - Erste 2 Überstunden: +50%
+  - Weitere Überstunden: +100%
+  - Sonn- und Feiertagsarbeit: +100%
+- **Nachtarbeitszuschlag**: Für Arbeit zwischen 20:00 und 6:00 Uhr
+- **Schichtzulagen**: Bei Schichtarbeit
+- **Gefahrenzulagen**: Bei besonderen Risiken
+- **Erschwerniszulagen**: Bei besonderen Belastungen
+
+### Sachbezüge und Zusatzleistungen
+- **Firmenwagen**: Auch zur Privatnutzung (Sachbezugswert zu versteuern)
+- **Diensthandy/Laptop**: Privatnutzung oft erlaubt
+- **Essenszuschuss**: Kantinenzugang, Essensmarken
+- **Parkplatz**: Kostenloser Mitarbeiterparkplatz
+- **Öffi-Ticket**: Jahreskarte für öffentliche Verkehrsmittel
+- **Weiterbildung**: Kostenübernahme für Schulungen
+- **Betriebliche Altersvorsorge**: Zusätzliche Pensionsvorsorge
+- **Krankenversicherung**: Private Zusatzversicherung
+
+### Prämien und variable Vergütung
+- **Leistungsprämien**: An Zielerreichung gekoppelt
+- **Bonuszahlungen**: Jährliche oder quartalsweise Boni
+- **Provisionen**: Bei Vertriebstätigkeit
+- **Gewinnbeteiligung**: Anteil am Unternehmenserfolg
+
+### Rechtliche Grundlagen
+
+**Angestelltengesetz (AngG) § 6**
+- Entgelt wird durch Vereinbarung oder Ortsgebrauch bestimmt
+- Angemessenes Entgelt bei fehlender Vereinbarung
+
+**Kollektivverträge**
+- Legen Mindestgehälter fest (nach Verwendungsgruppen)
+- Regeln Sonderzahlungen und Zulagen
+- Definieren Vorrückungssystem (Gehaltssteigerungen nach Dienstjahren)
+
+**Lohn- und Sozialdumping-Bekämpfungsgesetz (LSD-BG)**
+- Sichert Einhaltung von Mindestlöhnen
+- Strafen bei Unterschreitung
+
+### Wichtige Prüfpunkte
+
+1. **KV-Konformität**: Liegt Gehalt über KV-Mindestgehalt?
+2. **Klarheit**: Sind alle Entgeltbestandteile klar definiert?
+3. **Sonderzahlungen**: Sind 13./14. Gehalt geregelt?
+4. **Überstunden**: Wie werden Überstunden abgegolten?
+5. **Sachbezüge**: Sind steuerliche Aspekte berücksichtigt?
+6. **All-in-Verträge**: Vorsicht bei Pauschalvereinbarungen - müssen transparent sein

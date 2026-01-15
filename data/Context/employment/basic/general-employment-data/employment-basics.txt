@@ -1,0 +1,49 @@
+# Kontext für Allgemeine Arbeitsdaten
+
+## Wesentliche Vertragsbestandteile
+
+Ein Arbeitsvertrag muss folgende wesentliche Informationen enthalten:
+
+### Vertragsparteien
+- **Arbeitgeber**: Vollständiger Name und Adresse des Unternehmens
+- **Arbeitnehmer**: Vollständiger Name, Geburtsdatum, Sozialversicherungsnummer
+
+### Tätigkeitsbeschreibung
+- Genaue Bezeichnung der Position/Funktion
+- Beschreibung der Hauptaufgaben
+- Qualifikationsanforderungen
+- Einsatzort (Betriebsstätte, Homeoffice-Regelung)
+
+### Vertragsbeginn und -dauer
+- **Beginn des Dienstverhältnisses**: Konkretes Datum
+- **Befristung**: 
+  - Unbefristet (Regelfall)
+  - Befristet (nur mit sachlichem Grund zulässig)
+  - Kettenbefristungen sind nach 3 Jahren bzw. 3 Verlängerungen problematisch
+- **Probezeit**: 
+  - Maximal 1 Monat (gesetzlich)
+  - Kann durch Kollektivvertrag verlängert werden (oft bis 3 Monate)
+  - Während Probezeit verkürzte Kündigungsfristen
+
+### Rechtliche Grundlagen
+
+**Angestelltengesetz (AngG)**
+- Gilt für Angestellte (kaufmännische, höhere nicht-kaufmännische Dienste, Kanzleiarbeiten)
+- Regelt Dienstvertrag, Kündigungsfristen, Entgeltfortzahlung
+
+**Arbeitsvertragsrechts-Anpassungsgesetz (AVRAG)**
+- Schriftliche Aufzeichnung der wesentlichen Vertragsinhalte erforderlich
+- Informationspflichten des Arbeitgebers
+
+**Kollektivverträge**
+- Branchenspezifische Mindeststandards
+- Üblich in Österreich (ca. 98% Abdeckung)
+- Regeln oft: Mindestgehälter, Arbeitszeit, Urlaub, Kündigungsfristen
+
+### Wichtige Prüfpunkte
+
+1. **Vertragsform**: Schriftform empfohlen, aber nicht zwingend
+2. **Klarheit**: Alle wesentlichen Punkte müssen eindeutig geregelt sein
+3. **Kollektivvertrag**: Welcher KV ist anwendbar?
+4. **Befristung**: Ist ein sachlicher Grund erkennbar?
+5. **Probezeit**: Liegt im gesetzlichen/kollektivvertraglichen Rahmen?

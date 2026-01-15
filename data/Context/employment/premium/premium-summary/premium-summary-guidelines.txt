@@ -1,0 +1,193 @@
+# Kontext für Premium-Zusammenfassung
+
+## Leitfaden für die Erstellung einer Premium-Zusammenfassung
+
+### Zweck der Premium-Zusammenfassung
+Die Premium-Zusammenfassung fasst die detaillierte rechtliche Bewertung zusammen und gibt konkrete Handlungsempfehlungen für den Arbeitnehmer.
+
+### Struktur der Zusammenfassung
+
+#### 1. Gesamtfazit (3-5 Sätze)
+- Zusammenfassende rechtliche Bewertung des Vertrags
+- Hauptstärken und Hauptschwächen
+- Gesamteinschätzung der Vertragsgerechtigkeit
+- Empfehlung zur Unterzeichnung (ja/nein/mit Änderungen)
+
+**Beispielformulierungen:**
+
+**Positives Fazit:**
+"Der vorliegende Arbeitsvertrag ist aus rechtlicher Sicht gut gestaltet und fair. Die Vergütung liegt deutlich über dem kollektivvertraglichen Mindestgehalt, und alle wesentlichen Arbeitsbedingungen sind klar und arbeitnehmerfreundlich geregelt. Es wurden keine unzulässigen oder erheblich nachteiligen Klauseln identifiziert. Der Vertrag kann ohne Bedenken unterzeichnet werden."
+
+**Kritisches Fazit:**
+"Der Arbeitsvertrag weist mehrere rechtlich problematische Klauseln auf. Die All-in-Vereinbarung ist intransparent, die Konkurrenzklausel enthält keine Karenzentschädigung und ist daher unwirksam, und die Kündigungsfristen sind asymmetrisch zulasten des Arbeitnehmers gestaltet. Es wird dringend empfohlen, diese Punkte vor Unterzeichnung nachzuverhandeln oder rechtlichen Rat einzuholen."
+
+**Gemischtes Fazit:**
+"Der Arbeitsvertrag entspricht im Wesentlichen den rechtlichen Standards, weist jedoch einige Optimierungspotenziale auf. Die Vergütung ist angemessen, aber die Überstundenregelung sollte präzisiert werden. Die Verschwiegenheitsklausel ist übermäßig weit gefasst. Eine Nachverhandlung dieser Punkte wird empfohlen, der Vertrag ist aber grundsätzlich akzeptabel."
+
+#### 2. Gesamtbewertung
+
+##### Positive Aspekte
+Zusammenfassung aller vorteilhaften Regelungen aus den einzelnen Analysebereichen:
+- **Vergütung**: Überzahlung, attraktive Zusatzleistungen
+- **Arbeitszeit**: Flexible Modelle, Homeoffice-Möglichkeit
+- **Urlaub**: Mehr als gesetzliches Minimum
+- **Kündigungsschutz**: Verlängerte Kündigungsfristen für Arbeitgeber
+- **Weiterbildung**: Kostenübernahme, Bildungsangebote
+- **Zusatzleistungen**: Firmenwagen, Altersvorsorge, etc.
+
+##### Neutrale Aspekte
+Standardmäßige Regelungen, die weder besonders vorteilhaft noch nachteilig sind:
+- Einhaltung gesetzlicher Mindeststandards
+- Übliche kollektivvertragliche Regelungen
+- Marktübliche Arbeitsbedingungen
+- Standardmäßige Treuepflichten
+
+##### Kritische Aspekte
+Zusammenfassung aller problematischen oder nachteiligen Regelungen:
+- **Vergütung**: Intransparente All-in-Vereinbarungen, Gehalt unter KV
+- **Arbeitszeit**: Unklare Überstundenregelungen, fehlende Zeiterfassung
+- **Kündigung**: Asymmetrische Kündigungsfristen, überlange Probezeit
+- **Konkurrenz**: Unwirksame Konkurrenzklauseln ohne Karenzentschädigung
+- **Verschwiegenheit**: Übermäßig weite Verschwiegenheitspflichten
+- **Rechte**: Einseitige Änderungsmöglichkeiten, eingeschränkte Arbeitnehmerrechte
+
+#### 3. Handlungsempfehlungen
+
+Konkrete, priorisierte Empfehlungen für den Arbeitnehmer:
+
+##### Dringende Handlungsempfehlungen (Rot)
+Bei erheblichen rechtlichen Problemen:
+- "Lassen Sie die Konkurrenzklausel streichen oder eine Karenzentschädigung von mindestens 50% des Gehalts vereinbaren."
+- "Fordern Sie eine Klarstellung der All-in-Vereinbarung mit genauer Angabe der abgegoltenen Überstunden."
+- "Prüfen Sie, ob das angegebene Gehalt dem kollektivvertraglichen Mindestgehalt entspricht. Falls nicht, fordern Sie eine Anpassung."
+- "Lassen Sie sich vor Unterzeichnung rechtlich beraten."
+
+##### Empfohlene Nachverhandlungen (Gelb)
+Bei verbesserungswürdigen Punkten:
+- "Verhandeln Sie eine Verlängerung der Kündigungsfrist für den Arbeitgeber."
+- "Bitten Sie um Präzisierung der Überstundenregelung."
+- "Fordern Sie eine Einschränkung der Verschwiegenheitsklausel auf tatsächliche Geschäftsgeheimnisse."
+- "Vereinbaren Sie eine Homeoffice-Regelung, falls gewünscht."
+- "Klären Sie die Kostenübernahme für Weiterbildungen."
+
+##### Optional (Grün)
+Bei bereits guten Verträgen:
+- "Der Vertrag ist fair gestaltet. Sie können ihn ohne Bedenken unterzeichnen."
+- "Überlegen Sie, ob Sie zusätzliche Benefits wie Firmenwagen oder Altersvorsorge verhandeln möchten."
+- "Klären Sie Details zur Homeoffice-Ausstattung, falls relevant."
+
+### Bewertungskriterien für Gesamtbewertung
+
+#### Exzellenter Vertrag (Grün)
+- Alle Bereiche positiv oder neutral bewertet
+- Überdurchschnittliche Vergütung und Benefits
+- Keine rechtlich problematischen Klauseln
+- Arbeitnehmerfreundliche Regelungen
+- Klare und transparente Vertragsgestaltung
+
+**Empfehlung:** "Der Vertrag kann ohne Bedenken unterzeichnet werden."
+
+#### Guter Vertrag mit kleinen Mängeln (Hellgrün)
+- Überwiegend positive oder neutrale Bewertungen
+- Einzelne verbesserungswürdige Punkte
+- Keine erheblichen rechtlichen Probleme
+- Marktübliche oder bessere Konditionen
+
+**Empfehlung:** "Der Vertrag ist grundsätzlich gut. Einzelne Punkte könnten nachverhandelt werden, sind aber nicht kritisch."
+
+#### Akzeptabler Vertrag mit Verbesserungspotenzial (Gelb)
+- Gemischte Bewertungen
+- Mehrere verbesserungswürdige Punkte
+- Einzelne rechtlich problematische Klauseln
+- Marktübliche Konditionen
+
+**Empfehlung:** "Der Vertrag ist akzeptabel, aber eine Nachverhandlung einzelner Punkte wird empfohlen."
+
+#### Problematischer Vertrag (Orange)
+- Mehrere kritische Bewertungen
+- Erhebliche rechtliche Probleme
+- Nachteilige Klauseln
+- Unterdurchschnittliche Konditionen
+
+**Empfehlung:** "Der Vertrag weist erhebliche Mängel auf. Eine Nachverhandlung ist dringend empfohlen."
+
+#### Kritischer Vertrag (Rot)
+- Überwiegend kritische Bewertungen
+- Schwerwiegende rechtliche Probleme
+- Unzulässige Klauseln
+- Erhebliche Nachteile für Arbeitnehmer
+
+**Empfehlung:** "Der Vertrag sollte in dieser Form nicht unterzeichnet werden. Lassen Sie sich rechtlich beraten."
+
+### Tonalität und Sprache
+
+#### Verständlichkeit
+- Keine übermäßige Juristensprache
+- Erklärung von Fachbegriffen
+- Konkrete Beispiele und Formulierungen
+
+#### Objektivität
+- Sachliche Darstellung
+- Keine Übertreibungen
+- Faktenbasierte Bewertung
+
+#### Konstruktivität
+- Lösungsorientierte Empfehlungen
+- Konkrete Verbesserungsvorschläge
+- Positive Aspekte hervorheben
+
+#### Klarheit
+- Eindeutige Aussagen
+- Klare Priorisierung
+- Keine Mehrdeutigkeiten
+
+### Integration der Einzelbewertungen
+
+Die Premium-Zusammenfassung integriert die Bewertungen aus allen Premium-Analyse-Bereichen:
+
+1. **Vergütung und Zusatzleistungen**: Bewertung von Gehalt, Sonderzahlungen, All-in-Vereinbarungen, Sachbezügen
+2. **Arbeitszeit und Urlaub**: Bewertung von Arbeitszeitmodellen, Überstunden, Urlaub, Krankenstand
+3. **Kündigung und Beendigung**: Bewertung von Kündigungsfristen, Probezeit, Befristung, Abfertigung
+4. **Konkurrenz und Verschwiegenheit**: Bewertung von Konkurrenzklauseln, Verschwiegenheitspflichten, Datenschutz
+5. **Rechte und Pflichten**: Bewertung von Arbeitnehmerrechten, Arbeitgeberpflichten, Änderungsmöglichkeiten
+
+### Priorisierung der Handlungsempfehlungen
+
+#### Priorität 1 (Kritisch)
+- Unzulässige Klauseln (z.B. Konkurrenzklausel ohne Karenzentschädigung)
+- Unterschreitung gesetzlicher Mindeststandards (z.B. Gehalt unter KV)
+- Erhebliche Nachteile für Arbeitnehmer
+
+#### Priorität 2 (Wichtig)
+- Intransparente Regelungen (z.B. unklare All-in-Vereinbarungen)
+- Asymmetrische Klauseln (z.B. einseitige Kündigungsfristen)
+- Fehlende wichtige Regelungen
+
+#### Priorität 3 (Empfohlen)
+- Verbesserungswürdige Punkte (z.B. Homeoffice-Regelung)
+- Zusätzliche Benefits (z.B. Weiterbildung, Firmenwagen)
+- Klarstellungen und Präzisierungen
+
+### Rechtlicher Hinweis
+
+Am Ende der Zusammenfassung sollte folgender Hinweis stehen:
+
+"Diese Analyse stellt eine rechtliche Einschätzung auf Basis der vorliegenden Vertragsinformationen dar. Sie ersetzt keine individuelle Rechtsberatung. Bei Unsicherheiten oder komplexen Sachverhalten wird empfohlen, einen Rechtsanwalt oder die Arbeiterkammer zu konsultieren."
+
+### Kollektivvertragsbezug
+
+Die Zusammenfassung sollte den erkannten Kollektivvertrag erwähnen und dessen Bedeutung für die Bewertung hervorheben:
+
+"Der Vertrag unterliegt dem [Name des KV]. Die Bewertung berücksichtigt die spezifischen Regelungen dieses Kollektivvertrags, insbesondere hinsichtlich Mindestgehalt, Arbeitszeit, Urlaub und Kündigungsfristen."
+
+Falls kein KV erkannt wurde:
+"Es konnte kein spezifischer Kollektivvertrag identifiziert werden. Die Bewertung basiert auf den allgemeinen gesetzlichen Bestimmungen. Es wird empfohlen zu klären, welcher Kollektivvertrag anwendbar ist."
+
+### Qualitätssicherung
+
+Die Premium-Zusammenfassung sollte:
+- Alle wesentlichen Punkte aus den Einzelanalysen berücksichtigen
+- Konsistent mit den Einzelbewertungen sein
+- Konkrete und umsetzbare Empfehlungen geben
+- Verständlich und nachvollziehbar formuliert sein
+- Eine klare Handlungsempfehlung enthalten

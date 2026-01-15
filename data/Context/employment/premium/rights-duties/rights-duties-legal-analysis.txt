@@ -1,0 +1,309 @@
+# Kontext für rechtliche Bewertung von Rechten und Pflichten
+
+## Pflichten des Arbeitnehmers
+
+### Arbeitspflicht
+
+#### Hauptleistungspflicht
+- Erbringung der vereinbarten Arbeitsleistung
+- Persönliche Leistungserbringung (keine Vertretung ohne Zustimmung)
+- Sorgfältige und gewissenhafte Ausführung
+
+#### Weisungsgebundenheit
+- Arbeitnehmer ist an Weisungen des Arbeitgebers gebunden
+- Weisungen müssen rechtmäßig und zumutbar sein
+- Direktionsrecht des Arbeitgebers (Zeit, Ort, Art der Arbeitsleistung)
+
+#### Problematische Klauseln
+- Übermäßig weites Direktionsrecht (z.B. beliebige Versetzung)
+- Einseitige Änderung der Arbeitsbedingungen
+- Unzumutbare Weisungen
+
+### Treuepflicht
+
+#### Inhalt
+- Wahrung der Interessen des Arbeitgebers
+- Unterlassung schädigender Handlungen
+- Verschwiegenheit über Geschäfts- und Betriebsgeheimnisse
+- Wettbewerbsverbot während des Dienstverhältnisses
+
+#### Konkretisierung
+- Sorgfältiger Umgang mit Arbeitsmitteln
+- Meldung von Schäden und Gefahren
+- Keine Annahme von Schmiergeldern oder Bestechung
+- Keine Vorteilsannahme von Geschäftspartnern
+
+### Sorgfaltspflicht
+
+#### Umgang mit Arbeitsmitteln
+- Sorgfältiger Umgang mit Werkzeugen, Maschinen, Fahrzeugen
+- Pflegliche Behandlung von IT-Geräten
+- Meldung von Defekten und Schäden
+
+#### Haftung bei Schäden
+- **Leichte Fahrlässigkeit**: Keine Haftung
+- **Grobe Fahrlässigkeit**: Anteilige Haftung (je nach Verschuldensgrad)
+- **Vorsatz**: Volle Haftung
+
+#### Problematische Klauseln
+- Haftung für leichte Fahrlässigkeit (unzulässig)
+- Pauschalierte Schadenersatzansprüche
+- Übermäßige Haftung für normale Betriebsrisiken
+
+### Meldepflichten
+
+#### Krankmeldung
+- Unverzügliche Meldung bei Arbeitsunfähigkeit
+- Vorlage einer ärztlichen Bestätigung (ab 4. Tag, KV kann kürzere Frist vorsehen)
+- Information über voraussichtliche Dauer
+
+#### Adressänderung
+- Meldung von Adressänderungen
+- Aktualisierung von Kontaktdaten
+
+#### Nebentätigkeiten
+- Meldepflicht für Nebentätigkeiten (wenn vertraglich vereinbart)
+- Genehmigungspflicht bei konkurrierenden Tätigkeiten
+
+### Versetzung und Änderung der Tätigkeit
+
+#### Direktionsrecht des Arbeitgebers
+- Arbeitgeber kann im Rahmen des Vertrags Tätigkeit zuweisen
+- Versetzung an anderen Arbeitsort nur bei vertraglicher Grundlage
+- Änderung der Tätigkeit nur im Rahmen der vereinbarten Position
+
+#### Problematische Klauseln
+- Unbeschränktes Versetzungsrecht (österreichweit oder weltweit)
+- Einseitige Änderung der Tätigkeit ohne Zustimmung
+- Degradierung ohne sachlichen Grund
+
+#### Zulässige Regelungen
+- Versetzung innerhalb des Betriebsstandorts
+- Versetzung an andere Standorte bei entsprechender vertraglicher Vereinbarung
+- Änderung der Tätigkeit im Rahmen der Qualifikation
+
+## Rechte des Arbeitnehmers
+
+### Entgeltanspruch
+
+#### Grundsatz
+- Anspruch auf vereinbartes Entgelt
+- Pünktliche Zahlung (meist Monatsende)
+- Schriftliche Abrechnung (Lohnzettel)
+
+#### Entgeltfortzahlung
+- Bei Krankenstand (AngG § 8)
+- Bei Feiertagen
+- Bei persönlichen Verhinderungen (Hochzeit, Todesfall, etc.)
+
+#### Problematische Klauseln
+- Verspätete Zahlung ohne Verzugszinsen
+- Unklare Entgeltbestandteile
+- Einseitige Kürzungsmöglichkeiten
+
+### Urlaubsanspruch
+
+#### Gesetzlicher Anspruch
+- Mindestens 5 Wochen (25 Arbeitstage) pro Jahr
+- 6 Wochen (30 Arbeitstage) nach 25 Dienstjahren
+- Kollektivverträge sehen oft mehr vor
+
+#### Urlaubsplanung
+- Arbeitnehmer hat Wunschrecht
+- Arbeitgeber muss betriebliche Erfordernisse berücksichtigen
+- Einigung im Konsens anstreben
+
+### Arbeitsschutz und Gesundheit
+
+#### Arbeitnehmerschutzgesetz (ASchG)
+- Arbeitgeber muss für sichere Arbeitsbedingungen sorgen
+- Bereitstellung von Schutzausrüstung
+- Arbeitsmedizinische Untersuchungen
+- Sicherheitsunterweisung
+
+#### Arbeitszeit und Ruhepausen
+- Einhaltung der gesetzlichen Arbeitszeitgrenzen
+- Gewährung von Ruhepausen
+- Einhaltung von Ruhezeiten
+
+### Gleichbehandlung und Diskriminierungsverbot
+
+#### Gleichbehandlungsgesetz (GlBG)
+- Verbot der Diskriminierung aufgrund von:
+  - Geschlecht
+  - Ethnischer Zugehörigkeit
+  - Religion oder Weltanschauung
+  - Alter
+  - Sexueller Orientierung
+- Gleiches Entgelt für gleichwertige Arbeit
+
+#### Problematische Klauseln
+- Diskriminierende Regelungen
+- Ungleichbehandlung ohne sachlichen Grund
+- Benachteiligung bestimmter Gruppen
+
+### Datenschutz
+
+#### DSGVO-Rechte
+- Recht auf Auskunft über gespeicherte Daten
+- Recht auf Berichtigung und Löschung
+- Recht auf Datenübertragbarkeit
+- Widerspruchsrecht gegen Datenverarbeitung
+
+#### Überwachung am Arbeitsplatz
+- Überwachung nur bei berechtigtem Interesse und Verhältnismäßigkeit
+- Information über Überwachungsmaßnahmen
+- Betriebsrat muss zustimmen (wenn vorhanden)
+
+### Weiterbildung
+
+#### Anspruch auf Weiterbildung
+- Kein genereller gesetzlicher Anspruch
+- Kollektivverträge oder Betriebsvereinbarungen können Ansprüche vorsehen
+- Arbeitgeber kann Weiterbildung anordnen (während Arbeitszeit)
+
+#### Bildungskarenz und Bildungsteilzeit
+- Möglichkeit zur Bildungskarenz (2-12 Monate)
+- Bildungsteilzeit (Reduktion der Arbeitszeit)
+- Zustimmung des Arbeitgebers erforderlich
+
+#### Problematische Klauseln
+- Rückzahlungsklauseln für jegliche Weiterbildung
+- Übermäßig lange Bindungsfristen
+- Rückzahlung auch bei Kündigung durch Arbeitgeber
+
+#### Zulässige Regelungen
+- Rückzahlung bei selbstverschuldetem vorzeitigen Austritt
+- Aliquotierung der Rückzahlung über die Zeit
+- Angemessene Bindungsfristen (3-5 Jahre bei umfangreichen Ausbildungen)
+
+### Betriebsrat und Mitbestimmung
+
+#### Betriebsrat
+- Ab 5 Arbeitnehmern kann Betriebsrat gewählt werden
+- Betriebsrat hat Informations-, Beratungs- und Mitbestimmungsrechte
+- Kündigungsschutz für Betriebsratsmitglieder
+
+#### Betriebsvereinbarungen
+- Regelungen zwischen Arbeitgeber und Betriebsrat
+- Gelten für alle Arbeitnehmer
+- Können Arbeitsverträge ergänzen oder abändern
+
+### Zeugnis
+
+#### Anspruch
+- Arbeitnehmer hat Anspruch auf Dienstzeugnis
+- Einfaches Zeugnis: Dauer und Art der Tätigkeit
+- Qualifiziertes Zeugnis: Zusätzlich Leistung und Verhalten
+
+#### Inhalt
+- Wahrheitspflicht
+- Wohlwollende Formulierung
+- Keine versteckten negativen Aussagen
+
+## Pflichten des Arbeitgebers
+
+### Entgeltzahlung
+
+#### Pünktliche Zahlung
+- Zahlung zum vereinbarten Termin
+- Bei Verzug: Verzugszinsen
+- Schriftliche Abrechnung (Lohnzettel)
+
+#### Abfuhr von Steuern und Sozialversicherung
+- Lohnsteuer
+- Sozialversicherungsbeiträge
+- Meldung an Sozialversicherung
+
+### Fürsorgepflicht
+
+#### Arbeitsschutz
+- Sichere Arbeitsbedingungen
+- Bereitstellung von Schutzausrüstung
+- Arbeitsmedizinische Betreuung
+
+#### Schutz der Persönlichkeit
+- Schutz vor Mobbing und Belästigung
+- Schutz vor Diskriminierung
+- Respektvoller Umgang
+
+### Gleichbehandlung
+
+#### Gleichbehandlungsgebot
+- Keine sachlich nicht gerechtfertigte Ungleichbehandlung
+- Gleiches Entgelt für gleichwertige Arbeit
+- Keine Diskriminierung
+
+### Beschäftigungspflicht
+
+#### Grundsatz
+- Arbeitgeber muss Arbeitnehmer beschäftigen
+- Keine "Freistellung" ohne Zustimmung oder Rechtsgrundlage
+- Annahmeverzug bei Nichtbeschäftigung (Entgelt ist zu zahlen)
+
+## Änderung von Arbeitsbedingungen
+
+### Einvernehmliche Änderung
+- Änderungen bedürfen grundsätzlich Zustimmung beider Seiten
+- Schriftform empfohlen
+- Keine einseitige Verschlechterung
+
+### Änderungskündigung
+- Kündigung mit Angebot eines neuen Vertrags
+- Arbeitnehmer kann annehmen oder ablehnen
+- Bei Ablehnung: Kündigung wird wirksam
+
+### Problematische Klauseln
+- Einseitige Änderungsmöglichkeit durch Arbeitgeber
+- Freiwilligkeitsvorbehalt bei wesentlichen Vertragsinhalten
+- Verschlechterung ohne Zustimmung
+
+## Nebentätigkeiten
+
+### Zulässigkeit
+- Grundsätzlich zulässig, wenn nicht konkurrierend
+- Keine Beeinträchtigung der Haupttätigkeit
+- Einhaltung der Arbeitszeitgrenzen
+
+### Genehmigungspflicht
+- Konkurrierende Tätigkeiten bedürfen Genehmigung
+- Arbeitgeber kann Genehmigung verweigern bei berechtigtem Interesse
+
+### Problematische Klauseln
+- Generelles Verbot von Nebentätigkeiten
+- Genehmigungspflicht für jegliche Nebentätigkeit
+- Unklare Definition von "konkurrierenden" Tätigkeiten
+
+## Bewertungskriterien
+
+### Vorteilhafte Regelungen
+- Klare und faire Regelung von Rechten und Pflichten
+- Ausgewogenes Verhältnis zwischen Arbeitgeber- und Arbeitnehmerinteressen
+- Zusätzliche Rechte für Arbeitnehmer (z.B. Weiterbildung, Homeoffice)
+- Faire Haftungsregelungen
+
+### Neutrale Regelungen
+- Standardmäßige gesetzliche Regelungen
+- Übliche Treuepflichten und Sorgfaltspflichten
+- Marktübliche Regelungen
+
+### Nachteilige Regelungen
+- Einseitige Änderungsmöglichkeiten zugunsten Arbeitgeber
+- Übermäßige Haftung des Arbeitnehmers
+- Einschränkung von Arbeitnehmerrechten
+- Unklare oder intransparente Regelungen
+- Diskriminierende Klauseln
+
+### Kollektivvertragsbezug
+- Kollektivverträge enthalten oft detaillierte Regelungen zu Rechten und Pflichten
+- Abweichungen zugunsten des Arbeitnehmers sind zulässig
+- Abweichungen zulasten des Arbeitnehmers sind unwirksam
+
+### Rechtsgrundlagen
+- Angestelltengesetz (AngG)
+- Arbeitnehmerschutzgesetz (ASchG)
+- Gleichbehandlungsgesetz (GlBG)
+- Datenschutz-Grundverordnung (DSGVO)
+- Arbeitsverfassungsgesetz (ArbVG) - Betriebsrat
+- Kollektivverträge
+- Allgemeine arbeitsrechtliche Grundsätze (Treuepflicht, Fürsorgepflicht)

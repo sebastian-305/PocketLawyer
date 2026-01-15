@@ -4,6 +4,7 @@ using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Infrastructure.Context;
+using System.Diagnostics;
 
 namespace PocketLawyer.Application.Agents;
 
@@ -15,6 +16,10 @@ namespace PocketLawyer.Application.Agents;
 public class EmploymentContractAgent : ContractAnalysisAgentBase
 {
     private readonly IContextProvider _contextProvider;
+    private readonly IKvDetectionService _kvDetectionService;
+    private readonly IKollektivvertragService _kvService;
+    private string? _detectedKvName;
+    private string? _detectedKvText;
 
     /// <summary>
     /// The expected contract type for this agent.
@@ -29,16 +34,22 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
     /// <param name="schemaProvider">Provider for JSON schemas</param>
     /// <param name="schemaValidator">Validator for AI responses against schemas</param>
     /// <param name="contextProvider">Provider for context files</param>
+    /// <param name="kvDetectionService">Service for detecting Kollektivvertrag</param>
+    /// <param name="kvService">Service for loading Kollektivvertrag content</param>
     /// <param name="logger">Logger for diagnostic information</param>
     public EmploymentContractAgent(
         [FromKeyedServices("nebius")] IAiClient aiClient,
         ISchemaProvider schemaProvider,
         ISchemaValidator schemaValidator,
         IContextProvider contextProvider,
+        IKvDetectionService kvDetectionService,
+        IKollektivvertragService kvService,
         ILogger<EmploymentContractAgent> logger)
         : base(aiClient, schemaProvider, schemaValidator, logger)
     {
         _contextProvider = contextProvider ?? throw new ArgumentNullException(nameof(contextProvider));
+        _kvDetectionService = kvDetectionService ?? throw new ArgumentNullException(nameof(kvDetectionService));
+        _kvService = kvService ?? throw new ArgumentNullException(nameof(kvService));
         // Phase 1: Construction complete - only dependency injection, no contract logic
     }
 
@@ -84,10 +95,44 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
                     $"Falscher Vertragstyp erkannt. Erwartet: {ExpectedContractType}, Erkannt: {detectedType}");
             }
 
-            // Step 4: Store contract text on success
+            // Step 4: Detect Kollektivvertrag
+            _logger.LogDebug("[Agent {AgentId}] Detecting Kollektivvertrag", AgentId);
+            try
+            {
+                var kvDetectionResult = await _kvDetectionService.DetectAsync(contractText);
+                
+                if (!string.IsNullOrWhiteSpace(kvDetectionResult.KvName))
+                {
+                    _detectedKvName = kvDetectionResult.KvName;
+                    _logger.LogInformation("[Agent {AgentId}] Kollektivvertrag detected: {KvName}", AgentId, _detectedKvName);
+                    
+                    // Load KV text content
+                    var kvContents = await _kvService.GetKvFileContentsAsync(_detectedKvName);
+                    if (kvContents != null && kvContents.Length > 0)
+                    {
+                        _detectedKvText = string.Join("\n\n", kvContents);
+                        _logger.LogDebug("[Agent {AgentId}] KV text loaded: {Length} characters", AgentId, _detectedKvText.Length);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("[Agent {AgentId}] KV detected but no content found for: {KvName}", AgentId, _detectedKvName);
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation("[Agent {AgentId}] No Kollektivvertrag detected", AgentId);
+                }
+            }
+            catch (Exception kvEx)
+            {
+                // KV detection failure should not prevent initialization
+                _logger.LogWarning(kvEx, "[Agent {AgentId}] KV detection failed, continuing without KV", AgentId);
+            }
+
+            // Step 5: Store contract text on success
             _contractText = contractText;
             
-            // Step 5: Set IsInitialized to true
+            // Step 6: Set IsInitialized to true
             _isInitialized = true;
 
             _logger.LogInformation("[Agent {AgentId}] Initialization successful for EmploymentContractAgent", AgentId);
@@ -198,54 +243,124 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
 
     /// <summary>
     /// Phase 3: Analysis - executes basic analysis steps in parallel.
-    /// STUB: To be implemented later with employment-specific analysis steps.
+    /// Orchestrates all basic analysis steps and combines results.
     /// </summary>
     public override async Task<AnalysisDto<IAnalysisDto>> AnalyzeBasicAsync()
     {
         // Ensure agent is initialized
         EnsureInitialized();
 
-        _logger.LogInformation("[Agent {AgentId}] Starting Basic Analysis for Employment Contract (STUB)", AgentId);
+        _logger.LogInformation("[Agent {AgentId}] Starting Basic Analysis for Employment Contract", AgentId);
 
-        // TODO: Implement employment-specific basic analysis steps
-        // This will include steps like:
-        // - Analyze general employment data (employer, employee, position, start date)
-        // - Analyze compensation (salary, bonuses, benefits)
-        // - Analyze working conditions (hours, location, remote work)
-        // - Analyze summary
+        // Execute all basic analysis steps in parallel
+        var generalTask = AnalyzeGeneralEmploymentDataAsync();
+        var compensationTask = AnalyzeCompensationAsync();
+        var workingConditionsTask = AnalyzeWorkingConditionsAsync();
+        var summaryTask = AnalyzeBasicSummaryAsync();
 
-        await Task.CompletedTask;
+        // Wait for all tasks to complete
+        await Task.WhenAll(generalTask, compensationTask, workingConditionsTask, summaryTask);
 
-        throw new NotImplementedException(
-            "AnalyzeBasicAsync for EmploymentContractAgent is not yet implemented. " +
-            "This is a skeleton implementation to be completed later.");
+        // Get results (errors are already handled in individual methods)
+        var generalData = await generalTask;
+        var compensationData = await compensationTask;
+        var workingConditionsData = await workingConditionsTask;
+        var summaryData = await summaryTask;
+
+        // Create the combined result
+        var result = new EmploymentBasicAnalysisDto
+        {
+            General = generalData,
+            Compensation = compensationData,
+            WorkingConditions = workingConditionsData,
+            Summary = summaryData
+        };
+
+        // Create metadata
+        var metadata = new AnalysisMetadataDto(
+            ContractId: Guid.NewGuid().ToString(),
+            CountryCode: "AT",
+            Language: "de",
+            AnalyzedAt: DateTimeOffset.UtcNow,
+            IsPreview: false,
+            ModelVersion: "1.0"
+        );
+
+        _logger.LogInformation("[Agent {AgentId}] Basic Analysis completed successfully", AgentId);
+        
+        // Log token summary
+        LogTokenSummary();
+
+        return new AnalysisDto<IAnalysisDto>(result, metadata);
     }
 
     /// <summary>
     /// Phase 3: Analysis - executes premium analysis steps in parallel.
-    /// STUB: To be implemented later with employment-specific premium analysis steps.
+    /// Orchestrates all premium analysis steps and combines results.
     /// </summary>
     public override async Task<AnalysisDto<IAnalysisDto>> AnalyzePremiumAsync()
     {
         // Ensure agent is initialized
         EnsureInitialized();
 
-        _logger.LogInformation("[Agent {AgentId}] Starting Premium Analysis for Employment Contract (STUB)", AgentId);
+        _logger.LogInformation("[Agent {AgentId}] Starting Premium Analysis for Employment Contract", AgentId);
 
-        // TODO: Implement employment-specific premium analysis steps
-        // This will include steps like:
-        // - Analyze compensation and benefits clauses
-        // - Analyze working time and vacation clauses
-        // - Analyze termination and notice period clauses
-        // - Analyze non-compete and confidentiality clauses
-        // - Analyze rights and duties clauses
-        // - Analyze premium summary
+        // Execute all premium analysis steps in parallel
+        var compensationBenefitsTask = AnalyzeCompensationBenefitsClausesAsync();
+        var workingTimeVacationTask = AnalyzeWorkingTimeVacationAsync();
+        var terminationNoticeTask = AnalyzeTerminationNoticeAsync();
+        var nonCompeteConfidentialityTask = AnalyzeNonCompeteConfidentialityAsync();
+        var rightsDutiesTask = AnalyzeRightsDutiesAsync();
+        var summaryTask = AnalyzePremiumSummaryAsync();
 
-        await Task.CompletedTask;
+        // Wait for all tasks to complete
+        await Task.WhenAll(
+            compensationBenefitsTask, 
+            workingTimeVacationTask, 
+            terminationNoticeTask, 
+            nonCompeteConfidentialityTask, 
+            rightsDutiesTask, 
+            summaryTask);
 
-        throw new NotImplementedException(
-            "AnalyzePremiumAsync for EmploymentContractAgent is not yet implemented. " +
-            "This is a skeleton implementation to be completed later.");
+        // Get results (errors are already handled in individual methods)
+        var compensationBenefitsData = await compensationBenefitsTask;
+        var workingTimeVacationData = await workingTimeVacationTask;
+        var terminationNoticeData = await terminationNoticeTask;
+        var nonCompeteConfidentialityData = await nonCompeteConfidentialityTask;
+        var rightsDutiesData = await rightsDutiesTask;
+        var (gesamtfazit, gesamtbewertung) = await summaryTask;
+
+        // Create the combined result
+        var result = new EmploymentPremiumAnalysisDto
+        {
+            CompensationBenefits = compensationBenefitsData,
+            WorkingTimeVacation = workingTimeVacationData,
+            TerminationNotice = terminationNoticeData,
+            NonCompeteConfidentiality = nonCompeteConfidentialityData,
+            RightsDuties = rightsDutiesData,
+            Summary = new EmploymentPremiumSummaryDto(
+                Gesamtfazit: gesamtfazit,
+                Gesamtbewertung: gesamtbewertung,
+                Handlungsempfehlungen: Array.Empty<string>()  // TODO: Implement recommendations
+            )
+        };
+
+        // Create metadata
+        var metadata = new AnalysisMetadataDto(
+            ContractId: Guid.NewGuid().ToString(),
+            CountryCode: "AT",
+            Language: "de",
+            AnalyzedAt: DateTimeOffset.UtcNow,
+            IsPreview: false,
+            ModelVersion: "1.0"
+        );
+
+        _logger.LogInformation("[Agent {AgentId}] Premium Analysis completed successfully", AgentId);
+        
+        // Log token summary
+        LogTokenSummary();
+
+        return new AnalysisDto<IAnalysisDto>(result, metadata);
     }
 
     // ============================================================================
@@ -254,192 +369,844 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
     // ============================================================================
 
     /// <summary>
-    /// STUB: Analyzes general employment data (employer, employee, position, start date).
+    /// Analyzes general employment data (employer, employee, position, start date).
     /// </summary>
     [ContextStep("general-employment-data")]
-    private async Task<object> AnalyzeGeneralEmploymentDataAsync()
+    private async Task<EmploymentBasicGeneralDto> AnalyzeGeneralEmploymentDataAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeGeneralEmploymentDataAsync (STUB)", AgentId);
+        var stepName = "AnalyzeGeneralEmploymentDataAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for general-employment-data: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeGeneralEmploymentDataAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Basic", "General");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Basic", "General");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Basic", "General");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for general-employment-data: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Basic_General",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<EmploymentBasicGeneralDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            // All string fields contain "Fehler" for consistent error detection
+            return new EmploymentBasicGeneralDto(
+                Arbeitgeber: "Fehler bei der Analyse der allgemeinen Arbeitsdaten",
+                Arbeitnehmer: "Fehler - Die allgemeinen Arbeitsdaten konnten nicht analysiert werden.",
+                Position: "Fehler",
+                Startdatum: "Fehler",
+                Vertragsart: "Fehler",
+                Probezeit: "Fehler"
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes compensation (salary, bonuses, benefits).
+    /// Analyzes compensation (salary, bonuses, benefits).
     /// </summary>
     [ContextStep("compensation")]
-    private async Task<object> AnalyzeCompensationAsync()
+    private async Task<EmploymentBasicCompensationDto> AnalyzeCompensationAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeCompensationAsync (STUB)", AgentId);
+        var stepName = "AnalyzeCompensationAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for compensation: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeCompensationAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Basic", "Compensation");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Basic", "Compensation");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Basic", "Compensation");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for compensation: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Basic_Compensation",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<EmploymentBasicCompensationDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            return new EmploymentBasicCompensationDto(
+                GehaltBrutto: "Fehler bei der Analyse der Vergütung",
+                GehaltNettoCa: "Fehler - Die Vergütungsdaten konnten nicht analysiert werden.",
+                Zahlungsweise: "Fehler",
+                Sonderzahlungen: "Fehler",
+                Zuschlaege: "Fehler",
+                Zusatzleistungen: new[] { "Fehler" }
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes working conditions (hours, location, remote work).
+    /// Analyzes working conditions (hours, location, remote work).
     /// </summary>
     [ContextStep("working-conditions")]
-    private async Task<object> AnalyzeWorkingConditionsAsync()
+    private async Task<EmploymentBasicWorkingConditionsDto> AnalyzeWorkingConditionsAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeWorkingConditionsAsync (STUB)", AgentId);
+        var stepName = "AnalyzeWorkingConditionsAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for working-conditions: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeWorkingConditionsAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Basic", "WorkingConditions");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Basic", "WorkingConditions");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Basic", "WorkingConditions");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for working-conditions: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Basic_WorkingConditions",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<EmploymentBasicWorkingConditionsDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            return new EmploymentBasicWorkingConditionsDto(
+                Wochenarbeitszeit: "Fehler bei der Analyse der Arbeitsbedingungen",
+                Arbeitszeitmodell: "Fehler - Die Arbeitsbedingungen konnten nicht analysiert werden.",
+                Ueberstundenregelung: "Fehler",
+                Urlaubstage: "Fehler",
+                Arbeitsort: "Fehler",
+                RemoteArbeit: "Fehler"
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes basic summary.
+    /// Analyzes basic summary including detected KV name.
     /// </summary>
     [ContextStep("basic-summary")]
-    private async Task<object> AnalyzeBasicSummaryAsync()
+    private async Task<EmploymentBasicSummaryDto> AnalyzeBasicSummaryAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeBasicSummaryAsync (STUB)", AgentId);
+        var stepName = "AnalyzeBasicSummaryAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for basic-summary: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeBasicSummaryAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Basic", "Summary");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Basic", "Summary");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Basic", "Summary");
+
+            // Add KV information to prompt if available
+            if (!string.IsNullOrWhiteSpace(_detectedKvName))
+            {
+                prompt += $"\n\n## Erkannter Kollektivvertrag\n\n{_detectedKvName}";
+                _logger.LogDebug("[Agent {AgentId}] Including detected KV in summary: {KvName}", AgentId, _detectedKvName);
+            }
+            else
+            {
+                prompt += "\n\n## Kollektivvertrag\n\nKein Kollektivvertrag erkannt.";
+                _logger.LogDebug("[Agent {AgentId}] No KV detected for summary", AgentId);
+            }
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for basic-summary: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Basic_Summary",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<EmploymentBasicSummaryDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            // Include KV information even in error case
+            var kvInfo = !string.IsNullOrWhiteSpace(_detectedKvName) 
+                ? _detectedKvName 
+                : "Kein Kollektivvertrag erkannt";
+            
+            return new EmploymentBasicSummaryDto(
+                Kurzfazit: "Fehler bei der Analyse der Zusammenfassung",
+                Kollektivvertrag: kvInfo,
+                Gesamtbewertung: "Fehler - Die Zusammenfassung konnte nicht erstellt werden.",
+                RiskLevel: "Gelb"
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes compensation and benefits clauses.
+    /// Analyzes compensation and benefits clauses with KV context.
     /// </summary>
-    [ContextStep("compensation-benefits-clauses")]
-    private async Task<object> AnalyzeCompensationBenefitsClausesAsync()
+    [ContextStep("compensation-benefits-clauses", Tier = "Premium")]
+    private async Task<PremiumSectionDto> AnalyzeCompensationBenefitsClausesAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeCompensationBenefitsClausesAsync (STUB)", AgentId);
+        var stepName = "AnalyzeCompensationBenefitsClausesAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for compensation-benefits-clauses: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeCompensationBenefitsClausesAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "CompensationBenefits");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "CompensationBenefits");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "CompensationBenefits");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for compensation-benefits-clauses: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Add KV text as additional context if available
+            if (!string.IsNullOrWhiteSpace(_detectedKvText))
+            {
+                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
+                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Premium_CompensationBenefits",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            return new PremiumSectionDto(
+                Zusammenfassung: "Fehler bei der Analyse der Vergütungs- und Zusatzleistungsklauseln",
+                Bewertung: "Die Analyse der Vergütungs- und Zusatzleistungsregelungen konnte nicht durchgeführt werden.",
+                Rechtsgrundlage: "Fehler",
+                RisikoScore: "Nachteilhaft",
+                RiskLevel: "Gelb"
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes working time and vacation clauses.
+    /// Analyzes working time and vacation clauses with KV context.
     /// </summary>
-    [ContextStep("working-time-vacation")]
-    private async Task<object> AnalyzeWorkingTimeVacationAsync()
+    [ContextStep("working-time-vacation", Tier = "Premium")]
+    private async Task<PremiumSectionDto> AnalyzeWorkingTimeVacationAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeWorkingTimeVacationAsync (STUB)", AgentId);
+        var stepName = "AnalyzeWorkingTimeVacationAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for working-time-vacation: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeWorkingTimeVacationAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "WorkingTimeVacation");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "WorkingTimeVacation");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "WorkingTimeVacation");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for working-time-vacation: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Add KV text as additional context if available
+            if (!string.IsNullOrWhiteSpace(_detectedKvText))
+            {
+                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
+                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Premium_WorkingTimeVacation",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            return new PremiumSectionDto(
+                Zusammenfassung: "Fehler bei der Analyse der Arbeitszeit- und Urlaubsklauseln",
+                Bewertung: "Die Analyse der Arbeitszeit- und Urlaubsregelungen konnte nicht durchgeführt werden.",
+                Rechtsgrundlage: "Fehler",
+                RisikoScore: "Nachteilhaft",
+                RiskLevel: "Gelb"
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes termination and notice period clauses.
+    /// Analyzes termination and notice period clauses with KV context.
     /// </summary>
-    [ContextStep("termination-notice")]
-    private async Task<object> AnalyzeTerminationNoticeAsync()
+    [ContextStep("termination-notice", Tier = "Premium")]
+    private async Task<PremiumSectionDto> AnalyzeTerminationNoticeAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeTerminationNoticeAsync (STUB)", AgentId);
+        var stepName = "AnalyzeTerminationNoticeAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for termination-notice: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeTerminationNoticeAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "TerminationNotice");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "TerminationNotice");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "TerminationNotice");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for termination-notice: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Add KV text as additional context if available
+            if (!string.IsNullOrWhiteSpace(_detectedKvText))
+            {
+                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
+                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Premium_TerminationNotice",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            return new PremiumSectionDto(
+                Zusammenfassung: "Fehler bei der Analyse der Kündigungs- und Kündigungsfristklauseln",
+                Bewertung: "Die Analyse der Kündigungs- und Kündigungsfristregelungen konnte nicht durchgeführt werden.",
+                Rechtsgrundlage: "Fehler",
+                RisikoScore: "Nachteilhaft",
+                RiskLevel: "Gelb"
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes non-compete and confidentiality clauses.
+    /// Analyzes non-compete and confidentiality clauses with KV context.
     /// </summary>
-    [ContextStep("non-compete-confidentiality")]
-    private async Task<object> AnalyzeNonCompeteConfidentialityAsync()
+    [ContextStep("non-compete-confidentiality", Tier = "Premium")]
+    private async Task<PremiumSectionDto> AnalyzeNonCompeteConfidentialityAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeNonCompeteConfidentialityAsync (STUB)", AgentId);
+        var stepName = "AnalyzeNonCompeteConfidentialityAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for non-compete-confidentiality: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeNonCompeteConfidentialityAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "NonCompeteConfidentiality");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "NonCompeteConfidentiality");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "NonCompeteConfidentiality");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for non-compete-confidentiality: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Add KV text as additional context if available
+            if (!string.IsNullOrWhiteSpace(_detectedKvText))
+            {
+                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
+                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Premium_NonCompeteConfidentiality",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            return new PremiumSectionDto(
+                Zusammenfassung: "Fehler bei der Analyse der Wettbewerbs- und Vertraulichkeitsklauseln",
+                Bewertung: "Die Analyse der Wettbewerbs- und Vertraulichkeitsregelungen konnte nicht durchgeführt werden.",
+                Rechtsgrundlage: "Fehler",
+                RisikoScore: "Nachteilhaft",
+                RiskLevel: "Gelb"
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes rights and duties clauses.
+    /// Analyzes rights and duties clauses with KV context.
     /// </summary>
-    [ContextStep("rights-duties")]
-    private async Task<object> AnalyzeRightsDutiesAsync()
+    [ContextStep("rights-duties", Tier = "Premium")]
+    private async Task<PremiumSectionDto> AnalyzeRightsDutiesAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzeRightsDutiesAsync (STUB)", AgentId);
+        var stepName = "AnalyzeRightsDutiesAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for rights-duties: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzeRightsDutiesAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "RightsDuties");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "RightsDuties");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "RightsDuties");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for rights-duties: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Add KV text as additional context if available
+            if (!string.IsNullOrWhiteSpace(_detectedKvText))
+            {
+                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
+                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Premium_RightsDuties",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<PremiumSectionDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error result with customer-friendly message
+            return new PremiumSectionDto(
+                Zusammenfassung: "Fehler bei der Analyse der Rechte- und Pflichtenklauseln",
+                Bewertung: "Die Analyse der Rechte- und Pflichtenregelungen konnte nicht durchgeführt werden.",
+                Rechtsgrundlage: "Fehler",
+                RisikoScore: "Nachteilhaft",
+                RiskLevel: "Gelb"
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 
     /// <summary>
-    /// STUB: Analyzes premium summary.
+    /// Analyzes premium summary.
+    /// Returns a tuple of (Gesamtfazit, Gesamtbewertung) strings.
     /// </summary>
-    [ContextStep("premium-summary")]
-    private async Task<object> AnalyzePremiumSummaryAsync()
+    [ContextStep("premium-summary", Tier = "Premium")]
+    private async Task<(string Gesamtfazit, string Gesamtbewertung)> AnalyzePremiumSummaryAsync()
     {
-        _logger.LogInformation("[Agent {AgentId}] AnalyzePremiumSummaryAsync (STUB)", AgentId);
+        var stepName = "AnalyzePremiumSummaryAsync";
+        var sw = Stopwatch.StartNew();
         
-        // Load context for this step
-        var context = await _contextProvider.GetContextForCurrentStepAsync();
-        if (!string.IsNullOrWhiteSpace(context))
+        try
         {
-            _logger.LogDebug("[Agent {AgentId}] Context loaded for premium-summary: {ContextLength} chars", 
-                AgentId, context.Length);
-        }
+            _logger.LogInformation("[Agent {AgentId}] {StepName} started", AgentId, stepName);
 
-        throw new NotImplementedException("AnalyzePremiumSummaryAsync is not yet implemented");
+            // Get schema (as BinaryData for AI) and JsonObject for validation
+            var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "Summary");
+            var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "Summary");
+            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "Summary");
+
+            // Load context for this step
+            var context = await _contextProvider.GetContextForCurrentStepAsync();
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                prompt += $"\n\n## Reference Context\n\n{context}";
+                _logger.LogDebug("[Agent {AgentId}] Context loaded for premium-summary: {ContextLength} chars", 
+                    AgentId, context.Length);
+            }
+
+            // Add KV text as additional context if available
+            if (!string.IsNullOrWhiteSpace(_detectedKvText))
+            {
+                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
+                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
+            }
+
+            // Call AI service
+            var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
+            TrackTokens(aiResponse);
+
+            // Parse and validate response
+            var jsonDoc = System.Text.Json.JsonDocument.Parse(aiResponse.Content);
+            var responseObject = System.Text.Json.Nodes.JsonObject.Create(jsonDoc.RootElement);
+
+            if (responseObject == null)
+            {
+                throw new Application.Exceptions.AnalysisException("AI response could not be parsed as JSON object");
+            }
+
+            // Validate against schema
+            if (!_schemaValidator.Validate(schemaObject, responseObject))
+            {
+                var validationResult = _schemaValidator.ValidateWithDetails(schemaObject, responseObject);
+                throw new Application.Exceptions.SchemaValidationException(
+                    "AI response failed schema validation for Employment_Premium_Summary",
+                    validationResult.Errors);
+            }
+
+            // Deserialize to DTO
+            var result = System.Text.Json.JsonSerializer.Deserialize<EmploymentPremiumSummaryDto>(aiResponse.Content);
+            if (result == null)
+            {
+                throw new Application.Exceptions.AnalysisException("Failed to deserialize AI response to DTO");
+            }
+
+            _logger.LogInformation("[Agent {AgentId}] {StepName} completed in {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+            
+            // Return tuple of (Gesamtfazit, Gesamtbewertung)
+            return (result.Gesamtfazit, result.Gesamtbewertung);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[Agent {AgentId}] {StepName} failed", AgentId, stepName);
+            
+            // Return error tuple with customer-friendly messages
+            return (
+                Gesamtfazit: "Fehler bei der Analyse der Premium-Zusammenfassung",
+                Gesamtbewertung: "Die Premium-Zusammenfassung konnte nicht erstellt werden."
+            );
+        }
+        finally
+        {
+            _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
+        }
     }
 }

@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# PocketLawyer specific
+coveragereport/
+logs/
+*.Backup.tmp

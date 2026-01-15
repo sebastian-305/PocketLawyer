@@ -1,6 +1,4 @@
 import { startAnalysisSocket, requestMockAnalysis, mockPreValidationMessage, fetchSchema } from './network.js';
-import { renderPreValidation as rentPre, renderContractResult as rentRes } from './render-rent.js'; 
-import { renderPreValidation as emploPre, renderContractResult as emploRes } from './render-employment.js';
 import { createLoadingElement, displayUploadError, printer, createTierAccordion, renderAnalysisResult } from './render.js';
 
 const DEBUG = true;
@@ -233,14 +231,22 @@ async function uploadFile(event) {
 
     try {
         if (input.files.length === 0) {
+            // Mock analysis for testing without file upload
             preMessage = mockPreValidationMessage();
             body.replaceChildren();
-            emploPre(preMessage, body);
-            preAnalysisShown = true;
+            
+            const confirmationDiv = document.createElement('div');
+            confirmationDiv.classList.add('alert', 'alert-success');
+            confirmationDiv.innerHTML = '<strong>✓ Mock-Analyse</strong><br>Verwende Beispieldaten...';
+            body.appendChild(confirmationDiv);
             body.appendChild(loading);
+            
             const analysisMessage = await requestMockAnalysis();
             body.removeChild(loading);
-            emploRes(analysisMessage, body);
+            
+            // Render mock analysis using generic renderer
+            await renderGenericAnalysis(analysisMessage, body, 'Employment');
+            
             sessionStorage.setItem(
                 'analysisResult',
                 JSON.stringify({
@@ -340,16 +346,12 @@ async function uploadFile(event) {
                                 contractType
                             );
                         } catch (error) {
-                            if (DEBUG) console.error('Generic renderer failed for basic, using legacy:', error);
-                            // Fallback to legacy renderer
-                            switch (analysisType) {
-                                case "rental-analysis":
-                                    rentRes({ basic: basicResult, premium: null }, body);
-                                    break;
-                                case "employment-analysis":
-                                    emploRes({ basic: basicResult, premium: null }, body);
-                                    break;
-                            }
+                            if (DEBUG) console.error('Generic renderer failed for basic:', error);
+                            // Fallback: render simple message
+                            const errorDiv = document.createElement('div');
+                            errorDiv.classList.add('alert', 'alert-warning');
+                            errorDiv.textContent = 'Basis-Analyse abgeschlossen. Premium-Analyse läuft...';
+                            body.appendChild(errorDiv);
                         }
 
                         // Add loading spinner back for premium analysis
@@ -375,17 +377,13 @@ async function uploadFile(event) {
                                 contractType
                             );
                         } catch (error) {
-                            if (DEBUG) console.error('Generic renderer failed for complete analysis, using legacy:', error);
-                            // Fallback to legacy renderer
+                            if (DEBUG) console.error('Generic renderer failed for complete analysis:', error);
+                            // Fallback: show error message
                             body.replaceChildren();
-                            switch (analysisType) {
-                                case "rental-analysis":
-                                    rentRes({ basic: basicResult, premium: premiumResult }, body);
-                                    break;
-                                case "employment-analysis":
-                                    emploRes({ basic: basicResult, premium: premiumResult }, body);
-                                    break;
-                            }
+                            const errorDiv = document.createElement('div');
+                            errorDiv.classList.add('alert', 'alert-danger');
+                            errorDiv.textContent = 'Fehler beim Rendern der Analyse. Bitte laden Sie die Seite neu.';
+                            body.appendChild(errorDiv);
                         }
 
                         // Store results
@@ -409,14 +407,19 @@ async function uploadFile(event) {
                     if (DEBUG) console.log('Legacy pre-validation message received');
                     preMessage = msg;
                     body.replaceChildren();
-                    switch (analysisType) {
-                        case "rental-analysis":
-                            rentPre(preMessage, body);
-                            break;
-                        case "employment-analysis":
-                            emploPre(preMessage, body);
-                            break;
+                    
+                    // Show validation message
+                    const validationDiv = document.createElement('div');
+                    validationDiv.classList.add('alert', msg.isReadable && msg.isContract ? 'alert-success' : 'alert-warning');
+                    if (msg.isReadable && msg.isContract) {
+                        validationDiv.innerHTML = '<strong>✓ Vertrag akzeptiert</strong><br>Die Analyse wurde gestartet...';
+                    } else if (!msg.isReadable) {
+                        validationDiv.innerHTML = '<strong>⚠ Vertrag nicht lesbar</strong><br>Der hochgeladene Vertrag konnte nicht gelesen werden.';
+                    } else {
+                        validationDiv.innerHTML = '<strong>⚠ Falscher Vertragstyp</strong><br>Der hochgeladene Vertrag scheint nicht vom erwarteten Typ zu sein.';
                     }
+                    body.appendChild(validationDiv);
+                    
                     confirmationReceived = true;
                     if (!msg.isReadable || !msg.isContract) {
                         socket.close();
@@ -432,14 +435,24 @@ async function uploadFile(event) {
                     if (body.contains(loading)) {
                         body.removeChild(loading);
                     }
-                    switch (analysisType) {
-                        case "rental-analysis":
-                            rentRes(msg, body);
-                            break;
-                        case "employment-analysis":
-                            emploRes(msg, body);
-                            break;
+                    
+                    // Render using generic renderer
+                    const contractTypeMap = {
+                        "rental-analysis": "Rental",
+                        "employment-analysis": "Employment"
+                    };
+                    const contractType = contractTypeMap[analysisType] || "Employment";
+                    
+                    try {
+                        await renderGenericAnalysis(msg, body, contractType);
+                    } catch (error) {
+                        if (DEBUG) console.error('Generic renderer failed for legacy format:', error);
+                        const errorDiv = document.createElement('div');
+                        errorDiv.classList.add('alert', 'alert-danger');
+                        errorDiv.textContent = 'Fehler beim Rendern der Analyse.';
+                        body.appendChild(errorDiv);
                     }
+                    
                     sessionStorage.setItem(
                         'analysisResult',
                         JSON.stringify({
@@ -511,29 +524,35 @@ document.addEventListener('DOMContentLoaded', () => {
                         );
                     } catch (error) {
                         if (DEBUG) console.error('Generic renderer failed on restore:', error);
-                        // Fallback to legacy
-                        switch (data.analysisType) {
-                            case 'rental-analysis':
-                                rentRes({ basic: data.basic, premium: data.premium }, body);
-                                break;
-                            case 'employment-analysis':
-                                emploRes({ basic: data.basic, premium: data.premium }, body);
-                                break;
-                        }
+                        const errorDiv = document.createElement('div');
+                        errorDiv.classList.add('alert', 'alert-danger');
+                        errorDiv.textContent = 'Fehler beim Wiederherstellen der Analyse.';
+                        body.appendChild(errorDiv);
                     }
                 } else {
-                    // Old format
+                    // Old format - render using generic renderer
                     const { validation, analysis, analysisType } = data;
-                    switch (analysisType) {
-                        case 'rental-analysis':
-                            if (validation) rentPre(validation, body);
-                            rentRes(analysis, body);
-                            break;
-                        case 'employment-analysis':
-                        default:
-                            if (validation) emploPre(validation, body);
-                            emploRes(analysis, body);
-                            break;
+                    const contractTypeMap = {
+                        "rental-analysis": "Rental",
+                        "employment-analysis": "Employment"
+                    };
+                    const contractType = contractTypeMap[analysisType] || "Employment";
+                    
+                    if (validation) {
+                        const validationDiv = document.createElement('div');
+                        validationDiv.classList.add('alert', 'alert-info');
+                        validationDiv.innerHTML = '<strong>Validierung:</strong> Vertrag wurde akzeptiert';
+                        body.appendChild(validationDiv);
+                    }
+                    
+                    try {
+                        await renderGenericAnalysis(analysis, body, contractType);
+                    } catch (error) {
+                        if (DEBUG) console.error('Generic renderer failed for old format:', error);
+                        const errorDiv = document.createElement('div');
+                        errorDiv.classList.add('alert', 'alert-danger');
+                        errorDiv.textContent = 'Fehler beim Wiederherstellen der Analyse.';
+                        body.appendChild(errorDiv);
                     }
                 }
                 

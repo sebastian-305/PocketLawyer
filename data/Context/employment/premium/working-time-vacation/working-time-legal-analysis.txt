@@ -1,0 +1,202 @@
+# Kontext für rechtliche Bewertung von Arbeitszeit- und Urlaubsklauseln
+
+## Rechtliche Prüfung von Arbeitszeitregelungen
+
+### Normalarbeitszeit
+
+#### Gesetzliche Grenzen (AZG)
+- **Tägliche Normalarbeitszeit**: 8 Stunden
+- **Wöchentliche Normalarbeitszeit**: 40 Stunden
+- **Kollektivvertragliche Abweichungen**: Oft 38,5 Stunden/Woche
+
+#### Zulässige Arbeitszeitmodelle
+- **Gleitzeit**: Flexible Gestaltung innerhalb Kernzeiten
+- **4-Tage-Woche**: 10 Stunden/Tag, 40 Stunden/Woche
+- **Schichtarbeit**: Besondere Regelungen für Schichtbetrieb
+- **Durchrechnungszeitraum**: Bis zu 52 Wochen möglich
+
+#### Problematische Klauseln
+- Überschreitung der gesetzlichen Höchstgrenzen ohne Rechtsgrundlage
+- Unklare Arbeitszeitregelungen
+- Fehlende Regelung zu Kernzeiten bei Gleitzeit
+- Einseitige Änderungsmöglichkeit durch Arbeitgeber
+
+### Überstunden
+
+#### Gesetzliche Regelungen
+- **Höchstgrenzen**: 
+  - 10 Stunden/Tag (mit Überstunden)
+  - 50 Stunden/Woche (mit Überstunden)
+  - 60 Stunden/Woche bei besonderen Umständen
+- **Zuschläge**: 
+  - Erste 2 Überstunden: +50%
+  - Weitere Überstunden: +100%
+
+#### Überstundenabgeltung
+- **Auszahlung**: Mit Zuschlägen
+- **Zeitausgleich**: 1:1,5 bzw. 1:2 (mit Zuschlägen)
+- **All-in-Vereinbarung**: Pauschale Abgeltung (siehe Vergütungskontext)
+
+#### Problematische Klauseln
+- "Überstunden sind mit dem Gehalt abgegolten" ohne weitere Spezifikation
+- Überstundenpflicht ohne Grenzen
+- Fehlende Regelung zur Überstundenabgeltung
+- Einseitige Anordnung von Überstunden ohne Zustimmungsmöglichkeit
+
+#### Zulässige Regelungen
+- Klare Regelung zur Überstundenvergütung oder Zeitausgleich
+- Transparente All-in-Vereinbarung mit Angabe der abgegoltenen Stunden
+- Regelung zur Anordnung von Überstunden (mit Zumutbarkeitsgrenzen)
+
+### Arbeitszeitaufzeichnung
+
+#### Pflicht zur Aufzeichnung
+- Arbeitgeber muss Arbeitszeiten aufzeichnen (§ 26 AZG)
+- Auch bei All-in-Vereinbarungen erforderlich
+- Elektronische Zeiterfassung oder manuelle Aufzeichnung
+
+#### EuGH-Rechtsprechung
+- Verpflichtung zur objektiven, verlässlichen und zugänglichen Zeiterfassung
+- Arbeitnehmer muss Zugang zu seinen Zeitaufzeichnungen haben
+
+### Homeoffice und Mobile Arbeit
+
+#### Rechtliche Einordnung
+- Seit COVID-19 verstärkt verbreitet
+- Sollte vertraglich geregelt sein
+- Unfallversicherungsschutz auch im Homeoffice
+
+#### Zu regelnde Aspekte
+- Umfang des Homeoffice (Tage/Woche)
+- Erreichbarkeit und Arbeitszeiten
+- Technische Ausstattung (Laptop, Internet)
+- Kostenübernahme (Strom, Internet)
+- Datenschutz und IT-Sicherheit
+
+#### Problematische Klauseln
+- Einseitige Anordnung von Homeoffice ohne Zustimmung
+- Fehlende Regelung zu Arbeitszeiten im Homeoffice
+- Keine Kostenregelung
+- Unklare Erreichbarkeitserwartungen
+
+### Urlaub
+
+#### Gesetzlicher Mindesturlaub (UrlG)
+- **5 Wochen** (25 Arbeitstage) pro Jahr
+- **6 Wochen** (30 Arbeitstage) nach 25 Dienstjahren
+- Kollektivverträge sehen oft mehr vor
+
+#### Urlaubsverbrauch
+- Muss im Urlaubsjahr oder bis 30. Juni des Folgejahres konsumiert werden
+- Arbeitgeber kann Urlaubsverbrauch anordnen (mit angemessener Frist)
+- Arbeitnehmer hat Wunschrecht bei Urlaubsplanung
+
+#### Urlaubsentgelt
+- Volles Entgelt während des Urlaubs
+- Durchschnitt der letzten 13 Wochen bei schwankendem Entgelt
+
+#### Problematische Klauseln
+- Unterschreitung des gesetzlichen Mindesturlaubs
+- Verfall von Urlaub ohne Hinweis
+- Einseitige Urlaubsanordnung ohne Rücksicht auf Arbeitnehmerwünsche
+- Kürzung des Urlaubs bei Krankenstand (unzulässig)
+
+#### Zulässige Regelungen
+- Mehr Urlaub als gesetzlich vorgeschrieben
+- Regelung zur Urlaubsplanung und -abstimmung
+- Übertragung von Urlaub ins Folgejahr (bis 30. Juni)
+
+### Krankenstand
+
+#### Entgeltfortzahlung (AngG § 8)
+- **Erste 6 Wochen**: Volles Entgelt
+- **Nach 1 Jahr Betriebszugehörigkeit**: 8 Wochen
+- **Nach 15 Jahren**: 10 Wochen
+- **Nach 25 Jahren**: 12 Wochen
+- **Danach**: Halbes Entgelt für weitere Wochen
+
+#### Meldepflichten
+- Unverzügliche Meldung an Arbeitgeber
+- Vorlage einer ärztlichen Bestätigung (ab 4. Tag)
+
+#### Problematische Klauseln
+- Kürzung der gesetzlichen Entgeltfortzahlung
+- Übermäßige Meldepflichten (z.B. sofortige ärztliche Bestätigung)
+- Anrechnung von Krankenstand auf Urlaub (unzulässig)
+
+### Feiertage
+
+#### Gesetzliche Feiertage
+- 13 gesetzliche Feiertage in Österreich
+- Arbeitsruhe an Feiertagen (ARG)
+- Volles Entgelt trotz Arbeitsruhe
+
+#### Feiertagsarbeit
+- Nur in bestimmten Branchen zulässig
+- Zuschlag: +100%
+- Ersatzruhetag innerhalb von 13 Wochen
+
+### Nachtarbeit
+
+#### Definition und Grenzen
+- Nachtarbeit: 22:00 bis 6:00 Uhr
+- Besondere Schutzbestimmungen (AZG § 12a-12d)
+- Recht auf arbeitsmedizinische Untersuchungen
+
+#### Zuschläge
+- Nachtarbeitszuschlag (kollektivvertraglich geregelt)
+- Meist 25-50% Zuschlag
+
+#### Problematische Klauseln
+- Nachtarbeit ohne Zuschläge
+- Fehlende Regelung zu Gesundheitsschutz
+- Übermäßige Nachtarbeit ohne Ausgleich
+
+### Sonn- und Feiertagsarbeit
+
+#### Grundsatz
+- Sonn- und Feiertagsruhe (ARG)
+- Ausnahmen für bestimmte Branchen
+
+#### Zuschläge
+- +100% für Sonn- und Feiertagsarbeit
+- Ersatzruhetag
+
+#### Problematische Klauseln
+- Sonn- und Feiertagsarbeit ohne Zuschläge
+- Fehlende Ersatzruhetage
+- Unzulässige Sonn- und Feiertagsarbeit (außerhalb erlaubter Branchen)
+
+### Bewertungskriterien
+
+#### Vorteilhafte Regelungen
+- Mehr Urlaub als gesetzlich vorgeschrieben
+- Flexible Arbeitszeitmodelle (Gleitzeit, Homeoffice)
+- Klare und faire Überstundenregelungen
+- Zusätzliche freie Tage (z.B. Zeitausgleich)
+- Großzügige Krankenstandsregelungen
+
+#### Neutrale Regelungen
+- Einhaltung gesetzlicher Mindeststandards
+- Standardmäßige KV-Regelungen
+- Übliche Arbeitszeitmodelle
+
+#### Nachteilige Regelungen
+- Unterschreitung gesetzlicher Mindeststandards
+- Intransparente Überstundenregelungen
+- Fehlende Arbeitszeitaufzeichnung
+- Einseitige Änderungsmöglichkeiten durch Arbeitgeber
+- Unzulässige Urlaubskürzungen
+
+### Kollektivvertragsbezug
+- Prüfung der KV-Arbeitszeitregelungen
+- Beachtung von KV-Urlaubsansprüchen
+- Einhaltung von KV-Zuschlägen für Überstunden, Nacht-, Sonn- und Feiertagsarbeit
+
+### Rechtsgrundlagen
+- Arbeitszeitgesetz (AZG)
+- Arbeitsruhegesetz (ARG)
+- Urlaubsgesetz (UrlG)
+- Angestelltengesetz (AngG) - Entgeltfortzahlung
+- Kollektivverträge
+- EuGH-Rechtsprechung zur Arbeitszeiterfassung

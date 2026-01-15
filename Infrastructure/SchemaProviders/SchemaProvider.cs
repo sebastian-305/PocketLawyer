@@ -3,6 +3,8 @@ using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Infrastructure.SchemaProviders.Rental.Basic;
 using PocketLawyer.Infrastructure.SchemaProviders.Rental.Premium;
+using PocketLawyer.Infrastructure.SchemaProviders.Employment.Basic;
+using PocketLawyer.Infrastructure.SchemaProviders.Employment.Premium;
 
 namespace PocketLawyer.Infrastructure.SchemaProviders;
 
@@ -32,7 +34,21 @@ public class SchemaProvider : ISchemaProvider
             ["Rental_Premium_Maintenance"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Maintenance"),
             ["Rental_Premium_Duties"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Duties"),
             ["Rental_Premium_Privacy"] = () => new ClauseAnalysisSchemaProvider().GetSchema("Privacy"),
-            ["Rental_Premium_Summary"] = () => new RentalPremiumSummarySchemaProvider().GetSchema()
+            ["Rental_Premium_Summary"] = () => new RentalPremiumSummarySchemaProvider().GetSchema(),
+
+            // Employment Basic Schemas
+            ["Employment_Basic_General"] = () => new EmploymentGeneralSchemaProvider().GetSchema(),
+            ["Employment_Basic_Compensation"] = () => new EmploymentCompensationSchemaProvider().GetSchema(),
+            ["Employment_Basic_WorkingConditions"] = () => new EmploymentWorkingConditionsSchemaProvider().GetSchema(),
+            ["Employment_Basic_Summary"] = () => new EmploymentBasicSummarySchemaProvider().GetSchema(),
+
+            // Employment Premium Schemas - each gets its own section title via step name
+            ["Employment_Premium_CompensationBenefits"] = () => new EmploymentClauseAnalysisSchemaProvider().GetSchema("CompensationBenefits"),
+            ["Employment_Premium_WorkingTimeVacation"] = () => new EmploymentClauseAnalysisSchemaProvider().GetSchema("WorkingTimeVacation"),
+            ["Employment_Premium_TerminationNotice"] = () => new EmploymentClauseAnalysisSchemaProvider().GetSchema("TerminationNotice"),
+            ["Employment_Premium_NonCompeteConfidentiality"] = () => new EmploymentClauseAnalysisSchemaProvider().GetSchema("NonCompeteConfidentiality"),
+            ["Employment_Premium_RightsDuties"] = () => new EmploymentClauseAnalysisSchemaProvider().GetSchema("RightsDuties"),
+            ["Employment_Premium_Summary"] = () => new EmploymentPremiumSummarySchemaProvider().GetSchema()
         };
     }
 
