@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Options;
 using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
 using System.Reflection;
@@ -63,7 +65,7 @@ public class EmploymentContractAgentPremiumStepsTests
             contextProvider,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         // Use reflection to set the agent as initialized without calling InitializeAsync
         // This avoids the initialization AI calls interfering with our test mocks

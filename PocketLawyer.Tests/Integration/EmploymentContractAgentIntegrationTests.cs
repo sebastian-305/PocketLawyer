@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Options;
 using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
 using Xunit;
@@ -653,7 +655,7 @@ public class EmploymentContractAgentIntegrationTests
             _contextProvider.Object,
             _kvDetectionService.Object,
             _kvService.Object,
-            _logger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), _logger.Object);
     }
 
     private void SetupReadabilityCheck(bool isReadable)

@@ -1,9 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Infrastructure.Context;
+using PocketLawyer.Options;
 using System.Diagnostics;
 
 namespace PocketLawyer.Application.Agents;
@@ -18,8 +20,10 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
     private readonly IContextProvider _contextProvider;
     private readonly IKvDetectionService _kvDetectionService;
     private readonly IKollektivvertragService _kvService;
+    private readonly ContextOptions _contextOptions;
     private string? _detectedKvName;
     private string? _detectedKvText;
+    private string? _kvDetectionMessage;
 
     /// <summary>
     /// The expected contract type for this agent.
@@ -36,6 +40,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
     /// <param name="contextProvider">Provider for context files</param>
     /// <param name="kvDetectionService">Service for detecting Kollektivvertrag</param>
     /// <param name="kvService">Service for loading Kollektivvertrag content</param>
+    /// <param name="contextOptions">Configuration options for context handling</param>
     /// <param name="logger">Logger for diagnostic information</param>
     public EmploymentContractAgent(
         [FromKeyedServices("nebius")] IAiClient aiClient,
@@ -44,12 +49,14 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
         IContextProvider contextProvider,
         IKvDetectionService kvDetectionService,
         IKollektivvertragService kvService,
+        IOptions<ContextOptions> contextOptions,
         ILogger<EmploymentContractAgent> logger)
         : base(aiClient, schemaProvider, schemaValidator, logger)
     {
         _contextProvider = contextProvider ?? throw new ArgumentNullException(nameof(contextProvider));
         _kvDetectionService = kvDetectionService ?? throw new ArgumentNullException(nameof(kvDetectionService));
         _kvService = kvService ?? throw new ArgumentNullException(nameof(kvService));
+        _contextOptions = contextOptions?.Value ?? throw new ArgumentNullException(nameof(contextOptions));
         // Phase 1: Construction complete - only dependency injection, no contract logic
     }
 
@@ -101,17 +108,27 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             {
                 var kvDetectionResult = await _kvDetectionService.DetectAsync(contractText);
                 
+                // Store detection message
+                _kvDetectionMessage = kvDetectionResult.Message;
+                
+                // Log detection details
+                _logger.LogInformation("[Agent {AgentId}] KV Detection Result: {Message}", AgentId, kvDetectionResult.Message);
+                _logger.LogInformation("[Agent {AgentId}] Detected KVs from attempts: [{KvList}]", 
+                    AgentId, string.Join(", ", kvDetectionResult.DetectedKvs));
+                
                 if (!string.IsNullOrWhiteSpace(kvDetectionResult.KvName))
                 {
                     _detectedKvName = kvDetectionResult.KvName;
-                    _logger.LogInformation("[Agent {AgentId}] Kollektivvertrag detected: {KvName}", AgentId, _detectedKvName);
+                    _logger.LogInformation("[Agent {AgentId}] Kollektivvertrag detected: {KvName} (AllEqual: {AllEqual})", 
+                        AgentId, _detectedKvName, kvDetectionResult.AllEqual);
                     
                     // Load KV text content
                     var kvContents = await _kvService.GetKvFileContentsAsync(_detectedKvName);
                     if (kvContents != null && kvContents.Length > 0)
                     {
                         _detectedKvText = string.Join("\n\n", kvContents);
-                        _logger.LogDebug("[Agent {AgentId}] KV text loaded: {Length} characters", AgentId, _detectedKvText.Length);
+                        _logger.LogInformation("[Agent {AgentId}] KV text loaded: {Length} characters from {FileCount} files", 
+                            AgentId, _detectedKvText.Length, kvContents.Length);
                     }
                     else
                     {
@@ -120,13 +137,15 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
                 }
                 else
                 {
-                    _logger.LogInformation("[Agent {AgentId}] No Kollektivvertrag detected", AgentId);
+                    _logger.LogInformation("[Agent {AgentId}] No Kollektivvertrag detected: {Message}", 
+                        AgentId, kvDetectionResult.Message);
                 }
             }
             catch (Exception kvEx)
             {
                 // KV detection failure should not prevent initialization
                 _logger.LogWarning(kvEx, "[Agent {AgentId}] KV detection failed, continuing without KV", AgentId);
+                _kvDetectionMessage = "Fehler bei der Kollektivvertragserkennung";
             }
 
             // Step 5: Store contract text on success
@@ -628,12 +647,15 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             if (!string.IsNullOrWhiteSpace(_detectedKvName))
             {
                 prompt += $"\n\n## Erkannter Kollektivvertrag\n\n{_detectedKvName}";
+                prompt += $"\n\n**WICHTIG für das Feld 'kollektivvertrag'**: Verwende EXAKT den folgenden Text: \"{_detectedKvName}\"";
                 _logger.LogDebug("[Agent {AgentId}] Including detected KV in summary: {KvName}", AgentId, _detectedKvName);
             }
             else
             {
-                prompt += "\n\n## Kollektivvertrag\n\nKein Kollektivvertrag erkannt.";
-                _logger.LogDebug("[Agent {AgentId}] No KV detected for summary", AgentId);
+                var kvMessage = _kvDetectionMessage ?? "Kein Kollektivvertrag erkannt";
+                prompt += $"\n\n## Kollektivvertrag\n\n{kvMessage}";
+                prompt += $"\n\n**WICHTIG für das Feld 'kollektivvertrag'**: Verwende EXAKT den folgenden Text: \"{kvMessage}\"";
+                _logger.LogDebug("[Agent {AgentId}] No KV detected for summary: {Message}", AgentId, kvMessage);
             }
 
             // Load context for this step
@@ -685,7 +707,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Include KV information even in error case
             var kvInfo = !string.IsNullOrWhiteSpace(_detectedKvName) 
                 ? _detectedKvName 
-                : "Kein Kollektivvertrag erkannt";
+                : (_kvDetectionMessage ?? "Kein Kollektivvertrag erkannt");
             
             return new EmploymentBasicSummaryDto(
                 Kurzfazit: "Fehler bei der Analyse der Zusammenfassung",
@@ -727,12 +749,8 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
                     AgentId, context.Length);
             }
 
-            // Add KV text as additional context if available
-            if (!string.IsNullOrWhiteSpace(_detectedKvText))
-            {
-                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
-                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
-            }
+            // Add KV text as additional context if available and enabled
+            prompt = AddKvContextIfEnabled(prompt);
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -812,12 +830,8 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
                     AgentId, context.Length);
             }
 
-            // Add KV text as additional context if available
-            if (!string.IsNullOrWhiteSpace(_detectedKvText))
-            {
-                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
-                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
-            }
+            // Add KV text as additional context if available and enabled
+            prompt = AddKvContextIfEnabled(prompt);
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -897,12 +911,8 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
                     AgentId, context.Length);
             }
 
-            // Add KV text as additional context if available
-            if (!string.IsNullOrWhiteSpace(_detectedKvText))
-            {
-                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
-                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
-            }
+            // Add KV text as additional context if available and enabled
+            prompt = AddKvContextIfEnabled(prompt);
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -982,12 +992,8 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
                     AgentId, context.Length);
             }
 
-            // Add KV text as additional context if available
-            if (!string.IsNullOrWhiteSpace(_detectedKvText))
-            {
-                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
-                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
-            }
+            // Add KV text as additional context if available and enabled
+            prompt = AddKvContextIfEnabled(prompt);
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -1067,12 +1073,8 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
                     AgentId, context.Length);
             }
 
-            // Add KV text as additional context if available
-            if (!string.IsNullOrWhiteSpace(_detectedKvText))
-            {
-                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
-                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
-            }
+            // Add KV text as additional context if available and enabled
+            prompt = AddKvContextIfEnabled(prompt);
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -1153,12 +1155,8 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
                     AgentId, context.Length);
             }
 
-            // Add KV text as additional context if available
-            if (!string.IsNullOrWhiteSpace(_detectedKvText))
-            {
-                prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
-                _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
-            }
+            // Add KV text as additional context if available and enabled
+            prompt = AddKvContextIfEnabled(prompt);
 
             // Call AI service
             var aiResponse = await _aiClient.SendPromptWithMetadata(prompt + "\n\nVertragstext:\n" + _contractText, schemaBinary);
@@ -1208,5 +1206,25 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
         {
             _logger.LogInformation("[Agent {AgentId}] {StepName} duration: {Duration}ms", AgentId, stepName, sw.ElapsedMilliseconds);
         }
+    }
+    
+    /// <summary>
+    /// Adds KV context to prompt if available and enabled in configuration.
+    /// </summary>
+    private string AddKvContextIfEnabled(string prompt)
+    {
+        if (!_contextOptions.IncludeKvContentInAnalysis)
+        {
+            _logger.LogDebug("[Agent {AgentId}] KV content inclusion is disabled in configuration", AgentId);
+            return prompt;
+        }
+        
+        if (!string.IsNullOrWhiteSpace(_detectedKvText))
+        {
+            prompt += $"\n\n## Kollektivvertrag Context\n\n{_detectedKvText}";
+            _logger.LogDebug("[Agent {AgentId}] KV context added: {KvLength} chars", AgentId, _detectedKvText.Length);
+        }
+        
+        return prompt;
     }
 }

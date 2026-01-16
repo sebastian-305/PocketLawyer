@@ -13,11 +13,12 @@ Die Basiszusammenfassung soll dem Arbeitnehmer einen schnellen Überblick über 
 - Erste Einschätzung (positiv/neutral/kritisch)
 
 #### 2. Kollektivvertrag
-- **Erkannter KV**: Name des anwendbaren Kollektivvertrags
-- **Bedeutung**: Kurze Erklärung, warum der KV wichtig ist
-- **Kein KV erkannt**: Falls kein KV identifiziert wurde, dies klar kommunizieren
-  - "Es konnte kein spezifischer Kollektivvertrag identifiziert werden."
-  - Hinweis auf mögliche Konsequenzen (fehlende Mindeststandards)
+- **WICHTIG**: Verwende für das Feld "kollektivvertrag" EXAKT die Information, die im Abschnitt "## Erkannter Kollektivvertrag" oder "## Kollektivvertrag" angegeben ist
+- **Erkannter KV**: Wenn ein KV-Name angegeben ist, übernimm diesen wortwörtlich
+- **Kein KV erkannt**: Wenn die Nachricht "Kein passender Kollektivvertrag gefunden" lautet, verwende genau diesen Text
+- **Nicht eindeutig**: Wenn die Nachricht "Kollektivvertrag konnte nicht eindeutig identifiziert werden" enthält, verwende genau diesen Text
+- **Fehler**: Bei Fehlermeldungen, übernimm die angegebene Nachricht
+- **KEINE eigene Interpretation**: Erfinde KEINEN KV-Namen, wenn keiner angegeben ist
 
 #### 3. Gesamtbewertung
 - **Positive Aspekte**: Was ist gut geregelt?

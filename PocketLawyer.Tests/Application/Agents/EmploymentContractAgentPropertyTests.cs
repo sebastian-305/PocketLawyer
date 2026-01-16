@@ -1,9 +1,11 @@
 using FsCheck;
 using FsCheck.Xunit;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Options;
 using Xunit;
 
 namespace PocketLawyer.Tests.Application.Agents;
@@ -97,7 +99,7 @@ public class EmploymentContractAgentPropertyTests
                         contextProvider!,
                         kvDetectionService!,
                         kvService!,
-                        logger!);
+                        Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), logger!);
 
                     // If we reach here, no exception was thrown - test fails
                     return false;
@@ -135,6 +137,6 @@ public class EmploymentContractAgentPropertyTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
     }
 }

@@ -6,4 +6,7 @@ public class KvDetectionAnswer
 {
     [JsonPropertyName("kollektivvertrag")]
     public string Kollektivvertrag { get; set; } = string.Empty;
+    
+    [JsonPropertyName("begruendung")]
+    public string Begruendung { get; set; } = string.Empty;
 }

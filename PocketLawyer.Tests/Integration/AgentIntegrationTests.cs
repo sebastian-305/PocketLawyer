@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Options;
 using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
 
@@ -309,7 +311,7 @@ public class AgentIntegrationTests
         mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
         var mockKvDetectionService = new Mock<IKvDetectionService>();
         var mockKvService = new Mock<IKollektivvertragService>();
-        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, mockKvDetectionService.Object, mockKvService.Object, _employmentLogger.Object);
+        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, mockKvDetectionService.Object, mockKvService.Object, Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), _employmentLogger.Object);
         var contractText = "Arbeitsvertrag zwischen Firma GmbH und Max Mustermann...";
 
         SetupReadabilityCheck(true);
@@ -331,7 +333,7 @@ public class AgentIntegrationTests
         mockContextProvider.Setup(x => x.GetContextForCurrentStepAsync()).ReturnsAsync(string.Empty);
         var mockKvDetectionService = new Mock<IKvDetectionService>();
         var mockKvService = new Mock<IKollektivvertragService>();
-        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, mockKvDetectionService.Object, mockKvService.Object, _employmentLogger.Object);
+        var agent = new EmploymentContractAgent(_aiClient.Object, _schemaProvider, _schemaValidator, mockContextProvider.Object, mockKvDetectionService.Object, mockKvService.Object, Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), _employmentLogger.Object);
         var contractText = "Arbeitsvertrag...";
 
         SetupReadabilityCheck(true);

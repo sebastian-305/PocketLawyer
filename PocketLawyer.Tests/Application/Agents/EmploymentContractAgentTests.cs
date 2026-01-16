@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Options;
 using PocketLawyer.Application.Models;
 using PocketLawyer.Domain.Dtos;
 using PocketLawyer.Tests.Helpers;
@@ -51,7 +53,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         var result = await agent.InitializeAsync(contractText);
 
@@ -89,7 +91,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         var result = await agent.InitializeAsync(contractText);
 
@@ -127,7 +129,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         var result = await agent.InitializeAsync(contractText);
 
@@ -158,7 +160,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
@@ -307,7 +309,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         await agent.InitializeAsync(contractText);
 
@@ -448,7 +450,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         await agent.InitializeAsync(contractText);
 
@@ -601,7 +603,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         await agent.InitializeAsync(contractText);
 
@@ -647,7 +649,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
@@ -760,7 +762,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         await agent.InitializeAsync(contractText);
 
@@ -862,7 +864,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         await agent.InitializeAsync(contractText);
 
@@ -960,7 +962,7 @@ public class EmploymentContractAgentTests
             mockContextProvider.Object,
             mockKvDetectionService.Object,
             mockKvService.Object,
-            mockLogger.Object);
+            Microsoft.Extensions.Options.Options.Create(new ContextOptions { IncludeKvContentInAnalysis = true }), mockLogger.Object);
 
         await agent.InitializeAsync(contractText);
 
