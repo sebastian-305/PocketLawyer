@@ -1,36 +1,16 @@
 namespace PocketLawyer.Restructuring.Schemas.RentSchemas.Basic;
 
+using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Infrastructure.SchemaProviders;
 using System.Text.Json.Nodes;
 
+/// <summary>
+/// Provides JSON schema for rental basic summary.
+/// Schema is automatically generated from RentalBasicSummaryDto using SchemaGenerator.
+/// </summary>
 public sealed class RentalBasicSummarySchemaProvider
 {
-    private readonly JsonObject _schema = new()
-    {
-        ["type"] = "object",
-        ["additionalProperties"] = false,
-        ["properties"] = new JsonObject
-        {
-            ["kurzfazit"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["description"] = "Kurze, leicht verständliche Zusammenfassung der wichtigsten Eckdaten, z. B. Vertragsart und Miethöhe in 1–3 Sätzen."
-            },
-            ["detailfazit"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["description"] = "Bewertung des Vertrags aus rechtlicher und inhaltlicher Sicht in mehreren Sätzen."
-            },
-            ["gesamtbewertung"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["description"] = "Kurzbewertung mit Emoji und Einstufung, z. B. '🟡 teilweise unzulässig (Einzelklausel problematisch)'."
-            }
-        },
-        ["required"] = new JsonArray(
-            "kurzfazit",
-            "detailfazit",
-            "gesamtbewertung")
-    };
+    private readonly SchemaGenerator _generator = new();
 
-    public JsonObject GetSchema() => (JsonObject)_schema.DeepClone();
+    public JsonObject GetSchema() => _generator.GenerateSchema<RentalBasicSummaryDto>();
 }

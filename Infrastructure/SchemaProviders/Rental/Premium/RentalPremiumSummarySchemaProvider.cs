@@ -1,62 +1,15 @@
 using System.Text.Json.Nodes;
+using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Infrastructure.SchemaProviders.Rental.Premium;
 
 /// <summary>
 /// Provides JSON schema for Rental contract premium analysis summary.
+/// Schema is automatically generated from RentalPremiumSummaryDto using SchemaGenerator.
 /// </summary>
 public sealed class RentalPremiumSummarySchemaProvider
 {
-    private readonly JsonObject _schema = new()
-    {
-        ["type"] = "object",
-        ["additionalProperties"] = false,
-        ["x-sectionTitle"] = "Gesamtzusammenfassung",
-        ["properties"] = new JsonObject
-        {
-            ["gesamtfazit"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["description"] = "Gesamtfazit der Premium-Analyse mit Zusammenfassung aller Risiken und Empfehlungen.",
-                ["x-displayName"] = "Gesamtfazit",
-                ["x-styling"] = new JsonObject
-                {
-                    ["displayClass"] = "text-lg font-semibold",
-                    ["importance"] = "high"
-                }
-            },
-            ["gesamtbewertung"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["enum"] = new JsonArray { "Gruen", "Gelb", "Rot" },
-                ["description"] = "Gesamtrisikostufe des Vertrags: Gruen (unkritisch), Gelb (beachtenswert), Rot (problematisch).",
-                ["x-displayName"] = "Gesamtbewertung",
-                ["x-styling"] = new JsonObject
-                {
-                    ["displayClass"] = "risk-indicator risk-indicator-lg",
-                    ["importance"] = "high",
-                    ["icon"] = "alert"
-                }
-            },
-            ["handlungsempfehlungen"] = new JsonObject
-            {
-                ["type"] = "array",
-                ["items"] = new JsonObject
-                {
-                    ["type"] = "string"
-                },
-                ["description"] = "Liste konkreter Handlungsempfehlungen für den Mieter.",
-                ["x-displayName"] = "Handlungsempfehlungen",
-                ["x-styling"] = new JsonObject
-                {
-                    ["displayClass"] = "list-disc ml-4",
-                    ["importance"] = "high",
-                    ["icon"] = "checklist"
-                }
-            }
-        },
-        ["required"] = new JsonArray { "gesamtfazit", "gesamtbewertung", "handlungsempfehlungen" }
-    };
+    private readonly SchemaGenerator _generator = new();
 
-    public JsonObject GetSchema() => (JsonObject)_schema.DeepClone();
+    public JsonObject GetSchema() => _generator.GenerateSchema<RentalPremiumSummaryDto>();
 }

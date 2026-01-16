@@ -203,6 +203,18 @@ public class SchemaGeneratorTests
         Assert.DoesNotContain("$ref", schema.Select(p => p.Key));
     }
 
+    [Fact]
+    public void GenerateSchema_EmploymentBasicGeneralDto_IncludesCorrectSectionTitle()
+    {
+        // Arrange & Act
+        var schema = _generator.GenerateSchema<PocketLawyer.Domain.Dtos.EmploymentBasicGeneralDto>();
+
+        // Assert
+        Assert.Equal("Allgemeine Arbeitsdaten", schema["x-sectionTitle"]?.GetValue<string>());
+        Assert.Equal("object", schema["type"]?.GetValue<string>());
+        Assert.False(schema["additionalProperties"]?.GetValue<bool>());
+    }
+
     #region Test DTOs
 
     public record TestSimpleDto(

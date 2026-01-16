@@ -38,6 +38,12 @@ public class SchemaDisplayAttribute : Attribute
     public string? Importance { get; set; }
 
     /// <summary>
+    /// Custom display format for frontend (e.g., "currency") (used in x-styling.format).
+    /// This is different from the standard Format property which is for JSON Schema validation.
+    /// </summary>
+    public string? StylingFormat { get; set; }
+
+    /// <summary>
     /// Maximum length for string properties.
     /// </summary>
     public int MaxLength { get; set; }
@@ -51,6 +57,12 @@ public class SchemaDisplayAttribute : Attribute
     /// Example values for the property.
     /// </summary>
     public string[]? Examples { get; set; }
+
+    /// <summary>
+    /// Enum values for string properties (used in enum field for AI validation).
+    /// Allows specifying enum constraints without creating C# enum types.
+    /// </summary>
+    public string[]? Enum { get; set; }
 
     public SchemaDisplayAttribute(string displayName)
     {

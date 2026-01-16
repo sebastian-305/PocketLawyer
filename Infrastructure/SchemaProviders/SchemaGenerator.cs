@@ -61,7 +61,7 @@ public class SchemaGenerator
             // Add to required if:
             // 1. Marked with required keyword, OR
             // 2. Not nullable (value type without Nullable<T>, or reference type in non-nullable context)
-            if (IsPropertyRequired(prop) || !IsNullable(prop.PropertyType))
+            if (IsPropertyRequired(prop) || !IsPropertyNullable(prop))
             {
                 required.Add(propertyName);
             }
@@ -85,7 +85,7 @@ public class SchemaGenerator
 
         // Handle nullable types
         Type underlyingType = Nullable.GetUnderlyingType(type) ?? type;
-        bool isNullable = IsNullable(type);
+        bool isNullable = IsPropertyNullable(prop);
 
         // Set JSON type
         if (underlyingType.IsArray || (underlyingType.IsGenericType && 
@@ -178,6 +178,17 @@ public class SchemaGenerator
                 propSchema["examples"] = examples;
             }
 
+            // Add enum values for string properties (if not already an enum type)
+            if (displayAttr.Enum != null && displayAttr.Enum.Length > 0 && !underlyingType.IsEnum)
+            {
+                var enumValues = new JsonArray();
+                foreach (var value in displayAttr.Enum)
+                {
+                    enumValues.Add(value);
+                }
+                propSchema["enum"] = enumValues;
+            }
+
             // Add x-styling (ignored by AI, used by frontend)
             var styling = new JsonObject();
             if (!string.IsNullOrEmpty(displayAttr.Icon))
@@ -186,6 +197,8 @@ public class SchemaGenerator
                 styling["displayClass"] = displayAttr.DisplayClass;
             if (!string.IsNullOrEmpty(displayAttr.Importance))
                 styling["importance"] = displayAttr.Importance;
+            if (!string.IsNullOrEmpty(displayAttr.StylingFormat))
+                styling["format"] = displayAttr.StylingFormat;
 
             if (styling.Count > 0)
             {
@@ -251,6 +264,21 @@ public class SchemaGenerator
             return true; // Reference types are nullable by default (unless marked with required or non-nullable context)
         
         return Nullable.GetUnderlyingType(type) != null;
+    }
+    
+    private static bool IsPropertyNullable(PropertyInfo prop)
+    {
+        var type = prop.PropertyType;
+        
+        // Value types: check if it's Nullable<T>
+        if (type.IsValueType)
+        {
+            return Nullable.GetUnderlyingType(type) != null;
+        }
+        
+        // Reference types: check nullable annotation context
+        var nullabilityInfo = new System.Reflection.NullabilityInfoContext().Create(prop);
+        return nullabilityInfo.WriteState == System.Reflection.NullabilityState.Nullable;
     }
     
     private static bool IsPropertyRequired(PropertyInfo prop)

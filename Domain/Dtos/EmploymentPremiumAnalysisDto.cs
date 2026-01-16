@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using PocketLawyer.Infrastructure.SchemaProviders;
 
 namespace PocketLawyer.Domain.Dtos;
 
@@ -38,8 +39,27 @@ public record EmploymentPremiumAnalysisDto : IAnalysisDto
 /// <summary>
 /// DTO for premium analysis summary.
 /// </summary>
+[SchemaSection("Gesamtfazit")]
 public record EmploymentPremiumSummaryDto(
-    [property: JsonPropertyName("gesamtfazit")] string Gesamtfazit,
-    [property: JsonPropertyName("gesamtbewertung")] string Gesamtbewertung,
-    [property: JsonPropertyName("handlungsempfehlungen")] string[] Handlungsempfehlungen
+    [property: JsonPropertyName("gesamtfazit")]
+    [property: SchemaDisplay("Gesamtfazit",
+        Description = "Ausführliches Gesamtfazit zur rechtlichen Bewertung des Arbeitsvertrags unter Berücksichtigung aller analysierten Bereiche und des Kollektivvertrags.",
+        DisplayClass = "text-lg font-semibold",
+        Importance = "high")]
+    string Gesamtfazit,
+    
+    [property: JsonPropertyName("gesamtbewertung")]
+    [property: SchemaDisplay("Gesamtbewertung",
+        Description = "Gesamtbewertung des Vertrags (z.B. 'Sehr gut', 'Gut', 'Akzeptabel', 'Problematisch', 'Kritisch').",
+        DisplayClass = "badge badge-lg",
+        Importance = "high")]
+    string Gesamtbewertung,
+    
+    [property: JsonPropertyName("handlungsempfehlungen")]
+    [property: SchemaDisplay("Handlungsempfehlungen",
+        Description = "Liste konkreter Handlungsempfehlungen für den Arbeitnehmer (z.B. 'Nachverhandlung der Kündigungsfrist empfohlen', 'Wettbewerbsverbot prüfen lassen').",
+        Icon = "lightbulb",
+        DisplayClass = "list-disc",
+        Importance = "high")]
+    string[] Handlungsempfehlungen
 );

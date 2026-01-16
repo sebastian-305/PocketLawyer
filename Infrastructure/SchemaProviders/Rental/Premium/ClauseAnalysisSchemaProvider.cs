@@ -1,14 +1,18 @@
 using System.Text.Json.Nodes;
+using PocketLawyer.Domain.Dtos;
 
 namespace PocketLawyer.Infrastructure.SchemaProviders.Rental.Premium;
 
 /// <summary>
-/// Provides JSON schema for Premium clause analysis sections.
+/// Provides JSON schema for Premium rental clause analysis sections.
 /// Used for all premium analysis sections (Costs, Terms, Use, Maintenance, Duties, Privacy).
 /// Each section gets its own x-sectionTitle based on the step name.
+/// Schema is generated from PremiumSectionDto with Rental-specific customizations.
 /// </summary>
 public sealed class ClauseAnalysisSchemaProvider
 {
+    private readonly SchemaGenerator _generator = new();
+    
     /// <summary>
     /// Mapping of step names to German section titles.
     /// </summary>
@@ -22,76 +26,6 @@ public sealed class ClauseAnalysisSchemaProvider
         ["Privacy"] = "Datenschutz und Privatsphäre"
     };
 
-    private readonly JsonObject _baseSchema = new()
-    {
-        ["type"] = "object",
-        ["additionalProperties"] = false,
-        ["properties"] = new JsonObject
-        {
-            ["zusammenfassung"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["description"] = "Zusammenfassung der relevanten Klauseln in diesem Bereich.",
-                ["x-displayName"] = "Zusammenfassung",
-                ["x-styling"] = new JsonObject
-                {
-                    ["displayClass"] = "text-base",
-                    ["importance"] = "high"
-                }
-            },
-            ["bewertung"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["description"] = "Rechtliche Bewertung der Klauseln mit Hinweisen auf Risiken oder Vorteile.",
-                ["x-displayName"] = "Bewertung",
-                ["x-styling"] = new JsonObject
-                {
-                    ["displayClass"] = "text-base font-semibold",
-                    ["importance"] = "high"
-                }
-            },
-            ["rechtsgrundlage"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["description"] = "Relevante Rechtsgrundlagen und Paragraphen (z.B. MRG, ABGB).",
-                ["x-displayName"] = "Rechtsgrundlage",
-                ["x-styling"] = new JsonObject
-                {
-                    ["displayClass"] = "text-sm text-secondary",
-                    ["importance"] = "medium",
-                    ["icon"] = "law"
-                }
-            },
-            ["risikoScore"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["enum"] = new JsonArray { "Zulaessig", "Nachteilhaft", "Unzulaessig" },
-                ["description"] = "Risikobewertung: Zulaessig (rechtlich unbedenklich), Nachteilhaft (nachteilig für Mieter), Unzulaessig (rechtlich problematisch).",
-                ["x-displayName"] = "Risiko-Score",
-                ["x-styling"] = new JsonObject
-                {
-                    ["displayClass"] = "badge",
-                    ["importance"] = "high",
-                    ["icon"] = "shield"
-                }
-            },
-            ["riskLevel"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["enum"] = new JsonArray { "Gruen", "Gelb", "Rot" },
-                ["description"] = "Risikostufe: Gruen (unkritisch), Gelb (beachtenswert), Rot (problematisch).",
-                ["x-displayName"] = "Risikostufe",
-                ["x-styling"] = new JsonObject
-                {
-                    ["displayClass"] = "risk-indicator",
-                    ["importance"] = "high",
-                    ["icon"] = "alert"
-                }
-            }
-        },
-        ["required"] = new JsonArray { "zusammenfassung", "bewertung", "rechtsgrundlage", "risikoScore", "riskLevel" }
-    };
-
     /// <summary>
     /// Gets the schema for a specific step with the appropriate section title.
     /// </summary>
@@ -99,9 +33,10 @@ public sealed class ClauseAnalysisSchemaProvider
     /// <returns>A JSON schema with x-sectionTitle set for the step</returns>
     public JsonObject GetSchema(string stepName)
     {
-        var schema = (JsonObject)_baseSchema.DeepClone();
+        // Generate base schema from DTO
+        var schema = _generator.GenerateSchema<PremiumSectionDto>();
         
-        // Add x-sectionTitle if we have a mapping for this step
+        // Add dynamic section title based on step name
         if (SectionTitles.TryGetValue(stepName, out var title))
         {
             schema["x-sectionTitle"] = title;
@@ -112,6 +47,29 @@ public sealed class ClauseAnalysisSchemaProvider
             schema["x-sectionTitle"] = stepName;
         }
         
+        // Customize descriptions and add enum constraints for Rental context
+        if (schema["properties"] is JsonObject properties)
+        {
+            // Update rechtsgrundlage description with Rental-specific legal frameworks
+            if (properties["rechtsgrundlage"] is JsonObject rechtsgrundlage)
+            {
+                rechtsgrundlage["description"] = "Relevante Rechtsgrundlagen und Paragraphen (z.B. MRG, ABGB).";
+            }
+            
+            // Add Rental-specific enum and description for risikoScore
+            if (properties["risikoScore"] is JsonObject risikoScore)
+            {
+                risikoScore["enum"] = new JsonArray { "Zulaessig", "Nachteilhaft", "Unzulaessig" };
+                risikoScore["description"] = "Risikobewertung: Zulaessig (rechtlich unbedenklich), Nachteilhaft (nachteilig für Mieter), Unzulaessig (rechtlich problematisch).";
+            }
+            
+            // Add enum for riskLevel (same for both Employment and Rental)
+            if (properties["riskLevel"] is JsonObject riskLevel)
+            {
+                riskLevel["enum"] = new JsonArray { "Gruen", "Gelb", "Rot" };
+            }
+        }
+        
         return schema;
     }
 
@@ -119,5 +77,5 @@ public sealed class ClauseAnalysisSchemaProvider
     /// Gets the schema without a step-specific title (for backward compatibility).
     /// </summary>
     /// <returns>A JSON schema without x-sectionTitle</returns>
-    public JsonObject GetSchema() => (JsonObject)_baseSchema.DeepClone();
+    public JsonObject GetSchema() => _generator.GenerateSchema<PremiumSectionDto>();
 }
