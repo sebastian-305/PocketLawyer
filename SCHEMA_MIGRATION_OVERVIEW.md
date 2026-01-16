@@ -245,7 +245,7 @@ mindmap
 
 ```mermaid
 flowchart TD
-    A[Start: GenerateSchema<T>()] --> B{Type hat<br/>SchemaSection?}
+    A["Start: GenerateSchema(Type)"] --> B{Type hat<br/>SchemaSection?}
     B -->|Ja| C[x-sectionTitle hinzufügen]
     B -->|Nein| D[Weiter]
     C --> D
