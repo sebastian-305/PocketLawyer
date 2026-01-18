@@ -6,7 +6,7 @@ Dieses Dokument beschreibt alle Konfigurationsoptionen für das PocketLawyer-Sys
 
 ## Inhaltsverzeichnis
 
-- [Übersicht](#uebersicht)
+- [Übersicht](#übersicht)
 - [appsettings.json Struktur](#appsettingsjson-struktur)
 - [Logging-Konfiguration](#logging-konfiguration)
 - [KI-Dienste-Konfiguration](#ki-dienste-konfiguration)

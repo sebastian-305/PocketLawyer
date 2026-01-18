@@ -6,10 +6,10 @@ Dieses Dokument beschreibt die Architektur des PocketLawyer-Systems. Alle Inform
 
 ## Inhaltsverzeichnis
 
-- [Übersicht](#uebersicht)
+- [Übersicht](#übersicht)
 - [Schichten](#schichten)
-- [Abhängigkeiten](#abhaengigkeiten)
-- [Design-Prinzipien](#design-prinzipien)
+- [Abhängigkeiten](#abhängigkeiten)
+- [Design Principles](#design-principles)
 - [Diagramme](#diagramme)
 
 ## Übersicht
