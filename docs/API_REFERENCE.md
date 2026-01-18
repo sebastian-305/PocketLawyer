@@ -74,6 +74,8 @@ Antworttyp: WebSocket-JSON-Nachrichten. Die API sendet sequenziell:
 }
 ```
 
+Die WebSocket-Verbindung liefert zwei Ergebnisnachrichten in Reihenfolge: zuerst die Basic-Analyse, danach die Premium-Analyse.
+
 ```json
 { "type": "error", "error": "Fehlermeldung" }
 ```
@@ -226,6 +228,19 @@ Für vollständige DTO-Dokumentation siehe [DATA_MODELS.md](DATA_MODELS.md).
   - `Result`: `TResult`
   - `Metadata`: `AnalysisMetadataDto`
 
+#### AnalysisMetadataDto
+
+**Namespace:** `PocketLawyer.Domain.Dtos.Shared`
+
+**Eigenschaften:** (6)
+
+  - `ContractId`: `string`
+  - `CountryCode`: `string`
+  - `Language`: `string`
+  - `AnalyzedAt`: `DateTimeOffset`
+  - `IsPreview`: `bool`
+  - `ModelVersion`: `string`
+
 
 #### ContractValidationDto
 
@@ -239,21 +254,34 @@ Für vollständige DTO-Dokumentation siehe [DATA_MODELS.md](DATA_MODELS.md).
   - `Kollektivvertrag`: `string?`
 
 
-#### EmploymentContractAnalysisDto
+#### EmploymentBasicAnalysisDto
 
 **Namespace:** `PocketLawyer.Domain.Dtos.Employment`
 
-**Eigenschaften:** (9)
+**Eigenschaften:** (6)
 
+  - `General`: `EmploymentBasicGeneralDto`
+  - `Compensation`: `EmploymentBasicCompensationDto`
+  - `WorkingConditions`: `EmploymentBasicWorkingConditionsDto`
+  - `Summary`: `EmploymentBasicSummaryDto`
   - `ContractType`: `string`
   - `Tier`: `string`
-  - `Keypoints`: `SummaryClass`
-  - `UnzulaessigeKlauseln`: `ProblemKlausel[]`
-  - `NachteileKlauseln`: `ProblemKlausel[]`
-  - `WiderspruechlicheKlauseln`: `WiderspruechlicheKlausel[]`
-  - `VorteilhafteKlauseln`: `VorteilKlausel[]`
-  - `Fazit`: `string`
-  - `Kollektivvertrag`: `string?`
+
+
+#### EmploymentPremiumAnalysisDto
+
+**Namespace:** `PocketLawyer.Domain.Dtos.Employment`
+
+**Eigenschaften:** (8)
+
+  - `CompensationBenefits`: `PremiumSectionDto`
+  - `WorkingTimeVacation`: `PremiumSectionDto`
+  - `TerminationNotice`: `PremiumSectionDto`
+  - `NonCompeteConfidentiality`: `PremiumSectionDto`
+  - `RightsDuties`: `PremiumSectionDto`
+  - `Summary`: `EmploymentPremiumSummaryDto`
+  - `ContractType`: `string`
+  - `Tier`: `string`
 
 
 #### FileContentDto
@@ -266,21 +294,35 @@ Für vollständige DTO-Dokumentation siehe [DATA_MODELS.md](DATA_MODELS.md).
   - `FileContent`: `string`
 
 
-#### RentContractAnalysisDto
+#### RentalBasicAnalysisDto
 
 **Namespace:** `PocketLawyer.Domain.Dtos.Rental`
 
-**Eigenschaften:** (9)
+**Eigenschaften:** (6)
 
+  - `General`: `RentalBasicGeneralDto`
+  - `Rent`: `RentalBasicRentDto`
+  - `Conditions`: `RentalBasicConditionsDto`
+  - `Summary`: `RentalBasicSummaryDto`
   - `ContractType`: `string`
   - `Tier`: `string`
-  - `Summary`: `Summary`
-  - `UnzulaessigeKlauseln`: `ProblemKlausel[]`
-  - `NachteileKlauseln`: `ProblemKlausel[]`
-  - `WiderspruechlicheKlauseln`: `WiderspruechlicheKlausel[]`
-  - `VorteilhafteKlauseln`: `VorteilKlausel[]`
-  - `Fazit`: `string`
-  - `Kollektivvertrag`: `string?`
+
+
+#### RentalPremiumAnalysisDto
+
+**Namespace:** `PocketLawyer.Domain.Dtos.Rental`
+
+**Eigenschaften:** (8)
+
+  - `Costs`: `PremiumSectionDto`
+  - `Terms`: `PremiumSectionDto`
+  - `Use`: `PremiumSectionDto`
+  - `Maintenance`: `PremiumSectionDto`
+  - `Duties`: `PremiumSectionDto`
+  - `Privacy`: `PremiumSectionDto`
+  - `Summary`: `RentalPremiumSummaryDto`
+  - `ContractType`: `string`
+  - `Tier`: `string`
 
 
 #### WebSocketFileDto
@@ -292,6 +334,13 @@ Für vollständige DTO-Dokumentation siehe [DATA_MODELS.md](DATA_MODELS.md).
   - `FileName`: `string`
   - `Data`: `string`
   - `ContractType`: `string?`
+
+#### Legacy DTOs
+
+Die folgenden DTOs sind weiterhin vorhanden, werden aber von der aktuellen Analyse (Basic/Premium) nicht mehr erzeugt:
+
+- `EmploymentContractAnalysisDto` (Employment, Legacy)
+- `RentContractAnalysisDto` (Rental, Legacy)
 
 
 ## Fehlerbehandlung

@@ -146,8 +146,8 @@ Konfiguration für den Nebius AI-Service, der für die Vertragsanalyse verwendet
 
 | Property | Type | Configuration Key | Default Value |
 | --- | --- | --- | --- |
-| Key | string | - | - |
-| ModelId | string | - | - |
+| Key | string | - | "" |
+| ModelId | string | - | "" |
 
 
 ## Pfad-Konfiguration
@@ -162,9 +162,9 @@ Konfiguration für Dateisystempfade, die von der Anwendung verwendet werden.
 
 | Property | Type | Configuration Key | Default Value |
 | --- | --- | --- | --- |
-| ResponsesPath | string | - | - |
-| TesseractDataPath | string | - | - |
-| KVSPath | string | - | - |
+| ResponsesPath | string | - | data/Responses |
+| TesseractDataPath | string | - | data/tessdata |
+| KVSPath | string | - | data/KVS |
 
 
 ## Upload-Konfiguration
@@ -179,7 +179,7 @@ Konfiguration für Datei-Upload-Limits und Einschränkungen.
 
 | Property | Type | Configuration Key | Default Value |
 | --- | --- | --- | --- |
-| MaxUploadSizeMB | long | - | - |
+| MaxUploadSizeMB | long | - | 20 |
 
 
 ## Kontext-Konfiguration
@@ -194,10 +194,10 @@ Konfiguration für KI-Kontextdateien und Prompts.
 
 | Property | Type | Configuration Key | Default Value |
 | --- | --- | --- | --- |
-| BasePath | string | - | - |
-| CreateReadmeFiles | bool | - | - |
-| MaxContextSizeBytes | long | - | - |
-| IncludeKvContentInAnalysis | bool | - | - |
+| BasePath | string | - | data/Context |
+| CreateReadmeFiles | bool | - | true |
+| MaxContextSizeBytes | long | - | 5242880 |
+| IncludeKvContentInAnalysis | bool | - | true |
 
 
 ## Weitere Options-Klassen
@@ -212,9 +212,9 @@ Zusätzliche Konfigurations-Options-Klassen.
 
 | Property | Type | Configuration Key | Default Value |
 | --- | --- | --- | --- |
-| Enabled | bool | - | - |
-| MinimumLevel | string | - | - |
-| Path | string | - | - |
+| Enabled | bool | - | true |
+| MinimumLevel | string | - | Information |
+| Path | string | - | logs |
 
 
 ## User Secrets

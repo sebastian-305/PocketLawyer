@@ -9,7 +9,7 @@ Dieses Dokument beschreibt die Architektur des PocketLawyer-Systems. Alle Inform
 - [Übersicht](#übersicht)
 - [Schichten](#schichten)
 - [Abhängigkeiten](#abhängigkeiten)
-- [Design Principles](#design-principles)
+- [Designprinzipien](#designprinzipien)
 - [Diagramme](#diagramme)
 
 ## Übersicht
@@ -36,69 +36,70 @@ Das System ist in vier Hauptschichten organisiert:
 
 ## Schichten
 
-Each layer has specific responsibilities and dependencies. The following sections describe each layer in detail.
+Jede Schicht hat klar definierte Verantwortlichkeiten und Abhängigkeiten. Die folgenden Abschnitte beschreiben die Schichten im Detail.
 
-### Web Layer
+### Web-Schicht
 
-The Web layer contains controllers and presentation logic. Located in `Web/`.
+Die Web-Schicht enthält Controller und Präsentationslogik. Sie befindet sich in `Web/`.
 
-#### Key Components
+#### Zentrale Komponenten
 
-##### Controllers
+##### Controller
 
 - `PocketController` in `Web/PocketController.cs`
   - `GetSchema()`
-  - `GetMockData()`
+  - `GetEmploymentMockData()`
+  - `GetRentalMockData()`
   - `AnalyzeEmploymentViaWebSocket()`
   - `AnalyzeRentalViaWebSocket()`
-##### Application Startup
+##### Anwendungsstart
 
-Application configuration and dependency injection setup in `Web/Program.cs`.
+Konfiguration der Anwendung und Dependency Injection in `Web/Program.cs`.
 
-### Application Layer
+### Application-Schicht
 
-The Application layer contains business logic, use cases, and agents. Located in `Application/`.
+Die Application-Schicht enthält Geschäftslogik, Use Cases und Agents. Sie befindet sich in `Application/`.
 
-#### Key Components
+#### Zentrale Komponenten
 
-##### Contract Analysis Agents
+##### Contract-Analysis-Agents
 
-Agents handle contract analysis workflows. Located in `Application/Agents/`.
+Agents steuern die Vertragsanalyse-Workflows. Sie befinden sich in `Application/Agents/`.
 
 - `ContractAnalysisAgentBase` in `Application/Agents/ContractAnalysisAgentBase.cs`
 - `EmploymentContractAgent` in `Application/Agents/EmploymentContractAgent.cs`
 - `RentalContractAgent` in `Application/Agents/RentalContractAgent.cs`
 ##### Exceptions
 
-Custom exception types in `Application/Exceptions/`.
+Benutzerdefinierte Exception-Typen in `Application/Exceptions/`.
 
-Total custom exceptions: 9
+Anzahl benutzerdefinierter Exceptions: 9
 
-### Domain Layer
+### Domain-Schicht
 
-The Domain layer contains core business entities and Data Transfer Objects (DTOs). Located in `Domain/`.
+Die Domain-Schicht enthält die Kerngeschäftsentitäten und Data Transfer Objects (DTOs). Sie befindet sich in `Domain/`.
 
-#### Key Components
+#### Zentrale Komponenten
 
 ##### Data Transfer Objects (DTOs)
 
-DTOs define the data structures used throughout the system. Located in `Domain/Dtos/`.
+DTOs definieren die Datenstrukturen des Systems. Sie befinden sich in `Domain/Dtos/`.
 
-- Employment Contract DTOs: 13
-- Rental Contract DTOs: 14
-- Shared DTOs: 7
+- Employment DTOs: 3
+- Rental DTOs: 3
+- Shared DTOs und Interfaces: 8
 
-For complete DTO documentation, see [DATA_MODELS.md](DATA_MODELS.md).
+Für die vollständige DTO-Dokumentation siehe [DATA_MODELS.md](DATA_MODELS.md).
 
 ##### Enumerations
 
-Total enumerations: 3
+Anzahl Enumerationen: 2
 
-### Infrastructure Layer
+### Infrastructure-Schicht
 
-The Infrastructure layer contains implementations of external services and integrations. Located in `Infrastructure/`.
+Die Infrastructure-Schicht enthält Implementierungen externer Dienste und Integrationen. Sie befindet sich in `Infrastructure/`.
 
-#### Key Components
+#### Zentrale Komponenten
 
 ##### AI Services
 
@@ -137,20 +138,20 @@ AI-Services befinden sich in `Infrastructure/AiServices/`:
 
 Die Architektur folgt klaren Abhängigkeitsregeln. Die folgenden Regeln beschreiben den Zielzustand; die tatsächlichen Abhängigkeiten darunter zeigen, wo es aktuell Abweichungen gibt.
 
-### Dependency Rules
+### Abhängigkeitsregeln
 
-- **Domain Layer:** Sollte keine Abhängigkeiten zu anderen Schichten haben (reine Geschäftslogik)
-- **Application Layer:** Depends only on Domain layer
-- **Infrastructure Layer:** Depends on Application and Domain layers
-- **Web Layer:** Depends on Application, Domain, and Infrastructure layers
+- **Domain-Schicht:** Sollte keine Abhängigkeiten zu anderen Schichten haben (reine Geschäftslogik)
+- **Application-Schicht:** Hängt nur von der Domain-Schicht ab
+- **Infrastructure-Schicht:** Hängt von Application- und Domain-Schicht ab
+- **Web-Schicht:** Hängt von Application-, Domain- und Infrastructure-Schicht ab
 
-### Actual Dependencies
+### Tatsächliche Abhängigkeiten
 
-The following dependencies are extracted from actual using statements in the source code:
+Die folgenden Abhängigkeiten werden aus den tatsächlichen using-Statements im Quellcode abgeleitet:
 
 **Hinweis:** In der Domain-Schicht gibt es derzeit Abhängigkeiten zu Application- und Infrastructure-Typen (siehe unten). Das weicht vom angestrebten Dependency-Rule-Ziel ab und sollte bei einer Architekturbereinigung berücksichtigt werden.
 
-#### Web Layer Dependencies
+#### Web-Schicht-Abhängigkeiten
 
 - `PocketLawyer.Application.Agents` (referenced 2 time(s))
 - `PocketLawyer.Application.Exceptions` (referenced 1 time(s))
@@ -165,7 +166,7 @@ The following dependencies are extracted from actual using statements in the sou
 - `PocketLawyer.Infrastructure.SchemaProviders` (referenced 1 time(s))
 - `PocketLawyer.Options` (referenced 2 time(s))
 
-#### Application Layer Dependencies
+#### Application-Schicht-Abhängigkeiten
 
 - `PocketLawyer.Application.Interfaces` (referenced 4 time(s))
 - `PocketLawyer.Application.Models` (referenced 5 time(s))
@@ -176,7 +177,7 @@ The following dependencies are extracted from actual using statements in the sou
 - `PocketLawyer.Infrastructure.Context` (referenced 2 time(s))
 - `PocketLawyer.Options` (referenced 1 time(s))
 
-#### Infrastructure Layer Dependencies
+#### Infrastructure-Schicht-Abhängigkeiten
 
 - `PocketLawyer.Application.Agents` (referenced 1 time(s))
 - `PocketLawyer.Application.Exceptions` (referenced 6 time(s))
@@ -194,64 +195,64 @@ The following dependencies are extracted from actual using statements in the sou
 - `PocketLawyer.Infrastructure.SchemaProviders.Rental.Premium` (referenced 1 time(s))
 - `PocketLawyer.Options` (referenced 10 time(s))
 
-#### Domain Layer Dependencies
+#### Domain-Schicht-Abhängigkeiten
 
 - `PocketLawyer.Application.Exceptions` (referenced 1 time(s))
 - `PocketLawyer.Domain.Dtos.Rental` (referenced 1 time(s))
 - `PocketLawyer.Domain.Dtos.Shared` (referenced 6 time(s))
 - `PocketLawyer.Infrastructure.SchemaProviders` (referenced 4 time(s))
 
-## Design Principles
+## Designprinzipien
 
-The system follows established software design principles. The following principles are demonstrated in the actual codebase:
+Das System folgt etablierten Software-Design-Prinzipien. Die folgenden Prinzipien sind im Code nachvollziehbar umgesetzt:
 
-### SOLID Principles
+### SOLID-Prinzipien
 
 #### Single Responsibility Principle (SRP)
 
-Each class has a single, well-defined responsibility.
+Jede Klasse hat eine klar definierte Verantwortung.
 
-**Examples:**
+**Beispiele:**
 
-- `PromptProvider` in `Domain/PromptProvider.cs` - Handles data/resource provision
-- `FileValidatorService` in `Infrastructure/FileValidatorService.cs` - Handles service operations
-- `KvAiDetectionService` in `Infrastructure/KvAiDetectionService.cs` - Handles service operations
+- `PromptProvider` in `Domain/PromptProvider.cs` - Stellt Daten/Prompts bereit
+- `FileValidatorService` in `Infrastructure/FileValidatorService.cs` - Validiert und dekodiert Dateien
+- `KvAiDetectionService` in `Infrastructure/KvAiDetectionService.cs` - Führt die KV-Erkennung aus
 #### Dependency Inversion Principle (DIP)
 
-High-level modules depend on abstractions (interfaces), not concrete implementations.
+High-Level-Module hängen von Abstraktionen (Interfaces) ab, nicht von konkreten Implementierungen.
 
-**Examples:**
+**Beispiele:**
 
-- `IAiClient` in `Application/Interfaces/IAiClient.cs` - Interface for abstraction
-- `IContextFileReader` in `Application/Interfaces/IContextFileReader.cs` - Interface for abstraction
-- `IContextProvider` in `Application/Interfaces/IContextProvider.cs` - Interface for abstraction
+- `IAiClient` in `Application/Interfaces/IAiClient.cs` - Abstraktion des AI-Clients
+- `IContextFileReader` in `Application/Interfaces/IContextFileReader.cs` - Abstraktion für das Lesen von Kontextdateien
+- `IContextProvider` in `Application/Interfaces/IContextProvider.cs` - Abstraktion für Kontextbereitstellung
 #### Interface Segregation Principle (ISP)
 
-Interfaces are focused and specific to client needs.
+Interfaces sind fokussiert und auf die Bedürfnisse der aufrufenden Komponenten zugeschnitten.
 
-**Examples:**
+**Beispiele:**
 
-- `IAiClient` in `Application/Interfaces/IAiClient.cs` - Focused interface with 2 method(s)
-- `IContextFileReader` in `Application/Interfaces/IContextFileReader.cs` - Focused interface with 1 method(s)
+- `IAiClient` in `Application/Interfaces/IAiClient.cs` - Fokussiertes Interface mit 2 Methoden
+- `IContextFileReader` in `Application/Interfaces/IContextFileReader.cs` - Fokussiertes Interface mit 1 Methode
 ### DRY (Don't Repeat Yourself)
 
-Common functionality is extracted into reusable components.
+Gemeinsame Funktionalität wird in wiederverwendbare Komponenten ausgelagert.
 
-**Examples:**
+**Beispiele:**
 
-- `ContractAnalysisAgentBase` in `Application/Agents/ContractAnalysisAgentBase.cs` - Abstract base class for code reuse
-- `WebSocketHelpers` in `Infrastructure/WebSocketHelpers.cs` - Utility class for code reuse
+- `ContractAnalysisAgentBase` in `Application/Agents/ContractAnalysisAgentBase.cs` - Abstrakte Basisklasse zur Wiederverwendung
+- `WebSocketHelpers` in `Infrastructure/WebSocketHelpers.cs` - Hilfsklasse zur Wiederverwendung
 ### YAGNI (You Aren't Gonna Need It)
 
-The system implements only the features that are currently needed, avoiding speculative generality and unnecessary complexity.
+Das System implementiert nur die derzeit benötigten Funktionen und vermeidet spekulative Allgemeinheit sowie unnötige Komplexität.
 
-This principle is demonstrated through focused, purpose-driven classes that solve specific problems without over-engineering.
+Das zeigt sich in fokussierten, zweckgebundenen Klassen, die konkrete Probleme ohne Over-Engineering lösen.
 
-## Diagrams
+## Diagramme
 
-### Layered Component Diagram
+### Schichtenübersicht
 
-High-level view of the system's layered architecture:
+Übersicht der Schichtenarchitektur:
 
 ```mermaid
 graph TB
@@ -283,9 +284,9 @@ graph TB
     Infrastructure --> Application
 ```
 
-### Dependency Graph
+### Abhängigkeitsgraf
 
-Dependency flow between layers:
+Abhängigkeitsfluss zwischen den Schichten:
 
 ```mermaid
 graph TD
@@ -306,9 +307,9 @@ graph TD
     style Web fill:#FFD700
 ```
 
-### Package Structure
+### Paketstruktur
 
-Organization of namespaces and packages:
+Organisation der Namespaces und Pakete:
 
 ```mermaid
 graph LR
