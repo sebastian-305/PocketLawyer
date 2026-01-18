@@ -54,7 +54,7 @@ The main configuration file structure with all available sections and keys.
 | MaxContextSizeBytes | long | 5242880 |
 | IncludeKvContentInAnalysis | bool | false |
 
-### File
+### Logging:File
 
 | Key | Type | Value |
 | --- | --- | --- |
@@ -66,7 +66,7 @@ The main configuration file structure with all available sections and keys.
 
 *No direct keys in this section. See nested sections.*
 
-### MinimumLevel
+### Serilog:MinimumLevel
 
 | Key | Type | Value |
 | --- | --- | --- |
@@ -78,7 +78,7 @@ The main configuration file structure with all available sections and keys.
 | --- | --- | --- |
 | ModelId | string | meta-llama/Llama-3.3-70B-Instruct |
 
-### Override
+### Serilog:MinimumLevel:Override
 
 | Key | Type | Value |
 | --- | --- | --- |
@@ -126,7 +126,7 @@ Configuration for application logging, including file logging and log levels.
 
 **Configuration Section:** `Logging`
 
-### File
+### Logging:File
 
 | Category | Level |
 | --- | --- |
@@ -313,12 +313,12 @@ graph LR
     Config[appsettings.json]
     
     Config --> Logging[Logging]
-    Logging -.->|Binds to| FileLoggingOptions[FileLoggingOptions]
-    Config --> File[File]
-    File -.->|Binds to| FileLoggingOptions[FileLoggingOptions]
+    Logging --> LoggingFile[Logging:File]
+    LoggingFile -.->|Binds to| FileLoggingOptions[FileLoggingOptions]
     Config --> Serilog[Serilog]
-    Config --> MinimumLevel[MinimumLevel]
-    Config --> Override[Override]
+    Serilog --> SerilogWriteTo[Serilog:WriteTo]
+    Serilog --> SerilogMinimumLevel[Serilog:MinimumLevel]
+    SerilogMinimumLevel --> SerilogOverride[Serilog:MinimumLevel:Override]
     Config --> Nebius[Nebius]
     Nebius -.->|Binds to| NebiusOptions[NebiusOptions]
     Config --> Paths[Paths]
