@@ -41,7 +41,7 @@ Die Konfiguration wird auf die folgenden stark typisierten Options-Klassen abgeb
 
 ## appsettings.json Struktur
 
-The main configuration file structure with all available sections and keys.
+Die Struktur der Hauptkonfigurationsdatei mit allen verfügbaren Abschnitten und Schlüsseln.
 
 **Source:** `appsettings.json`
 
@@ -122,7 +122,7 @@ The main configuration file structure with all available sections and keys.
 
 ## Logging-Konfiguration
 
-Configuration for application logging, including file logging and log levels.
+Konfiguration für das Anwendungs-Logging, einschließlich Datei-Logging und Log-Leveln.
 
 **Configuration Section:** `Logging`
 
@@ -152,7 +152,7 @@ Konfiguration für den Nebius AI-Service, der für die Vertragsanalyse verwendet
 
 ## Pfad-Konfiguration
 
-Configuration for file system paths used by the application.
+Konfiguration für Dateisystempfade, die von der Anwendung verwendet werden.
 
 ### PathOptions
 
@@ -169,7 +169,7 @@ Configuration for file system paths used by the application.
 
 ## Upload-Konfiguration
 
-Configuration for file upload limits and restrictions.
+Konfiguration für Datei-Upload-Limits und Einschränkungen.
 
 ### UploadOptions
 
@@ -184,7 +184,7 @@ Configuration for file upload limits and restrictions.
 
 ## Kontext-Konfiguration
 
-Configuration for AI context files and prompts.
+Konfiguration für KI-Kontextdateien und Prompts.
 
 ### ContextOptions
 
@@ -200,9 +200,9 @@ Configuration for AI context files and prompts.
 | IncludeKvContentInAnalysis | bool | - | - |
 
 
-## Other Option Classes
+## Weitere Options-Klassen
 
-Additional configuration option classes.
+Zusätzliche Konfigurations-Options-Klassen.
 
 ### FileLoggingOptions
 
@@ -219,37 +219,37 @@ Additional configuration option classes.
 
 ## User Secrets
 
-For development, sensitive configuration values (like API keys) should be stored in user secrets rather than in appsettings.json files.
+Für die Entwicklung sollten sensible Konfigurationswerte (z. B. API-Schlüssel) in User Secrets statt in appsettings.json-Dateien gespeichert werden.
 
-### Setting User Secrets
+### User Secrets setzen
 
-Use the .NET CLI to manage user secrets:
+Verwenden Sie die .NET-CLI, um User Secrets zu verwalten:
 
 ```bash
 dotnet user-secrets init
 dotnet user-secrets set "Nebius:Key" "your-api-key-here"
 ```
 
-### Listing User Secrets
+### User Secrets auflisten
 
 ```bash
 dotnet user-secrets list
 ```
 
-### Removing User Secrets
+### User Secrets entfernen
 
 ```bash
 dotnet user-secrets remove "Nebius:Key"
 dotnet user-secrets clear  # Remove all secrets
 ```
 
-## Environment Variables
+## Umgebungsvariablen
 
-Configuration can also be provided via environment variables. Environment variables override values from appsettings.json and user secrets.
+Konfiguration kann auch über Umgebungsvariablen bereitgestellt werden. Umgebungsvariablen überschreiben Werte aus appsettings.json und User Secrets.
 
 ### Format
 
-Use double underscores (__) to represent configuration hierarchy:
+Verwenden Sie doppelte Unterstriche (__) zur Abbildung der Konfigurationshierarchie:
 
 ```bash
 Nebius__Key=your-api-key
@@ -258,7 +258,7 @@ Context__BasePath=/app/context
 Logging__LogLevel__Default=Information
 ```
 
-### Setting Environment Variables
+### Umgebungsvariablen setzen
 
 #### Windows (PowerShell)
 
