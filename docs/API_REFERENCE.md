@@ -15,7 +15,7 @@ Dieses Dokument beschreibt alle API-Endpunkte im PocketLawyer-System. Alle Infor
 
 ## Übersicht
 
-Die PocketLawyer API bietet 2 WebSocket-Endpunkt(e) und 2 HTTP-Endpunkt(e) für Vertragsanalyse und Schema-Abruf.
+Die PocketLawyer API bietet 2 WebSocket-Endpunkt(e) und 3 HTTP-Endpunkt(e) für Vertragsanalyse, Schema-Abruf und Mockdaten.
 
 ### Basis-URL
 
@@ -166,16 +166,32 @@ Host: localhost:5112
 
 #### GET /employment-mockdata
 
-**Quelle:** `GetMockData()` in `PocketController` (`Web/PocketController.cs`)
+**Quelle:** `GetEmploymentMockData()` in `PocketController` (`Web/PocketController.cs`)
 
 ##### Antwort
 
-Gibt zurück: `ActionResult<RentContractAnalysisDto>`
+Gibt zurück: `ActionResult<object>` mit einem kombinierten `basic`- und `premium`-Objekt für Employment-Analysen.
 
 ##### Beispielanfrage
 
 ```http
 GET /employment-mockdata HTTP/1.1
+Host: localhost:5112
+```
+
+
+#### GET /rental-mockdata
+
+**Quelle:** `GetRentalMockData()` in `PocketController` (`Web/PocketController.cs`)
+
+##### Antwort
+
+Gibt zurück: `ActionResult<object>` mit einem kombinierten `basic`- und `premium`-Objekt für Rental-Analysen.
+
+##### Beispielanfrage
+
+```http
+GET /rental-mockdata HTTP/1.1
 Host: localhost:5112
 ```
 
