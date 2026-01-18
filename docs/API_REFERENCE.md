@@ -15,7 +15,7 @@ Dieses Dokument beschreibt alle API-Endpunkte im PocketLawyer-System. Alle Infor
 
 ## Übersicht
 
-Die PocketLawyer API bietet 2 WebSocket-Endpunkt(e) und 3 HTTP-Endpunkt(e) für Vertragsanalyse, Schema-Abruf und Mockdaten.
+Die PocketLawyer API bietet 2 WebSocket-Endpunkt(e) und 3 HTTP-Endpunkt(e) für Vertragsanalyse, Schema-Abruf und Mock-Daten.
 
 ### Basis-URL
 
@@ -412,6 +412,7 @@ graph LR
     subgraph HTTP Endpoints
         HTTP_api_schemas_contractType_tier_step[GET /api/schemas/{contractType}/{tier}/{step}]
         HTTP_employment_mockdata[GET /employment-mockdata]
+        HTTP_rental_mockdata[GET /rental-mockdata]
     end
 ```
 
