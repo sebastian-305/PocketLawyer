@@ -70,6 +70,25 @@ Gemeinsame DTOs, die von allen Vertragstypen verwendet werden.
 
 ---
 
+### IAnalysisDto
+
+**Quelle:** `Domain/Dtos/Shared/IAnalysisDto.cs`
+
+**Namespace:** `PocketLawyer.Domain.Dtos.Shared`
+
+**Typ:** Interface
+
+**Beschreibung:** Basis-Interface für Analyse-DTOs.
+
+#### Eigenschaften
+
+| Name | Typ | Beschreibung | Status |
+| --- | --- | --- | --- |
+| ContractType | string | Vertragstyp der Analyse | Erforderlich |
+| Tier | string | Analyse-Tier (z. B. Basic oder Premium) | Erforderlich |
+
+---
+
 ### ContractValidationDto
 
 **Quelle:** `Domain/Dtos/Shared/ContractValidationDto.cs`
@@ -88,6 +107,18 @@ Gemeinsame DTOs, die von allen Vertragstypen verwendet werden.
 | IsContract | bool | Gibt an, ob es sich um einen Vertrag handelt | Erforderlich |
 | Result | string | Validierungsergebnis als Text | Erforderlich |
 | Kollektivvertrag | string? | Erkannter Kollektivvertrag (falls vorhanden) | Optional |
+
+---
+
+### IValidationDto
+
+**Quelle:** `Domain/Dtos/Shared/IValidationDto.cs`
+
+**Namespace:** `PocketLawyer.Domain.Dtos.Shared`
+
+**Typ:** Interface
+
+**Beschreibung:** Marker-Interface für Validierungs-DTOs.
 
 ---
 
