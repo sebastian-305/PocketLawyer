@@ -2,8 +2,8 @@
 DOCUMENTATION GENERATION REPORT
 ================================================================================
 
-Repository Root: D:\Coding\PocketLawyer
-Output Directory: D:\Coding\PocketLawyer\docs
+Repository Root: .
+Output Directory: ./docs
 Start Time: 2026-01-18 11:24:19
 End Time: 2026-01-18 11:24:25
 Duration: 6,29 seconds
@@ -14,27 +14,27 @@ DOCUMENT GENERATION RESULTS
 --------------------------------------------------------------------------------
 
 ✓ DATA_MODELS.md
-  Path: D:\Coding\PocketLawyer\docs\DATA_MODELS.md
+  Path: docs/DATA_MODELS.md
   Duration: 4,25s
 
 ✓ CONFIGURATION.md
-  Path: D:\Coding\PocketLawyer\docs\CONFIGURATION.md
+  Path: docs/CONFIGURATION.md
   Duration: 0,00s
 
 ✓ API_REFERENCE.md
-  Path: D:\Coding\PocketLawyer\docs\API_REFERENCE.md
+  Path: docs/API_REFERENCE.md
   Duration: 0,05s
 
 ✓ ARCHITECTURE.md
-  Path: D:\Coding\PocketLawyer\docs\ARCHITECTURE.md
+  Path: docs/ARCHITECTURE.md
   Duration: 0,44s
 
 ✓ DEPLOYMENT.md
-  Path: D:\Coding\PocketLawyer\docs\DEPLOYMENT.md
+  Path: docs/DEPLOYMENT.md
   Duration: 0,00s
 
 ✓ README.md
-  Path: D:\Coding\PocketLawyer\README.md
+  Path: README.md
   Duration: 0,00s
 
 --------------------------------------------------------------------------------

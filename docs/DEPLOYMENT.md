@@ -249,13 +249,12 @@ Nach Installation und Konfiguration können Sie PocketLawyer ausführen:
 Führen Sie die Anwendung im Entwicklungsmodus mit Hot Reload aus:
 
 ```bash
-dotnet run --project Web
+dotnet run --project PocketLawyer.csproj
 ```
 
-Oder navigieren Sie zum Web-Verzeichnis:
+Oder starten Sie direkt aus dem Repository-Root:
 
 ```bash
-cd Web
 dotnet run
 ```
 
@@ -263,8 +262,8 @@ dotnet run
 
 Die Anwendung startet und lauscht auf:
 
-- HTTP: http://localhost:5000
-- HTTPS: https://localhost:5001
+- HTTP: http://localhost:5112
+- HTTPS: https://localhost:7218
 
 Die genauen Ports können je nach Ihrer `Properties/launchSettings.json`-Konfiguration variieren.
 
@@ -317,7 +316,7 @@ Für die vollständige API-Dokumentation siehe [API_REFERENCE.md](API_REFERENCE.
 
 Überprüfen Sie die Konsolenausgabe auf erfolgreiche Startmeldungen:
 
-- "Now listening on: http://localhost:5000"
+- "Now listening on: http://localhost:5112"
 - "Application started. Press Ctrl+C to shut down."
 - Keine Fehlermeldungen oder Exceptions
 
@@ -336,7 +335,7 @@ Testen Sie, ob API-Endpunkte antworten:
 #### HTTP-Endpunkt testen
 
 ```bash
-curl http://localhost:5000/api/schemas/employment/basic/1
+curl http://localhost:5112/api/schemas/employment/basic/1
 ```
 
 Sollte eine JSON-Schema-Antwort zurückgeben.
@@ -346,7 +345,7 @@ Sollte eine JSON-Schema-Antwort zurückgeben.
 Verwenden Sie einen WebSocket-Client, um sich zu verbinden:
 
 ```
-ws://localhost:5000/employment-analysis
+ws://localhost:5112/employment-analysis
 ```
 
 Die Verbindung sollte akzeptiert werden.
