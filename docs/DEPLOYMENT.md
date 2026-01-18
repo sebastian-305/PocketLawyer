@@ -23,7 +23,7 @@ Die folgende Software und Abhängigkeiten sind erforderlich, um PocketLawyer aus
 
 **Erforderliche Version:** .NET 8.0 SDK oder höher
 
-**Quelle:** `D:\Coding\PocketLawyer\PocketLawyer.csproj` (TargetFramework: `net8.0`)
+**Quelle:** `PocketLawyer.csproj` (TargetFramework: `net8.0`)
 
 #### .NET SDK herunterladen
 
@@ -73,7 +73,7 @@ Die folgenden NuGet-Pakete sind erforderlich und werden automatisch wiederherges
 | Swashbuckle.AspNetCore | 10.0.1 | Swagger/OpenAPI-Dokumentation |
 | Tesseract | 5.2.0 | Anwendungsabhängigkeit |
 
-**Quelle:** `D:\Coding\PocketLawyer\PocketLawyer.csproj` (PackageReference-Elemente)
+**Quelle:** `PocketLawyer.csproj` (PackageReference-Elemente)
 
 ## Installation
 
@@ -96,17 +96,17 @@ Stellen Sie alle NuGet-Paketabhängigkeiten wieder her:
 dotnet restore
 ```
 
-Dieser Befehl lädt alle in `D:\Coding\PocketLawyer\PocketLawyer.csproj` aufgelisteten Pakete herunter und installiert sie.
+Dieser Befehl lädt alle in `PocketLawyer.csproj` aufgelisteten Pakete herunter und installiert sie.
 
 ### 3. Projektstruktur überprüfen
 
 Stellen Sie sicher, dass die folgenden Verzeichnisse vorhanden sind:
 
-- ✓ `Web//`
-- ✓ `Application//`
-- ✓ `Domain//`
-- ✓ `Infrastructure//`
-- ✓ `data/Context//`
+- ✓ `Web/`
+- ✓ `Application/`
+- ✓ `Domain/`
+- ✓ `Infrastructure/`
+- ✓ `data/Context/`
 
 ### 4. Projekt erstellen
 
@@ -134,7 +134,7 @@ PocketLawyer erfordert eine Konfiguration, bevor es ausgeführt werden kann. Die
 
 Die folgenden Konfigurationsdateien werden verwendet:
 
-- `D:\Coding\PocketLawyer\appsettings.json` - Basiskonfiguration für alle Umgebungen
+- `appsettings.json` - Basiskonfiguration für alle Umgebungen
 
 ### Erforderliche Konfiguration
 
@@ -492,4 +492,3 @@ graph TD
     style Config fill:#FFD700
     style Proj fill:#FFD700
 ```
-

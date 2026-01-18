@@ -18,16 +18,16 @@ Dieses Dokument beschreibt alle Konfigurationsoptionen für das PocketLawyer-Sys
 - [Umgebungsvariablen](#umgebungsvariablen)
 - [Diagramme](#diagramme)
 
-## Overview
+## Übersicht
 
-PocketLawyer uses 2 configuration file(s) and 7 option class(es) to manage application settings. Configuration follows the ASP.NET Core configuration pattern with strongly-typed option classes bound to configuration sections.
+PocketLawyer uses 2 configuration file(s) and 5 option class(es) to manage application settings. Configuration follows the ASP.NET Core configuration pattern with strongly-typed option classes bound to configuration sections.
 
 ### Configuration Files
 
 The following configuration files are used:
 
-- `D:\Coding\PocketLawyer\appsettings.Development.json` - Development environment overrides
-- `D:\Coding\PocketLawyer\appsettings.json` - Base configuration for all environments
+- `appsettings.Development.json` - Development environment overrides
+- `appsettings.json` - Base configuration for all environments
 
 ### Option Classes
 
@@ -330,4 +330,3 @@ graph LR
     Config --> Context[Context]
     Context -.->|Binds to| ContextOptions[ContextOptions]
 ```
-
