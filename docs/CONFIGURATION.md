@@ -47,12 +47,12 @@ The main configuration file structure with all available sections and keys.
 
 ### Context
 
-| Key | Type | Value |
-| --- | --- | --- |
-| BasePath | string | data/Context |
-| CreateReadmeFiles | bool | true |
-| MaxContextSizeBytes | long | 5242880 |
-| IncludeKvContentInAnalysis | bool | false |
+| Key | Type | Value | Beschreibung |
+| --- | --- | --- | --- |
+| BasePath | string | data/Context | Basispfad für Kontextdateien |
+| CreateReadmeFiles | bool | true | Automatische Erstellung von README-Dateien in Kontextverzeichnissen |
+| MaxContextSizeBytes | long | 5242880 | Maximale Größe der Kontextdateien in Bytes (5 MB) |
+| IncludeKvContentInAnalysis | bool | false | **Wichtig:** Wenn `true`, wird der vollständige Kollektivvertrag-Text in die Analyse einbezogen. Dies erhöht die Token-Nutzung erheblich, kann aber die Analysequalität verbessern. Standard: `false` (nur KV-Name wird verwendet) |
 
 ### Logging:File
 

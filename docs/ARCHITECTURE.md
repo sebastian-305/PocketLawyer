@@ -102,13 +102,18 @@ The Infrastructure layer contains implementations of external services and integ
 
 ##### AI Services
 
-- `FileValidatorService` in `Infrastructure/FileValidatorService.cs`
-- `KvAiDetectionService` in `Infrastructure/KvAiDetectionService.cs`
-- `KvFileService` in `Infrastructure/KvFileService.cs`
-- `WebSocketAgentAnalysisService` in `Infrastructure/WebSocketAgentAnalysisService.cs`
-- `SchemaNameDetectionService` in `Infrastructure/AiServices/SchemaNameDetectionService.cs`
-- `FileDecoderService` in `Infrastructure/FileDecoding/FileDecoderService.cs`
-- `NebiusService` in `Infrastructure/AiServices/Nebius/NebiusService.cs`
+AI-Services befinden sich in `Infrastructure/AiServices/`:
+
+- `NebiusService` in `Infrastructure/AiServices/Nebius/NebiusService.cs` - Primärer AI-Service für Vertragsanalyse
+- `SchemaNameDetectionService` in `Infrastructure/AiServices/SchemaNameDetectionService.cs` - Erkennung von Schema-Namen
+- `TimedAiClient` in `Infrastructure/AiServices/TimedAiClient.cs` - AI-Client mit Performance-Tracking
+
+##### Weitere Services
+
+- `FileValidatorService` in `Infrastructure/FileValidatorService.cs` - Validierung hochgeladener Dateien
+- `KvAiDetectionService` in `Infrastructure/KvAiDetectionService.cs` - KI-basierte Kollektivvertrag-Erkennung
+- `KvFileService` in `Infrastructure/KvFileService.cs` - Verwaltung von Kollektivvertrag-Dateien
+- `FileDecoderService` in `Infrastructure/FileDecoding/FileDecoderService.cs` - Dekodierung verschiedener Dateiformate
 ##### Handlers
 
 - `WebSocketAnalysisHandler` in `Infrastructure/WebSocketAnalysisHandler.cs`
@@ -148,13 +153,9 @@ The following dependencies are extracted from actual using statements in the sou
 - `PocketLawyer.Application.Agents` (referenced 2 time(s))
 - `PocketLawyer.Application.Exceptions` (referenced 1 time(s))
 - `PocketLawyer.Application.Interfaces` (referenced 2 time(s))
-- `PocketLawyer.Application.UseCases` (referenced 2 time(s))
 - `PocketLawyer.Domain.Dtos.Rental` (referenced 1 time(s))
 - `PocketLawyer.Domain.Dtos.Shared` (referenced 1 time(s))
 - `PocketLawyer.Infrastructure` (referenced 2 time(s))
-- `PocketLawyer.Infrastructure.AiServices` (referenced 1 time(s))
-- `PocketLawyer.Infrastructure.AiServices.Claude` (referenced 1 time(s))
-- `PocketLawyer.Infrastructure.AiServices.Gemini` (referenced 1 time(s))
 - `PocketLawyer.Infrastructure.AiServices.Nebius` (referenced 1 time(s))
 - `PocketLawyer.Infrastructure.Context` (referenced 1 time(s))
 - `PocketLawyer.Infrastructure.FileDecoding` (referenced 1 time(s))

@@ -39,7 +39,9 @@ public class PromptProviderPropertyTests
             
             // Employment Basic (placeholder)
             ("Employment", "Basic", "General"),
-            ("Employment", "Basic", "Conditions")
+            ("Employment", "Basic", "Compensation"),
+            ("Employment", "Basic", "WorkingConditions"),
+            ("Employment", "Basic", "Summary")
         };
 
         return Prop.ForAll(

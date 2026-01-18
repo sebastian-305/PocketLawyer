@@ -73,6 +73,13 @@ Stellen Sie sicher, dass das Kontextdatei-Verzeichnis unter `data/Context/` exis
 
 ✓ Kontextverzeichnis gefunden unter `data/Context/`
 
+**Wichtige Kontextverzeichnisse:**
+- `data/Context/employment/` - Kontextdateien für Arbeitsverträge (Basic & Premium)
+- `data/Context/rental/` - Kontextdateien für Mietverträge (Basic & Premium)
+- `data/Context/Neuer Ordner/` - Österreichische Rechtsgrundlagen (ABGB, MRG, etc.)
+
+Für eine vollständige Liste aller Kontextdateien siehe [DEPLOYMENT.md](docs/DEPLOYMENT.md#kontextdateien).
+
 ### 5. Anwendung starten
 
 Starten Sie die Anwendung:
@@ -196,7 +203,3 @@ Das Projekt folgt bewährten Softwareentwicklungsprinzipien:
 - **Testbarkeit:** Alle Komponenten sind für einfaches Testen konzipiert
 
 Für detaillierte Architekturinformationen siehe [ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
----
-
-**Erstellt mit ❤️ für österreichische Vertragsanalyse**

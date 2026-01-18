@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Http;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Application.UseCases;
 using PocketLawyer.Infrastructure;
 using PocketLawyer.Infrastructure.AiServices;
 using PocketLawyer.Infrastructure.AiServices.Nebius;
@@ -105,11 +104,9 @@ builder.Services.AddSingleton<IContextFileReader, ContextFileReader>();
 builder.Services.AddScoped<IContextProvider, ContextProvider>();
 builder.Services.AddHostedService<ContextDirectoryInitializer>();
 
-// New Contract Analysis Agents (Scoped - both keyed and direct registration)
+// Contract Analysis Agents (Scoped - direct registration)
 builder.Services.AddScoped<RentalContractAgent>();
 builder.Services.AddScoped<EmploymentContractAgent>();
-builder.Services.AddKeyedScoped<IContractAnalysisAgent, RentalContractAgent>("rental");
-builder.Services.AddKeyedScoped<IContractAnalysisAgent, EmploymentContractAgent>("employment");
 
 // WebSocket Analysis Handler
 builder.Services.AddScoped<WebSocketAnalysisHandler>();

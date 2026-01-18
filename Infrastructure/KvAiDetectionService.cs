@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Application.Models;
 using System.Text.Json;
 using PocketLawyer.Domain.Dtos.Shared;
 using PocketLawyer.Domain;
@@ -32,16 +33,17 @@ public class KvAiDetectionService : IKvDetectionService
         _logger.LogInformation("Available KV directories: {Count}", kvsFolders.Length);
         _logger.LogDebug("KV directories: {KvList}", string.Join(", ", kvsFolders));
 
-        string prompt = PromptBuilder.BuildKvDetectionPrompt(contractContent, kvsFolders);
+        string prompt = Domain.PromptProvider.GetKvDetectionPrompt(contractContent, kvsFolders);
 
         var kvDetectionSchema = GetKvDetectionSchema();
 
         var tasks = Enumerable
             .Range(0, 2)
-            .Select(_ => _aiService.SendPrompt(prompt, kvDetectionSchema))
+            .Select(_ => _aiService.SendPromptWithMetadata(prompt, kvDetectionSchema))
             .ToArray();
 
-        string[] answers = await Task.WhenAll(tasks);
+        AiResponse[] responses = await Task.WhenAll(tasks);
+        string[] answers = responses.Select(r => r.Content).ToArray();
 
         var parsedAnswers = answers
             .Select(ExtractKvAnswer)

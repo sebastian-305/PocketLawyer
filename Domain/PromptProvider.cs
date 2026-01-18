@@ -455,6 +455,98 @@ Achte auf:
 
     #endregion
 
+    #region Kollektivvertrag Detection Prompts
+
+    private const string KvDetectionPrompt = @"# AUFGABE: Kollektivvertragserkennung
+
+## SCHRITT 1: Analysiere den Arbeitsvertrag
+
+Identifiziere aus dem Vertrag:
+1. **Branche/Sektor**: Welche Branche wird erwähnt? (z.B. Handel, Gastronomie, Gesundheit, Verkehr, etc.)
+2. **Position/Tätigkeit**: Was ist die genaue Berufsbezeichnung?
+3. **Arbeitgeber**: Welche Art von Unternehmen/Organisation?
+4. **Explizite KV-Erwähnung**: Wird ein Kollektivvertrag im Vertrag erwähnt?
+
+## SCHRITT 2: Verfügbare Kollektivverträge
+
+=== VOLLSTÄNDIGE LISTE (NUR DIESE NAMEN VERWENDEN!) ===
+{KV_LIST}
+=== ENDE DER LISTE ===
+
+## SCHRITT 3: Matching
+
+Suche in der obigen Liste nach einem KV, der zur identifizierten Branche/Position passt.
+
+**WICHTIGE HINWEISE:**
+- Die KV-Namen enthalten oft Schlüsselwörter zur Branche (z.B. 'handel', 'hotel', 'pharmazie')
+- Achte auf Teilstrings: 'kollektivvertrag_hotel_und_gastgewerbe' passt zu Gastronomie/Hotel
+- Bei Unsicherheit: Prüfe mehrere mögliche KVs aus der Liste
+
+## SCHRITT 4: Antwort
+
+Antworte im JSON-Format:
+```json
+{
+  ""kollektivvertrag"": ""EXAKTER_NAME_AUS_DER_LISTE"" ODER ""Multiple"" ODER ""Keiner"",
+  ""begruendung"": ""Deine Begründung in 2-3 Sätzen""
+}
+```
+
+### Beispiel-Antworten:
+
+**Beispiel 1 - Eindeutige Zuordnung:**
+```json
+{
+  ""kollektivvertrag"": ""kollektivvertrag_handel"",
+  ""begruendung"": ""Der Vertrag erwähnt explizit 'Einzelhandel' und die Position ist 'Verkäufer'. Der KV 'kollektivvertrag_handel' aus der Liste passt eindeutig zu dieser Branche.""
+}
+```
+
+**Beispiel 2 - Mehrere mögliche KVs:**
+```json
+{
+  ""kollektivvertrag"": ""Multiple"",
+  ""begruendung"": ""Der Vertrag erwähnt sowohl Verkaufstätigkeiten als auch Serviceleistungen. Sowohl 'kollektivvertrag_handel' als auch 'kollektivvertrag_hotel_und_gastgewerbe' aus der Liste könnten passen. Eine eindeutige Zuordnung ist nicht möglich.""
+}
+```
+
+**Beispiel 3 - Kein passender KV:**
+```json
+{
+  ""kollektivvertrag"": ""Keiner"",
+  ""begruendung"": ""Der Vertrag bezieht sich auf Software-Entwicklung im IT-Bereich. Ich habe die gesamte Liste durchsucht, aber keiner der verfügbaren KVs deckt den IT-Bereich ab.""
+}
+```
+
+## KRITISCHE REGELN:
+
+1. ✅ **VERWENDE NUR NAMEN AUS DER OBIGEN LISTE!**
+2. ✅ **Kopiere den Namen EXAKT** (mit Unterstrichen, Kleinbuchstaben, etc.)
+3. ✅ **Wenn KEIN Name passt**: Schreibe ""Keiner"" - NICHT einen ähnlichen Namen!
+4. ✅ **Wenn MEHRERE passen**: Schreibe ""Multiple"" und nenne die konkreten Namen in der Begründung
+5. ✅ **Begründung muss konkret sein**: Erwähne die Branche/Position aus dem Vertrag UND den gewählten KV-Namen
+
+## HÄUFIGE FEHLER (VERMEIDE DIESE!):
+
+❌ **FALSCH**: ""kollektivvertrag_metallindustrie"" (wenn dieser Name NICHT in der Liste steht)
+❌ **FALSCH**: ""KV Handel"" (verwende den exakten Namen aus der Liste)
+❌ **FALSCH**: ""Kollektivvertrag_Handel"" (Groß-/Kleinschreibung beachten!)
+❌ **FALSCH**: Einen Namen erfinden, der logisch klingt, aber nicht in der Liste ist
+
+✅ **RICHTIG**: ""kollektivvertrag_handel"" (exakt wie in der Liste)
+✅ **RICHTIG**: ""Keiner"" (wenn kein passender KV in der Liste ist)
+✅ **RICHTIG**: ""Multiple"" (wenn mehrere aus der Liste passen)
+
+## VORGEHEN:
+
+1. Lies den Vertrag und identifiziere Branche/Position
+2. Durchsuche die KV-Liste nach passenden Schlüsselwörtern
+3. Wähle den passendsten KV aus der Liste (oder ""Multiple""/""Keiner"")
+4. Kopiere den Namen EXAKT aus der Liste
+5. Schreibe eine konkrete Begründung";
+
+    #endregion
+
     /// <summary>
     /// Retrieves the appropriate prompt for a given contract type, tier, and analysis step.
     /// </summary>
@@ -520,5 +612,43 @@ Achte auf:
     public static string GetContractTypeDetectionPrompt()
     {
         return SystemPrompt + "\n\n" + ContractTypeDetectionPrompt;
+    }
+
+    /// <summary>
+    /// Retrieves the prompt for detecting which Kollektivvertrag (collective agreement) applies to an employment contract.
+    /// </summary>
+    /// <param name="contractContent">The content of the employment contract</param>
+    /// <param name="availableKvs">Array of available Kollektivvertrag directory names</param>
+    /// <returns>The complete KV detection prompt with contract content and available KVs</returns>
+    public static string GetKvDetectionPrompt(string contractContent, string[] availableKvs)
+    {
+        string kvList = string.Join(", ", availableKvs);
+        string promptWithKvList = KvDetectionPrompt.Replace("{KV_LIST}", kvList);
+        
+        return $@"Arbeitsvertrag:
+{contractContent}
+
+{promptWithKvList}";
+    }
+
+    /// <summary>
+    /// Adds Kollektivvertrag information to an existing prompt.
+    /// This method appends KV files and instructions to analyze the contract based on the collective agreement.
+    /// </summary>
+    /// <param name="basePrompt">The base prompt to extend</param>
+    /// <param name="kvName">The name of the Kollektivvertrag</param>
+    /// <param name="kvFiles">The content of the KV files</param>
+    /// <returns>The extended prompt with KV information</returns>
+    public static string AddKvInfo(string basePrompt, string kvName, IEnumerable<string> kvFiles)
+    {
+        var kvContent = string.Join("\n\n", kvFiles);
+        
+        return $@"{basePrompt}
+
+Der folgende Text enthält den dazugehörigen Kollektivvertrag ""{kvName}"" und mögliche Anhänge.
+Diese Informationen sind laut Gesetz zwingend Grundlage der Vertragsanalyse.
+Wenn der Vertrag in einem Punkt so etwas schreibt wie ""laut Kollektivvertrag"" soll die entsprechende Regelung aus dem Kollektivvertrag angegeben werden mit dem Zusatz ""(lt. Kollektivvertrag)"".
+
+{kvContent}";
     }
 }

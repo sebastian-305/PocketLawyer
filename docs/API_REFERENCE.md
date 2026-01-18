@@ -36,6 +36,8 @@ WebSocket-Endpunkte bieten Echtzeit-Vertragsanalyse. Clients verbinden sich übe
 
 **Quelle:** `AnalyzeEmploymentViaWebSocket()` in `PocketController` (`Web/PocketController.cs`)
 
+**Verwendeter Agent:** `EmploymentContractAgent` - Spezialisiert auf Arbeitsverträge
+
 #### Verbindung
 
 Verbinden zu: `ws://{host}/employment-analysis`
@@ -52,7 +54,7 @@ Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden JSON-Format:
 }
 ```
 
-`contractType` ist optional und wird aktuell nicht ausgewertet. Die Auswahl des Agents erfolgt über den Endpunkt.
+**Hinweis:** `contractType` ist optional und wird für Validierungszwecke verwendet. Die Auswahl des Agents erfolgt über den Endpunkt - dieser Endpunkt verwendet immer den `EmploymentContractAgent`.
 
 #### Antwortformat
 
@@ -85,6 +87,8 @@ Siehe Abschnitt [Nachrichtenformate](#nachrichtenformate) für Details.
 
 **Quelle:** `AnalyzeRentalViaWebSocket()` in `PocketController` (`Web/PocketController.cs`)
 
+**Verwendeter Agent:** `RentalContractAgent` - Spezialisiert auf Mietverträge
+
 #### Verbindung
 
 Verbinden zu: `ws://{host}/rental-analysis`
@@ -101,7 +105,7 @@ Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden JSON-Format:
 }
 ```
 
-`contractType` ist optional und wird aktuell nicht ausgewertet. Die Auswahl des Agents erfolgt über den Endpunkt.
+**Hinweis:** `contractType` ist optional und wird für Validierungszwecke verwendet. Die Auswahl des Agents erfolgt über den Endpunkt - dieser Endpunkt verwendet immer den `RentalContractAgent`.
 
 #### Antwortformat
 

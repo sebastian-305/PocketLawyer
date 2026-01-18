@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Application.UseCases;
 using PocketLawyer.Domain.Dtos.Shared;
 using PocketLawyer.Domain.Dtos.Rental;
 using PocketLawyer.Domain.Dtos.Employment;
