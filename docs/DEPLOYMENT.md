@@ -171,14 +171,23 @@ Konfigurieren Sie Dateipfade für Antworten, OCR und KV-Textquellen:
 
 #### Logging
 
-Konfigurieren Sie Logging-Level und Ausgabe:
+Konfigurieren Sie Logging-Ausgabe und Log-Level:
 
 ```json
 {
   "Logging": {
-    "LogLevel": {
+    "File": {
+      "Enabled": true,
+      "MinimumLevel": "Information",
+      "Path": "logs"
+    }
+  },
+  "Serilog": {
+    "MinimumLevel": {
       "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
+      "Override": {
+        "Microsoft.AspNetCore": "Warning"
+      }
     }
   }
 }
