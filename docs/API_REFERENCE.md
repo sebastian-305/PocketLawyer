@@ -54,7 +54,7 @@ Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden JSON-Format:
 }
 ```
 
-**Hinweis:** `contractType` ist optional und wird für Validierungszwecke verwendet. Die Auswahl des Agents erfolgt über den Endpunkt - dieser Endpunkt verwendet immer den `EmploymentContractAgent`.
+**Hinweis:** `contractType` ist optional und wird serverseitig derzeit nicht ausgewertet. Die Auswahl des Agents erfolgt über den Endpunkt - dieser Endpunkt verwendet immer den `EmploymentContractAgent`.
 
 #### Antwortformat
 
@@ -107,7 +107,7 @@ Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden JSON-Format:
 }
 ```
 
-**Hinweis:** `contractType` ist optional und wird für Validierungszwecke verwendet. Die Auswahl des Agents erfolgt über den Endpunkt - dieser Endpunkt verwendet immer den `RentalContractAgent`.
+**Hinweis:** `contractType` ist optional und wird serverseitig derzeit nicht ausgewertet. Die Auswahl des Agents erfolgt über den Endpunkt - dieser Endpunkt verwendet immer den `RentalContractAgent`.
 
 #### Antwortformat
 
@@ -126,6 +126,8 @@ Antworttyp: WebSocket-JSON-Nachrichten. Die API sendet sequenziell:
   }
 }
 ```
+
+Die WebSocket-Verbindung liefert zwei Ergebnisnachrichten in Reihenfolge: zuerst die Basic-Analyse, danach die Premium-Analyse.
 
 ```json
 { "type": "error", "error": "Fehlermeldung" }
