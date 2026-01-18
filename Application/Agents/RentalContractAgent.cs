@@ -114,7 +114,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     {
         try
         {
-            var prompt = Domain.PromptProvider.GetReadabilityCheckPrompt();
+            var prompt = PromptProvider.GetReadabilityCheckPrompt();
             
             // Create schema as BinaryData for Nebius
             var schemaJson = System.Text.Json.JsonSerializer.Serialize(new
@@ -159,7 +159,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
     {
         try
         {
-            var prompt = Domain.PromptProvider.GetContractTypeDetectionPrompt();
+            var prompt = PromptProvider.GetContractTypeDetectionPrompt();
             
             // Create schema as BinaryData for Nebius
             var schemaJson = System.Text.Json.JsonSerializer.Serialize(new
@@ -264,7 +264,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Basic", "General");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Basic", "General");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "General");
+            var prompt = PromptProvider.GetPrompt("Rental", "Basic", "General");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -342,7 +342,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Basic", "Rent");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Basic", "Rent");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Rent");
+            var prompt = PromptProvider.GetPrompt("Rental", "Basic", "Rent");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -420,7 +420,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Basic", "Conditions");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Basic", "Conditions");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Conditions");
+            var prompt = PromptProvider.GetPrompt("Rental", "Basic", "Conditions");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -496,7 +496,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Basic", "Summary");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Basic", "Summary");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Basic", "Summary");
+            var prompt = PromptProvider.GetPrompt("Rental", "Basic", "Summary");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -638,7 +638,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Costs");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Costs");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Costs");
+            var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Costs");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -714,7 +714,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Terms");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Terms");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Terms");
+            var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Terms");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -790,7 +790,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Use");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Use");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Use");
+            var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Use");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -866,7 +866,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Maintenance");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Maintenance");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Maintenance");
+            var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Maintenance");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -942,7 +942,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Duties");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Duties");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Duties");
+            var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Duties");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -1018,7 +1018,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Privacy");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Privacy");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Privacy");
+            var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Privacy");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -1094,7 +1094,7 @@ public class RentalContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Rental", "Premium", "Summary");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Rental", "Premium", "Summary");
-            var prompt = Domain.PromptProvider.GetPrompt("Rental", "Premium", "Summary");
+            var prompt = PromptProvider.GetPrompt("Rental", "Premium", "Summary");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -1158,3 +1158,4 @@ public class RentalContractAgent : ContractAnalysisAgentBase
         }
     }
 }
+

@@ -1,4 +1,4 @@
-namespace PocketLawyer.Infrastructure.SchemaProviders;
+namespace PocketLawyer.Domain.Attributes;
 
 /// <summary>
 /// Attribute for defining display metadata on DTO properties.

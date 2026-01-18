@@ -148,8 +148,6 @@ Die Architektur folgt klaren Abhängigkeitsregeln. Die folgenden Regeln beschrei
 
 The following dependencies are extracted from actual using statements in the source code:
 
-**Hinweis:** In der Domain-Schicht gibt es derzeit Abhängigkeiten zu Application- und Infrastructure-Typen (siehe unten). Das weicht vom angestrebten Dependency-Rule-Ziel ab und sollte bei einer Architekturbereinigung berücksichtigt werden.
-
 #### Web Layer Dependencies
 
 - `PocketLawyer.Application.Agents` (referenced 2 time(s))
@@ -196,10 +194,9 @@ The following dependencies are extracted from actual using statements in the sou
 
 #### Domain Layer Dependencies
 
-- `PocketLawyer.Application.Exceptions` (referenced 1 time(s))
+- `PocketLawyer.Domain.Attributes` (referenced 4 time(s))
 - `PocketLawyer.Domain.Dtos.Rental` (referenced 1 time(s))
 - `PocketLawyer.Domain.Dtos.Shared` (referenced 6 time(s))
-- `PocketLawyer.Infrastructure.SchemaProviders` (referenced 4 time(s))
 
 ## Design Principles
 
@@ -213,7 +210,7 @@ Each class has a single, well-defined responsibility.
 
 **Examples:**
 
-- `PromptProvider` in `Domain/PromptProvider.cs` - Handles data/resource provision
+- `PromptProvider` in `Application/PromptProvider.cs` - Handles prompt management and provision
 - `FileValidatorService` in `Infrastructure/FileValidatorService.cs` - Handles service operations
 - `KvAiDetectionService` in `Infrastructure/KvAiDetectionService.cs` - Handles service operations
 #### Dependency Inversion Principle (DIP)

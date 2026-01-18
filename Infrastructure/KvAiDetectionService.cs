@@ -33,7 +33,7 @@ public class KvAiDetectionService : IKvDetectionService
         _logger.LogInformation("Available KV directories: {Count}", kvsFolders.Length);
         _logger.LogDebug("KV directories: {KvList}", string.Join(", ", kvsFolders));
 
-        string prompt = Domain.PromptProvider.GetKvDetectionPrompt(contractContent, kvsFolders);
+        string prompt = Application.PromptProvider.GetKvDetectionPrompt(contractContent, kvsFolders);
 
         var kvDetectionSchema = GetKvDetectionSchema();
 
@@ -180,3 +180,4 @@ public class KvAiDetectionService : IKvDetectionService
             """u8.ToArray());
     }
 }
+

@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using PocketLawyer.Domain.Dtos.Shared;
 using PocketLawyer.Domain.Dtos.Rental;
-using PocketLawyer.Infrastructure.SchemaProviders;
+using PocketLawyer.Domain.Attributes;
 
 namespace PocketLawyer.Domain.Dtos.Employment;
 
@@ -65,3 +65,4 @@ public record EmploymentPremiumSummaryDto(
         Importance = "high")]
     string[] Handlungsempfehlungen
 );
+

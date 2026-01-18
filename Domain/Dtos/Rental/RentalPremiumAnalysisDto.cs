@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using PocketLawyer.Domain.Dtos.Shared;
-using PocketLawyer.Infrastructure.SchemaProviders;
+using PocketLawyer.Domain.Attributes;
 
 namespace PocketLawyer.Domain.Dtos.Rental;
 
@@ -133,3 +133,4 @@ public enum OverallRiskLevel
     Gelb,
     Rot
 }
+

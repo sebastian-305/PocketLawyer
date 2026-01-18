@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using PocketLawyer.Domain.Dtos.Shared;
-using PocketLawyer.Infrastructure.SchemaProviders;
+using PocketLawyer.Domain.Attributes;
 
 namespace PocketLawyer.Domain.Dtos.Rental;
 
@@ -227,3 +227,4 @@ public record RentalBasicSummaryDto(
         Enum = new[] { "Gruen", "Gelb", "Rot" })]
     string RiskLevel
 );
+
