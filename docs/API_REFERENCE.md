@@ -6,7 +6,7 @@ Dieses Dokument beschreibt alle API-Endpunkte im PocketLawyer-System. Alle Infor
 
 ## Inhaltsverzeichnis
 
-- [Übersicht](#uebersicht)
+- [Übersicht](#übersicht)
 - [WebSocket-Endpunkte](#websocket-endpunkte)
 - [HTTP-Endpunkte](#http-endpunkte)
 - [Nachrichtenformate](#nachrichtenformate)
@@ -100,7 +100,7 @@ HTTP-Endpunkte bieten synchrone Operationen für Schema-Abruf und andere Hilfsfu
 
 ##### Antwort
 
-Gibt zurück: `ActionResult<object`
+Gibt zurück: `ActionResult<object>`
 
 ##### Beispielanfrage
 
@@ -116,7 +116,7 @@ Host: localhost:5112
 
 ##### Antwort
 
-Gibt zurück: `ActionResult<RentContractAnalysisDto`
+Gibt zurück: `ActionResult<RentContractAnalysisDto>`
 
 ##### Beispielanfrage
 
@@ -337,4 +337,3 @@ sequenceDiagram
     API-->>Client: Send Analysis Result
     Client->>API: Close Connection
 ```
-
