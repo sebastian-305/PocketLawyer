@@ -153,13 +153,26 @@ dotnet user-secrets set "Nebius:Key" "your-nebius-api-key"
 
 #### Dateipfade
 
-Konfigurieren Sie Dateipfade für Uploads und Kontextdateien:
+Konfigurieren Sie die Dateipfade für Antwort-Exports, Tesseract-Daten und Kollektivvertragsdateien:
 
 ```json
 {
   "Paths": {
-    "UploadDirectory": "uploads",
-    "ContextDirectory": "data/Context"
+    "ResponsesPath": "data/Responses",
+    "TesseractDataPath": "data/tessdata",
+    "KVSPath": "data/KVS/Employment"
+  }
+}
+```
+
+#### Upload-Limits
+
+Konfigurieren Sie die maximale Upload-Größe für Vertragsdateien:
+
+```json
+{
+  "Upload": {
+    "MaxUploadSizeMB": 20
   }
 }
 ```
@@ -234,7 +247,7 @@ Beim Deployment in die Produktion:
 1. Stellen Sie sicher, dass das Verzeichnis `data/Context/` im Deployment-Paket enthalten ist
 2. Überprüfen Sie, dass alle .txt-Dateien im Kontextverzeichnis vorhanden sind
 3. Setzen Sie geeignete Dateiberechtigungen (nur Lesezugriff ist ausreichend)
-4. Konfigurieren Sie den ContextDirectory-Pfad in appsettings.json, falls ein anderer Speicherort verwendet wird
+4. Konfigurieren Sie den Context:BasePath-Wert in appsettings.json, falls ein anderer Speicherort verwendet wird
 
 ### Kontextdatei-Format
 
@@ -383,7 +396,7 @@ Häufige Probleme und Lösungen:
 
 - Überprüfen Sie, dass das Verzeichnis `data/Context/` existiert
 - Prüfen Sie, dass .txt-Dateien im Kontextverzeichnis vorhanden sind
-- Stellen Sie sicher, dass der ContextDirectory-Pfad in appsettings.json korrekt konfiguriert ist
+- Stellen Sie sicher, dass der Context:BasePath-Wert in appsettings.json korrekt konfiguriert ist
 - Überprüfen Sie, dass Dateiberechtigungen das Lesen von Kontextdateien erlauben
 
 ### API-Schlüssel-Fehler

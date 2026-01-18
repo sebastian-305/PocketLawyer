@@ -256,7 +256,8 @@ Use double underscores (__) to represent configuration hierarchy:
 
 ```bash
 Nebius__Key=your-api-key
-Paths__UploadDirectory=/app/uploads
+Paths__ResponsesPath=/app/responses
+Context__BasePath=/app/context
 Logging__LogLevel__Default=Information
 ```
 
