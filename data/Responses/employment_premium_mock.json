@@ -1,0 +1,49 @@
+{
+  "CompensationBenefits": {
+    "zusammenfassung": "Das Bruttogehalt beträgt 4.500 EUR monatlich (14x jährlich), was einem Jahresbruttogehalt von 63.000 EUR entspricht. Zusätzlich gibt es Überstundenzuschläge (50%), Nachtzuschläge (100%), Firmenlaptop, Smartphone, Essenszuschuss (8 EUR/Tag), Öffi-Jahreskarte und ein Weiterbildungsbudget von 2.000 EUR jährlich.",
+    "bewertung": "Die Vergütung liegt deutlich über dem Kollektivvertrag für IT-Angestellte (Mindestgehalt ca. 2.800 EUR für diese Position). Die 14 Gehälter entsprechen dem österreichischen Standard. Die Zusatzleistungen sind überdurchschnittlich attraktiv. Besonders positiv: Das Weiterbildungsbudget zeigt Investition in die Mitarbeiterentwicklung. Die Überstundenzuschläge entsprechen den gesetzlichen Vorgaben. Keine problematischen Klauseln erkennbar.",
+    "rechtsgrundlage": "AZG § 10 (Überstundenzuschläge), ARG § 13 (Nachtzuschläge), Kollektivvertrag IT-Angestellte 2025",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "WorkingTimeVacation": {
+    "zusammenfassung": "Die Wochenarbeitszeit beträgt 38,5 Stunden mit Gleitzeitregelung. Überstunden können durch Zeitausgleich oder Auszahlung mit 50% Zuschlag abgegolten werden. Der Urlaubsanspruch beträgt 25 Tage pro Jahr. Homeoffice ist bis zu 3 Tage pro Woche möglich.",
+    "bewertung": "Die Arbeitszeitregelung ist sehr arbeitnehmerfreundlich. 38,5 Stunden liegen unter der gesetzlichen Normalarbeitszeit von 40 Stunden. Die Gleitzeit bietet Flexibilität. Die Überstundenregelung ist klar und gesetzeskonform - der Arbeitnehmer kann zwischen Zeitausgleich und Auszahlung wählen. 25 Urlaubstage liegen über dem gesetzlichen Minimum von 20 Tagen (bei 5-Tage-Woche). Die Homeoffice-Regelung ist zeitgemäß und großzügig. Keine Beanstandungen.",
+    "rechtsgrundlage": "AZG § 3 (Normalarbeitszeit), AZG § 10 (Überstunden), UrlG § 2 (Urlaubsanspruch), ARG § 9 (Gleitzeit)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "TerminationNotice": {
+    "zusammenfassung": "Der Vertrag ist unbefristet mit einer Probezeit von 3 Monaten. Kündigungsfristen sind nicht explizit im vorliegenden Auszug genannt, es gelten die gesetzlichen bzw. kollektivvertraglichen Fristen.",
+    "bewertung": "Die Probezeit von 3 Monaten entspricht dem gesetzlichen Maximum für Angestellte. Während der Probezeit gilt eine verkürzte Kündigungsfrist von einem Monat. Nach der Probezeit gelten die Kündigungsfristen des Angestelltengesetzes (1-5 Monate je nach Dienstjahren). Es fehlt eine explizite Regelung zu Abfindungen oder Kündigungsmodalitäten. Empfehlung: Kündigungsfristen und eventuelle Abfindungsregelungen schriftlich festhalten.",
+    "rechtsgrundlage": "AngG § 19 (Probezeit), AngG § 20 (Kündigungsfristen), AVRAG § 1159 (Kündigungsschutz)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "NonCompeteConfidentiality": {
+    "zusammenfassung": "Keine expliziten Regelungen zu Konkurrenzklauseln oder Verschwiegenheitspflichten im vorliegenden Vertragsauszug erkennbar.",
+    "bewertung": "Das Fehlen einer Konkurrenzklausel ist für den Arbeitnehmer vorteilhaft, da er nach Vertragsende frei ist, bei Konkurrenzunternehmen zu arbeiten. Sollte eine Konkurrenzklausel existieren, wäre sie nur mit angemessener Karenzentschädigung (mindestens 50% des letzten Gehalts) zulässig. Eine Verschwiegenheitspflicht ergibt sich bereits aus der allgemeinen Treuepflicht. Empfehlung: Prüfen, ob im vollständigen Vertrag Konkurrenz- oder Verschwiegenheitsklauseln enthalten sind.",
+    "rechtsgrundlage": "AngG § 36 (Konkurrenzklausel), ABGB § 1173 (Treuepflicht), DSG (Datenschutz)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "RightsDuties": {
+    "zusammenfassung": "Der Arbeitsort ist Wien, Mariahilfer Straße 123. Die Position ist Senior Software Engineer. Weitere spezifische Rechte und Pflichten sind im Auszug nicht detailliert aufgeführt.",
+    "bewertung": "Die Tätigkeitsbeschreibung sollte im vollständigen Vertrag konkretisiert sein, um spätere Streitigkeiten über den Aufgabenbereich zu vermeiden. Der Arbeitsort ist klar definiert, was wichtig für die Homeoffice-Regelung ist. Es fehlen Angaben zu Weisungsrechten, Versetzungsmöglichkeiten, Nebentätigkeiten und Erfindungen. Empfehlung: Vollständigen Vertrag auf diese Punkte prüfen und ggf. nachverhandeln.",
+    "rechtsgrundlage": "AngG § 1 (Angestelltenverhältnis), ABGB § 1173 (Treuepflicht), PatG § 7 (Diensterfindungen)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "Summary": {
+    "gesamtfazit": "Der Arbeitsvertrag ist insgesamt sehr arbeitnehmerfreundlich gestaltet und bietet attraktive Konditionen. Das Gehalt liegt deutlich über dem Kollektivvertrag, die Zusatzleistungen sind überdurchschnittlich. Die Arbeitszeitregelung mit Gleitzeit und Homeoffice-Option ist modern und flexibel. Die Urlaubstage liegen über dem gesetzlichen Minimum. Besonders positiv hervorzuheben ist das Weiterbildungsbudget. Kritikpunkte gibt es kaum - lediglich die fehlenden expliziten Regelungen zu Kündigungsmodalitäten, Konkurrenzklauseln und detaillierten Aufgabenbeschreibungen sollten im vollständigen Vertrag geprüft werden. Insgesamt ein sehr guter Vertrag mit minimalen Risiken.",
+    "gesamtbewertung": "Sehr gut",
+    "handlungsempfehlungen": [
+      "Vollständigen Vertrag auf Konkurrenzklauseln prüfen",
+      "Kündigungsfristen und Abfindungsregelungen schriftlich bestätigen lassen",
+      "Tätigkeitsbeschreibung konkretisieren lassen",
+      "Regelungen zu Nebentätigkeiten klären",
+      "Homeoffice-Vereinbarung schriftlich festhalten (Ausstattung, Kostenübernahme)",
+      "Weiterbildungsbudget-Nutzung und Rückzahlungsklauseln klären"
+    ]
+  }
+}

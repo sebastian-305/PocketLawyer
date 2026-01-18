@@ -202,7 +202,7 @@ async function uploadRentalContract(event) {
             body.appendChild(confirmationDiv);
             body.appendChild(loading);
             
-            const analysisMessage = await requestMockAnalysis();
+            const analysisMessage = await requestMockAnalysis('rental');
             body.removeChild(loading);
             
             // Render mock analysis

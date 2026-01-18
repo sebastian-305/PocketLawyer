@@ -241,7 +241,7 @@ async function uploadFile(event) {
             body.appendChild(confirmationDiv);
             body.appendChild(loading);
             
-            const analysisMessage = await requestMockAnalysis();
+            const analysisMessage = await requestMockAnalysis('employment');
             body.removeChild(loading);
             
             // Render mock analysis using generic renderer

@@ -7,6 +7,7 @@ using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.UseCases;
 using PocketLawyer.Domain.Dtos.Shared;
 using PocketLawyer.Domain.Dtos.Rental;
+using PocketLawyer.Domain.Dtos.Employment;
 using PocketLawyer.Infrastructure;
 using PocketLawyer.Options;
 using System.Text.Json;
@@ -61,52 +62,87 @@ public class PocketController : ControllerBase
     }
 
     [HttpGet("/employment-mockdata")]
-    public async Task<ActionResult<RentContractAnalysisDto>> GetMockData()
+    public async Task<ActionResult> GetEmploymentMockData()
     {
-        _logger.LogInformation("Entering {Method}", nameof(GetMockData));
+        _logger.LogInformation("Entering {Method}", nameof(GetEmploymentMockData));
 
         string responsesPath = Path.Combine(
             _environment.ContentRootPath,
             _paths.ResponsesPath);
 
-        Directory.CreateDirectory(responsesPath);
+        string basicFilePath = Path.Combine(responsesPath, "employment_basic_mock.json");
+        string premiumFilePath = Path.Combine(responsesPath, "employment_premium_mock.json");
 
-        string mockContent;
+        if (!System.IO.File.Exists(basicFilePath) || !System.IO.File.Exists(premiumFilePath))
+            return StatusCode(StatusCodes.Status500InternalServerError, "Keine Employment-Beispieldaten gefunden.");
+
         try
         {
-            var files = Directory.GetFiles(responsesPath);
-            if (files.Length == 0)
-                return StatusCode(StatusCodes.Status500InternalServerError, "Keine Beispieldaten gefunden.");
+            string basicContent = await System.IO.File.ReadAllTextAsync(basicFilePath);
+            string premiumContent = await System.IO.File.ReadAllTextAsync(premiumFilePath);
 
-            string filePath = files[Random.Shared.Next(files.Length)];
-            mockContent = await System.IO.File.ReadAllTextAsync(filePath);
+            var basicDto = JsonSerializer.Deserialize<EmploymentBasicAnalysisDto>(basicContent);
+            var premiumDto = JsonSerializer.Deserialize<EmploymentPremiumAnalysisDto>(premiumContent);
+
+            if (basicDto == null || premiumDto == null)
+                return BadRequest("Invalid employment mock data");
+
+            // Return combined format expected by frontend
+            var combined = new
+            {
+                basic = basicDto,
+                premium = premiumDto
+            };
+
+            return Ok(combined);
         }
-        catch (IOException ex)
+        catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to read mock data");
+            _logger.LogError(ex, "Failed to read or parse employment mock data");
             return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldaten.");
         }
-        catch (UnauthorizedAccessException ex)
-        {
-            _logger.LogError(ex, "No permission to access mock data");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldaten.");
-        }
+    }
 
-        RentContractAnalysisDto? dto;
+    [HttpGet("/rental-mockdata")]
+    public async Task<ActionResult> GetRentalMockData()
+    {
+        _logger.LogInformation("Entering {Method}", nameof(GetRentalMockData));
+
+        string responsesPath = Path.Combine(
+            _environment.ContentRootPath,
+            _paths.ResponsesPath);
+
+        string basicFilePath = Path.Combine(responsesPath, "rental_basic_mock.json");
+        string premiumFilePath = Path.Combine(responsesPath, "rental_premium_mock.json");
+
+        if (!System.IO.File.Exists(basicFilePath) || !System.IO.File.Exists(premiumFilePath))
+            return StatusCode(StatusCodes.Status500InternalServerError, "Keine Rental-Beispieldaten gefunden.");
+
         try
         {
-            dto = JsonSerializer.Deserialize<RentContractAnalysisDto>(mockContent);
-        }
-        catch (JsonException ex)
-        {
-            _logger.LogError(ex, "Failed to parse mock data");
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Fehler beim Lesen der Beispieldaten.");
-        }
-        if (dto == null)
-            return BadRequest("Invalid mock data");
+            string basicContent = await System.IO.File.ReadAllTextAsync(basicFilePath);
+            string premiumContent = await System.IO.File.ReadAllTextAsync(premiumFilePath);
 
-        return Ok(dto);
+            var basicDto = JsonSerializer.Deserialize<RentalBasicAnalysisDto>(basicContent);
+            var premiumDto = JsonSerializer.Deserialize<RentalPremiumAnalysisDto>(premiumContent);
+
+            if (basicDto == null || premiumDto == null)
+                return BadRequest("Invalid rental mock data");
+
+            // Return combined format expected by frontend
+            var combined = new
+            {
+                basic = basicDto,
+                premium = premiumDto
+            };
+
+            return Ok(combined);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to read or parse rental mock data");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Fehler beim Lesen der Beispieldaten.");
+        }
     }
 
     /// <summary>

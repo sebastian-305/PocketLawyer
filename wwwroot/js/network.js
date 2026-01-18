@@ -32,8 +32,9 @@ function bufferToBase64(buffer) {
     return btoa(binary);
 }
 
-export async function requestMockAnalysis() {
-    const response = await fetch('/employment-mockdata', { method: 'GET' });
+export async function requestMockAnalysis(contractType = 'employment') {
+    const endpoint = contractType === 'rental' ? '/rental-mockdata' : '/employment-mockdata';
+    const response = await fetch(endpoint, { method: 'GET' });
     const text = await response.text();
     try {
         return JSON.parse(text);

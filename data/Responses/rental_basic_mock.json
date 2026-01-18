@@ -1,0 +1,33 @@
+{
+  "General": {
+    "vertragstyp": "I",
+    "mieter": "Anna Schmidt",
+    "vermieter": "Immobilien Müller GmbH",
+    "mietobjektAdresse": "Neubaugasse 45/12, 1070 Wien",
+    "vertragsbeginn": "2025-04-01",
+    "vertragsart": "unbefristet",
+    "vertragsende": null
+  },
+  "Rent": {
+    "kaltmiete": 850.00,
+    "nebenkosten": 180.00,
+    "warmmiete": 1030.00,
+    "kaution": 2550.00,
+    "zahlungsweise": "monatlich",
+    "nebenkostenregelung": "Vorauszahlung mit jährlicher Abrechnung bis 30. Juni des Folgejahres"
+  },
+  "Conditions": {
+    "kuendigungsfrist": "3 Monate zum Monatsende",
+    "tierhaltung": "Kleintierhaltung erlaubt, größere Tiere mit Zustimmung",
+    "untervermietung": "Mit schriftlicher Zustimmung des Vermieters erlaubt",
+    "besonderheiten": "Kellerabteil und Fahrradabstellplatz im Innenhof inkludiert",
+    "schoenheitsreparaturen": "Mieter trägt Schönheitsreparaturen während der Mietdauer",
+    "betriebskostenabrechnung": "Jährliche Abrechnung bis 30. Juni, Nachzahlung innerhalb 4 Wochen"
+  },
+  "Summary": {
+    "kurzfazit": "Fairer Mietvertrag mit marktüblichen Konditionen. Die Miete liegt im Durchschnitt für die Lage, die Kaution entspricht 3 Monatsmieten.",
+    "gesamtfazit": "Der Mietvertrag ist insgesamt ausgewogen gestaltet. Die Kündigungsfrist ist angemessen, die Nebenkostenregelung transparent. Die Tierhaltungsregelung ist mieterfreundlich. Einzig die Schönheitsreparaturenklausel sollte genauer geprüft werden, da pauschale Überwälzungen problematisch sein können.",
+    "gesamtbewertung": "Gut",
+    "riskLevel": "Gruen"
+  }
+}

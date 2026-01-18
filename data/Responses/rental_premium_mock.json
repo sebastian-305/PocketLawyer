@@ -1,0 +1,55 @@
+{
+  "Costs": {
+    "zusammenfassung": "Die Miete beträgt 850 EUR kalt plus 180 EUR Nebenkosten, gesamt 1.030 EUR warm. Die Kaution wurde mit 2.550 EUR (3 Monatsmieten) vereinbart. Die Betriebskosten werden als Vorauszahlung mit jährlicher Abrechnung bis 30. Juni abgerechnet.",
+    "bewertung": "Die Mietkonditionen sind marktüblich für die Lage in 1070 Wien. Die Kaution entspricht der üblichen Höhe von 3 Monatsmieten und ist rechtlich zulässig. Die Nebenkostenregelung ist transparent, allerdings sollte geprüft werden, ob alle umgelegten Kosten tatsächlich umlagefähig sind. Positiv: Die Abrechnungsfrist ist klar definiert.",
+    "rechtsgrundlage": "MRG § 16a (Kaution), MRG § 21 (Betriebskosten), MRG § 15a (Mietzinsbildung)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "Terms": {
+    "zusammenfassung": "Der Vertrag ist unbefristet mit einer Kündigungsfrist von 3 Monaten zum Monatsende. Es gibt keine Mindestmietdauer oder Kündigungsverzicht. Der Vertragsbeginn ist der 1. April 2025.",
+    "bewertung": "Die Kündigungsmodalitäten sind mieterfreundlich gestaltet. Eine Kündigungsfrist von 3 Monaten ist für unbefristete Mietverträge angemessen und entspricht der gesetzlichen Regelung. Das Fehlen einer Mindestmietdauer oder eines Kündigungsverzichts gibt dem Mieter maximale Flexibilität. Keine problematischen Klauseln erkennbar.",
+    "rechtsgrundlage": "MRG § 29 (Kündigungsfristen), MRG § 30 (Kündigungsgründe)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "Use": {
+    "zusammenfassung": "Die Wohnung darf zu Wohnzwecken genutzt werden. Kleintierhaltung ist erlaubt, größere Tiere bedürfen der Zustimmung des Vermieters. Untervermietung ist mit schriftlicher Zustimmung möglich. Ein Kellerabteil und Fahrradabstellplatz sind inkludiert.",
+    "bewertung": "Die Nutzungsregelungen sind ausgewogen. Die Tierhaltungsklausel ist rechtlich zulässig - ein generelles Verbot wäre unwirksam, die Differenzierung zwischen Klein- und Großtieren ist sachgerecht. Die Untervermietungsregelung entspricht der Rechtslage, wonach der Vermieter die Zustimmung nicht unbillig verweigern darf. Die Inklusivleistungen (Keller, Fahrradplatz) sind positiv zu bewerten.",
+    "rechtsgrundlage": "MRG § 16 (Tierhaltung), ABGB § 1098 (Untervermietung), MRG § 9 (Mitbenützung)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "Maintenance": {
+    "zusammenfassung": "Der Mieter trägt die Schönheitsreparaturen während der Mietdauer. Größere Reparaturen und Erhaltungsarbeiten sind nicht explizit geregelt.",
+    "bewertung": "Die Klausel zu Schönheitsreparaturen ist kritisch zu sehen. Eine pauschale Überwälzung aller Schönheitsreparaturen auf den Mieter kann unwirksam sein, insbesondere wenn die Wohnung nicht frisch renoviert übergeben wurde. Nach der Rechtsprechung müssen Schönheitsreparaturen konkret und angemessen geregelt sein. Es fehlt eine klare Abgrenzung zwischen Mieter- und Vermieterpflichten bei größeren Reparaturen. Empfehlung: Nachverhandlung dieser Klausel.",
+    "rechtsgrundlage": "ABGB § 1096 (Erhaltungspflicht des Vermieters), MRG § 3 (Erhaltungspflichten)",
+    "risikoScore": "Nachteilhaft",
+    "riskLevel": "Gelb"
+  },
+  "Duties": {
+    "zusammenfassung": "Die Betriebskostenabrechnung erfolgt jährlich bis 30. Juni des Folgejahres. Nachzahlungen sind innerhalb von 4 Wochen fällig. Weitere Pflichten sind nicht explizit aufgeführt.",
+    "bewertung": "Die Abrechnungsfrist ist angemessen und gibt dem Mieter ausreichend Zeit zur Prüfung. Die 4-Wochen-Frist für Nachzahlungen ist fair. Positiv ist die klare Regelung der Fristen. Es fehlen jedoch Angaben zu Hausordnung, Schneeräumung und anderen Nebenpflichten. Dies sollte im Vertrag oder einer Hausordnung ergänzt werden.",
+    "rechtsgrundlage": "MRG § 21 (Betriebskostenabrechnung), ABGB § 1098 (Sorgfaltspflicht)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "Privacy": {
+    "zusammenfassung": "Keine expliziten Regelungen zu Besichtigungsrechten, Zutrittsrechten oder Datenschutz im vorliegenden Vertrag erkennbar.",
+    "bewertung": "Das Fehlen von Regelungen zu Besichtigungsrechten ist neutral zu bewerten. Der Vermieter hat grundsätzlich kein unbeschränktes Zutrittsrecht - Besichtigungen müssen angekündigt werden und bedürfen eines berechtigten Interesses. Datenschutzrechtlich sollte eine DSGVO-konforme Datenverarbeitung sichergestellt sein. Empfehlung: Klärung der Besichtigungsmodalitäten.",
+    "rechtsgrundlage": "ABGB § 1096 (Erhaltungspflicht als Zutrittsgrund), DSGVO Art. 6 (Rechtmäßigkeit der Verarbeitung)",
+    "risikoScore": "Zulaessig",
+    "riskLevel": "Gruen"
+  },
+  "Summary": {
+    "gesamtfazit": "Der Mietvertrag ist insgesamt ausgewogen und mieterfreundlich gestaltet. Die Mietkonditionen sind marktüblich, die Kündigungsmodalitäten flexibel. Positiv hervorzuheben sind die klare Nebenkostenregelung, die faire Tierhaltungsklausel und die Inklusivleistungen. Kritisch ist die pauschale Schönheitsreparaturenklausel zu sehen, die möglicherweise unwirksam ist. Es wird empfohlen, diese Klausel nachzuverhandeln und eine konkrete Abgrenzung zwischen Mieter- und Vermieterpflichten zu vereinbaren. Insgesamt überwiegen die positiven Aspekte deutlich.",
+    "gesamtbewertung": "Gelb",
+    "handlungsempfehlungen": [
+      "Schönheitsreparaturenklausel nachverhandeln und konkretisieren",
+      "Zustand der Wohnung bei Übergabe genau dokumentieren (Fotos, Protokoll)",
+      "Hausordnung und weitere Nebenpflichten klären",
+      "Besichtigungsmodalitäten schriftlich festhalten",
+      "Betriebskostenabrechnung jährlich sorgfältig prüfen"
+    ]
+  }
+}

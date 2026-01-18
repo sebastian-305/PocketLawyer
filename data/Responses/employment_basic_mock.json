@@ -1,0 +1,38 @@
+{
+  "General": {
+    "arbeitgeber": "TechVision GmbH",
+    "arbeitnehmer": "Max Mustermann",
+    "position": "Senior Software Engineer",
+    "startdatum": "2025-03-01",
+    "vertragsart": "unbefristet",
+    "probezeit": "3 Monate",
+    "vertragsende": null
+  },
+  "Compensation": {
+    "gehaltBrutto": "4.500 EUR monatlich",
+    "gehaltNettoCa": "2.850 EUR monatlich ca.",
+    "zahlungsweise": "14x jährlich",
+    "sonderzahlungen": "13. und 14. Gehalt (Urlaubs- und Weihnachtsgeld)",
+    "zuschlaege": "Überstundenzuschläge 50%, Nachtzuschlag 100%",
+    "zusatzleistungen": [
+      "Firmenlaptop und Smartphone",
+      "Essenszuschuss 8 EUR/Tag",
+      "Öffi-Jahreskarte",
+      "Weiterbildungsbudget 2.000 EUR/Jahr"
+    ]
+  },
+  "WorkingConditions": {
+    "wochenarbeitszeit": "38,5 Stunden",
+    "arbeitszeitmodell": "Gleitzeit",
+    "ueberstundenregelung": "Zeitausgleich oder Auszahlung mit 50% Zuschlag",
+    "urlaubstage": "25 Tage pro Jahr",
+    "arbeitsort": "Wien, Büro Mariahilfer Straße 123",
+    "remoteArbeit": "bis zu 3 Tage pro Woche"
+  },
+  "Summary": {
+    "kurzfazit": "Solider Arbeitsvertrag mit fairen Konditionen. Das Gehalt liegt über dem Kollektivvertrag, die Homeoffice-Regelung ist zeitgemäß und die Zusatzleistungen sind attraktiv.",
+    "kollektivvertrag": "Kollektivvertrag für Angestellte in der Informationstechnologie",
+    "gesamtbewertung": "Gut",
+    "riskLevel": "Gruen"
+  }
+}
