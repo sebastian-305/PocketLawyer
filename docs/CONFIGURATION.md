@@ -20,18 +20,18 @@ Dieses Dokument beschreibt alle Konfigurationsoptionen für das PocketLawyer-Sys
 
 ## Übersicht
 
-PocketLawyer uses 2 configuration file(s) and 5 option class(es) to manage application settings. Configuration follows the ASP.NET Core configuration pattern with strongly-typed option classes bound to configuration sections.
+PocketLawyer verwendet zwei Konfigurationsdateien und fünf Options-Klassen, um Anwendungseinstellungen zu verwalten. Die Konfiguration folgt dem ASP.NET-Core-Muster mit stark typisierten Options-Klassen, die an Konfigurationsabschnitte gebunden werden.
 
 ### Konfigurationsdateien
 
-The following configuration files are used:
+Die folgenden Konfigurationsdateien werden verwendet:
 
 - `appsettings.Development.json` - Development environment overrides
 - `appsettings.json` - Base configuration for all environments
 
 ### Options-Klassen
 
-Configuration is mapped to the following strongly-typed option classes:
+Die Konfiguration wird auf die folgenden stark typisierten Options-Klassen abgebildet:
 
 - `ContextOptions` - `Options/ContextOptions.cs`
 - `FileLoggingOptions` - `Options/FileLoggingOptions.cs`
@@ -52,7 +52,7 @@ The main configuration file structure with all available sections and keys.
 | BasePath | string | data/Context | Basispfad für Kontextdateien |
 | CreateReadmeFiles | bool | true | Automatische Erstellung von README-Dateien in Kontextverzeichnissen |
 | MaxContextSizeBytes | long | 5242880 | Maximale Größe der Kontextdateien in Bytes (5 MB) |
-| IncludeKvContentInAnalysis | bool | false | **Wichtig:** Wenn `true`, wird der vollständige Kollektivvertrag-Text in die Analyse einbezogen. Dies erhöht die Token-Nutzung erheblich, kann aber die Analysequalität verbessern. Standard: `false` (nur KV-Name wird verwendet) |
+| IncludeKvContentInAnalysis | bool | false | **Wichtig:** Wenn `true`, wird der vollständige Kollektivvertrag-Text in die Analyse einbezogen. Dies erhöht die Token-Nutzung erheblich, kann aber die Analysequalität verbessern. In `appsettings.json` ist der Wert `false` (nur KV-Name wird verwendet). Der Default in `ContextOptions` ist `true`, falls keine Konfiguration gesetzt ist. |
 
 ### Logging:File
 
