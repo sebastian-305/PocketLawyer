@@ -15,7 +15,7 @@ Dieses Dokument beschreibt alle API-Endpunkte im PocketLawyer-System. Alle Infor
 
 ## Übersicht
 
-Die PocketLawyer API bietet 2 WebSocket-Endpunkt(e) und 2 HTTP-Endpunkt(e) für Vertragsanalyse und Schema-Abruf.
+Die PocketLawyer API bietet 2 WebSocket-Endpunkt(e) und 3 HTTP-Endpunkt(e) für Vertragsanalyse, Schema-Abruf und Mock-Daten.
 
 ### Basis-URL
 
@@ -166,16 +166,31 @@ Host: localhost:5112
 
 #### GET /employment-mockdata
 
-**Quelle:** `GetMockData()` in `PocketController` (`Web/PocketController.cs`)
+**Quelle:** `GetEmploymentMockData()` in `PocketController` (`Web/PocketController.cs`)
 
 ##### Antwort
 
-Gibt zurück: `ActionResult<RentContractAnalysisDto>`
+Gibt zurück: `ActionResult<object>` mit `basic` (`EmploymentBasicAnalysisDto`) und `premium` (`EmploymentPremiumAnalysisDto`)
 
 ##### Beispielanfrage
 
 ```http
 GET /employment-mockdata HTTP/1.1
+Host: localhost:5112
+```
+
+#### GET /rental-mockdata
+
+**Quelle:** `GetRentalMockData()` in `PocketController` (`Web/PocketController.cs`)
+
+##### Antwort
+
+Gibt zurück: `ActionResult<object>` mit `basic` (`RentalBasicAnalysisDto`) und `premium` (`RentalPremiumAnalysisDto`)
+
+##### Beispielanfrage
+
+```http
+GET /rental-mockdata HTTP/1.1
 Host: localhost:5112
 ```
 
@@ -367,6 +382,7 @@ graph LR
     subgraph HTTP Endpoints
         HTTP_api_schemas_contractType_tier_step[GET /api/schemas/{contractType}/{tier}/{step}]
         HTTP_employment_mockdata[GET /employment-mockdata]
+        HTTP_rental_mockdata[GET /rental-mockdata]
     end
 ```
 
