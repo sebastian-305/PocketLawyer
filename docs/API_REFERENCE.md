@@ -166,16 +166,45 @@ Host: localhost:5112
 
 #### GET /employment-mockdata
 
-**Quelle:** `GetMockData()` in `PocketController` (`Web/PocketController.cs`)
+**Quelle:** `GetEmploymentMockData()` in `PocketController` (`Web/PocketController.cs`)
 
 ##### Antwort
 
-Gibt zurück: `ActionResult<RentContractAnalysisDto>`
+Gibt zurück: `ActionResult` mit einem kombinierten Objekt:
+
+```json
+{
+  "basic": { /* EmploymentBasicAnalysisDto */ },
+  "premium": { /* EmploymentPremiumAnalysisDto */ }
+}
+```
 
 ##### Beispielanfrage
 
 ```http
 GET /employment-mockdata HTTP/1.1
+Host: localhost:5112
+```
+
+#### GET /rental-mockdata
+
+**Quelle:** `GetRentalMockData()` in `PocketController` (`Web/PocketController.cs`)
+
+##### Antwort
+
+Gibt zurück: `ActionResult` mit einem kombinierten Objekt:
+
+```json
+{
+  "basic": { /* RentalBasicAnalysisDto */ },
+  "premium": { /* RentalPremiumAnalysisDto */ }
+}
+```
+
+##### Beispielanfrage
+
+```http
+GET /rental-mockdata HTTP/1.1
 Host: localhost:5112
 ```
 
