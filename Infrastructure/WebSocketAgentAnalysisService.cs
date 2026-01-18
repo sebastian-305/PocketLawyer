@@ -1,6 +1,6 @@
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;

@@ -1,4 +1,4 @@
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
 using PocketLawyer.Web;
 
 namespace PocketLawyer.Application.Interfaces;

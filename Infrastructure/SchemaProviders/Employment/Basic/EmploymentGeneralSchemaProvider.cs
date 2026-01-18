@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
+using PocketLawyer.Domain.Dtos.Employment;
 
 namespace PocketLawyer.Infrastructure.SchemaProviders.Employment.Basic;
 

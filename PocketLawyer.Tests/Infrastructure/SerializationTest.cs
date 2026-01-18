@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
+using PocketLawyer.Domain.Dtos.Rental;
 using Xunit;
 using Xunit.Abstractions;
 

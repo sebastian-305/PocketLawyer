@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.Models;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
 
 namespace PocketLawyer.Application.Agents;
 

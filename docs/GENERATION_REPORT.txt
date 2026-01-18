@@ -1,0 +1,96 @@
+================================================================================
+DOCUMENTATION GENERATION REPORT
+================================================================================
+
+Repository Root: D:\Coding\PocketLawyer
+Output Directory: D:\Coding\PocketLawyer\docs
+Start Time: 2026-01-18 11:24:19
+End Time: 2026-01-18 11:24:25
+Duration: 6,29 seconds
+Overall Status: FAILED
+
+--------------------------------------------------------------------------------
+DOCUMENT GENERATION RESULTS
+--------------------------------------------------------------------------------
+
+✓ DATA_MODELS.md
+  Path: D:\Coding\PocketLawyer\docs\DATA_MODELS.md
+  Duration: 4,25s
+
+✓ CONFIGURATION.md
+  Path: D:\Coding\PocketLawyer\docs\CONFIGURATION.md
+  Duration: 0,00s
+
+✓ API_REFERENCE.md
+  Path: D:\Coding\PocketLawyer\docs\API_REFERENCE.md
+  Duration: 0,05s
+
+✓ ARCHITECTURE.md
+  Path: D:\Coding\PocketLawyer\docs\ARCHITECTURE.md
+  Duration: 0,44s
+
+✓ DEPLOYMENT.md
+  Path: D:\Coding\PocketLawyer\docs\DEPLOYMENT.md
+  Duration: 0,00s
+
+✓ README.md
+  Path: D:\Coding\PocketLawyer\README.md
+  Duration: 0,00s
+
+--------------------------------------------------------------------------------
+VERIFICATION RESULTS
+--------------------------------------------------------------------------------
+
+Overall Verification: FAILED
+Total Errors: 138
+
+Property 1: Endpoint Verification: ✗ FAILED (3 error(s))
+  • EndpointNotFound: Documented endpoint not found in source code
+  • EndpointNotFound: Documented endpoint not found in source code
+  • EndpointNotFound: Documented endpoint not found in source code
+
+Property 2: DTO Verification: ✗ FAILED (103 error(s))
+  • DtoNotFound: Documented DTO not found in source code
+  • DtoNotFound: Documented DTO not found in source code
+  • DtoNotFound: Documented DTO not found in source code
+  ... and 100 more error(s)
+
+Property 3: Configuration Verification: ✗ FAILED (4 error(s))
+  • ConfigKeyNotFound: Documented configuration key not found in appsettings.json
+  • ConfigKeyNotFound: Documented configuration key not found in appsettings.json
+  • ConfigKeyNotFound: Documented configuration key not found in appsettings.json
+  ... and 1 more error(s)
+
+Property 4: File Reference Verification: ✓ PASSED
+
+Property 5: Diagram Verification: ✗ FAILED (2 error(s))
+  • DiagramClassNotFound: Class mentioned in Mermaid diagram not found in codebase: has
+  • DiagramClassNotFound: Class mentioned in Mermaid diagram not found in codebase: for
+
+Property 6: Dependency Verification: ✓ PASSED
+
+Property 7: Link Verification: ✗ FAILED (22 error(s))
+  • BrokenAnchor: Anchor does not exist in current document: #uebersicht
+  • BrokenAnchor: Anchor does not exist in current document: #schichten
+  • BrokenAnchor: Anchor does not exist in current document: #abhaengigkeiten
+  ... and 19 more error(s)
+
+Property 8: Inheritance Verification: ✓ PASSED
+
+Property 9-10: Version Verification: ✓ PASSED
+
+Property 11: Structure Verification: ✓ PASSED
+
+Property 12: Enum Verification: ✓ PASSED
+
+Property 13: Exception Verification: ✓ PASSED
+
+Property 14: Cross-Reference Verification: ✓ PASSED
+
+Property 15-17: Completeness Verification: ✗ FAILED (4 error(s))
+  • DtoNotDocumented: DTO exists in source code but is not documented: IAnalysisDto
+  • DtoNotDocumented: DTO exists in source code but is not documented: IValidationDto
+  • EndpointNotDocumented: Endpoint exists in source code but is not documented: GET /employment-analysis in PocketController.AnalyzeEmploymentViaWebSocket
+  ... and 1 more error(s)
+
+================================================================================

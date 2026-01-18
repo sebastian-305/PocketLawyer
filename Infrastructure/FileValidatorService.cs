@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Options;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
 using System.IO;
 using PocketLawyer.Application.Exceptions;
 

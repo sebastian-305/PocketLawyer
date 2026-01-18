@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KLAUSEL KLARA - Mietvertrag</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="/Media/favicon.ico">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <script type="module" src="js/rental.js"></script>
+    <link href="css/praes.css" rel="stylesheet" />
+</head>
+<body>
+    <header class="header text-white d-flex justify-content-between align-items-center p-4">
+        <h1 class="display-4">
+            <a href="index.html" class="text-white text-decoration-none">KLAUSEL KLARA</a>
+        </h1>
+        <nav class="d-flex gap-2">
+            <a href="index.html" class="btn btn-outline-light">Startseite</a>
+            <a href="employment.html" class="btn btn-light">Zum Arbeitsvertrag</a>
+        </nav>
+    </header>
+
+    <main class="main-page">
+
+        <section class="intro-section d-flex justify-content-center align-items-center text-center ">
+
+            <div class="intro-image col-md-6 p-0">
+                <img id="top-pic" src="Media/Frau_mit_Verträgen.jpg"
+                     class="img-fluid h-100 w-100 object-fit-cover"
+                     alt="Frau mit Verträgen" />
+            </div>
+            <div class="intro-text col-md-6 text-center p-4">
+                <h2>KOMM KLAR MIT KLAUSEL KLARA</h2>
+                <h3>Analysiere deinen Mietvertrag mit KI</h3>
+                <p>
+                    Versteckte Klauseln? Undurchsichtige Formulierungen?
+                    Unsere KI wurde speziell auf österreichisches
+                    Mietrecht trainiert. Sie erkennt nicht nur
+                    juristische Feinheiten, sondern erklärt sie dir in
+                    einfachen Worten – damit du weißt, worauf du dich
+                    einlässt, bevor du unterschreibst.
+                </p>
+                <form class="upload-form">
+                    <div class="form-group">
+                        <input type="hidden" name="contractType" value="rental-analysis" />
+                        <label for="file-intro" class="visually-hidden">Mietvertrag auswählen</label>
+                        <input type="file"
+                               id="file-intro"
+                               class="file-upload "
+                               name="myfile"
+                               accept=".txt,.pdf,.jpg,.jpeg,.png" />
+                        <input type="submit"
+                               class="cta-button "
+                               value="MIETVERTRAG ANALYSIEREN"
+                               data-bs-toggle="modal"
+                               data-bs-target="#evaluation" />
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <section class="mission-section d-flex justify-content-center align-items-center text-center">
+            <div id="quote-div" class="mission-text px-4">
+                <h2>
+                    KLARA macht Recht für alle zugänglich.
+                    <br />
+                    Sie räumt juristische Hürden aus dem Weg und verwandelt
+                    komplexe Klauseln in klares, verständliches Wissen.
+                </h2>
+            </div>
+        </section>
+        <section class="why-section d-flex flex-column flex-md-row align-items-stretch justify-content-center text-center py-5">
+            <div class="container">
+                <h2 class="mb-5 fw-bold">WARUM KLAUSEL KLARA?</h2>
+
+                <div class="row g-4">
+                    <!-- Spezialisierung -->
+                    <div class="col-md-4">
+                        <div class="why-card p-4 h-100 bg-light rounded shadow-sm">
+                            <h3 class="why-title mb-3">🎯 Spezialisiert auf österreichisches Mietrecht</h3>
+                            <p>
+                                Allgemeine KI-Modelle wie ChatGPT sind auf globale, breit gefächerte Inhalte trainiert.
+                                <strong>Klausel Klara</strong> hingegen ist speziell auf die Feinheiten des österreichischen Mietrechts abgestimmt – inklusive MRG, ABGB und mehr.
+                            </p>
+                            <p class="why-result fw-bold text-primary">
+                                → Ergebnis: Relevante, treffsichere Analysen.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Red Flags -->
+                    <div class="col-md-4">
+                        <div class="why-card p-4 h-100 bg-light rounded shadow-sm">
+                            <h3 class="why-title mb-3">🚩 Red-Flag-Erkennung & Bewertung</h3>
+                            <p>
+                                Klausel Klara erkennt kritische, unzulässige oder nachteilige Klauseln
+                                (z. B. überhöhte Kaution, unzulässige Kündigungsfristen, versteckte Kosten) und markiert sie direkt – mit Begründung und Rechtsgrundlage.
+                            </p>
+                            <p class="fw-bold text-danger">
+                                → Ergebnis: Du erkennst sofort, was problematisch ist.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Datenschutz -->
+                    <div class="col-md-4">
+                        <div class="why-card p-4 h-100 bg-light rounded shadow-sm">
+                            <h3 class="why-title mb-3">🔒 Datenschutz made in Europe</h3>
+                            <p>
+                                Im Gegensatz zu US-basierten Tools bleiben deine Daten bei
+                                <strong>Klausel Klara</strong> komplett in Europa – DSGVO-konform und ohne Cloud-Tracking.
+                            </p>
+                            <p class="fw-bold text-success">
+                                → Ergebnis: Volle Kontrolle über sensible Vertragsdaten.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="cta-section d-flex flex-column flex-md-row align-items-center justify-content-between">
+            <div class="cta-text col-md-6 text-center p-4">
+                <div class="feature mb-4">
+                    <h3>
+                        ⚡ DEIN MIETVERTRAG SEKUNDENSCHNELL ANALYSIEREN
+                    </h3>
+                    <p>
+                        Lade deinen Vertrag hoch und erhalte in wenigen
+                        Sekunden eine verständliche Auswertung.
+                    </p>
+                </div>
+                <div class="feature mb-4">
+                    <h3>
+                        ✅ PROBLEMSTELLEN UND RED FLAGS AUF EINEN BLICK
+                        ERKENNEN
+                    </h3>
+                    <p>
+                        Unsere KI hebt kritische Formulierungen und
+                        potenziell nachteilige Klauseln für dich hervor.
+                    </p>
+                </div>
+                <div class="feature mb-4">
+                    <h3>💬 MIT KLARA ÜBER DEINEN VERTRAG CHATTEN</h3>
+                    <p>
+                        Stell deinem persönlichen KI-Chatbot Fragen –
+                        einfach, intuitiv und auf Augenhöhe.
+                    </p>
+                </div>
+
+                <form class="upload-form mb-3">
+                    <div class="form-group d-flex flex-column gap-3">
+                        <input type="hidden" name="contractType" value="rental-analysis" />
+                        <label for="file-cta" class="visually-hidden">Mietvertrag auswählen</label>
+                        <input type="file"
+                               id="file-cta"
+                               class="file-upload"
+                               name="myfile"
+                               accept=".txt,.pdf,.jpg,.jpeg,.png" />
+                        <input type="submit"
+                               class="cta-button"
+                               value="MIETVERTRAG ANALYSIEREN"
+                               data-bs-toggle="modal"
+                               data-bs-target="#evaluation" />
+                    </div>
+                    <p class="privacy-hint">
+                        🔒 100 % datenschutzkonform – deine Daten bleiben
+                        bei dir.
+                    </p>
+                </form>
+            </div>
+            <div class="cta-image col-md-6 p-0">
+                <img src="Media/Frau_am_Laptop.jpg"
+                     class="img-fluid h-100 w-100 object-fit-cover"
+                     alt="Frau mit Laptop" />
+            </div>
+        </section>
+        <div class="modal fade"
+             id="evaluation"
+             tabindex="-1"
+             role="dialog"
+             aria-labelledby="evaluationLabel"
+             aria-describedby="evaluationDesc"
+             aria-modal="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header nprint">
+                        <h2 id="evaluationLabel">DEINE MIETVERTRAGSANALYSE</h2>
+                        <button id="closex"
+                                type="button"
+                                class="close-btn"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="evaluation-body" class="modal-body accordion" aria-label="Analyse" aria-describedby="evaluationDesc">
+                        <span id="evaluationDesc" class="visually-hidden">Auswertungsergebnisse</span>
+
+                    </div>
+                    <div class="modal-footer nprint">
+                        <button type="button" id="printbtn" class="btn btn-upload nprint" onclick="printer()">
+                            Analyse drucken
+                        </button>
+                        <button type="button"
+                                id="closebtn"
+                                class="btn btn-close-secondary nprint"
+                                data-bs-dismiss="modal">
+                            Schließen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section id="result"></section>
+
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="restoreToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body">
+                    <button type="button" id="restoreBtn" class="btn btn-link btn-sm">Analyse wiederherstellen</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer p-4 d-flex justify-content-between align-items-center">
+        <span>&copy; 2025 KLAUSEL KLARA</span>
+        <nav>
+            <ul class="list-unstyled d-flex gap-3 mb-0">
+                <!--<li>Impressum</li>
+                <li>Datenschutz</li>
+                <li>AGB</li>-->
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>

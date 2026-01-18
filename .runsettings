@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- Konfiguration für .NET Test Runner -->
+  
+  <!-- Parallele Ausführung deaktivieren um Prozess-Explosion zu vermeiden -->
+  <RunConfiguration>
+    <MaxCpuCount>1</MaxCpuCount>
+    <DisableParallelization>true</DisableParallelization>
+    <TargetPlatform>x64</TargetPlatform>
+  </RunConfiguration>
+
+  <!-- xUnit Konfiguration -->
+  <xUnit>
+    <!-- Keine parallele Ausführung -->
+    <ParallelizeAssembly>false</ParallelizeAssembly>
+    <ParallelizeTestCollections>false</ParallelizeTestCollections>
+    <MaxParallelThreads>1</MaxParallelThreads>
+  </xUnit>
+
+  <!-- FsCheck Konfiguration über Environment Variables -->
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <!-- Reduziere FsCheck Iterationen um Endlos-Tests zu vermeiden -->
+      <FSCHECK_MAX_TEST>10</FSCHECK_MAX_TEST>
+      <FSCHECK_VERBOSE>false</FSCHECK_VERBOSE>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>

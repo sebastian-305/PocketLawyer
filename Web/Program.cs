@@ -6,8 +6,6 @@ using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.UseCases;
 using PocketLawyer.Infrastructure;
 using PocketLawyer.Infrastructure.AiServices;
-using PocketLawyer.Infrastructure.AiServices.Claude;
-using PocketLawyer.Infrastructure.AiServices.Gemini;
 using PocketLawyer.Infrastructure.AiServices.Nebius;
 using PocketLawyer.Infrastructure.Context;
 using PocketLawyer.Infrastructure.FileDecoding;
@@ -47,24 +45,10 @@ builder.Host.UseSerilog((context, configuration) =>
 
 // Add services to the container.
 builder.Services
-    .AddOptions<GeminiOptions>()
-    .Bind(builder.Configuration.GetRequiredSection("Gemini"))
-    .ValidateDataAnnotations()
-    .Validate(o => !string.IsNullOrWhiteSpace(o.Key), "Gemini:Key is required")
-    .ValidateOnStart();
-
-builder.Services
     .AddOptions<NebiusOptions>()
     .Bind(builder.Configuration.GetRequiredSection("Nebius"))
     .ValidateDataAnnotations()
     .Validate(o => !string.IsNullOrWhiteSpace(o.Key), "Nebius:Key is required")
-    .ValidateOnStart();
-
-builder.Services
-    .AddOptions<ClaudeOptions>()
-    .Bind(builder.Configuration.GetRequiredSection("Claude"))
-    .ValidateDataAnnotations()
-    .Validate(o => !string.IsNullOrWhiteSpace(o.Key), "Claude:Key is required")
     .ValidateOnStart();
 
 builder.Services
@@ -85,45 +69,10 @@ builder.Services
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-builder.Services.AddTransient<RedactingLoggingHandler>();
 builder.Services.AddSingleton<IHttpMessageHandlerBuilderFilter, NoLoggingHttpClientBuilderFilter>();
-builder.Services
-    .AddHttpClient<IGeminiContextManager, GeminiContextManager>()
-    .AddHttpMessageHandler<RedactingLoggingHandler>(); // IWebHostEnvironment injected
-builder.Services
-    .AddHttpClient<GeminiService>()
-    .AddHttpMessageHandler<RedactingLoggingHandler>();
 
 // Register ParameterSerializer for method tracing
 builder.Services.AddSingleton<IParameterSerializer, ParameterSerializer>();
-
-// Gemini service registration with decorator chain: TimedAiClient → LoggingAiClientDecorator → GeminiService
-builder.Services.AddKeyedScoped<IAiClient, GeminiService>("gemini:inner:inner");
-
-builder.Services.AddKeyedScoped<IAiClient>("gemini:inner", (sp, key) =>
-    new LoggingAiClientDecorator(
-        sp.GetRequiredKeyedService<IAiClient>("gemini:inner:inner"),
-        sp.GetRequiredService<ILogger<LoggingAiClientDecorator>>(),
-        sp.GetRequiredService<IParameterSerializer>()));
-
-builder.Services.AddKeyedScoped<IAiClient>("gemini", (sp, key) =>
-    new TimedAiClient(
-        sp.GetRequiredKeyedService<IAiClient>("gemini:inner"),
-        sp.GetRequiredService<ILogger<TimedAiClient>>()));
-
-// Claude service registration with decorator chain: TimedAiClient → LoggingAiClientDecorator → ClaudeService
-builder.Services.AddKeyedScoped<IAiClient, ClaudeService>("claude:inner:inner");
-
-builder.Services.AddKeyedScoped<IAiClient>("claude:inner", (sp, key) =>
-    new LoggingAiClientDecorator(
-        sp.GetRequiredKeyedService<IAiClient>("claude:inner:inner"),
-        sp.GetRequiredService<ILogger<LoggingAiClientDecorator>>(),
-        sp.GetRequiredService<IParameterSerializer>()));
-
-builder.Services.AddKeyedScoped<IAiClient>("claude", (sp, key) =>
-    new TimedAiClient(
-        sp.GetRequiredKeyedService<IAiClient>("claude:inner"),
-        sp.GetRequiredService<ILogger<TimedAiClient>>()));
 
 // Nebius service registration with decorator chain: TimedAiClient → LoggingAiClientDecorator → NebiusService
 builder.Services.AddKeyedScoped<IAiClient, NebiusService>("nebius:inner:inner");
@@ -146,7 +95,6 @@ builder.Services.AddScoped<IFileDecoderService, FileDecoderService>();
 builder.Services.AddScoped<IFileValidatorService, FileValidatorService>();
 builder.Services.AddScoped<IKollektivvertragService, KvFileService>();
 builder.Services.AddScoped<IKvDetectionService, KvAiDetectionService>();
-builder.Services.AddScoped<IResponseLogger, ResponseLogger>();
 
 // Schema Provider and Validator (Singletons for performance)
 builder.Services.AddSingleton<ISchemaProvider, PocketLawyer.Infrastructure.SchemaProviders.SchemaProvider>();

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
+using PocketLawyer.Domain.Dtos.Rental;
 using PocketLawyer.Tests.Helpers;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -595,7 +596,7 @@ public class RentalContractAgentPropertyTests
                     }
 
                     // Try to cast to the specific DTO type
-                    if (analysisResult.Result is not PocketLawyer.Domain.Dtos.RentalBasicAnalysisDto result)
+                    if (analysisResult.Result is not RentalBasicAnalysisDto result)
                     {
                         return false; // Cast failed
                     }

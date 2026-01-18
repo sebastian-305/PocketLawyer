@@ -1,5 +1,7 @@
 using System.Text.Json;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
+using PocketLawyer.Domain.Dtos.Employment;
+using PocketLawyer.Domain.Dtos.Rental;
 using Xunit;
 
 namespace PocketLawyer.Tests.Domain;

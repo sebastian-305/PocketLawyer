@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.Agents;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -37,18 +37,36 @@ public class WebSocketAnalysisHandler
         var agentId = agent.AgentId;
         _logger.LogDebug("[Agent {AgentId}] Entering {Method}", agentId, nameof(HandleAsync));
         using var socket = await context.WebSockets.AcceptWebSocketAsync();
+        
+        // Create a cancellation token that triggers when the socket is closed
+        using var cts = new CancellationTokenSource();
+        var cancellationToken = cts.Token;
 
         try
         {
             // Receive file (contract type is determined by the endpoint/agent)
-            var (fileBytes, fileName) = await ReceiveFileAsync(socket);
+            var (fileBytes, fileName) = await ReceiveFileAsync(socket, cancellationToken);
             _logger.LogInformation("[Agent {AgentId}] Received file: {FileName}, Size: {Size} bytes", 
                 agentId, fileName, fileBytes.Length);
+
+            // Check if client disconnected
+            if (socket.State != WebSocketState.Open)
+            {
+                _logger.LogWarning("[Agent {AgentId}] Client disconnected before analysis started", agentId);
+                return;
+            }
 
             // Validate and decode
             IFormFile CreateFile() => new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "file", fileName);
             var fileContent = await _fileValidatorService.ValidateAndDecodeAsync(CreateFile());
             _logger.LogInformation("[Agent {AgentId}] File validated and decoded successfully", agentId);
+
+            // Check if client disconnected
+            if (socket.State != WebSocketState.Open)
+            {
+                _logger.LogWarning("[Agent {AgentId}] Client disconnected after file validation", agentId);
+                return;
+            }
 
             // Initialize agent with contract text
             var initResult = await agent.InitializeAsync(fileContent.FileContent);
@@ -57,8 +75,20 @@ public class WebSocketAnalysisHandler
             {
                 _logger.LogWarning("[Agent {AgentId}] Initialization failed: {Error}", 
                     agentId, initResult.ErrorMessage);
-                await SendErrorAsync(socket, initResult.ErrorMessage ?? "Initialization failed");
-                await socket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, initResult.ErrorMessage, CancellationToken.None);
+                
+                // Only send error if socket is still open
+                if (socket.State == WebSocketState.Open)
+                {
+                    await SendErrorAsync(socket, initResult.ErrorMessage ?? "Initialization failed");
+                    await socket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, initResult.ErrorMessage, CancellationToken.None);
+                }
+                return;
+            }
+
+            // Check if client disconnected
+            if (socket.State != WebSocketState.Open)
+            {
+                _logger.LogWarning("[Agent {AgentId}] Client disconnected after initialization", agentId);
                 return;
             }
 
@@ -66,45 +96,92 @@ public class WebSocketAnalysisHandler
             _logger.LogInformation("[Agent {AgentId}] Sending confirmation message", agentId);
             await SendConfirmationAsync(socket, "Vertrag akzeptiert, Analyse gestartet");
 
+            // Check if client disconnected
+            if (socket.State != WebSocketState.Open)
+            {
+                _logger.LogWarning("[Agent {AgentId}] Client disconnected after confirmation", agentId);
+                return;
+            }
+
             // Execute analyses
             _logger.LogInformation("[Agent {AgentId}] Starting basic analysis", agentId);
             var basicResult = await agent.AnalyzeBasicAsync();
+            
+            // Check if client disconnected before sending result
+            if (socket.State != WebSocketState.Open)
+            {
+                _logger.LogWarning("[Agent {AgentId}] Client disconnected during basic analysis", agentId);
+                return;
+            }
+            
             await SendResultAsync(socket, basicResult);
             _logger.LogInformation("[Agent {AgentId}] Basic analysis result sent", agentId);
 
+            // Check if client disconnected
+            if (socket.State != WebSocketState.Open)
+            {
+                _logger.LogWarning("[Agent {AgentId}] Client disconnected after basic analysis", agentId);
+                return;
+            }
+
             _logger.LogInformation("[Agent {AgentId}] Starting premium analysis", agentId);
             var premiumResult = await agent.AnalyzePremiumAsync();
+            
+            // Check if client disconnected before sending result
+            if (socket.State != WebSocketState.Open)
+            {
+                _logger.LogWarning("[Agent {AgentId}] Client disconnected during premium analysis", agentId);
+                return;
+            }
+            
             await SendResultAsync(socket, premiumResult);
             _logger.LogInformation("[Agent {AgentId}] Premium analysis result sent", agentId);
 
             // Close connection
-            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Analysis complete", CancellationToken.None);
-            _logger.LogInformation("[Agent {AgentId}] Connection closed gracefully", agentId);
+            if (socket.State == WebSocketState.Open)
+            {
+                await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Analysis complete", CancellationToken.None);
+                _logger.LogInformation("[Agent {AgentId}] Connection closed gracefully", agentId);
+            }
         }
         catch (FileValidationException ex)
         {
             _logger.LogWarning(ex, "[Agent {AgentId}] File validation failed", agentId);
-            await SendErrorAsync(socket, ex.Message);
-            await socket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, ex.Message, CancellationToken.None);
+            if (socket.State == WebSocketState.Open)
+            {
+                await SendErrorAsync(socket, ex.Message);
+                await socket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, ex.Message, CancellationToken.None);
+            }
         }
         catch (ContractAnalysisException ex)
         {
             _logger.LogError(ex, "[Agent {AgentId}] Contract analysis failed", agentId);
-            await SendErrorAsync(socket, ex.Message);
-            await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            if (socket.State == WebSocketState.Open)
+            {
+                await SendErrorAsync(socket, ex.Message);
+                await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            }
+        }
+        catch (WebSocketException ex)
+        {
+            _logger.LogWarning(ex, "[Agent {AgentId}] WebSocket exception (client likely disconnected)", agentId);
+            // Don't try to send error or close socket - it's already closed
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "[Agent {AgentId}] Unknown exception during analysis", agentId);
-            await SendErrorAsync(socket, ex.Message);
-            await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            if (socket.State == WebSocketState.Open)
+            {
+                await SendErrorAsync(socket, ex.Message);
+                await socket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+            }
         }
     }
 
     /// <summary>
     /// Receives file data from WebSocket.
     /// </summary>
-    private async Task<(byte[] fileBytes, string fileName)> ReceiveFileAsync(WebSocket socket)
+    private async Task<(byte[] fileBytes, string fileName)> ReceiveFileAsync(WebSocket socket, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Entering {Method}", nameof(ReceiveFileAsync));
 
@@ -114,7 +191,7 @@ public class WebSocketAnalysisHandler
         
         do
         {
-            result = await socket.ReceiveAsync(buffer, CancellationToken.None);
+            result = await socket.ReceiveAsync(buffer, cancellationToken);
             ms.Write(buffer, 0, result.Count);
         } while (!result.EndOfMessage);
 
@@ -187,7 +264,7 @@ public class WebSocketAnalysisHandler
     /// </summary>
     private async Task SendErrorAsync(WebSocket socket, string error)
     {
-        var message = new { type = "error", message = error };
+        var message = new { type = "error", error = error };
         await SendJsonAsync(socket, message);
     }
 

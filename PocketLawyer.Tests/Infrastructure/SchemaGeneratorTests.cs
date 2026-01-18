@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using PocketLawyer.Domain.Dtos.Employment;
 using PocketLawyer.Infrastructure.SchemaProviders;
 using Xunit;
 
@@ -207,7 +208,7 @@ public class SchemaGeneratorTests
     public void GenerateSchema_EmploymentBasicGeneralDto_IncludesCorrectSectionTitle()
     {
         // Arrange & Act
-        var schema = _generator.GenerateSchema<PocketLawyer.Domain.Dtos.EmploymentBasicGeneralDto>();
+        var schema = _generator.GenerateSchema<EmploymentBasicGeneralDto>();
 
         // Assert
         Assert.Equal("Allgemeine Arbeitsdaten", schema["x-sectionTitle"]?.GetValue<string>());

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
 using PocketLawyer.Infrastructure;
 using PocketLawyer.Options;
 

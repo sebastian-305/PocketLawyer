@@ -1,426 +1,203 @@
-# PocketLawyer
+# Klausel Klara
 
-PocketLawyer ist eine Webanwendung auf Basis von **ASP.NET 8**, die Verträge (Mietverträge, Arbeitsverträge) analysiert. PDF-Dateien werden dabei mit **UglyToad.PdfPig** ausgelesen, während Bilddateien per **Tesseract OCR** verarbeitet werden. Die extrahierten Texte werden an den **Nebius KI-Dienst** gesendet und die Ergebnisse übersichtlich dargestellt.
+**KI-gestützte Vertragsanalyse für österreichische Arbeits- und Mietverträge**
 
-## Neue Architektur (Agent Refactoring)
 
-Das System wurde auf eine moderne, wartbare Architektur umgestellt, die auf dem **Single-Source-of-Truth-Prinzip** basiert. JSON-Schemas dienen als zentrale Wahrheitsquelle für alle Datenstrukturen.
+Klausel Klara ist eine produktionsreife Webanwendung, die österreichische Arbeits- und Mietverträge mithilfe von KI analysiert. Entwickelt mit ASP.NET Core und unterstützt durch KI-Dienste, bietet sie umfassende Vertragsanalysen mit Echtzeit-Ergebnissen über WebSocket-Verbindungen.
 
-### 3-Phasen-Agenten-Lifecycle
+## Funktionen
 
-Alle Vertragsanalyse-Agenten folgen einem einheitlichen Lifecycle:
+- **Vertragsanalyse** - Umfassende Analyse von Arbeits- und Mietverträgen
+- **Multi-Format-Unterstützung** - Unterstützt PDF, Bilder (via OCR) und Textdateien
+- **Echtzeit-Ergebnisse** - WebSocket-basiertes Streaming der Analyseergebnisse
+- **Gestaffelte Analyse** - Basis- und Premium-Analyseebenen für unterschiedliche Detailstufen
+- **Schema-gesteuertes UI** - Dynamisches Frontend-Rendering basierend auf JSON-Schemas
+- **Österreichischer Rechtskontext** - Spezialisiert auf österreichisches Arbeits- und Mietrecht
+- **Produktionsbereit** - Umfassende Tests, Logging und Fehlerbehandlung
 
-1. **Konstruktion**: Leichtgewichtige Erstellung mit Dependency Injection
-2. **Initialisierung**: Vertragsvalidierung, Typerkennung und Textspeicherung
-3. **Analyse**: Parallele Ausführung von Basic- und Premium-Analyse-Steps
+## Voraussetzungen
 
-### Kernkomponenten
+Bevor Sie beginnen, stellen Sie sicher, dass Folgendes installiert ist:
 
-- **Contract Analysis Agents**: Orchestrieren den Analyseworkflow
-  - `RentalContractAgent`: Mietvertragsanalyse
-  - `EmploymentContractAgent`: Arbeitsvertragsanalyse (Skeleton)
-- **Schema Provider**: Stellt JSON-Schemas als Single Source of Truth bereit
-  - Schemas enthalten `x-displayName` für Frontend-Labels
-  - Schemas enthalten `x-sectionTitle` für Section-Überschriften
-- **Schema Validator**: Validiert KI-Antworten gegen Schemas
-- **Prompt Provider**: Zentrale Verwaltung aller KI-Prompts
-- **WebSocket Handler**: Verwaltet Echtzeit-Kommunikation mit Clients
-- **Token Tracking**: Aggregiert Input/Output-Token pro Analyse
-- **Filesystem Logging**: Persistente Logs mit täglichem Rollover
+- **.NET SDK** - Version 8.0 oder höher (extrahiert aus `PocketLawyer.csproj`)
+- **Git** - Zum Klonen des Repositorys
+- **Nebius API-Schlüssel** - API-Schlüssel für den Nebius KI-Dienst
 
-### Vorteile der neuen Architektur
+### .NET SDK herunterladen
 
-- **Single Source of Truth**: JSON-Schemas definieren Datenstrukturen zentral
-- **Datengetriebenes Frontend**: Frontend nutzt Schema-Metadaten (`x-displayName`, `x-sectionTitle`) für Rendering
-- **Parallele Ausführung**: Alle Analyse-Steps laufen parallel (Task.WhenAll)
-- **Fehlertoleranz**: Fehlgeschlagene Steps blockieren andere nicht
-- **Token-Transparenz**: Vollständiges Tracking von AI-Token-Verbrauch pro Analyse
-- **Persistente Logs**: Tägliche Log-Dateien für Debugging und Monitoring
-- **Erweiterbarkeit**: Neue Vertragstypen einfach hinzufügbar
-- **Testbarkeit**: Umfassende Unit- und Property-Based-Tests
-- **Wartbarkeit**: Klare Trennung von Verantwortlichkeiten
+Falls Sie .NET 8.0 SDK nicht installiert haben, laden Sie es hier herunter:
 
-### Legacy-Komponenten (Deprecated)
+- [.NET Downloads](https://dotnet.microsoft.com/download)
 
-Die folgenden Komponenten sind als veraltet markiert und werden in zukünftigen Versionen entfernt:
-
-- **PromptBuilder** (`Domain/PromptBuilder.cs`): Ersetzt durch `PromptProvider`
-- **PromptBuilder_Deprecated** (`Infrastructure/PromptBuilder_deprecated1.cs`): Alte Implementierung
-- **ClaudeService** (`Infrastructure/AiServices/Claude/ClaudeService.cs`): Legacy AI-Service
-- **GeminiService** (`Infrastructure/AiServices/Gemini/GeminiService.cs`): Legacy AI-Service
-
-Verwenden Sie stattdessen `PromptProvider` und `NebiusService` für neue Implementierungen.
-
-## Funktionsweise
-
-* **Nebius API**: Hauptdienst für die KI-gestützte Vertragsanalyse mit Token-Tracking
-* **UglyToad.PdfPig**: Liest Text direkt aus PDF-Dokumenten
-* **Tesseract OCR**: Liest Bilddateien (JPG, PNG) per OCR aus und wandelt sie in Text um
-* **NJsonSchema**: Validiert KI-Antworten gegen JSON-Schemas
-* **Serilog**: Persistentes Logging mit täglichem Rollover
-
-Eine Datei wird zunächst validiert und der Vertragstyp erkannt. Anschließend werden Basic- und Premium-Analysen parallel durchgeführt. Die Analysen bewerten Klauseln, geben Zusammenfassungen und stellen Verstöße gegen Gesetz und Kollektivvertrag heraus. Token-Verbrauch wird pro Analyse aggregiert und geloggt.
-
-## Ordnerstruktur
-
-```text
-Domain/              Enthält DTOs, Entitäten und PromptProvider
-Application/         Use Cases, Interfaces und Agenten
-  Agents/            Contract Analysis Agents (Rental, Employment)
-  Interfaces/        Interfaces für Services (ISchemaProvider, ISchemaValidator, etc.)
-  Models/            Modelle wie InitializationResult
-  Exceptions/        Exception-Hierarchie für Fehlerbehandlung
-Infrastructure/      Implementierung der Services
-  SchemaProviders/   JSON-Schema-Provider für alle Analyse-Steps
-  AiServices/        KI-Service-Implementierungen (Nebius, etc.)
-  FileDecoding/      Dateidecoder für PDF, Text, Bilder
-Web/                 ASP.NET-Host mit Program.cs und Controllern
-wwwroot/             Statische Dateien der Weboberfläche (HTML, JS, CSS, Medien)
-PocketLawyer.Tests/  Unit-, Property-Based- und Integrationstests
-data/                Daten und Ressourcen
-  KVS/               Kollektivverträge für die Analyse
-  Context/           Vorverarbeitete Kontextdaten für Prompts
-  tessdata/          Sprachdaten für Tesseract OCR
-  Samples/           Beispielverträge für Tests
-docs/                Dokumentation
-  Diagrams/          Architektur- und Ablaufdiagramme
-  API_DOCUMENTATION.md  Vollständige API-Dokumentation
-  DesignPatterns_de.md  Verwendete Entwurfsmuster
-.kiro/specs/         Spezifikationen für Features
-  agent-refactoring/ Requirements, Design und Tasks für Agent Refactoring
-```
-
-## Onion-Architektur
-
-Die Lösung ist ringförmig aufgebaut, wobei jede äußere Ebene nur auf die innenliegende zugreifen darf. Dadurch bleibt die Kernlogik isoliert von technischen Details.
-
-1. **Domain** – Basis aller Schichten. Unter `Domain/` liegen die DTOs, Entitäten und der PromptProvider, komplett ohne Referenzen auf andere Ebenen.
-2. **Application** – Enthält Use Cases, Interfaces und Agenten. Die Agenten orchestrieren den Analyseworkflow und nutzen ausschließlich Typen aus der Domain.
-3. **Infrastructure** – Implementiert die Interfaces aus der Application und bindet KI-Dienste, Schema-Provider und Dateisysteme an.
-4. **Web** – ASP.NET-Host mit Controllern und statischer Oberfläche. Diese äußere Schicht darf alle inneren verwenden, jedoch nicht umgekehrt.
-
-Weitere Diagramme aller Art befinden sich im Ordner [docs/Diagrams](docs/Diagrams/). Dort gibt es sowohl den Markdown-Quellcode der Diagramme in [diagrams.md](docs/Diagrams/diagrams.md) als auch eine Variante mit den gerenderten Bildern in [diagrams_images.md](docs/Diagrams/diagrams_images.md).
-
-## Endpunkte
-
-### WebSocket-Endpunkte
-
-* `GET /rental-analysis` – WebSocket-Endpunkt für Mietverträge
-  - Empfängt Datei + Vertragstyp
-  - Sendet Bestätigung nach Initialisierung
-  - Sendet Basic-Analyse-Ergebnis
-  - Sendet Premium-Analyse-Ergebnis
-  - Schließt Verbindung mit NormalClosure
-
-* `GET /employment-analysis` – WebSocket-Endpunkt für Arbeitsverträge
-  - Identischer Ablauf wie Mietverträge
-  - Verwendet EmploymentContractAgent (Skeleton)
-
-### HTTP-Endpunkte
-
-* `GET /api/schemas/{contractType}/{tier}/{step}` – Liefert JSON-Schema für einen Analyse-Step
-  - Beispiel: `/api/schemas/Rental/Basic/General`
-  - Rückgabe: JsonObject mit Schema-Definition und x-styling Metadaten
-
-* `GET /employment-mockdata` – Liefert zufällige Beispielergebnisse (JSON) aus dem `data/Responses`-Ordner
-
-## Analyse-Workflow
-
-### 1. Datei-Upload und Validierung
-
-1. `main.js` lädt die gewählte Datei je nach Vertragstyp per WebSocket auf `/rental-analysis` oder `/employment-analysis` hoch
-2. `WebSocketAnalysisHandler` empfängt Datei und Vertragstyp über WebSocket
-3. `FileValidatorService` prüft Größe (max 20MB) und Dateityp (.pdf, .txt, .jpg, .png)
-4. `FileDecoderService` dekodiert den Inhalt (PDF mit PdfPig, Bilder mit Tesseract OCR, Text direkt)
-
-### 2. Agent-Erstellung und Initialisierung (3-Phasen-Lifecycle)
-
-**Phase 1: Konstruktion**
-1. `WebSocketAnalysisHandler` erstellt den passenden Agenten basierend auf Vertragstyp
-   - `RentalContractAgent` für Mietverträge ("Rental")
-   - `EmploymentContractAgent` für Arbeitsverträge ("Employment")
-2. Konstruktor injiziert nur Dependencies (IAiClient, ISchemaProvider, ISchemaValidator, ILogger)
-3. Keine Geschäftslogik in dieser Phase (< 1ms)
-
-**Phase 2: Initialisierung**
-1. Agent wird mit `InitializeAsync(contractText)` initialisiert
-2. KI-gestützte Prüfung der Lesbarkeit (Nebius API)
-3. KI-gestützte Erkennung des Vertragstyps (Nebius API)
-4. Vergleich: Erkannter Typ muss mit erwartetem Typ übereinstimmen
-5. Speicherung des Vertragstexts in Agent-Instanz
-6. Setzen von `IsInitialized = true`
-7. Bei Erfolg: Bestätigungsmeldung über WebSocket (`{ type: "confirmation", message: "..." }`)
-8. Bei Fehler: Fehlermeldung über WebSocket, Verbindung wird geschlossen
-
-### 3. Basic-Analyse (Parallel)
-
-**Phase 3: Analyse - Basic Tier**
-1. Agent ruft `AnalyzeBasicAsync()` auf
-2. Prüfung: `IsInitialized` muss `true` sein (sonst InvalidOperationException)
-3. Alle Basic-Steps laufen parallel mit `Task.WhenAll`:
-   - **Allgemeine Vertragsdaten** (Vertragstyp, Parteien, Adressen, Beginn)
-   - **Konditionen** (Miete/Gehalt, Nebenkosten, Kaution, Zahlungsweise)
-   - **Vertragsbedingungen** (Kündigungsfrist, Tierhaltung, Untervermietung)
-   - **Zusammenfassung** (Kurzfazit, Gesamtfazit, Risikobewertung)
-4. Jeder Step (unabhängig):
-   - Holt JSON-Schema vom SchemaProvider (`GetSchema(contractType, "Basic", stepName)`)
-   - Holt Prompt vom PromptProvider (`GetPrompt(contractType, "Basic", stepName)`)
-   - Sendet Anfrage an Nebius KI mit Prompt + Schema
-   - Validiert Antwort gegen Schema (NJsonSchema)
-   - Bei Fehler: Kundenfreundliche Fehlermeldung statt Exception (andere Steps laufen weiter)
-   - Loggt Dauer auf Info-Level
-5. Ergebnisse werden zu `AnalysisDto<RentalBasicAnalysisDto>` zusammengeführt
-6. DTO wird als JSON über WebSocket gesendet (`{ type: "result", data: { result, metadata } }`)
-
-### 4. Premium-Analyse (Parallel)
-
-**Phase 3: Analyse - Premium Tier**
-1. Agent ruft `AnalyzePremiumAsync()` auf (unabhängig von Basic-Analyse)
-2. Prüfung: `IsInitialized` muss `true` sein
-3. Alle Premium-Steps laufen parallel mit `Task.WhenAll`:
-   - **Mietzahlung und Nebenkosten** (Rechtliche Bewertung, Risikoscore)
-   - **Mietdauer und Kündigung** (Klauselanalyse, Rechtsgrundlagen)
-   - **Gebrauch der Mietsache** (Nutzungsrechte, Einschränkungen)
-   - **Instandhaltung und Reparaturen** (Pflichten, Kostenverteilung)
-   - **Rechte und Pflichten** (Vertragspartner-Verpflichtungen)
-   - **Datenschutz und Kommunikation** (DSGVO-Konformität)
-   - **Zusammenfassung** (Gesamtfazit, Gesamtrisikobewertung)
-4. Jeder Step folgt dem gleichen Muster wie Basic-Analyse:
-   - Schema abrufen (`GetSchema(contractType, "Premium", stepName)`)
-   - Prompt abrufen (`GetPrompt(contractType, "Premium", stepName)`)
-   - KI-Anfrage mit Validierung
-   - Fehlertoleranz (andere Steps laufen weiter)
-5. Ergebnisse werden zu `AnalysisDto<RentalPremiumAnalysisDto>` zusammengeführt
-6. DTO wird als JSON über WebSocket gesendet (`{ type: "result", data: { result, metadata } }`)
-
-### 5. Abschluss
-
-1. Nach erfolgreicher Übertragung beider Analyse-Ergebnisse
-2. WebSocket-Verbindung wird mit Status `NormalClosure` geschlossen
-3. Bei Fehlern: 
-   - Fehlermeldung über WebSocket (`{ type: "error", message: "..." }`)
-   - Verbindung mit entsprechendem Status geschlossen (z.B. `InvalidPayloadData`, `InternalServerError`)
-
-### Frontend-Integration
-
-1. `main.js` empfängt WebSocket-Nachrichten
-2. Bei Confirmation: Loading-Anzeige
-3. Bei Basic-Result: 
-   - Schema abrufen über `/api/schemas/Rental/Basic/{step}`
-   - Generischer Renderer (`render.js`) erstellt Accordion mit `x-displayName` Labels
-4. Bei Premium-Result:
-   - Schema abrufen über `/api/schemas/Rental/Premium/{step}`
-   - Generischer Renderer erstellt Accordion mit `x-sectionTitle` Überschriften
-5. Schemas enthalten:
-   - `x-displayName`: Deutsche Feldnamen für Properties
-   - `x-sectionTitle`: Deutsche Überschriften für Sections
-   - `x-styling`: Darstellungshinweise (optional)
-
-Das Frontend ist vollständig datengetrieben und benötigt keine hardcodierten Übersetzungen oder Mappings.
-
-## Installation und Ausführung
-
-1. Abhängigkeiten wiederherstellen:
-
-   ```bash
-   dotnet restore
-   ```
-
-2. Anwendung starten:
-
-   ```bash
-   dotnet run
-   ```
-
-3. Die Weboberfläche ist danach unter `http://localhost:5112` erreichbar (vgl. `launchSettings.json`)
-
-## Tests ausführen
+Überprüfen Sie Ihre Installation:
 
 ```bash
-# Alle Tests
-dotnet test
-
-# Mit Code Coverage
-dotnet test --collect:"XPlat Code Coverage"
-
-# Nur Unit Tests
-dotnet test --filter "FullyQualifiedName~PocketLawyer.Tests.Domain"
-
-# Nur Property-Based Tests
-dotnet test --filter "FullyQualifiedName~PropertyTests"
-
-# Nur Integration Tests
-dotnet test --filter "FullyQualifiedName~Integration"
+dotnet --version
 ```
 
-## Konfiguration
+## Schnellstart
 
-Benötigte Einstellungen befinden sich in `appsettings.json` bzw. den User-Secrets:
+Folgen Sie diesen Schritten, um Klausel Klara auf Ihrem lokalen Rechner zu starten:
 
-```json
-{
-  "Nebius": {
-    "Key": "your-api-key",
-    "ModelId": "model-identifier",
-    "BaseUrl": "https://api.nebius.ai"
-  },
-  "Upload": {
-    "MaxSizeMB": 20,
-    "AllowedExtensions": [".pdf", ".txt", ".jpg", ".png"]
-  },
-  "Paths": {
-    "TesseractData": "data/tessdata",
-    "Responses": "data/Responses",
-    "KVS": "data/KVS"
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    },
-    "File": {
-      "Enabled": true,
-      "MinimumLevel": "Information",
-      "Path": "logs"
-    }
-  }
-}
-```
-
-API-Schlüssel sollten über Umgebungsvariablen oder User-Secrets gesetzt werden und **nicht** im Quellcode liegen.
-
-### User Secrets einrichten
+### 1. Repository klonen
 
 ```bash
-# User Secrets initialisieren
+git clone <repository-url>
+cd PocketLawyer
+```
+
+### 2. Abhängigkeiten wiederherstellen
+
+Alle NuGet-Paketabhängigkeiten wiederherstellen:
+
+```bash
+dotnet restore
+```
+
+Dies lädt alle Pakete herunter, die in `PocketLawyer.csproj` aufgelistet sind.
+
+### 3. KI-Dienste konfigurieren
+
+Richten Sie Ihren Nebius API-Schlüssel mit User Secrets ein (empfohlen für die Entwicklung):
+
+```bash
 dotnet user-secrets init
-
-# Nebius API Key setzen
-dotnet user-secrets set "Nebius:Key" "your-api-key"
+dotnet user-secrets set "Nebius:ApiKey" "your-nebius-api-key"
 ```
 
-### Filesystem-Logging Konfiguration
+> **Note:** Committen Sie niemals API-Schlüssel in die Versionskontrolle. Verwenden Sie User Secrets für die Entwicklung und Umgebungsvariablen für die Produktion.
 
-Das Filesystem-Logging kann über die `Logging:File` Sektion konfiguriert werden:
+### 4. Kontextdateien einrichten
 
-- **Enabled**: Aktiviert/deaktiviert Filesystem-Logging (Standard: `true`)
-- **MinimumLevel**: Minimales Log-Level für Datei-Logs (Standard: `"Information"`)
-  - Mögliche Werte: `"Debug"`, `"Information"`, `"Warning"`, `"Error"`
-- **Path**: Verzeichnis für Log-Dateien (Standard: `"logs"`)
+Stellen Sie sicher, dass das Kontextdatei-Verzeichnis unter `data/Context/` existiert. Diese Dateien enthalten domänenspezifisches Wissen für die KI-Modelle.
 
-Log-Dateien werden täglich rotiert im Format `YYYY-MM-DD.log` (z.B. `2024-01-15.log`).
+✓ Kontextverzeichnis gefunden unter `data/Context/`
 
-### Token-Tracking
+### 5. Anwendung starten
 
-Token-Verbrauch wird automatisch für jede Analyse getrackt:
-- Input-Token: Anzahl der an die AI gesendeten Token
-- Output-Token: Anzahl der von der AI generierten Token
-- Total-Token: Summe aus Input- und Output-Token
+Starten Sie die Anwendung:
 
-Token-Informationen werden am Ende jeder Analyse mit Log-Level `Information` geloggt.
+```bash
+dotnet run
+```
+
+Die Anwendung startet standardmäßig mit dem HTTP-Profil.
+
+### 6. Browser öffnen
+
+Öffnen Sie Ihren Webbrowser und navigieren Sie zu:
+
+- **HTTP:** http://localhost:5112
+
+> **Note:** Für HTTPS-Unterstützung verwenden Sie: dotnet run --launch-profile https (Port 7218). Dies erfordert ein gültiges Entwicklerzertifikat.
+
+Sie sollten die Klausel Klara Startseite mit Optionen zur Analyse von Arbeits- oder Mietverträgen sehen.
+
+## Verwendung
+
+### Einen Vertrag analysieren
+
+1. Navigieren Sie zur Anwendung in Ihrem Webbrowser
+2. Wählen Sie den Vertragstyp (Arbeitsvertrag oder Mietvertrag)
+3. Laden Sie Ihre Vertragsdatei hoch (PDF, Bild oder Text)
+4. Warten Sie, bis die Analyse abgeschlossen ist
+5. Überprüfen Sie die Basis- und Premium-Analyseergebnisse
+
+### Unterstützte Dateiformate
+
+- **PDF** - Textextraktion mit UglyToad.PdfPig
+- **Bilder** - JPG, PNG (OCR mit Tesseract)
+- **Text** - Einfache Textdateien (.txt)
+
+### Analyseebenen
+
+Klausel Klara bietet zwei Analyseebenen:
+
+#### Basis-Analyse
+
+- Allgemeine Vertragsinformationen
+- Wichtige Bedingungen
+- Erste Risikobewertung
+- Vertragszusammenfassung
+
+#### Premium-Analyse
+
+- Detaillierte Klausel-für-Klausel-Analyse
+- Überprüfung der rechtlichen Konformität
+- Umfassende Risikobewertung
+- Spezifische Empfehlungen und Warnungen
+
+### WebSocket API
+
+Für programmatischen Zugriff verbinden Sie sich mit den WebSocket-Endpunkten:
+
+- **Arbeitsverträge:** `ws://localhost:5112/employment-analysis`
+- **Mietverträge:** `ws://localhost:5112/rental-analysis`
+
+> **Note:** Die Ports können in Properties/launchSettings.json konfiguriert werden.
+
+Für detaillierte API-Dokumentation siehe [API_REFERENCE.md](docs/API_REFERENCE.md).
 
 ## Dokumentation
 
-- **[API Documentation](docs/API_DOCUMENTATION.md)**: Vollständige API-Dokumentation mit Beispielen
-- **[Design Patterns](docs/DesignPatterns_de.md)**: Verwendete Entwurfsmuster
-- **[Diagrams](docs/Diagrams/)**: Architektur- und Ablaufdiagramme
-- **[Spec: Agent Refactoring](.kiro/specs/agent-refactoring/)**: Requirements, Design und Tasks
-- **[Spec: System Improvements](.kiro/specs/system-improvements/)**: Token-Tracking, Logging, Schema-Erweiterungen
+Ausführliche Dokumentation finden Sie in den folgenden Dateien:
 
-## Architektur-Highlights
+- [Architektur](docs/ARCHITECTURE.md) - Systemarchitektur und Design-Prinzipien
+- [API-Referenz](docs/API_REFERENCE.md) - API-Endpunkte und WebSocket-Protokoll
+- [Datenmodelle](docs/DATA_MODELS.md) - DTO-Strukturen und Datenmodelle
+- [Konfiguration](docs/CONFIGURATION.md) - Konfigurationsoptionen und Einstellungen
+- [Deployment](docs/DEPLOYMENT.md) - Deployment-Anleitung und Systemanforderungen
 
-### Single Source of Truth
+## Tests
 
-JSON-Schemas definieren alle Datenstrukturen zentral:
+Das Projekt enthält umfassende Tests:
 
-```csharp
-// Schema Provider
-var schema = _schemaProvider.GetSchema("Rental", "Basic", "General");
+### Tests ausführen
 
-// Schema enthält:
-// - Feldtypen und Beschreibungen
-// - x-styling Metadaten für Frontend
-// - Validierungsregeln
+```bash
+# Alle Tests ausführen
+dotnet test
 ```
 
-### Parallele Ausführung
+### Test-Coverage
 
-Alle Analyse-Steps innerhalb eines Tiers laufen parallel:
+Einen Code-Coverage-Bericht generieren:
 
-```csharp
-var tasks = new[]
-{
-    AnalyzeGeneralDataAsync(),
-    AnalyzeRentConditionsAsync(),
-    AnalyzeContractConditionsAsync()
-};
-
-var results = await Task.WhenAll(tasks);
+```bash
+dotnet test --collect:"XPlat Code Coverage"
 ```
 
-### Fehlertoleranz
+### Test-Kategorien
 
-Fehlgeschlagene Steps blockieren andere nicht:
+- **Unit-Tests** - Testen einzelne Komponenten und Methoden
+- **Property-Based Tests** - Überprüfen universelle Eigenschaften mit FsCheck
+- **Integrationstests** - Testen End-to-End-Workflows
 
-```csharp
-try
-{
-    return await AnalyzeStepAsync();
-}
-catch (Exception ex)
-{
-    _logger.LogError(ex, "Step failed");
-    return CreateErrorResult("Kundenfreundliche Fehlermeldung");
-}
-```
+## Technologie-Stack
 
-### Erweiterbarkeit
+- **Backend:** ASP.NET Core 8.0
+- **KI-Dienst:** Nebius
+- **PDF-Verarbeitung:** UglyToad.PdfPig
+- **OCR:** Tesseract
+- **Schema-Validierung:** NJsonSchema
+- **Logging:** Serilog
+- **Testing:** xUnit, FsCheck, FluentAssertions
+- **Frontend:** Vanilla JavaScript, Bootstrap 5
 
-Neue Vertragstypen einfach hinzufügen:
+Für eine vollständige Liste der Abhängigkeiten siehe `PocketLawyer.csproj`.
 
-```csharp
-// 1. Neuen Agent erstellen
-public class PurchaseContractAgent : ContractAnalysisAgentBase { }
+## Architekturprinzipien
 
-// 2. Schemas registrieren
-_schemaFactories["Purchase_Basic_General"] = () => new PurchaseGeneralSchemaProvider().GetSchema();
+Das Projekt folgt bewährten Softwareentwicklungsprinzipien:
 
-// 3. Prompts hinzufügen
-"PurchaseBasicGeneral" => PurchaseBasicGeneralPrompt,
+- **Onion-Architektur:** Abhängigkeiten fließen nach innen zur Domäne
+- **Single Source of Truth:** JSON-Schemas definieren alle Datenstrukturen
+- **Separation of Concerns:** Jede Schicht hat eine spezifische Verantwortung
+- **Testbarkeit:** Alle Komponenten sind für einfaches Testen konzipiert
 
-// 4. In DI registrieren
-services.AddScoped<PurchaseContractAgent>();
-```
+Für detaillierte Architekturinformationen siehe [ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-## Performance
+---
 
-- **Agent-Konstruktion**: < 1ms (nur Dependency Injection)
-- **Initialisierung**: ~1-2 Sekunden (KI-Aufrufe für Lesbarkeit und Typerkennung)
-- **Basic-Analyse**: ~5-10 Sekunden (4 parallele Steps)
-- **Premium-Analyse**: ~10-20 Sekunden (7 parallele Steps)
-- **Token-Tracking**: Minimaler Overhead (< 1ms pro Analyse)
-- **Filesystem-Logging**: Asynchrones Schreiben ohne Performance-Impact
+**Erstellt mit ❤️ für österreichische Vertragsanalyse**
 
-## Sicherheit
-
-- **Input-Validierung**: Dateigröße und -typ werden geprüft
-- **Datenschutz**: Vertragstexte werden nicht geloggt oder persistiert
-- **WebSocket-Sicherheit**: WSS (WebSocket Secure) in Produktion verwenden
-- **Rate Limiting**: Sollte für Produktionsumgebungen implementiert werden
-
-## Zukünftige Erweiterungen
-
-1. **Weitere Vertragstypen**: Kaufverträge, Dienstverträge, etc.
-2. **Caching**: Analyse-Ergebnisse für identische Verträge cachen
-3. **Streaming**: Teilergebnisse streamen während Steps abgeschlossen werden
-4. **Mehrsprachigkeit**: Unterstützung für Verträge in mehreren Sprachen
-5. **Erweiterte Validierung**: Business-Rule-Validierung zusätzlich zu Schema-Validierung
-6. **Analytics**: Analyse-Muster und häufige Probleme tracken
-
-## Lizenz
-
-[Lizenzinformationen hier einfügen]
-
-## Kontakt
-
-[Kontaktinformationen hier einfügen]

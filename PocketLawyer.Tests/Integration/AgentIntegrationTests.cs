@@ -6,7 +6,8 @@ using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Options;
 using PocketLawyer.Application.Models;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
+using PocketLawyer.Domain.Dtos.Rental;
 
 namespace PocketLawyer.Tests.Integration;
 

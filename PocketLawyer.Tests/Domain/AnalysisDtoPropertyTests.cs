@@ -1,6 +1,7 @@
 using FsCheck;
 using FsCheck.Xunit;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
+using PocketLawyer.Domain.Dtos.Rental;
 
 namespace PocketLawyer.Tests.Domain;
 

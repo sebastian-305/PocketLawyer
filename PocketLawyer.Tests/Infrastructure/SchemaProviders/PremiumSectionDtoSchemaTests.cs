@@ -1,4 +1,5 @@
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
+using PocketLawyer.Domain.Dtos.Rental;
 using PocketLawyer.Infrastructure.SchemaProviders;
 using System.Text.Json.Nodes;
 using Xunit;

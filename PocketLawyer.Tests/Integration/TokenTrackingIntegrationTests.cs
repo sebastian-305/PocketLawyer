@@ -3,7 +3,8 @@ using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Interfaces;
 using PocketLawyer.Application.Models;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
+using PocketLawyer.Domain.Dtos.Rental;
 
 namespace PocketLawyer.Tests.Integration;
 

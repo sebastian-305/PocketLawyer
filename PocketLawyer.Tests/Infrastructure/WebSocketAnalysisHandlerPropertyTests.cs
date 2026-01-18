@@ -7,7 +7,7 @@ using Moq;
 using PocketLawyer.Application.Agents;
 using PocketLawyer.Application.Exceptions;
 using PocketLawyer.Application.Interfaces;
-using PocketLawyer.Domain.Dtos;
+using PocketLawyer.Domain.Dtos.Shared;
 using PocketLawyer.Infrastructure;
 using PocketLawyer.Tests.TestDoubles;
 using System.Text;
