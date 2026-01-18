@@ -23,7 +23,7 @@ Die folgende Software und Abhängigkeiten sind erforderlich, um PocketLawyer aus
 
 **Erforderliche Version:** .NET 8.0 SDK oder höher
 
-**Quelle:** `D:\Coding\PocketLawyer\PocketLawyer.csproj` (TargetFramework: `net8.0`)
+**Quelle:** `PocketLawyer.csproj` (TargetFramework: `net8.0`)
 
 #### .NET SDK herunterladen
 
@@ -73,7 +73,7 @@ Die folgenden NuGet-Pakete sind erforderlich und werden automatisch wiederherges
 | Swashbuckle.AspNetCore | 10.0.1 | Swagger/OpenAPI-Dokumentation |
 | Tesseract | 5.2.0 | Anwendungsabhängigkeit |
 
-**Quelle:** `D:\Coding\PocketLawyer\PocketLawyer.csproj` (PackageReference-Elemente)
+**Quelle:** `PocketLawyer.csproj` (PackageReference-Elemente)
 
 ## Installation
 
@@ -96,17 +96,17 @@ Stellen Sie alle NuGet-Paketabhängigkeiten wieder her:
 dotnet restore
 ```
 
-Dieser Befehl lädt alle in `D:\Coding\PocketLawyer\PocketLawyer.csproj` aufgelisteten Pakete herunter und installiert sie.
+Dieser Befehl lädt alle in `PocketLawyer.csproj` aufgelisteten Pakete herunter und installiert sie.
 
 ### 3. Projektstruktur überprüfen
 
 Stellen Sie sicher, dass die folgenden Verzeichnisse vorhanden sind:
 
-- ✓ `Web//`
-- ✓ `Application//`
-- ✓ `Domain//`
-- ✓ `Infrastructure//`
-- ✓ `data/Context//`
+- ✓ `Web/`
+- ✓ `Application/`
+- ✓ `Domain/`
+- ✓ `Infrastructure/`
+- ✓ `data/Context/`
 
 ### 4. Projekt erstellen
 
@@ -134,7 +134,7 @@ PocketLawyer erfordert eine Konfiguration, bevor es ausgeführt werden kann. Die
 
 Die folgenden Konfigurationsdateien werden verwendet:
 
-- `D:\Coding\PocketLawyer\appsettings.json` - Basiskonfiguration für alle Umgebungen
+- `appsettings.json` - Basiskonfiguration für alle Umgebungen
 
 ### Erforderliche Konfiguration
 
@@ -249,13 +249,12 @@ Nach Installation und Konfiguration können Sie PocketLawyer ausführen:
 Führen Sie die Anwendung im Entwicklungsmodus mit Hot Reload aus:
 
 ```bash
-dotnet run --project Web
+dotnet run --project PocketLawyer.csproj
 ```
 
-Oder navigieren Sie zum Web-Verzeichnis:
+Oder starten Sie direkt aus dem Repository-Root:
 
 ```bash
-cd Web
 dotnet run
 ```
 
@@ -263,8 +262,8 @@ dotnet run
 
 Die Anwendung startet und lauscht auf:
 
-- HTTP: http://localhost:5000
-- HTTPS: https://localhost:5001
+- HTTP: http://localhost:5112
+- HTTPS: https://localhost:7218
 
 Die genauen Ports können je nach Ihrer `Properties/launchSettings.json`-Konfiguration variieren.
 
@@ -317,7 +316,7 @@ Für die vollständige API-Dokumentation siehe [API_REFERENCE.md](API_REFERENCE.
 
 Überprüfen Sie die Konsolenausgabe auf erfolgreiche Startmeldungen:
 
-- "Now listening on: http://localhost:5000"
+- "Now listening on: http://localhost:5112"
 - "Application started. Press Ctrl+C to shut down."
 - Keine Fehlermeldungen oder Exceptions
 
@@ -336,7 +335,7 @@ Testen Sie, ob API-Endpunkte antworten:
 #### HTTP-Endpunkt testen
 
 ```bash
-curl http://localhost:5000/api/schemas/employment/basic/1
+curl http://localhost:5112/api/schemas/employment/basic/1
 ```
 
 Sollte eine JSON-Schema-Antwort zurückgeben.
@@ -346,7 +345,7 @@ Sollte eine JSON-Schema-Antwort zurückgeben.
 Verwenden Sie einen WebSocket-Client, um sich zu verbinden:
 
 ```
-ws://localhost:5000/employment-analysis
+ws://localhost:5112/employment-analysis
 ```
 
 Die Verbindung sollte akzeptiert werden.
@@ -492,4 +491,3 @@ graph TD
     style Config fill:#FFD700
     style Proj fill:#FFD700
 ```
-

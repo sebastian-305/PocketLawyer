@@ -33,7 +33,8 @@ Das System ist in vier Hauptschichten organisiert:
 - **Application-Schicht:** Geschäftslogik und Use Cases (`Application/`)
 - **Infrastructure-Schicht:** Externe Dienste und Implementierungen (`Infrastructure/`)
 - **Web-Schicht:** API-Controller und Präsentationsschicht (`Web/`)
-## Layers
+
+## Schichten
 
 Each layer has specific responsibilities and dependencies. The following sections describe each layer in detail.
 
@@ -127,7 +128,7 @@ The Infrastructure layer contains implementations of external services and integ
 - `RentalRentConditionsSchemaProvider` in `Infrastructure/SchemaProviders/Rental/Basic/RentalRentConditionsSchemaProvider.cs`
 - `ClauseAnalysisSchemaProvider` in `Infrastructure/SchemaProviders/Rental/Premium/ClauseAnalysisSchemaProvider.cs`
 - `RentalPremiumSummarySchemaProvider` in `Infrastructure/SchemaProviders/Rental/Premium/RentalPremiumSummarySchemaProvider.cs`
-## Dependencies
+## Abhängigkeiten
 
 The architecture follows strict dependency rules. Dependencies flow inward toward the domain core.
 
@@ -327,4 +328,3 @@ graph LR
     Application --> App_Models[Models]
     Application --> App_UseCases[UseCases]
 ```
-

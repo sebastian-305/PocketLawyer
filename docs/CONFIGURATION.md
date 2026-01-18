@@ -18,18 +18,18 @@ Dieses Dokument beschreibt alle Konfigurationsoptionen für das PocketLawyer-Sys
 - [Umgebungsvariablen](#umgebungsvariablen)
 - [Diagramme](#diagramme)
 
-## Overview
+## Übersicht
 
 PocketLawyer uses 2 configuration file(s) and 7 option class(es) to manage application settings. Configuration follows the ASP.NET Core configuration pattern with strongly-typed option classes bound to configuration sections.
 
-### Configuration Files
+### Konfigurationsdateien
 
 The following configuration files are used:
 
-- `D:\Coding\PocketLawyer\appsettings.Development.json` - Development environment overrides
-- `D:\Coding\PocketLawyer\appsettings.json` - Base configuration for all environments
+- `appsettings.Development.json` - Development environment overrides
+- `appsettings.json` - Base configuration for all environments
 
-### Option Classes
+### Options-Klassen
 
 Configuration is mapped to the following strongly-typed option classes:
 
@@ -39,7 +39,7 @@ Configuration is mapped to the following strongly-typed option classes:
 - `PathOptions` - `Options/PathOptions.cs`
 - `UploadOptions` - `Options/UploadOptions.cs`
 
-## appsettings.json Structure
+## appsettings.json Struktur
 
 The main configuration file structure with all available sections and keys.
 
@@ -123,7 +123,7 @@ The main configuration file structure with all available sections and keys.
 | Path | string | logs |
 | AllowedHosts | string | * |
 
-## Logging Configuration
+## Logging-Konfiguration
 
 Configuration for application logging, including file logging and log levels.
 
@@ -137,7 +137,7 @@ Configuration for application logging, including file logging and log levels.
 | MinimumLevel | Information |
 | Path | logs |
 
-## AI Service Configuration
+## KI-Dienste-Konfiguration
 
 Konfiguration für den Nebius AI-Service, der für die Vertragsanalyse verwendet wird.
 
@@ -153,7 +153,7 @@ Konfiguration für den Nebius AI-Service, der für die Vertragsanalyse verwendet
 | ModelId | string | - | - |
 
 
-## Path Configuration
+## Pfad-Konfiguration
 
 Configuration for file system paths used by the application.
 
@@ -170,7 +170,7 @@ Configuration for file system paths used by the application.
 | KVSPath | string | - | - |
 
 
-## Upload Configuration
+## Upload-Konfiguration
 
 Configuration for file upload limits and restrictions.
 
@@ -185,7 +185,7 @@ Configuration for file upload limits and restrictions.
 | MaxUploadSizeMB | long | - | - |
 
 
-## Context Configuration
+## Kontext-Konfiguration
 
 Configuration for AI context files and prompts.
 
@@ -330,4 +330,3 @@ graph LR
     Config --> Context[Context]
     Context -.->|Binds to| ContextOptions[ContextOptions]
 ```
-
