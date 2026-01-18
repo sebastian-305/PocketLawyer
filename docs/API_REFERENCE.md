@@ -36,8 +36,6 @@ WebSocket-Endpunkte bieten Echtzeit-Vertragsanalyse. Clients verbinden sich übe
 
 **Quelle:** `AnalyzeEmploymentViaWebSocket()` in `PocketController` (`Web/PocketController.cs`)
 
-/// WebSocket endpoint for employment contract analysis. /// The agent is injected by the DI container based on the endpoint. ///
-
 #### Verbindung
 
 Verbinden zu: `ws://{host}/employment-analysis`
@@ -54,7 +52,7 @@ Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden JSON-Format:
 }
 ```
 
-`contractType` ist optional und dient nur der Validierung. Die Auswahl des Agents erfolgt über den Endpunkt.
+`contractType` ist optional und wird aktuell nicht ausgewertet. Die Auswahl des Agents erfolgt über den Endpunkt.
 
 #### Antwortformat
 
@@ -87,8 +85,6 @@ Siehe Abschnitt [Nachrichtenformate](#nachrichtenformate) für Details.
 
 **Quelle:** `AnalyzeRentalViaWebSocket()` in `PocketController` (`Web/PocketController.cs`)
 
-/// WebSocket endpoint for rental contract analysis. /// The agent is injected by the DI container based on the endpoint. ///
-
 #### Verbindung
 
 Verbinden zu: `ws://{host}/rental-analysis`
@@ -105,7 +101,7 @@ Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden JSON-Format:
 }
 ```
 
-`contractType` ist optional und dient nur der Validierung. Die Auswahl des Agents erfolgt über den Endpunkt.
+`contractType` ist optional und wird aktuell nicht ausgewertet. Die Auswahl des Agents erfolgt über den Endpunkt.
 
 #### Antwortformat
 
@@ -144,8 +140,6 @@ HTTP-Endpunkte bieten synchrone Operationen für Schema-Abruf und andere Hilfsfu
 
 **Quelle:** `GetSchema()` in `PocketController` (`Web/PocketController.cs`)
 
-/// Retrieves the JSON schema for a specific contract analysis step. ///
-
 ##### Parameter
 
 | Name | Typ | Quelle | Standard |
@@ -161,7 +155,7 @@ Gibt zurück: `ActionResult<object>`
 ##### Beispielanfrage
 
 ```http
-GET /api/schemas/employment/basic/1 HTTP/1.1
+GET /api/schemas/Employment/Basic/General HTTP/1.1
 Host: localhost:5112
 ```
 
