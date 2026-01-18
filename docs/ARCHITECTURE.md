@@ -135,11 +135,11 @@ AI-Services befinden sich in `Infrastructure/AiServices/`:
 - `RentalPremiumSummarySchemaProvider` in `Infrastructure/SchemaProviders/Rental/Premium/RentalPremiumSummarySchemaProvider.cs`
 ## Abhängigkeiten
 
-The architecture follows strict dependency rules. Dependencies flow inward toward the domain core.
+Die Architektur folgt klaren Abhängigkeitsregeln. Die folgenden Regeln beschreiben den Zielzustand; die tatsächlichen Abhängigkeiten darunter zeigen, wo es aktuell Abweichungen gibt.
 
 ### Dependency Rules
 
-- **Domain Layer:** Has no dependencies on other layers (pure business logic)
+- **Domain Layer:** Sollte keine Abhängigkeiten zu anderen Schichten haben (reine Geschäftslogik)
 - **Application Layer:** Depends only on Domain layer
 - **Infrastructure Layer:** Depends on Application and Domain layers
 - **Web Layer:** Depends on Application, Domain, and Infrastructure layers
@@ -147,6 +147,8 @@ The architecture follows strict dependency rules. Dependencies flow inward towar
 ### Actual Dependencies
 
 The following dependencies are extracted from actual using statements in the source code:
+
+**Hinweis:** In der Domain-Schicht gibt es derzeit Abhängigkeiten zu Application- und Infrastructure-Typen (siehe unten). Das weicht vom angestrebten Dependency-Rule-Ziel ab und sollte bei einer Architekturbereinigung berücksichtigt werden.
 
 #### Web Layer Dependencies
 
