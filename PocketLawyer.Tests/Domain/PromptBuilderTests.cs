@@ -1,4 +1,4 @@
-using PocketLawyer.Domain;
+using PocketLawyer.Application;
 using PocketLawyer.Web;
 
 namespace PocketLawyer.Tests.Domain;

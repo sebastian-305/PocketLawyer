@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using PocketLawyer.Domain.Attributes;
 
 namespace PocketLawyer.Infrastructure.SchemaProviders;
 

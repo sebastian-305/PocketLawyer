@@ -1,6 +1,7 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using PocketLawyer.Domain.Dtos.Employment;
+using PocketLawyer.Domain.Attributes;
 using PocketLawyer.Infrastructure.SchemaProviders;
 using Xunit;
 

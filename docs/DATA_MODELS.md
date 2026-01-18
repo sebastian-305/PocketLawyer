@@ -635,7 +635,7 @@ Alle DTOs verwenden `JsonPropertyName`-Attribute für die Serialisierung. Die Na
 
 ### Schema-Attribute
 
-Viele DTOs verwenden `SchemaDisplay`- und `SchemaSection`-Attribute aus `PocketLawyer.Infrastructure.SchemaProviders` für:
+Viele DTOs verwenden `SchemaDisplay`- und `SchemaSection`-Attribute aus `PocketLawyer.Domain.Attributes` für:
 
 - UI-Rendering-Hinweise
 - Validierungsregeln

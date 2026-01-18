@@ -177,7 +177,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
     {
         try
         {
-            var prompt = Domain.PromptProvider.GetReadabilityCheckPrompt();
+            var prompt = PromptProvider.GetReadabilityCheckPrompt();
             
             // Create schema as BinaryData for Nebius
             var schemaJson = System.Text.Json.JsonSerializer.Serialize(new
@@ -224,7 +224,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
     {
         try
         {
-            var prompt = Domain.PromptProvider.GetContractTypeDetectionPrompt();
+            var prompt = PromptProvider.GetContractTypeDetectionPrompt();
             
             // Create schema as BinaryData for Nebius
             var schemaJson = System.Text.Json.JsonSerializer.Serialize(new
@@ -405,7 +405,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Basic", "General");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Basic", "General");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Basic", "General");
+            var prompt = PromptProvider.GetPrompt("Employment", "Basic", "General");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -485,7 +485,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Basic", "Compensation");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Basic", "Compensation");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Basic", "Compensation");
+            var prompt = PromptProvider.GetPrompt("Employment", "Basic", "Compensation");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -564,7 +564,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Basic", "WorkingConditions");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Basic", "WorkingConditions");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Basic", "WorkingConditions");
+            var prompt = PromptProvider.GetPrompt("Employment", "Basic", "WorkingConditions");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -643,7 +643,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Basic", "Summary");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Basic", "Summary");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Basic", "Summary");
+            var prompt = PromptProvider.GetPrompt("Employment", "Basic", "Summary");
 
             // Add KV information to prompt if available
             if (!string.IsNullOrWhiteSpace(_detectedKvName))
@@ -740,7 +740,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "CompensationBenefits");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "CompensationBenefits");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "CompensationBenefits");
+            var prompt = PromptProvider.GetPrompt("Employment", "Premium", "CompensationBenefits");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -821,7 +821,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "WorkingTimeVacation");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "WorkingTimeVacation");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "WorkingTimeVacation");
+            var prompt = PromptProvider.GetPrompt("Employment", "Premium", "WorkingTimeVacation");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -902,7 +902,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "TerminationNotice");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "TerminationNotice");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "TerminationNotice");
+            var prompt = PromptProvider.GetPrompt("Employment", "Premium", "TerminationNotice");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -983,7 +983,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "NonCompeteConfidentiality");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "NonCompeteConfidentiality");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "NonCompeteConfidentiality");
+            var prompt = PromptProvider.GetPrompt("Employment", "Premium", "NonCompeteConfidentiality");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -1064,7 +1064,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "RightsDuties");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "RightsDuties");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "RightsDuties");
+            var prompt = PromptProvider.GetPrompt("Employment", "Premium", "RightsDuties");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -1146,7 +1146,7 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
             // Get schema (as BinaryData for AI) and JsonObject for validation
             var schemaBinary = _schemaProvider.GetSchema("Employment", "Premium", "Summary");
             var schemaObject = _schemaProvider.GetSchemaForEndpoint("Employment", "Premium", "Summary");
-            var prompt = Domain.PromptProvider.GetPrompt("Employment", "Premium", "Summary");
+            var prompt = PromptProvider.GetPrompt("Employment", "Premium", "Summary");
 
             // Load context for this step
             var context = await _contextProvider.GetContextForCurrentStepAsync();
@@ -1230,3 +1230,4 @@ public class EmploymentContractAgent : ContractAnalysisAgentBase
         return prompt;
     }
 }
+

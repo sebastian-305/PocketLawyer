@@ -1,7 +1,7 @@
 using FsCheck;
 using FsCheck.Xunit;
 using PocketLawyer.Application.Exceptions;
-using PocketLawyer.Domain;
+using PocketLawyer.Application;
 
 namespace PocketLawyer.Tests.Domain;
 

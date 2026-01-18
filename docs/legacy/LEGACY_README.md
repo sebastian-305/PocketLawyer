@@ -1,6 +1,22 @@
 # Legacy-Dokumentation und -Tools
 
-Dieser Ordner enthält veraltete Dokumentation und Tools, die nicht mehr aktiv verwendet werden.
+Dieser Ordner enthält veraltete Dokumentation und Tools, die nicht mehr aktiv verwendet werden, aber für historische Zwecke aufbewahrt werden.
+
+## Refactoring-Dokumentation (Historisch)
+
+Dokumentation von abgeschlossenen Refactoring-Projekten:
+
+### Onion-Architektur Refactoring (18. Januar 2026)
+
+- `ONION_ARCHITECTURE_REFACTORING.md` - Ursprünglicher Refactoring-Plan
+- `ONION_REFACTORING_COMPLETED.md` - Abschlussbericht des Refactorings
+- `DOKUMENTATIONSPRUEFUNG.md` - Dokumentationsprüfung vor dem Refactoring
+
+**Zusammenfassung:** Die Domain-Schicht wurde von unzulässigen Abhängigkeiten zu Application und Infrastructure befreit:
+- `PromptProvider` wurde von Domain nach Application verschoben
+- `SchemaAttributes` wurde von Infrastructure nach Domain/Attributes verschoben
+
+Das Refactoring wurde erfolgreich abgeschlossen und die Hauptdokumentation entsprechend aktualisiert.
 
 ## Dokumentationsgenerator (VERALTET)
 

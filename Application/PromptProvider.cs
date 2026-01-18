@@ -1,6 +1,6 @@
 using PocketLawyer.Application.Exceptions;
 
-namespace PocketLawyer.Domain;
+namespace PocketLawyer.Application;
 
 /// <summary>
 /// Central provider for all AI prompts used in contract analysis.

@@ -149,9 +149,7 @@ Die Architektur folgt klaren Abhängigkeitsregeln. Die folgenden Regeln beschrei
 
 Die folgenden Abhängigkeiten werden aus den tatsächlichen using-Statements im Quellcode abgeleitet:
 
-**Hinweis:** In der Domain-Schicht gibt es derzeit Abhängigkeiten zu Application- und Infrastructure-Typen (siehe unten). Das weicht vom angestrebten Dependency-Rule-Ziel ab und sollte bei einer Architekturbereinigung berücksichtigt werden.
-
-#### Web-Schicht-Abhängigkeiten
+#### Web Layer Dependencies
 
 - `PocketLawyer.Application.Agents` (referenced 2 time(s))
 - `PocketLawyer.Application.Exceptions` (referenced 1 time(s))
@@ -197,10 +195,9 @@ Die folgenden Abhängigkeiten werden aus den tatsächlichen using-Statements im 
 
 #### Domain-Schicht-Abhängigkeiten
 
-- `PocketLawyer.Application.Exceptions` (referenced 1 time(s))
+- `PocketLawyer.Domain.Attributes` (referenced 4 time(s))
 - `PocketLawyer.Domain.Dtos.Rental` (referenced 1 time(s))
 - `PocketLawyer.Domain.Dtos.Shared` (referenced 6 time(s))
-- `PocketLawyer.Infrastructure.SchemaProviders` (referenced 4 time(s))
 
 ## Designprinzipien
 
