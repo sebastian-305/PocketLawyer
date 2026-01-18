@@ -230,7 +230,7 @@ Use the .NET CLI to manage user secrets:
 
 ```bash
 dotnet user-secrets init
-dotnet user-secrets set "Nebius:ApiKey" "your-api-key-here"
+dotnet user-secrets set "Nebius:Key" "your-api-key-here"
 ```
 
 ### Listing User Secrets
@@ -242,7 +242,7 @@ dotnet user-secrets list
 ### Removing User Secrets
 
 ```bash
-dotnet user-secrets remove "Nebius:ApiKey"
+dotnet user-secrets remove "Nebius:Key"
 dotnet user-secrets clear  # Remove all secrets
 ```
 
@@ -255,7 +255,7 @@ Configuration can also be provided via environment variables. Environment variab
 Use double underscores (__) to represent configuration hierarchy:
 
 ```bash
-Nebius__ApiKey=your-api-key
+Nebius__Key=your-api-key
 Paths__UploadDirectory=/app/uploads
 Logging__LogLevel__Default=Information
 ```
@@ -265,21 +265,21 @@ Logging__LogLevel__Default=Information
 #### Windows (PowerShell)
 
 ```powershell
-$env:Nebius__ApiKey="your-api-key"
+$env:Nebius__Key="your-api-key"
 $env:ASPNETCORE_ENVIRONMENT="Production"
 ```
 
 #### Linux/macOS
 
 ```bash
-export Nebius__ApiKey="your-api-key"
+export Nebius__Key="your-api-key"
 export ASPNETCORE_ENVIRONMENT="Production"
 ```
 
 #### Docker
 
 ```bash
-docker run -e Nebius__ApiKey="your-api-key" -e ASPNETCORE_ENVIRONMENT="Production" pocketlawyer
+docker run -e Nebius__Key="your-api-key" -e ASPNETCORE_ENVIRONMENT="Production" pocketlawyer
 ```
 
 ## Diagrams
