@@ -118,9 +118,6 @@ The main configuration file structure with all available sections and keys.
 
 | Key | Type | Value |
 | --- | --- | --- |
-| Enabled | bool | true |
-| MinimumLevel | string | Information |
-| Path | string | logs |
 | AllowedHosts | string | * |
 
 ## Logging-Konfiguration

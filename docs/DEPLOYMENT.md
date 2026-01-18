@@ -135,6 +135,7 @@ PocketLawyer erfordert eine Konfiguration, bevor es ausgeführt werden kann. Die
 Die folgenden Konfigurationsdateien werden verwendet:
 
 - `appsettings.json` - Basiskonfiguration für alle Umgebungen
+- `appsettings.Development.json` - Entwicklungsumgebungsspezifische Overrides
 
 ### Erforderliche Konfiguration
 
@@ -153,13 +154,17 @@ dotnet user-secrets set "Nebius:Key" "your-nebius-api-key"
 
 #### Dateipfade
 
-Konfigurieren Sie Dateipfade für Uploads und Kontextdateien:
+Konfigurieren Sie Dateipfade für Antworten, OCR und KV-Textquellen:
 
 ```json
 {
   "Paths": {
-    "UploadDirectory": "uploads",
-    "ContextDirectory": "data/Context"
+    "ResponsesPath": "data/Responses",
+    "TesseractDataPath": "data/tessdata",
+    "KVSPath": "data/KVS/Employment"
+  },
+  "Context": {
+    "BasePath": "data/Context"
   }
 }
 ```

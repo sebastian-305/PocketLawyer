@@ -44,11 +44,39 @@ Verbinden zu: `ws://{host}/employment-analysis`
 
 #### Nachrichtenformat
 
-Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden Format:
+Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden JSON-Format:
+
+```json
+{
+  "fileName": "vertrag.pdf",
+  "data": "<base64-encoded-file>",
+  "contractType": "Employment"
+}
+```
+
+`contractType` ist optional und dient nur der Validierung. Die Auswahl des Agents erfolgt über den Endpunkt.
 
 #### Antwortformat
 
-Antworttyp: `ActionResult`
+Antworttyp: WebSocket-JSON-Nachrichten. Die API sendet sequenziell:
+
+```json
+{ "type": "confirmation", "message": "Vertrag akzeptiert, Analyse gestartet" }
+```
+
+```json
+{
+  "type": "result",
+  "data": {
+    "result": { /* DTO für Basic oder Premium Analyse */ },
+    "metadata": { /* AnalysisMetadataDto */ }
+  }
+}
+```
+
+```json
+{ "type": "error", "error": "Fehlermeldung" }
+```
 
 Siehe Abschnitt [Nachrichtenformate](#nachrichtenformate) für Details.
 
@@ -67,11 +95,39 @@ Verbinden zu: `ws://{host}/rental-analysis`
 
 #### Nachrichtenformat
 
-Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden Format:
+Senden Sie Vertragsdateien als WebSocket-Nachrichten im folgenden JSON-Format:
+
+```json
+{
+  "fileName": "vertrag.pdf",
+  "data": "<base64-encoded-file>",
+  "contractType": "Rental"
+}
+```
+
+`contractType` ist optional und dient nur der Validierung. Die Auswahl des Agents erfolgt über den Endpunkt.
 
 #### Antwortformat
 
-Antworttyp: `ActionResult`
+Antworttyp: WebSocket-JSON-Nachrichten. Die API sendet sequenziell:
+
+```json
+{ "type": "confirmation", "message": "Vertrag akzeptiert, Analyse gestartet" }
+```
+
+```json
+{
+  "type": "result",
+  "data": {
+    "result": { /* DTO für Basic oder Premium Analyse */ },
+    "metadata": { /* AnalysisMetadataDto */ }
+  }
+}
+```
+
+```json
+{ "type": "error", "error": "Fehlermeldung" }
+```
 
 Siehe Abschnitt [Nachrichtenformate](#nachrichtenformate) für Details.
 
@@ -100,7 +156,7 @@ HTTP-Endpunkte bieten synchrone Operationen für Schema-Abruf und andere Hilfsfu
 
 ##### Antwort
 
-Gibt zurück: `ActionResult<object`
+Gibt zurück: `ActionResult<object>`
 
 ##### Beispielanfrage
 
@@ -116,7 +172,7 @@ Host: localhost:5112
 
 ##### Antwort
 
-Gibt zurück: `ActionResult<RentContractAnalysisDto`
+Gibt zurück: `ActionResult<RentContractAnalysisDto>`
 
 ##### Beispielanfrage
 
@@ -337,4 +393,3 @@ sequenceDiagram
     API-->>Client: Send Analysis Result
     Client->>API: Close Connection
 ```
-
