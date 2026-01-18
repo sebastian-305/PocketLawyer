@@ -10,7 +10,7 @@ Dieses Dokument bietet Deployment- und Setup-Anleitungen für das PocketLawyer-S
 - [Installation](#installation)
 - [Konfiguration](#konfiguration)
 - [Kontextdateien](#kontextdateien)
-- [Anwendung ausführen](#anwendung-ausfuehren)
+- [Anwendung ausführen](#anwendung-ausführen)
 - [Health Checks](#health-checks)
 - [Fehlerbehebung](#fehlerbehebung)
 - [Diagramme](#diagramme)
