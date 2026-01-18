@@ -149,7 +149,7 @@ Gemeinsame DTOs, die von allen Vertragstypen verwendet werden.
 
 **Typ:** Class
 
-**Beschreibung:** DTO für den Empfang von Dateidaten über WebSocket. Der ContractType ist optional, da der Endpunkt bestimmt, welcher Agent verwendet wird.
+**Beschreibung:** DTO für den Empfang von Dateidaten über WebSocket. Der ContractType ist optional, der Server wertet ihn aktuell nicht aus, da der Endpunkt bestimmt, welcher Agent verwendet wird.
 
 #### Eigenschaften
 
@@ -157,7 +157,7 @@ Gemeinsame DTOs, die von allen Vertragstypen verwendet werden.
 | --- | --- | --- | --- |
 | FileName | string | Name der hochgeladenen Datei | Erforderlich |
 | Data | string | Base64-kodierte Dateidaten | Erforderlich |
-| ContractType | string? | Optionaler Vertragstyp für Validierungszwecke | Optional |
+| ContractType | string? | Optionaler Vertragstyp (wird serverseitig derzeit nicht ausgewertet) | Optional |
 
 ---
 
