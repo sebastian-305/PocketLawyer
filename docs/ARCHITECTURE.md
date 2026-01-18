@@ -173,7 +173,6 @@ The following dependencies are extracted from actual using statements in the sou
 - `PocketLawyer.Domain.Dtos.Shared` (referenced 9 time(s))
 - `PocketLawyer.Infrastructure.Context` (referenced 2 time(s))
 - `PocketLawyer.Options` (referenced 1 time(s))
-- `PocketLawyer.Web` (referenced 2 time(s))
 
 #### Infrastructure Layer Dependencies
 
