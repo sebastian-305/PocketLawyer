@@ -62,7 +62,7 @@ Richten Sie Ihren Nebius API-Schlüssel mit User Secrets ein (empfohlen für die
 
 ```bash
 dotnet user-secrets init
-dotnet user-secrets set "Nebius:ApiKey" "your-nebius-api-key"
+dotnet user-secrets set "Nebius:Key" "your-nebius-api-key"
 ```
 
 > **Note:** Committen Sie niemals API-Schlüssel in die Versionskontrolle. Verwenden Sie User Secrets für die Entwicklung und Umgebungsvariablen für die Produktion.
@@ -200,4 +200,3 @@ Für detaillierte Architekturinformationen siehe [ARCHITECTURE.md](docs/ARCHITEC
 ---
 
 **Erstellt mit ❤️ für österreichische Vertragsanalyse**
-

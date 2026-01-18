@@ -134,7 +134,7 @@ PocketLawyer erfordert eine Konfiguration, bevor es ausgeführt werden kann. Die
 
 Die folgenden Konfigurationsdateien werden verwendet:
 
-- `D:\Coding\PocketLawyer\appsettings.json` - Basiskonfiguration für alle Umgebungen
+- `appsettings.json` - Basiskonfiguration für alle Umgebungen
 
 ### Erforderliche Konfiguration
 
@@ -146,7 +146,7 @@ PocketLawyer benötigt einen API-Schlüssel für den Nebius KI-Dienst. Legen Sie
 
 ```bash
 dotnet user-secrets init
-dotnet user-secrets set "Nebius:ApiKey" "your-nebius-api-key"
+dotnet user-secrets set "Nebius:Key" "your-nebius-api-key"
 ```
 
 > **Hinweis:** Committen Sie niemals API-Schlüssel in die Versionskontrolle. Verwenden Sie immer User Secrets für die Entwicklung und Umgebungsvariablen für die Produktion.
@@ -184,7 +184,7 @@ Konfigurieren Sie Logging-Level und Ausgabe:
 Verwenden Sie für Produktions-Deployments Umgebungsvariablen anstelle von User Secrets:
 
 ```bash
-export Nebius__ApiKey="your-api-key"
+export Nebius__Key="your-api-key"
 export ASPNETCORE_ENVIRONMENT="Production"
 ```
 
@@ -395,7 +395,7 @@ Häufige Probleme und Lösungen:
 
 - Überprüfen Sie, dass der API-Schlüssel korrekt gesetzt ist (dotnet user-secrets list)
 - Prüfen Sie, dass der API-Schlüssel gültig und nicht abgelaufen ist
-- Stellen Sie sicher, dass der Konfigurationsabschnittsname korrekt ist (Nebius:ApiKey)
+- Stellen Sie sicher, dass der Konfigurationsabschnittsname korrekt ist (Nebius:Key)
 - Für Produktion: Überprüfen Sie, dass die Umgebungsvariable korrekt gesetzt ist
 
 ### Port bereits in Verwendung
@@ -492,4 +492,3 @@ graph TD
     style Config fill:#FFD700
     style Proj fill:#FFD700
 ```
-
