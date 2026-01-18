@@ -340,7 +340,7 @@ Testen Sie, ob API-Endpunkte antworten:
 #### HTTP-Endpunkt testen
 
 ```bash
-curl http://localhost:5112/api/schemas/employment/basic/1
+curl http://localhost:5112/api/schemas/Employment/Basic/General
 ```
 
 Sollte eine JSON-Schema-Antwort zurückgeben.
