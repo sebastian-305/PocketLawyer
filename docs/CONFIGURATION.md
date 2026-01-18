@@ -6,7 +6,7 @@ Dieses Dokument beschreibt alle Konfigurationsoptionen für das PocketLawyer-Sys
 
 ## Inhaltsverzeichnis
 
-- [Übersicht](#uebersicht)
+- [Übersicht](#übersicht)
 - [appsettings.json Struktur](#appsettingsjson-struktur)
 - [Logging-Konfiguration](#logging-konfiguration)
 - [KI-Dienste-Konfiguration](#ki-dienste-konfiguration)
@@ -253,7 +253,8 @@ Use double underscores (__) to represent configuration hierarchy:
 
 ```bash
 Nebius__Key=your-api-key
-Paths__UploadDirectory=/app/uploads
+Paths__ResponsesPath=/app/responses
+Context__BasePath=/app/context
 Logging__LogLevel__Default=Information
 ```
 

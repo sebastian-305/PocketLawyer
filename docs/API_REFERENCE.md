@@ -6,7 +6,7 @@ Dieses Dokument beschreibt alle API-Endpunkte im PocketLawyer-System. Alle Infor
 
 ## Inhaltsverzeichnis
 
-- [Übersicht](#uebersicht)
+- [Übersicht](#übersicht)
 - [WebSocket-Endpunkte](#websocket-endpunkte)
 - [HTTP-Endpunkte](#http-endpunkte)
 - [Nachrichtenformate](#nachrichtenformate)

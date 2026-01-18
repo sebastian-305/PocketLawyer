@@ -239,7 +239,7 @@ Beim Deployment in die Produktion:
 1. Stellen Sie sicher, dass das Verzeichnis `data/Context/` im Deployment-Paket enthalten ist
 2. Überprüfen Sie, dass alle .txt-Dateien im Kontextverzeichnis vorhanden sind
 3. Setzen Sie geeignete Dateiberechtigungen (nur Lesezugriff ist ausreichend)
-4. Konfigurieren Sie den ContextDirectory-Pfad in appsettings.json, falls ein anderer Speicherort verwendet wird
+4. Konfigurieren Sie den Context:BasePath-Wert in appsettings.json, falls ein anderer Speicherort verwendet wird
 
 ### Kontextdatei-Format
 
@@ -388,7 +388,7 @@ Häufige Probleme und Lösungen:
 
 - Überprüfen Sie, dass das Verzeichnis `data/Context/` existiert
 - Prüfen Sie, dass .txt-Dateien im Kontextverzeichnis vorhanden sind
-- Stellen Sie sicher, dass der ContextDirectory-Pfad in appsettings.json korrekt konfiguriert ist
+- Stellen Sie sicher, dass der Context:BasePath-Wert in appsettings.json korrekt konfiguriert ist
 - Überprüfen Sie, dass Dateiberechtigungen das Lesen von Kontextdateien erlauben
 
 ### API-Schlüssel-Fehler
