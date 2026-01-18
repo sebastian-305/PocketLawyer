@@ -209,22 +209,6 @@ Host: localhost:5112
 ```
 
 
-#### GET /rental-mockdata
-
-**Quelle:** `GetRentalMockData()` in `PocketController` (`Web/PocketController.cs`)
-
-##### Antwort
-
-Gibt zurück: `ActionResult<object>` mit einem kombinierten `basic`- und `premium`-Objekt für Rental-Analysen.
-
-##### Beispielanfrage
-
-```http
-GET /rental-mockdata HTTP/1.1
-Host: localhost:5112
-```
-
-
 ## Nachrichtenformate
 
 Dieser Abschnitt beschreibt die Datenstrukturen, die in API-Anfragen und -Antworten verwendet werden. Alle DTOs sind im Verzeichnis Domain/Dtos/ definiert.
